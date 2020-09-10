@@ -27,7 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 
-$config['base_url'] = '';
+$config['base_url'] = 'http://localhost/businext';
 
 
 //try to catch the base url in case of undefined base url 

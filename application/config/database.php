@@ -76,10 +76,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn' => '',
-    'hostname' => 'enter_hostname',
-    'username' => 'enter_db_username',
-    'password' => 'enter_db_password',
-    'database' => 'enter_database_name',
+    'hostname' => 'localhost',
+    'username' => 'root',
+    'password' => '',
+    'database' => 'businext',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE, //set it FALSE if your site has a huge trafic and/or you are saving session data in database
