@@ -31,6 +31,6 @@ application/logs/*
 /vendor/
 
 #PRE-INSTALLATION
-application/config/config.php
-application/config/database.php
-index.php
+#application/config/config.php
+#application/config/database.php
+#index.php
