@@ -279,19 +279,6 @@
                                     </div>
                                 </div>
 
-                                <div class="section clearfix">
-                                    <p>3. Please enter your item purchase code.</p>
-                                    <hr />
-                                    <div>
-                                        <div class="form-group clearfix">
-                                            <label for="purchase_code" class=" col-md-3">Item purchase code</label>
-                                            <div class="col-md-9">
-                                                <input type="text" value=""  id="purchase_code"  name="purchase_code" class="form-control"  placeholder="Find in codecanyon item download section" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="panel-footer">
                                     <button type="submit" class="btn btn-info form-next">
                                         <span class="loader hide"> Please wait...</span>

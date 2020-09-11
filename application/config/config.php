@@ -25,10 +25,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   |
  */
 
-
-
-$config['base_url'] = 'http://localhost/businext';
-
+//TODO: Dynamically change when installing. 
+$config['base_url'] = '';
 
 //try to catch the base url in case of undefined base url 
 if (!$config['base_url']) {

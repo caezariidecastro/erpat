@@ -13,10 +13,8 @@ if (isset($_POST)) {
     $email = $_POST["email"];
     $login_password = $_POST["password"] ? $_POST["password"] : "";
 
-    $purchase_code = $_POST["purchase_code"];
-
     //check required fields
-    if (!($host && $dbuser && $dbname && $first_name && $last_name && $email && $login_password && $purchase_code)) {
+    if (!($host && $dbuser && $dbname && $first_name && $last_name && $email && $login_password)) {
         echo json_encode(array("success" => false, "message" => "Please input all fields."));
         exit();
     }
@@ -27,17 +25,6 @@ if (isset($_POST)) {
         echo json_encode(array("success" => false, "message" => "Please input a valid email."));
         exit();
     }
-
-
-    //validate purchase code
-    $verification = verify_rise_purchase_code($purchase_code);
-
-    if (!$verification || $verification != "verified") {
-        echo json_encode(array("success" => false, "message" => "Please enter a valid purchase code."));
-        exit();
-    }
-
-
 
     //check for valid database connection
     $mysqli = @new mysqli($host, $dbuser, $dbpassword, $dbname);
@@ -54,16 +41,10 @@ if (isset($_POST)) {
         exit();
     }
 
-
-
-
-
     /*
      * check the db config file
      * if db already configured, we'll assume that the installation has completed
      */
-
-
     $db_file_path = "../application/config/database.php";
     $db_file = file_get_contents($db_file_path);
     $is_installed = strpos($db_file, "enter_hostname");
@@ -78,7 +59,6 @@ if (isset($_POST)) {
 
     $sql = file_get_contents("database.sql");
 
-
     //set admin information to database
     $now = date("Y-m-d H:i:s");
 
@@ -87,7 +67,6 @@ if (isset($_POST)) {
     $sql = str_replace('admin_email', $email, $sql);
     $sql = str_replace('admin_password', password_hash($login_password, PASSWORD_DEFAULT), $sql);
     $sql = str_replace('admin_created_at', $now, $sql);
-    $sql = str_replace('ITEM-PURCHASE-CODE', $purchase_code, $sql);
 
     //create tables in datbase 
 
@@ -131,24 +110,4 @@ if (isset($_POST)) {
 
     echo json_encode(array("success" => true, "message" => "Installation successfull."));
     exit();
-}
-
-function verify_rise_purchase_code($code) {
-    $code = urlencode($code);
-    $url = "http://releases.fairsketch.com/rise/?type=install&code=" . $code . "&domain=" . $_SERVER['HTTP_HOST'];
-
-    $ch = curl_init();
-
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HTTPGET, TRUE);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-    curl_setopt($ch, CURLOPT_HTTPHEADER, Array('Content-type: text/plain'));
-
-    $data = curl_exec($ch);
-    curl_close($ch);
-
-    return $data;
 }

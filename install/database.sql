@@ -675,7 +675,6 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `deleted`) VALUES
 ('invoice_logo', 'default-invoice-logo.png', 0),
 ('site_logo', 'default-stie-logo.png', 0),
 ('timezone', 'UTC', 0),
-('item_purchase_code', 'ITEM-PURCHASE-CODE', 0),
 ('time_format', 'small', 0),
 ('module_announcement', '1', 0),
 ('module_attendance', '1', 0),
