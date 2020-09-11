@@ -29,3 +29,8 @@ application/logs/*
 !application/logs/index.html
 !application/logs/.htaccess
 /vendor/
+
+#PRE-INSTALLATION
+application/config/config.php
+application/config/database.php
+index.php
