@@ -663,7 +663,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 INSERT INTO `settings` (`setting_name`, `setting_value`, `deleted`) VALUES
 ('accepted_file_formats', 'jpg,jpeg,doc', 0),
 ('allowed_ip_addresses', '', 0),
-('app_title', 'RISE - Ultimate Project Manager', 0),
+('app_title', 'BusiNext - Multi-Business Management', 0),
 ('company_email', 'admin_email', 0),
 ('currency_symbol', '$', 0),
 ('date_format', 'Y-m-d', 0),

@@ -7,7 +7,7 @@
         <meta name="description" content="">
         <meta name="author" content="fairsketch">
         <link rel="icon" href="../assets/images/favicon.png" />
-        <title>RISE - Ultimate Project Manager Installation</title>
+        <title>BusiNext - Multi-Business Management</title>
         <link rel='stylesheet' type='text/css' href='../assets/bootstrap/css/bootstrap.min.css' />
         <link rel='stylesheet' type='text/css' href='../assets/js/font-awesome/css/font-awesome.min.css' />
 
@@ -23,7 +23,7 @@
 
             <div class="panel panel-install">
                 <div class="panel-heading text-center">                    
-                    <h2> RISE - Ultimate Project Manager Installation</h2>
+                    <h2>BusiNext - Multi-Business Management</h2>
                 </div>
                 <div class="panel-body no-padding">
                     <div class="tab-container clearfix">
