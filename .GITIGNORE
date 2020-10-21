@@ -30,6 +30,10 @@ application/logs/*
 !application/logs/.htaccess
 /vendor/
 
+#files new uploads
+files/*
+!files/system/
+
 #PRE-INSTALLATION
 #application/config/config.php
 #application/config/database.php
