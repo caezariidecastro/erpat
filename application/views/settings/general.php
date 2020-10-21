@@ -338,6 +338,7 @@
                         </div>
                     </div>
 
+                    <?php /*
                     <div class="form-group">
                         <label for="item_purchase_code" class=" col-md-2"><?php echo lang('item_purchase_code'); ?></label>
                         <div class=" col-md-10">
@@ -354,6 +355,7 @@
                             ?>
                         </div>
                     </div>
+                    */ ?>
 
                     <div class="form-group">
                         <label for="show_theme_color_changer" class=" col-md-2"><?php echo lang('show_theme_color_changer'); ?></label>
