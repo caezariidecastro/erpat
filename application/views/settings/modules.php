@@ -170,6 +170,68 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="module_hrm" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_hrm'); ?></label>
+                        <div class="col-md-10 col-xs-4 col-sm-8">
+                            <?php
+                            echo form_checkbox("module_hrm", "1", get_setting("module_hrm") ? true : false, "id='module_hrm' class='ml15'");
+                            ?>                       
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module_fas" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_fas'); ?></label>
+                        <div class="col-md-10 col-xs-4 col-sm-8">
+                            <?php
+                            echo form_checkbox("module_fas", "1", get_setting("module_fas") ? true : false, "id='module_fas' class='ml15'");
+                            ?>                       
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module_pid" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_pid'); ?></label>
+                        <div class="col-md-10 col-xs-4 col-sm-8">
+                            <?php
+                            echo form_checkbox("module_pid", "1", get_setting("module_pid") ? true : false, "id='module_pid' class='ml15'");
+                            ?>                       
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module_mcm" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_mcm'); ?></label>
+                        <div class="col-md-10 col-xs-4 col-sm-8">
+                            <?php
+                            echo form_checkbox("module_mcm", "1", get_setting("module_mcm") ? true : false, "id='module_mcm' class='ml15'");
+                            ?>                       
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module_lms" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_lms'); ?></label>
+                        <div class="col-md-10 col-xs-4 col-sm-8">
+                            <?php
+                            echo form_checkbox("module_lms", "1", get_setting("module_lms") ? true : false, "id='module_lms' class='ml15'");
+                            ?>                       
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module_sms" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_sms'); ?></label>
+                        <div class="col-md-10 col-xs-4 col-sm-8">
+                            <?php
+                            echo form_checkbox("module_sms", "1", get_setting("module_sms") ? true : false, "id='module_sms' class='ml15'");
+                            ?>                       
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module_pms" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_pms'); ?></label>
+                        <div class="col-md-10 col-xs-4 col-sm-8">
+                            <?php
+                            echo form_checkbox("module_pms", "1", get_setting("module_pms") ? true : false, "id='module_pms' class='ml15'");
+                            ?>                       
+                        </div>
+                    </div>
 
                 </div>
                 <div class="panel-footer">
