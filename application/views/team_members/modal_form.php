@@ -340,5 +340,7 @@
                 $("#user-role-help-block").addClass("hide");
             }
         });
+
+        $('#ajaxModalTitle').text('Add employee')
     });
 </script>

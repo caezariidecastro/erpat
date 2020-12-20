@@ -55,5 +55,9 @@ $route['default_controller'] = 'dashboard';
 //this route will move 'about/any-text' to 'domain.com/about/index/any-text'
 $route['about/(:any)'] = 'about/index/$1';
 
+// Employee route
+$route['hrm/employee/view/(:any)'] = 'team_members/view/$1';
+$route['hrm/employee'] = 'team_members/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

@@ -447,9 +447,9 @@ class Left_menu {
             }
 
 
-            if (get_array_value($this->ci->login_user->permissions, "hide_team_members_list") != "1") {
-                $sidebar_menu["team_members"] = array("name" => "team_members", "url" => "team_members", "class" => "fa-user font-16");
-            }
+            // if (get_array_value($this->ci->login_user->permissions, "hide_team_members_list") != "1") {
+            //     $sidebar_menu["team_members"] = array("name" => "team_members", "url" => "team_members", "class" => "fa-user font-16");
+            // }
 
 
             if (get_setting("module_attendance") == "1" && ($this->ci->login_user->is_admin || $access_timecard)) {

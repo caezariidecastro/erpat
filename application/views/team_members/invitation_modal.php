@@ -2,7 +2,7 @@
 <div class="modal-body clearfix">
     <br />
     <div class="form-group mb15">
-        <label for="email" class=" col-md-12"><?php echo lang('invite_someone_to_join_as_a_team_member'); ?></label>
+        <label for="email" class=" col-md-12"><?php echo lang('send_invitation_to_an_employee'); ?></label>
         <div class="col-md-12">
             <div class="send-invitation-field">
                 <div class="send-invitation-form clearfix pb10">
