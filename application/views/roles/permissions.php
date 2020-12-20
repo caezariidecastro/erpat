@@ -8,6 +8,7 @@
         <div class="panel-body">
 
             <ul class="permission-list">
+
                 <li>
                     <h5><?php echo lang("set_project_permissions"); ?>:</h5>
                     <div>
@@ -103,9 +104,9 @@
                     </div>
 
                 </li>
+
                 <li>
                     <h5><?php echo lang("set_team_members_permission"); ?>:</h5>
-
 
                     <div>
                         <?php
@@ -249,6 +250,7 @@
                         </div>
                     </div>
                 </li>
+
                 <li>
                     <h5><?php echo lang("can_manage_team_members_timecards"); ?> <span class="help" data-toggle="tooltip" title="Add, edit and delete time cards"><i class="fa fa-question-circle"></i></span></h5>
                     <div>
@@ -330,7 +332,6 @@
                     </div>
                 </li>
 
-
                 <li>
                     <h5><?php echo lang("can_access_invoices"); ?></h5>
                     <div>
@@ -364,6 +365,7 @@
                         <label for="invoice_read_only"><?php echo lang("read_only"); ?></label>
                     </div>
                 </li>
+
                 <li>
                     <h5><?php echo lang("can_access_estimates"); ?></h5>
                     <div>
@@ -387,6 +389,7 @@
                         <label for="estimate_yes"><?php echo lang("yes"); ?></label>
                     </div>
                 </li>
+
                 <li>
                     <h5><?php echo lang("can_access_expenses"); ?></h5>
                     <div>
@@ -410,6 +413,7 @@
                         <label for="expense_yes"><?php echo lang("yes"); ?></label>
                     </div>
                 </li>
+
                 <li>
                     <h5><?php echo lang("can_access_clients_information"); ?> <span class="help" data-toggle="tooltip" title="Hides all information of clients except company name."><i class="fa fa-question-circle"></i></span></h5>
                     <div>
@@ -433,6 +437,7 @@
                         <label for="client_yes"><?php echo lang("yes"); ?></label>
                     </div>
                 </li>
+
                 <li>
                     <h5><?php echo lang("can_access_leads_information"); ?></h5>
                     <div>
@@ -456,6 +461,7 @@
                         <label for="lead_yes"><?php echo lang("yes"); ?></label>
                     </div>
                 </li>
+
                 <li>
                     <h5><?php echo lang("can_access_tickets"); ?></h5>       
                     <div>
@@ -495,6 +501,7 @@
                         </div>
                     </div>
                 </li>
+                
                 <li>
                     <h5><?php echo lang("can_manage_announcements"); ?></h5>
                     <div>
@@ -518,6 +525,7 @@
                         <label for="announcement_yes"><?php echo lang("yes"); ?></label>
                     </div>
                 </li>
+
                 <li>
                     <h5><?php echo lang("can_manage_help_and_knowledge_base"); ?></h5>
                     <div>

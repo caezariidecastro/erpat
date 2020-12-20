@@ -695,6 +695,13 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `deleted`) VALUES
 ('module_knowledge_base', '1', 0),
 ('module_todo', '1', 0),
 ('module_gantt', '1', 0),
+('module_hrm', '1', 0),
+('module_fas', '1', 0),
+('module_pid', '1', 0),
+('module_mcm', '1', 0),
+('module_lms', '1', 0),
+('module_sms', '1', 0),
+('module_pms', '1', 0),
 ('signin_page_background', 'sigin-background-image.jpg', 0),
 ('show_theme_color_changer', 'yes', 0),
 ('task_point_range', '5', 0);

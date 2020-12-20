@@ -225,8 +225,8 @@ $lang["events_today"] = "Events today";
 $lang["add_announcement"] = "Add announcement";
 $lang["edit_announcement"] = "Edit announcement";
 $lang["delete_announcement"] = "Delete announcement";
-$lang["announcement"] = "Announcement";
-$lang["announcements"] = "Announcements";
+$lang["announcement"] = "Advisory";
+$lang["announcements"] = "Advisories";
 $lang["all_team_members"] = "All team members";
 $lang["all_team_clients"] = "All Clients";
 

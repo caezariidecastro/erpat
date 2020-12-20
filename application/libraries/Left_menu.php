@@ -265,6 +265,10 @@ class Left_menu {
                 $sidebar_menu["timeline"] = array("name" => "timeline", "url" => "timeline", "class" => " fa-comments font-18");
             }
 
+            if (get_setting("module_announcement") == "1") {
+                $sidebar_menu["announcements"] = array("name" => "announcements", "url" => "announcements", "class" => "fa-bullhorn");
+            }
+
             if (get_setting("module_event") == "1") {
                 $sidebar_menu["events"] = array("name" => "events", "url" => "events", "class" => "fa-calendar");
             }
@@ -277,6 +281,83 @@ class Left_menu {
                 $sidebar_menu["messages"] = array("name" => "messages", "url" => "messages", "class" => "fa-envelope", "devider" => true, "badge" => count_unread_message(), "badge_class" => "badge-secondary");
             }
 
+            if (get_setting("module_hrm") == "1") {
+                $sidebar_menu["menu_hrm"] = array("name" => "menu_hrm", "url" => "hrm", "class" => "fa-users", "devider" => true,
+                "submenu" => array(
+                    array("name" => "submenu_hrm_department", "url" => "hrm/department"),
+                    array("name" => "submenu_hrm_employee", "url" => "hrm/employee"),
+                    array("name" => "submenu_hrm_attendance", "url" => "hrm/attendance"),
+                    array("name" => "submenu_hrm_incentives", "url" => "hrm/incentives"),
+                    array("name" => "submenu_hrm_contributions", "url" => "hrm/contributions"),
+                    array("name" => "submenu_hrm_disciplinary", "url" => "hrm/disciplinary"),
+                    array("name" => "submenu_hrm_leaves", "url" => "hrm/leaves"),
+                    array("name" => "submenu_hrm_holidays", "url" => "hrm/holidays")
+                ));
+            }
+
+            if (get_setting("module_fas") == "1") {
+                $sidebar_menu["menu_fas"] = array("name" => "menu_fas", "url" => "fas", "class" => "fa-money", "devider" => true,
+                "submenu" => array(
+                    array("name" => "submenu_fas_summary", "url" => "fas/summary"),
+                    array("name" => "submenu_fas_payments", "url" => "fas/payments"),
+                    array("name" => "submenu_fas_expenses", "url" => "fas/expenses"),
+                    array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
+                    array("name" => "submenu_fas_transfers", "url" => "fas/transfers"),
+                    array("name" => "submenu_fas_return_sale", "url" => "fas/return-sale"),
+                    array("name" => "submenu_fas_return_purchase", "url" => "fas/return-purchase"),
+                    array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet")
+                ));
+            }
+
+            if (get_setting("module_pid") == "1") {
+                $sidebar_menu["menu_pid"] = array("name" => "menu_pid", "url" => "hrm", "class" => "fa-industry", "devider" => true,
+                "submenu" => array(
+                    array("name" => "submenu_pid_productions", "url" => "hrm/productions"),
+                    array("name" => "submenu_pid_billofmaterials", "url" => "hrm/bill-of-materials"),
+                    array("name" => "submenu_pid_purchases", "url" => "hrm/purchases"),
+                    array("name" => "submenu_pid_brands", "url" => "hrm/brands"),
+                    array("name" => "submenu_pid_units", "url" => "hrm/units")
+                ));
+            }
+
+            if (get_setting("module_mcm") == "1") {
+                $sidebar_menu["menu_mcm"] = array("name" => "menu_mcm", "url" => "hrm", "class" => "fa-users", "devider" => true,
+                "submenu" => array(
+                    array("name" => "submenu_leads", "url" => "hrm/leads")
+                ));
+            }
+
+            if (get_setting("module_lms") == "1") {
+                $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "hrm", "class" => "fa-truck", "devider" => true,
+                "submenu" => array(
+                    array("name" => "submenu_lms_delivery", "url" => "hrm/delivery"),
+                    array("name" => "submenu_lms_warehouse", "url" => "hrm/warehouse"),
+                    array("name" => "submenu_lms_transfers", "url" => "hrm/transfer")
+                ));
+            }
+
+            if (get_setting("module_sms") == "1") {
+                $sidebar_menu["menu_sms"] = array("name" => "menu_sms", "url" => "hrm", "class" => "fa-tags", "devider" => true,
+                "submenu" => array(
+                    array("name" => "submenu_sms_pointofsale", "url" => "sms/point-of-sale"),
+                    array("name" => "submenu_sms_giftcard", "url" => "sms/giftcard"),
+                    array("name" => "submenu_sms_coupons", "url" => "sms/coupons"),
+                    array("name" => "submenu_sms_estimates", "url" => "sms/estimates"),
+                    array("name" => "submenu_sms_invoices", "url" => "sms/invoices"),
+                    array("name" => "submenu_sms_items", "url" => "sms/items")
+                ));
+            }
+
+            if (get_setting("module_pms") == "1") {
+                $sidebar_menu["menu_pms"] = array("name" => "menu_pms", "url" => "pms", "class" => "fa-cubes", "devider" => true,
+                "submenu" => array(
+                    array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects"),
+                    array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks"),
+                    array("name" => "submenu_pms_view_gantts", "url" => "pms/view_gantts"),
+                    array("name" => "submenu_pms_timesheets", "url" => "pms/timesheets"),
+                    array("name" => "submenu_pms_clients", "url" => "pms/clients")
+                ));
+            }
 
             if ($this->ci->login_user->is_admin || $access_client) {
                 $sidebar_menu["clients"] = array("name" => "clients", "url" => "clients", "class" => "fa-briefcase");
@@ -347,7 +428,7 @@ class Left_menu {
                     $finance_submenu[] = array("name" => "income_vs_expenses", "url" => "expenses/income_vs_expenses", "class" => "fa-line-chart");
                 }
 
-                $sidebar_menu["finance"] = array("name" => "finance", "url" => $finance_url, "class" => "fa-money", "submenu" => $finance_submenu);
+                $sidebar_menu["finance"] = array("name" => "finance", "url" => $finance_url, "class" => "fa-money", "devider" => true, "submenu" => $finance_submenu);
             }
 
             if (get_setting("module_ticket") == "1" && ($this->ci->login_user->is_admin || $access_ticket)) {
@@ -381,10 +462,6 @@ class Left_menu {
                 $sidebar_menu["leaves"] = array("name" => "leaves", "url" => "leaves", "class" => "fa-sign-out font-16", "devider" => true);
             } else if (get_setting("module_leave") == "1") {
                 $sidebar_menu["leaves"] = array("name" => "leaves", "url" => "leaves/leave_info", "class" => "fa-sign-out font-16", "devider" => true);
-            }
-
-            if (get_setting("module_announcement") == "1") {
-                $sidebar_menu["announcements"] = array("name" => "announcements", "url" => "announcements", "class" => "fa-bullhorn");
             }
 
 
@@ -426,7 +503,6 @@ class Left_menu {
                     "submenu" => $help_knowledge_base_menues
                 );
             }
-
 
 
             if ($this->ci->login_user->is_admin) {
