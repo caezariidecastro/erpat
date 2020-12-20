@@ -20,7 +20,7 @@ $lang["menu_pms"] = "Project Planning";
 
 $lang["submenu_hrm_department"] = "Department - New";
 $lang["submenu_hrm_employee"] = "Employees";
-$lang["submenu_hrm_attendance"] = "Attendance - Edit";
+$lang["submenu_hrm_attendance"] = "Attendance";
 $lang["submenu_hrm_incentives"] = "Incentives - New";
 $lang["submenu_hrm_contributions"] = "Contributions - New";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary - New";
@@ -61,9 +61,13 @@ $lang["submenu_lms_transfers"] = "Transfer - New";
 
 $lang["submenu_leads"] = "Leads - Move";
 
+// Employee
 $lang["employee"] = "Employee";
 $lang["employees"] = "Employees";
 $lang["active_employees"] = "Active employees";
 $lang["inactive_employees"] = "Inactive employees";
 $lang["add_employee"] = "Add employee";
 $lang["send_invitation_to_an_employee"] = "Send invitation to an employee.";
+
+// Attendance
+$lang["attendance"] = "Attendance";

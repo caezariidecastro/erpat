@@ -452,17 +452,17 @@ class Left_menu {
             // }
 
 
-            if (get_setting("module_attendance") == "1" && ($this->ci->login_user->is_admin || $access_timecard)) {
-                $sidebar_menu["attendance"] = array("name" => "attendance", "url" => "attendance", "class" => "fa-clock-o font-16");
-            } else if (get_setting("module_attendance") == "1") {
-                $sidebar_menu["attendance"] = array("name" => "attendance", "url" => "attendance/attendance_info", "class" => "fa-clock-o font-16");
-            }
+            // if (get_setting("module_attendance") == "1" && ($this->ci->login_user->is_admin || $access_timecard)) {
+            //     $sidebar_menu["attendance"] = array("name" => "attendance", "url" => "attendance", "class" => "fa-clock-o font-16");
+            // } else if (get_setting("module_attendance") == "1") {
+            //     $sidebar_menu["attendance"] = array("name" => "attendance", "url" => "attendance/attendance_info", "class" => "fa-clock-o font-16");
+            // }
 
-            if (get_setting("module_leave") == "1" && ($this->ci->login_user->is_admin || $access_leave)) {
-                $sidebar_menu["leaves"] = array("name" => "leaves", "url" => "leaves", "class" => "fa-sign-out font-16", "devider" => true);
-            } else if (get_setting("module_leave") == "1") {
-                $sidebar_menu["leaves"] = array("name" => "leaves", "url" => "leaves/leave_info", "class" => "fa-sign-out font-16", "devider" => true);
-            }
+            // if (get_setting("module_leave") == "1" && ($this->ci->login_user->is_admin || $access_leave)) {
+            //     $sidebar_menu["leaves"] = array("name" => "leaves", "url" => "leaves", "class" => "fa-sign-out font-16", "devider" => true);
+            // } else if (get_setting("module_leave") == "1") {
+            //     $sidebar_menu["leaves"] = array("name" => "leaves", "url" => "leaves/leave_info", "class" => "fa-sign-out font-16", "devider" => true);
+            // }
 
 
             $module_help = get_setting("module_help") == "1" ? true : false;

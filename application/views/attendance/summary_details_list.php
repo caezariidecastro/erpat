@@ -11,7 +11,7 @@
             rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}}],
             columns: [
                 {visible: false, searchable: false},
-                {title: "<?php echo lang("team_member"); ?>", "iDataSort": 0},
+                {title: "<?php echo lang("employee"); ?>", "iDataSort": 0},
                 {title: "<?php echo lang("date"); ?>", "bSortable": false, "class": "w20p"},
                 {title: "<?php echo lang("duration"); ?>", "bSortable": false, "class": "w20p text-right"},
                 {title: "<?php echo lang("hours"); ?>",  "bSortable": false,"class": "w20p text-right"}
