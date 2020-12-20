@@ -59,5 +59,8 @@ $route['about/(:any)'] = 'about/index/$1';
 $route['hrm/employee/view/(:any)'] = 'team_members/view/$1';
 $route['hrm/employee'] = 'team_members/index';
 
+// Leaves
+$route['hrm/leaves'] = 'leaves/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

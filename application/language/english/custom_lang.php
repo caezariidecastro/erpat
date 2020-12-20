@@ -24,7 +24,7 @@ $lang["submenu_hrm_attendance"] = "Attendance - Edit";
 $lang["submenu_hrm_incentives"] = "Incentives - New";
 $lang["submenu_hrm_contributions"] = "Contributions - New";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary - New";
-$lang["submenu_hrm_leaves"] = "Leaves - Move";
+$lang["submenu_hrm_leaves"] = "Leaves";
 $lang["submenu_hrm_holidays"] = "Holidays - New";
 
 $lang["submenu_pid_productions"] = "Productions - New";
