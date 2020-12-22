@@ -17,7 +17,7 @@ class Holidays_model extends Crud_model {
             $where .= " AND $holidays_table.id=$id";
         }
 
-        $sql = "SELECT $holidays_table.*, users.first_name, users.last_name
+        $sql = "SELECT $holidays_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name
         FROM $holidays_table
         LEFT JOIN users ON users.id = $holidays_table.created_by
         WHERE $holidays_table.deleted=0 $where";

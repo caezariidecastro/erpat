@@ -22,7 +22,7 @@ $lang["submenu_hrm_department"] = "Department";
 $lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_attendance"] = "Attendance";
 $lang["submenu_hrm_incentives"] = "Incentives - New";
-$lang["submenu_hrm_contributions"] = "Contributions - New";
+$lang["submenu_hrm_contributions"] = "Contributions";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary - New";
 $lang["submenu_hrm_leaves"] = "Leaves";
 $lang["submenu_hrm_holidays"] = "Holidays";
@@ -83,5 +83,20 @@ $lang["holiday"] = "Holiday";
 $lang["holidays"] = "Holidays";
 $lang["add_holiday"] = "Add holiday";
 $lang["edit_holiday"] = "Edit holiday";
+$lang["delete_holiday"] = "Delete holiday";
 $lang["created_on"] = "Created on";
 $lang["created_by"] = "Created by";
+
+// Human Resource > Contributions
+$lang["contribution"] = "Contribution";
+$lang["contributions"] = "Contributions";
+
+$lang["add_category"] = "Add category";
+$lang["edit_category"] = "Edit category";
+$lang["delete_category"] = "Delete category";
+$lang["mode_of_payment"] = "Mode of payment";
+
+$lang["entries"] = "Entries";
+$lang["add_entry"] = "Add entry";
+$lang["edit_entry"] = "Edit entry";
+$lang["delete_entry"] = "Delete entry";
