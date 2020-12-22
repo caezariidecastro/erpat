@@ -70,6 +70,11 @@ class Team extends MY_Controller {
             "members" => $this->input->post('members')
         );
 
+        if(!$id){
+            $data["created_on"] = date('Y-m-d H:i:s');
+            $data["created_by"] = $this->login_user->id;
+        }
+
         $save_id = $this->Team_model->save($data, $id);
         if ($save_id) {
             echo json_encode(array("success" => true, "data" => $this->_row_data($save_id), 'id' => $save_id, 'message' => lang('record_saved')));
@@ -124,8 +129,11 @@ class Team extends MY_Controller {
 
     private function _make_row($data) {
         $total_members = "<span class='label label-light w100'><i class='fa fa-users'></i> " . count(explode(",", $data->members)) . "</span>";
-        return array($data->title,
+        return array(
+            $data->title,
             modal_anchor(get_uri("team/members_list"), $total_members, array("title" => lang('team_members'), "data-post-members" => $data->members)),
+            $data->created_on,
+            get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             modal_anchor(get_uri("team/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_department'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_department'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("team/delete"), "data-action" => "delete-confirmation"))
         );

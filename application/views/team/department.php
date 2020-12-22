@@ -23,6 +23,8 @@
             columns: [
                 {title: "<?php echo lang("title"); ?>"},
                 {title: "<?php echo lang("employees"); ?>"},
+                {title: "<?php echo lang("created_on"); ?>"},
+                {title: "<?php echo lang("created_by"); ?>"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             printColumns: [0, 1]
