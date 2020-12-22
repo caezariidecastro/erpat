@@ -40,7 +40,7 @@ class Discipline_entries extends MY_Controller {
             $data->category_name,
             get_team_member_profile_link($data->created_by, $data->employee_name, array("target" => "_blank")),
             get_team_member_profile_link($data->created_by, $data->witness_name, array("target" => "_blank")),
-            $data->description,
+            nl2br($data->description),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             modal_anchor(get_uri("discipline_entries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_entry'), "data-post-id" => $data->id))

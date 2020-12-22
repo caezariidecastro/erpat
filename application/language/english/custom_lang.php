@@ -21,7 +21,7 @@ $lang["menu_pms"] = "Project Planning";
 $lang["submenu_hrm_department"] = "Department";
 $lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_attendance"] = "Attendance";
-$lang["submenu_hrm_incentives"] = "Incentives - New";
+$lang["submenu_hrm_incentives"] = "Incentives";
 $lang["submenu_hrm_contributions"] = "Contributions";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
@@ -107,3 +107,8 @@ $lang["action"] = "Action";
 
 $lang["date_occurred"] = "Date occurred";
 $lang["witness"] = "Witness";
+
+// Human Resource > Incentives
+$lang["incentives"] = "Incentives";
+$lang["signed_by"] = "Signed by";
+$lang["remarks"] = "Remarks";

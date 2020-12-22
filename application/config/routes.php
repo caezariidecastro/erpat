@@ -75,5 +75,8 @@ $route['hrm/contributions'] = 'contribution_categories/index';
 // Disciplinary
 $route['hrm/disciplinary'] = 'discipline_categories/index';
 
+// Incentives
+$route['hrm/incentives'] = 'incentive_categories/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
