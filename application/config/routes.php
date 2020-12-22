@@ -66,5 +66,8 @@ $route['hrm/leaves'] = 'leaves/index';
 $route['hrm/attendance'] = 'attendance/index';
 $route['hrm/department'] = 'team/department';
 
+// Holidays
+$route['hrm/holidays'] = 'holidays/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

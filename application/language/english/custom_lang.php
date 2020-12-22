@@ -25,7 +25,7 @@ $lang["submenu_hrm_incentives"] = "Incentives - New";
 $lang["submenu_hrm_contributions"] = "Contributions - New";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary - New";
 $lang["submenu_hrm_leaves"] = "Leaves";
-$lang["submenu_hrm_holidays"] = "Holidays - New";
+$lang["submenu_hrm_holidays"] = "Holidays";
 
 $lang["submenu_pid_productions"] = "Productions - New";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials - New";
@@ -75,3 +75,13 @@ $lang["attendance"] = "Attendance";
 // Human Resource > Department
 $lang["department"] = "Deparment";
 $lang["add_department"] = "Add deparment";
+$lang["edit_department"] = "Edit deparment";
+$lang["delete_department"] = "Delete deparment";
+
+// Human Resource > Holidays
+$lang["holiday"] = "Holiday";
+$lang["holidays"] = "Holidays";
+$lang["add_holiday"] = "Add holiday";
+$lang["edit_holiday"] = "Edit holiday";
+$lang["created_on"] = "Created on";
+$lang["created_by"] = "Created by";
