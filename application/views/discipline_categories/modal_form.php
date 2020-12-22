@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("contribution_categories/save"), array("id" => "contribution-categories-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("discipline_categories/save"), array("id" => "discipline-categories-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
 
@@ -35,22 +35,19 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="mode_of_payment" class=" col-md-3"><?php echo lang('mode_of_payment'); ?></label>
+        <label for="action" class=" col-md-3"><?php echo lang('action'); ?></label>
         <div class="col-md-9">
             <?php
             echo form_input(array(
-                "id" => "mode_of_payment",
-                "name" => "mode_of_payment",
-                "value" => $model_info ? $model_info->mode_of_payment : "",
-                "class" => "form-control",
-                "placeholder" => lang('mode_of_payment'),
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
+                "id" => "action",
+                "name" => "action",
+                "value" => $model_info ? $model_info->action : "",
+                "class" => "form-control validate-hidden",
+                "placeholder" => lang('action')
             ));
             ?>
         </div>
     </div>
-
 </div>
 
 <div class="modal-footer">
@@ -61,9 +58,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#contribution-categories-form").appForm({
+        $("#discipline-categories-form").appForm({
             onSuccess: function (result) {
-                $("#contribution-categories-table").appTable({newData: result.data, dataId: result.id});
+                $("#discipline-categories-table").appTable({newData: result.data, dataId: result.id});
             }
         });
     });

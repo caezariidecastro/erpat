@@ -23,7 +23,7 @@ $lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_attendance"] = "Attendance";
 $lang["submenu_hrm_incentives"] = "Incentives - New";
 $lang["submenu_hrm_contributions"] = "Contributions";
-$lang["submenu_hrm_disciplinary"] = "Disciplinary - New";
+$lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
 $lang["submenu_hrm_holidays"] = "Holidays";
 
@@ -100,3 +100,10 @@ $lang["entries"] = "Entries";
 $lang["add_entry"] = "Add entry";
 $lang["edit_entry"] = "Edit entry";
 $lang["delete_entry"] = "Delete entry";
+
+// Human Resource > Disciplinary
+$lang["disciplinary"] = "Disciplinary";
+$lang["action"] = "Action";
+
+$lang["date_occurred"] = "Date occurred";
+$lang["witness"] = "Witness";
