@@ -11,26 +11,6 @@ class Contribution_entries extends MY_Controller {
         $this->load->model("Contribution_categories_model");
     }
 
-    protected function _get_category_select2_data() {
-        $Contribution_categories = $this->Contribution_categories_model->get_all()->result();
-        $category_dropdown = array(array('' => '-'));
-
-        foreach ($Contribution_categories as $group) {
-            $category_dropdown[] = array("id" => $group->id, "text" => $group->title);
-        }
-        return $category_dropdown;
-    }
-
-    protected function _get_user_select2_data() {
-        $users = $this->Users_model->get_all()->result();
-        $user_dropdown = array(array('' => '-'));
-
-        foreach ($users as $user) {
-            $user_dropdown[] = array("id" => $user->id, "text" => trim($user->first_name . ' ' . $user->last_name));
-        }
-        return $user_dropdown;
-    }
-
     protected function _get_category_dropdown_data() {
         $Contribution_categories = $this->Contribution_categories_model->get_all()->result();
         $category_dropdown = array('' => '-');
