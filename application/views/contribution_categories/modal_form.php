@@ -63,7 +63,7 @@
     $(document).ready(function () {
         $("#contribution-categories-form").appForm({
             onSuccess: function (result) {
-                $("#contribution-categories-table").appTable({newData: result.data, dataId: result.id});
+                location.reload();
             }
         });
     });

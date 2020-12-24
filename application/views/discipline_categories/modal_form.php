@@ -60,7 +60,7 @@
     $(document).ready(function () {
         $("#discipline-categories-form").appForm({
             onSuccess: function (result) {
-                $("#discipline-categories-table").appTable({newData: result.data, dataId: result.id});
+                location.reload();
             }
         });
     });

@@ -90,7 +90,7 @@ class Leaves extends MY_Controller {
     function apply_leave() {
         $leave_data = $this->_prepare_leave_form_data();
         $leave_data['applicant_id'] = $this->login_user->id;
-        $leave_data['created_by'] = 0;
+        $leave_data['created_by'] = $this->login_user->id;
         $leave_data['checked_at'] = "0000:00:00";
         $leave_data['status'] = "pending";
 
@@ -271,11 +271,13 @@ class Leaves extends MY_Controller {
         }
 
         return array(
-            get_team_member_profile_link($data->applicant_id, $meta_info->applicant_meta),
+            get_team_member_profile_link($data->applicant_id, $meta_info->applicant_meta, array("target" => "_blank")),
             $meta_info->leave_type_meta,
             $meta_info->date_meta,
             $meta_info->duration_meta,
             $meta_info->status_meta,
+            get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
+            $meta_info->created_at,
             $actions
         );
     }
@@ -473,7 +475,7 @@ class Leaves extends MY_Controller {
 
         $members = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
 
-        $members_dropdown = array(array("id" => "", "text" => "- " . lang("team_member") . " -"));
+        $members_dropdown = array(array("id" => "", "text" => "- " . lang("employees") . " -"));
         foreach ($members as $id => $name) {
             $members_dropdown[] = array("id" => $id, "text" => $name);
         }

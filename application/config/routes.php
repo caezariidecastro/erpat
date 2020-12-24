@@ -70,13 +70,13 @@ $route['hrm/department'] = 'team/department';
 $route['hrm/holidays'] = 'holidays/index';
 
 // Contributions
-$route['hrm/contributions'] = 'contribution_categories/index';
+$route['fas/contributions'] = 'contribution_categories/index';
 
 // Disciplinary
 $route['hrm/disciplinary'] = 'discipline_categories/index';
 
 // Incentives
-$route['hrm/incentives'] = 'incentive_categories/index';
+$route['fas/incentives'] = 'incentive_categories/index';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

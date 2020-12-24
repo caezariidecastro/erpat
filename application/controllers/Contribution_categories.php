@@ -10,8 +10,31 @@ class Contribution_categories extends MY_Controller {
         $this->load->model("Contribution_categories_model");
     }
 
+    protected function _get_category_select2_data() {
+        $Contribution_categories = $this->Contribution_categories_model->get_all()->result();
+        $category_select2 = array(array('id' => '', 'text'  => '- Categories -'));
+
+        foreach ($Contribution_categories as $group) {
+            $category_select2[] = array('id' => $group->id, 'text' => $group->title) ;
+        }
+        return $category_select2;
+    }
+
+    protected function _get_users_select2_data() {
+        $users = $this->Users_model->get_team_members_for_select2()->result();
+        $user_select2 = array(array('id' => '', 'text'  => '- Employees -'));
+
+        foreach($users as $user){
+            $user_select2[] = array('id' => $user->id, 'text'  => $user->user_name);
+        }
+
+        return $user_select2;
+    }
+
     function index(){
-        $this->template->rander("contribution_categories/index");
+        $view_data['category_select2'] = $this->_get_category_select2_data();
+        $view_data['user_select2'] = $this->_get_users_select2_data();
+        $this->template->rander("contribution_categories/index", $view_data);
     }
 
     function list_data(){

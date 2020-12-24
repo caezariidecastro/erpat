@@ -10,8 +10,19 @@ class Incentive_categories extends MY_Controller {
         $this->load->model("Incentive_categories_model");
     }
 
+    protected function _get_category_select2_data() {
+        $Incentive_categories = $this->Incentive_categories_model->get_all()->result();
+        $category_select2 = array(array('id' => '', 'text'  => '- Categories -'));
+
+        foreach ($Incentive_categories as $group) {
+            $category_select2[] = array('id' => $group->id, 'text' => $group->title) ;
+        }
+        return $category_select2;
+    }
+
     function index(){
-        $this->template->rander("incentive_categories/index");
+        $view_data['category_select2'] = $this->_get_category_select2_data();
+        $this->template->rander("incentive_categories/index", $view_data);
     }
 
     function list_data(){

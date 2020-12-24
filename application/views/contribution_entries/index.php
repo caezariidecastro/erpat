@@ -7,6 +7,11 @@
     $(document).ready(function () {
         $("#contribution-entries-table").appTable({
             source: '<?php echo_uri("contribution_entries/list_data") ?>',
+            filterDropdown: [
+                {id: "category_select2_filter", name: "category_select2_filter", class: "w200", options: <?php echo json_encode($category_select2); ?>},
+                {id: "users_select2_filter", name: "users_select2_filter", class: "w200", options: <?php echo json_encode($user_select2); ?>}
+            ],
+            dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('employee') ?> ", "class": "w20p"},

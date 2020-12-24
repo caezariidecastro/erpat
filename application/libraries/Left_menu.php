@@ -287,8 +287,6 @@ class Left_menu {
                     array("name" => "submenu_hrm_department", "url" => "hrm/department"),
                     array("name" => "submenu_hrm_employee", "url" => "hrm/employee"),
                     array("name" => "submenu_hrm_attendance", "url" => "hrm/attendance"),
-                    array("name" => "submenu_hrm_incentives", "url" => "hrm/incentives"),
-                    array("name" => "submenu_hrm_contributions", "url" => "hrm/contributions"),
                     array("name" => "submenu_hrm_disciplinary", "url" => "hrm/disciplinary"),
                     array("name" => "submenu_hrm_leaves", "url" => "hrm/leaves"),
                     array("name" => "submenu_hrm_holidays", "url" => "hrm/holidays")
@@ -305,7 +303,9 @@ class Left_menu {
                     array("name" => "submenu_fas_transfers", "url" => "fas/transfers"),
                     array("name" => "submenu_fas_return_sale", "url" => "fas/return-sale"),
                     array("name" => "submenu_fas_return_purchase", "url" => "fas/return-purchase"),
-                    array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet")
+                    array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet"),
+                    array("name" => "submenu_fas_contributions", "url" => "fas/contributions"),
+                    array("name" => "submenu_fas_incentives", "url" => "fas/incentives"),
                 ));
             }
 

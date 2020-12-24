@@ -21,8 +21,6 @@ $lang["menu_pms"] = "Project Planning";
 $lang["submenu_hrm_department"] = "Department";
 $lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_attendance"] = "Attendance";
-$lang["submenu_hrm_incentives"] = "Incentives";
-$lang["submenu_hrm_contributions"] = "Contributions";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
 $lang["submenu_hrm_holidays"] = "Holidays";
@@ -41,6 +39,8 @@ $lang["submenu_fas_transfers"] = "Transfers - New";
 $lang["submenu_fas_return_sale"] = "Return Sale - New";
 $lang["submenu_fas_return_purchase"] = "Return Purchase - New";
 $lang["submenu_fas_balancesheet"] = "Balance sheet - New";
+$lang["submenu_fas_incentives"] = "Incentives";
+$lang["submenu_fas_contributions"] = "Contributions";
 
 $lang["submenu_pms_all_projects"] = "All Projects - Move";
 $lang["submenu_pms_my_tasks"] = "My Tasks - Move";
@@ -85,6 +85,7 @@ $lang["add_holiday"] = "Add holiday";
 $lang["edit_holiday"] = "Edit holiday";
 $lang["delete_holiday"] = "Delete holiday";
 $lang["created_on"] = "Created on";
+$lang["date_created"] = "Date created";
 $lang["created_by"] = "Created by";
 
 // Human Resource > Contributions

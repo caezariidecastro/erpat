@@ -272,4 +272,12 @@ class Users_model extends Crud_model {
         return $this->db->query($sql)->row()->total;
     }
 
+    function get_team_members_for_select2(){
+        $users_table = $this->db->dbprefix('users');
+        $sql = "SELECT $users_table.id, TRIM(CONCAT($users_table.first_name, ' ', $users_table.last_name)) AS user_name
+        FROM $users_table
+        WHERE $users_table.deleted=0 AND $users_table.user_type='staff'
+        ORDER BY $users_table.first_name";
+        return $this->db->query($sql);
+    }
 }

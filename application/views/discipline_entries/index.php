@@ -7,6 +7,9 @@
     $(document).ready(function () {
         $("#discipline-entries-table").appTable({
             source: '<?php echo_uri("discipline_entries/list_data") ?>',
+            filterDropdown: [
+                {id: "category_select2_filter", name: "category_select2_filter", class: "w200", options: <?php echo json_encode($category_select2); ?>},
+            ],
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('date_occurred') ?>"},

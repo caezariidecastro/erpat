@@ -10,13 +10,15 @@
             columns: [
                 {title: '<?php echo lang("applicant") ?>', "class": "w20p"},
                 {title: '<?php echo lang("leave_type") ?>'},
-                {title: '<?php echo lang("date") ?>', "class": "w20p"},
-                {title: '<?php echo lang("duration") ?>', "class": "w20p"},
-                {title: '<?php echo lang("status") ?>', "class": "w15p"},
+                {title: '<?php echo lang("date") ?>'},
+                {title: '<?php echo lang("duration") ?>'},
+                {title: '<?php echo lang("status") ?>'},
+                {title: '<?php echo lang("created_by") ?>'},
+                {title: '<?php echo lang("date_created") ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4],
-            xlsColumns: [0, 1, 2, 3, 4]
+            printColumns: [0, 1, 2, 3, 4, 5, 6],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6]
         });
     });
 </script>

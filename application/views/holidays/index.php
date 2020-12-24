@@ -17,14 +17,15 @@
     $(document).ready(function () {
         $("#holiday-table").appTable({
             source: '<?php echo_uri("holidays/list_data") ?>',
+            dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('title') ?> ", "class": "w20p"},
                 {title: "<?php echo lang('description') ?>"},
                 {title: "<?php echo lang('from') ?>", "class": "w100"},
                 {title: "<?php echo lang('to') ?>", "class": "w100"},
-                {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
+                {title: "<?php echo lang('date_created') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5],

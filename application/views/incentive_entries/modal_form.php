@@ -18,6 +18,24 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="amount" class=" col-md-3"><?php echo lang('amount'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "amount",
+                "name" => "amount",
+                "value" => $model_info ? $model_info->amount : "",
+                "class" => "form-control validate-hidden",
+                "placeholder" => lang('amount'),
+                "autofocus" => true,
+                "type" => "number",
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="signed_by" class="col-md-3"><?php echo lang('signed_by'); ?></label>
         <div class="col-md-9">
             <?php

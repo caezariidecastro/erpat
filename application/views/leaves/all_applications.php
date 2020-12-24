@@ -14,10 +14,12 @@
                 {title: '<?php echo lang("date") ?>', "class": "w20p"},
                 {title: '<?php echo lang("duration") ?>', "class": "w20p"},
                 {title: '<?php echo lang("status") ?>', "class": "w15p"},
+                {title: '<?php echo lang("created_by") ?>', "class": "w15p"},
+                {title: '<?php echo lang("date_created") ?>', "class": "w15p"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4],
-            xlsColumns: [0, 1, 2, 3, 4]
+            printColumns: [0, 1, 2, 3, 4, 5, 6],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6]
         });
     });
 </script>

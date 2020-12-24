@@ -10,8 +10,19 @@ class Discipline_categories extends MY_Controller {
         $this->load->model("Discipline_categories_model");
     }
 
+    protected function _get_category_select2_data() {
+        $Discipline_categories = $this->Discipline_categories_model->get_all()->result();
+        $category_select2 = array(array('id' => '', 'text'  => '- Categories -'));
+
+        foreach ($Discipline_categories as $group) {
+            $category_select2[] = array('id' => $group->id, 'text' => $group->title) ;
+        }
+        return $category_select2;
+    }
+
     function index(){
-        $this->template->rander("discipline_categories/index");
+        $view_data['category_select2'] = $this->_get_category_select2_data();
+        $this->template->rander("discipline_categories/index", $view_data);
     }
 
     function list_data(){

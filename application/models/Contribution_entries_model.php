@@ -13,8 +13,25 @@ class Contribution_entries_model extends Crud_model {
         $contribution_entries_table = $this->db->dbprefix('contribution_entries');
         $where = "";
         $id = get_array_value($options, "id");
+        $start = get_array_value($options, "start");
+        $end = get_array_value($options, "end");
+        $category = get_array_value($options, "category");
+        $employee = get_array_value($options, "employee");
+
         if ($id) {
             $where .= " AND $contribution_entries_table.id=$id";
+        }
+
+        if($start){
+            $where .= " AND $contribution_entries_table.created_on BETWEEN '$start' AND '$end'";
+        }
+
+        if($category){
+            $where .= " AND $contribution_entries_table.category = $category";
+        }
+
+        if($employee){
+            $where .= " AND $contribution_entries_table.employee = $employee";
         }
 
         $sql = "SELECT $contribution_entries_table.*, TRIM(CONCAT(emp.first_name, ' ', emp.last_name)) AS employee_name, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name

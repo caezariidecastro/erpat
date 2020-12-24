@@ -46,7 +46,7 @@
     $(document).ready(function () {
         $("#incentive-categories-form").appForm({
             onSuccess: function (result) {
-                $("#incentive-categories-table").appTable({newData: result.data, dataId: result.id});
+                location.reload();
             }
         });
     });

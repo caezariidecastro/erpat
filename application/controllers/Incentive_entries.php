@@ -39,6 +39,7 @@ class Incentive_entries extends MY_Controller {
             $data->category_name,
             get_team_member_profile_link($data->created_by, $data->employee_name, array("target" => "_blank")),
             get_team_member_profile_link($data->created_by, $data->signed_by_name, array("target" => "_blank")),
+            number_format($data->amount),
             nl2br($data->remarks),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
@@ -56,6 +57,7 @@ class Incentive_entries extends MY_Controller {
 
         $incentive_data = array(
             "employee" => $this->input->post('employee'),
+            "amount" => $this->input->post('amount'),
             "remarks" => $this->input->post('remarks'),
             "signed_by" => $this->input->post('signed_by'),
             "category" => $this->input->post('category'),

@@ -26,7 +26,12 @@ class Contribution_entries extends MY_Controller {
     }
 
     function list_data(){
-        $list_data = $this->Contribution_entries_model->get_details()->result();
+        $list_data = $this->Contribution_entries_model->get_details(array(
+            'start' => $this->input->post('start_date'),
+            'end' => $this->input->post('end_date'),
+            'category' => $this->input->post('category_select2_filter'),
+            'employee' => $this->input->post('users_select2_filter'),
+        ))->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -37,7 +42,7 @@ class Contribution_entries extends MY_Controller {
     private function _make_row($data) {
         return array(
             get_team_member_profile_link($data->created_by, $data->employee_name, array("target" => "_blank")),
-            $data->amount,
+            number_format($data->amount),
             $data->category_name,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
