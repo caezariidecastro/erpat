@@ -1,19 +1,6 @@
-<div id="page-content" class="p20 clearfix">
-    <div class="panel panel-default">
-        <div class="page-title clearfix">
-            <h1> <?php echo lang('estimate_requests'); ?></h1>
-
-            <div class="tab-title clearfix no-border">
-                <div class="title-button-group">
-                    <?php echo modal_anchor(get_uri("estimate_requests/request_an_estimate_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('create_estimate_request'), array("class" => "btn btn-default", "title" => lang('create_estimate_request'))); ?>
-                </div>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table id="estimate-request-table" class="display" cellspacing="0" width="100%">            
-            </table>
-        </div>
-    </div>
+<div class="table-responsive">
+    <table id="estimate-request-table" class="display" cellspacing="0" width="100%">            
+    </table>
 </div>
 
 <script type="text/javascript">

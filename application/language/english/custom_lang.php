@@ -31,9 +31,9 @@ $lang["submenu_pid_purchases"] = "Purchases - New";
 $lang["submenu_pid_brands"] = "Brands - New";
 $lang["submenu_pid_units"] = "Units - New";
 
-$lang["submenu_fas_summary"] = "Summary - Move";
-$lang["submenu_fas_payments"] = "Payments - Move";
-$lang["submenu_fas_expenses"] = "Expenses - Move";
+$lang["submenu_fas_summary"] = "Summary";
+$lang["submenu_fas_payments"] = "Payments";
+$lang["submenu_fas_expenses"] = "Expenses";
 $lang["submenu_fas_accounts"] = "Accounts - New";
 $lang["submenu_fas_transfers"] = "Transfers - New";
 $lang["submenu_fas_return_sale"] = "Return Sale - New";
@@ -49,9 +49,9 @@ $lang["submenu_pms_timesheets"] = "Timesheets - Move";
 $lang["submenu_pms_clients"] = "Clients - Move";
 
 $lang["submenu_sms_pointofsale"] = "Point of Sale - Soon!";
-$lang["submenu_sms_estimates"] = "Estimates - Move";
-$lang["submenu_sms_invoices"] = "Invoices - Move";
-$lang["submenu_sms_items"] = "Items - Move";
+$lang["submenu_sms_estimates"] = "Estimates";
+$lang["submenu_sms_invoices"] = "Invoices";
+$lang["submenu_sms_items"] = "Items";
 $lang["submenu_sms_giftcard"] = "Gift Card - Soon!";
 $lang["submenu_sms_coupons"] = "Coupons - Soon!";
 
@@ -59,7 +59,7 @@ $lang["submenu_lms_delivery"] = "Delivery - New";
 $lang["submenu_lms_warehouse"] = "Warehouse - New";
 $lang["submenu_lms_transfers"] = "Transfer - New";
 
-$lang["submenu_leads"] = "Leads - Move";
+$lang["submenu_mcm_leads"] = "Leads";
 
 // Human Resource > Employee
 $lang["employee"] = "Employee";
@@ -113,3 +113,7 @@ $lang["witness"] = "Witness";
 $lang["incentives"] = "Incentives";
 $lang["signed_by"] = "Signed by";
 $lang["remarks"] = "Remarks";
+
+// Sales and Invoicing > Estimates
+$lang["requests"] = "Requests";
+$lang["forms"] = "Forms";

@@ -323,7 +323,7 @@ class Left_menu {
             if (get_setting("module_mcm") == "1") {
                 $sidebar_menu["menu_mcm"] = array("name" => "menu_mcm", "url" => "hrm", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_leads", "url" => "hrm/leads")
+                    array("name" => "submenu_mcm_leads", "url" => "mcm/leads")
                 ));
             }
 
@@ -363,9 +363,9 @@ class Left_menu {
                 $sidebar_menu["clients"] = array("name" => "clients", "url" => "clients", "class" => "fa-briefcase");
             }
 
-            if (get_setting("module_lead") == "1" && ($this->ci->login_user->is_admin || $access_lead)) {
-                $sidebar_menu["leads"] = array("name" => "leads", "url" => "leads", "class" => "fa-cubes");
-            }
+            // if (get_setting("module_lead") == "1" && ($this->ci->login_user->is_admin || $access_lead)) {
+            //     $sidebar_menu["leads"] = array("name" => "leads", "url" => "leads", "class" => "fa-cubes");
+            // }
 
             $project_submenu = array(
                 array("name" => "all_projects", "url" => "projects/all_projects"),
@@ -385,51 +385,51 @@ class Left_menu {
                 "submenu" => $project_submenu
             );
 
-            if (get_setting("module_estimate") && get_setting("module_estimate_request") && ($this->ci->login_user->is_admin || $access_estimate)) {
+            // if (get_setting("module_estimate") && get_setting("module_estimate_request") && ($this->ci->login_user->is_admin || $access_estimate)) {
 
-                $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "estimates", "class" => "fa-file",
-                    "submenu" => array(
-                        array("name" => "estimate_list", "url" => "estimates"),
-                        array("name" => "estimate_requests", "url" => "estimate_requests", "class" => "fa-file-text-o"),
-                        array("name" => "estimate_forms", "url" => "estimate_requests/estimate_forms", "class" => "fa-file-o")
-                    )
-                );
-            } else if (get_setting("module_estimate") && ($this->ci->login_user->is_admin || $access_estimate)) {
-                $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "estimates", "class" => "fa-file");
-            }
+            //     $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "estimates", "class" => "fa-file",
+            //         "submenu" => array(
+            //             array("name" => "estimate_list", "url" => "estimates"),
+            //             array("name" => "estimate_requests", "url" => "estimate_requests", "class" => "fa-file-text-o"),
+            //             array("name" => "estimate_forms", "url" => "estimate_requests/estimate_forms", "class" => "fa-file-o")
+            //         )
+            //     );
+            // } else if (get_setting("module_estimate") && ($this->ci->login_user->is_admin || $access_estimate)) {
+            //     $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "estimates", "class" => "fa-file");
+            // }
 
-            if (get_setting("module_invoice") == "1" && ($this->ci->login_user->is_admin || $access_invoice)) {
-                $sidebar_menu["invoices"] = array("name" => "invoices", "url" => "invoices", "class" => "fa-file-text");
-            }
+            // if (get_setting("module_invoice") == "1" && ($this->ci->login_user->is_admin || $access_invoice)) {
+            //     $sidebar_menu["invoices"] = array("name" => "invoices", "url" => "invoices", "class" => "fa-file-text");
+            // }
 
-            if ($access_items && (get_setting("module_invoice") == "1" || get_setting("module_estimate") == "1" )) {
-                $sidebar_menu["items"] = array("name" => "items", "url" => "items", "class" => "fa-list-ul");
-            }
+            // if ($access_items && (get_setting("module_invoice") == "1" || get_setting("module_estimate") == "1" )) {
+            //     $sidebar_menu["items"] = array("name" => "items", "url" => "items", "class" => "fa-list-ul");
+            // }
 
-            if ((get_setting("module_invoice") == "1" || get_setting("module_expense") == "1") && ($this->ci->login_user->is_admin || $access_expense || $access_invoice)) {
-                $finance_submenu = array();
-                $finance_url = "";
-                $show_payments_menu = false;
-                $show_expenses_menu = false;
+            // if ((get_setting("module_invoice") == "1" || get_setting("module_expense") == "1") && ($this->ci->login_user->is_admin || $access_expense || $access_invoice)) {
+            //     $finance_submenu = array();
+            //     $finance_url = "";
+            //     $show_payments_menu = false;
+            //     $show_expenses_menu = false;
 
 
-                if (get_setting("module_invoice") == "1" && ($this->ci->login_user->is_admin || $access_invoice)) {
-                    $finance_submenu[] = array("name" => "invoice_payments", "url" => "invoice_payments", "class" => "fa-money");
-                    $finance_url = "invoice_payments";
-                    $show_payments_menu = true;
-                }
-                if (get_setting("module_expense") == "1" && ($this->ci->login_user->is_admin || $access_expense)) {
-                    $finance_submenu[] = array("name" => "expenses", "url" => "expenses", "class" => "fa-money");
-                    $finance_url = "expenses";
-                    $show_expenses_menu = true;
-                }
+            //     if (get_setting("module_invoice") == "1" && ($this->ci->login_user->is_admin || $access_invoice)) {
+            //         $finance_submenu[] = array("name" => "invoice_payments", "url" => "invoice_payments", "class" => "fa-money");
+            //         $finance_url = "invoice_payments";
+            //         $show_payments_menu = true;
+            //     }
+            //     if (get_setting("module_expense") == "1" && ($this->ci->login_user->is_admin || $access_expense)) {
+            //         $finance_submenu[] = array("name" => "expenses", "url" => "expenses", "class" => "fa-money");
+            //         $finance_url = "expenses";
+            //         $show_expenses_menu = true;
+            //     }
 
-                if ($show_expenses_menu && $show_payments_menu) {
-                    $finance_submenu[] = array("name" => "income_vs_expenses", "url" => "expenses/income_vs_expenses", "class" => "fa-line-chart");
-                }
+            //     if ($show_expenses_menu && $show_payments_menu) {
+            //         $finance_submenu[] = array("name" => "income_vs_expenses", "url" => "expenses/income_vs_expenses", "class" => "fa-line-chart");
+            //     }
 
-                $sidebar_menu["finance"] = array("name" => "finance", "url" => $finance_url, "class" => "fa-money", "devider" => true, "submenu" => $finance_submenu);
-            }
+            //     $sidebar_menu["finance"] = array("name" => "finance", "url" => $finance_url, "class" => "fa-money", "devider" => true, "submenu" => $finance_submenu);
+            // }
 
             if (get_setting("module_ticket") == "1" && ($this->ci->login_user->is_admin || $access_ticket)) {
 

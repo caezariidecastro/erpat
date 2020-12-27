@@ -78,5 +78,27 @@ $route['hrm/disciplinary'] = 'discipline_categories/index';
 // Incentives
 $route['fas/incentives'] = 'incentive_categories/index';
 
+// Leads
+$route['mcm/leads'] = 'leads/index';
+
+// Estimates
+$route['sms/estimates'] = 'estimates/index';
+
+// Invoices
+$route['sms/invoices'] = 'invoices/index';
+
+// Items
+$route['sms/items'] = 'items/index';
+
+// Payments
+$route['fas/payments'] = 'invoice_payments/index';
+
+// Payments
+$route['fas/expenses'] = 'expenses/index';
+
+// Payments
+$route['fas/summary'] = 'expenses/income_vs_expenses';
+
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

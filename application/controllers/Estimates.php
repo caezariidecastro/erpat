@@ -14,6 +14,29 @@ class Estimates extends MY_Controller {
 
     function index() {
         $this->check_module_availability("module_estimate");
+        
+        //prepare assign to filter list
+        $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang("assigned_to") . " -"));
+
+        $assigned_to_list = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        foreach ($assigned_to_list as $key => $value) {
+            $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
+        }
+
+        $view_data['assigned_to_dropdown'] = json_encode($assigned_to_dropdown);
+
+        //prepare status filter list
+        $statuses_dropdown = array(
+            array("id" => "", "text" => "- " . lang("status") . " -"),
+            array("id" => "new", "text" => lang("new")),
+            array("id" => "processing", "text" => lang("processing")),
+            array("id" => "estimated", "text" => lang("estimated")),
+            array("id" => "hold", "text" => lang("hold")),
+            array("id" => "canceled", "text" => lang("canceled"))
+        );
+
+        $view_data['statuses_dropdown'] = json_encode($statuses_dropdown);
+
         $view_data['can_request_estimate'] = false;
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("estimates", $this->login_user->is_admin, $this->login_user->user_type);

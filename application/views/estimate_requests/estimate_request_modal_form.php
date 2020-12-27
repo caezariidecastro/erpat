@@ -93,11 +93,7 @@
 
         $("#estimate-form").appForm({
             onSuccess: function (result) {
-                if (result.newData) {
-                    window.location = "<?php echo site_url('estimate_requests/edit_estimate_form'); ?>/" + result.id;
-                } else {
-                    $("#estimate-form-main-table").appTable({newData: result.data, dataId: result.id});
-                }
+                $("#estimate-form-main-table").appTable({newData: result.data, dataId: result.id});
             }
         });
 

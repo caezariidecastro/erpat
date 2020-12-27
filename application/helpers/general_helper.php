@@ -1570,3 +1570,9 @@ if (!function_exists('can_access_messages_module')) {
     }
 
 }
+
+if (!function_exists('number_with_decimal')) {
+    function number_with_decimal($number, $decimal_places = 2) {
+        return number_format((float)$number, $decimal_places, '.', ',');
+    }
+}
