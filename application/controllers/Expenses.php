@@ -11,6 +11,7 @@ class Expenses extends MY_Controller {
         $this->init_permission_checker("expense");
 
         $this->access_only_allowed_members();
+        $this->load->model("Accounts_model");
     }
 
     //load the expenses list view
@@ -42,12 +43,22 @@ class Expenses extends MY_Controller {
     private function _get_team_members_dropdown() {
         $team_members = $this->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"), 0, 0, "first_name")->result();
 
-        $members_dropdown = array(array("id" => "", "text" => "- " . lang("member") . " -"));
+        $members_dropdown = array(array("id" => "", "text" => "- " . lang("employees") . " -"));
         foreach ($team_members as $team_member) {
             $members_dropdown[] = array("id" => $team_member->id, "text" => $team_member->first_name . " " . $team_member->last_name);
         }
 
         return json_encode($members_dropdown);
+    }
+
+    protected function _get_accounts_dropdown_data() {
+        $accounts = $this->Accounts_model->get_all()->result();
+        $accounts_dropdown = array('' => '-');
+
+        foreach ($accounts as $group) {
+            $accounts_dropdown[$group->id] = $group->name;
+        }
+        return $accounts_dropdown;
     }
 
     //load the expenses list yearly view
@@ -96,6 +107,7 @@ class Expenses extends MY_Controller {
 
         $view_data['can_access_expenses'] = $this->can_access_expenses();
         $view_data['can_access_clients'] = $this->can_access_clients();
+        $view_data['accounts_dropdown'] = $this->_get_accounts_dropdown_data();
 
         $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("expenses", $view_data['model_info']->id, $this->login_user->is_admin, $this->login_user->user_type)->result();
         $this->load->view('expenses/modal_form', $view_data);
@@ -107,10 +119,13 @@ class Expenses extends MY_Controller {
             "id" => "numeric",
             "expense_date" => "required",
             "category_id" => "required",
+            "account_id" => "required",
             "amount" => "required"
         ));
 
         $id = $this->input->post('id');
+        $account_id = $this->input->post('account_id');
+        $amount = $this->input->post('amount');
 
         $target_path = get_setting("timeline_file_path");
         $files_data = move_files_from_temp_dir_to_permanent_dir($target_path, "expense");
@@ -126,8 +141,9 @@ class Expenses extends MY_Controller {
             "expense_date" => $expense_date,
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
+            "account_id" => $account_id,
             "category_id" => $this->input->post('category_id'),
-            "amount" => unformat_currency($this->input->post('amount')),
+            "amount" => unformat_currency($amount),
             "client_id" => $this->input->post('expense_client_id'),
             "project_id" => $this->input->post('expense_project_id'),
             "user_id" => $this->input->post('expense_user_id'),
@@ -175,7 +191,9 @@ class Expenses extends MY_Controller {
             }
         }
 
+        $this->Accounts_model->deduct_expense($account_id, $amount, $id);
         $save_id = $this->Expenses_model->save($data, $id);
+
         if ($save_id) {
             save_custom_fields("expenses", $save_id, $this->login_user->is_admin, $this->login_user->user_type);
 
@@ -194,7 +212,6 @@ class Expenses extends MY_Controller {
         $id = $this->input->post('id');
         $expense_info = $this->Expenses_model->get_one($id);
 
-
         if ($this->Expenses_model->delete($id)) {
             //delete the files
             $file_path = get_setting("timeline_file_path");
@@ -205,6 +222,8 @@ class Expenses extends MY_Controller {
                     delete_app_files($file_path, array($file));
                 }
             }
+
+            $this->Accounts_model->undo_expense($id);
 
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {

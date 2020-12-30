@@ -109,4 +109,12 @@ class Invoice_payments_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function is_account_has_payment($account_id){
+        $invoice_payments_table = $this->db->dbprefix('invoice_payments');
+        $count = $this->db->query("SELECT COUNT(*) AS payment_count 
+        FROM $invoice_payments_table
+        WHERE $invoice_payments_table.deleted=0 AND $invoice_payments_table.account_id = $account_id")->row()->payment_count;
+
+        return $count > 0 ? TRUE : FALSE;
+    }
 }

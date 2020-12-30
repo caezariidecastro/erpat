@@ -260,8 +260,8 @@
         });
 
         //modify the delete confirmation texts
-        $("#confirmationModalTitle").html("<?php echo lang('cancel') . "?"; ?>");
-        $("#confirmDeleteButton").html("<i class='fa fa-times'></i> <?php echo lang("cancel"); ?>");
+        // $("#confirmationModalTitle").html("<?php echo lang('cancel') . "?"; ?>");
+        // $("#confirmDeleteButton").html("<i class='fa fa-times'></i> <?php echo lang("cancel"); ?>");
     });
 
     updateInvoiceStatusBar = function (invoiceId) {

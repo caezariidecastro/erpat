@@ -64,6 +64,8 @@ $route['hrm/leaves'] = 'leaves/index';
 
 // Attendance
 $route['hrm/attendance'] = 'attendance/index';
+
+// Department
 $route['hrm/department'] = 'team/department';
 
 // Holidays
@@ -99,6 +101,11 @@ $route['fas/expenses'] = 'expenses/index';
 // Payments
 $route['fas/summary'] = 'expenses/income_vs_expenses';
 
+// Accounts
+$route['fas/accounts'] = 'accounts/index';
+
+// Transfers
+$route['fas/transfers'] = 'account_transfers/index';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

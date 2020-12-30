@@ -34,7 +34,7 @@ $lang["submenu_pid_units"] = "Units - New";
 $lang["submenu_fas_summary"] = "Summary";
 $lang["submenu_fas_payments"] = "Payments";
 $lang["submenu_fas_expenses"] = "Expenses";
-$lang["submenu_fas_accounts"] = "Accounts - New";
+$lang["submenu_fas_accounts"] = "Accounts";
 $lang["submenu_fas_transfers"] = "Transfers - New";
 $lang["submenu_fas_return_sale"] = "Return Sale - New";
 $lang["submenu_fas_return_purchase"] = "Return Purchase - New";
@@ -117,3 +117,21 @@ $lang["remarks"] = "Remarks";
 // Sales and Invoicing > Estimates
 $lang["requests"] = "Requests";
 $lang["forms"] = "Forms";
+
+// Finance and Accounting > Accounts
+$lang["account"] = "Account";
+$lang["account_used"] = "Account used";
+$lang["accounts"] = "Accounts";
+$lang["add_account"] = "Add account";
+$lang["edit_account"] = "Edit account";
+$lang["delete_account"] = "Delete account";
+$lang["initial_balance"] = "Initial balance";
+$lang["account_name"] = "Account name";
+$lang["account_number"] = "Account number";
+$lang["account_has_payment_expense_delete_error"] = "Account has existing expense/payment history. Cannot be deleted.";
+
+// Finance and Account > Transfer
+$lang["account_transfers"] = "Account transfers";
+$lang["add_account_transfer"] = "Add account transfer";
+$lang["add_account_transfer"] = "Add account transfer";
+$lang["edit_account_transfer"] = "Edit account transfer";

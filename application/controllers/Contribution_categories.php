@@ -95,4 +95,18 @@ class Contribution_categories extends MY_Controller {
 
         $this->load->view('contribution_categories/modal_form', $view_data);
     }
+
+    function delete() {
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+
+        if ($this->Contribution_categories_model->delete($id)) {
+            echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+        }
+    }
 }

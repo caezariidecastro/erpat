@@ -15,14 +15,15 @@
                 {title: "<?php echo lang('category') ?>"},
                 {title: "<?php echo lang('employee') ?>"},
                 {title: "<?php echo lang('signed_by') ?>"},
-                {title: "<?php echo lang('amount') ?>"},
+                {title: "<?php echo lang('amount') ?>", "class": "text-right"},
                 {title: "<?php echo lang('remarks') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5],
-            xlsColumns: [0, 1, 2, 3, 4, 5]
+            xlsColumns: [0, 1, 2, 3, 4, 5],
+            summation: [{column: 3, dataType: 'number'}]
         });
     });
 </script>

@@ -14,6 +14,14 @@
             </div>
         </div>
     <?php } ?>
+    <div class="form-group">
+        <label for="account_id" class=" col-md-3"><?php echo lang('account'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_dropdown("account_id", $accounts_dropdown, $model_info ? $model_info->account_id : "", "class='select2 validate-hidden' id='account_id' data-rule-required='true' data-msg-required='".lang('field_required')."'");
+            ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <label for="invoice_payment_method_id" class=" col-md-3"><?php echo lang('payment_method'); ?></label>
@@ -48,8 +56,9 @@
             echo form_input(array(
                 "id" => "invoice_payment_amount",
                 "name" => "invoice_payment_amount",
-                "value" => $model_info->amount ? to_decimal_format($model_info->amount) : "",
+                "value" => $model_info->amount ? $model_info->amount : "",
                 "class" => "form-control",
+                "type" => "number",
                 "placeholder" => lang('amount'),
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),

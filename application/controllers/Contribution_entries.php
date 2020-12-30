@@ -43,9 +43,9 @@ class Contribution_entries extends MY_Controller {
         return array(
             get_team_member_profile_link($data->created_by, $data->employee_name, array("target" => "_blank")),
             $data->category_name,
+            number_with_decimal($data->amount),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
-            number_with_decimal($data->amount),
             modal_anchor(get_uri("contribution_entries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_category'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("contribution_entries/delete"), "data-action" => "delete-confirmation"))
         );
@@ -89,5 +89,19 @@ class Contribution_entries extends MY_Controller {
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
 
         $this->load->view('contribution_entries/modal_form', $view_data);
+    }
+
+    function delete() {
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+
+        if ($this->Contribution_entries_model->delete($id)) {
+            echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+        }
     }
 }

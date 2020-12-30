@@ -134,4 +134,12 @@ class Expenses_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function is_account_has_expense($account_id){
+        $expenses_table = $this->db->dbprefix('expenses');
+        $count = $this->db->query("SELECT COUNT(*) AS expense_count 
+        FROM $expenses_table
+        WHERE $expenses_table.deleted=0 AND $expenses_table.account_id = $account_id")->row()->expense_count;
+
+        return $count > 0 ? TRUE : FALSE;
+    }
 }

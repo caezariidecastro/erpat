@@ -16,14 +16,14 @@
             columns: [
                 {title: "<?php echo lang('employee') ?> ", "class": "w20p"},
                 {title: "<?php echo lang('category') ?>"},
+                {title: "<?php echo lang('amount') ?>", "class": "text-right"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
-                {title: "<?php echo lang('amount') ?>", "class": "text-right"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4],
             xlsColumns: [0, 1, 2, 3, 4],
-            summation: [{column: 4, dataType: 'number'}]
+            summation: [{column: 2, dataType: 'number'}]
         });
     });
 </script>

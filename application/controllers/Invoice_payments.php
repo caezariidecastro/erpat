@@ -8,6 +8,17 @@ class Invoice_payments extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->init_permission_checker("invoice");
+        $this->load->model("Accounts_model");
+    }
+
+    protected function _get_accounts_dropdown_data() {
+        $accounts = $this->Accounts_model->get_all()->result();
+        $accounts_dropdown = array('' => '-');
+
+        foreach ($accounts as $group) {
+            $accounts_dropdown[$group->id] = $group->name;
+        }
+        return $accounts_dropdown;
     }
 
     /* load invoice list view */
@@ -75,6 +86,7 @@ class Invoice_payments extends MY_Controller {
             $view_data['invoices_dropdown'] = array("" => "-") + $invoices_dropdown;
         }
 
+        $view_data['accounts_dropdown'] = $this->_get_accounts_dropdown_data();
         $view_data['payment_methods_dropdown'] = $this->Payment_methods_model->get_dropdown_list(array("title"), "id", array("online_payable" => 0, "deleted" => 0));
         $view_data['invoice_id'] = $invoice_id;
 
@@ -89,6 +101,7 @@ class Invoice_payments extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric",
             "invoice_id" => "required|numeric",
+            "account_id" => "required|numeric",
             "invoice_payment_method_id" => "required|numeric",
             "invoice_payment_date" => "required",
             "invoice_payment_amount" => "required"
@@ -96,17 +109,21 @@ class Invoice_payments extends MY_Controller {
 
         $id = $this->input->post('id');
         $invoice_id = $this->input->post('invoice_id');
+        $account_id = $this->input->post('account_id');
+        $amount = $this->input->post('invoice_payment_amount');
 
         $invoice_payment_data = array(
             "invoice_id" => $invoice_id,
+            "account_id" => $account_id,
             "payment_date" => $this->input->post('invoice_payment_date'),
             "payment_method_id" => $this->input->post('invoice_payment_method_id'),
             "note" => $this->input->post('invoice_payment_note'),
-            "amount" => unformat_currency($this->input->post('invoice_payment_amount')),
+            "amount" => unformat_currency($amount),
             "created_at" => get_current_utc_time(),
             "created_by" => $this->login_user->id,
         );
 
+        $this->Accounts_model->collect_payment($account_id, $amount, $id);
         $invoice_payment_id = $this->Invoice_payments_model->save($invoice_payment_data, $id);
         if ($invoice_payment_id) {
 
@@ -135,21 +152,13 @@ class Invoice_payments extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
-        if ($this->input->post('undo')) {
-            if ($this->Invoice_payments_model->delete($id, true)) {
-                $options = array("id" => $id);
-                $item_info = $this->Invoice_payments_model->get_details($options)->row();
-                echo json_encode(array("success" => true, "invoice_id" => $item_info->invoice_id, "data" => $this->_make_payment_row($item_info), "invoice_total_view" => $this->_get_invoice_total_view($item_info->invoice_id), "message" => lang('record_undone')));
-            } else {
-                echo json_encode(array("success" => false, lang('error_occurred')));
-            }
+
+        if ($this->Invoice_payments_model->delete($id)) {
+            $this->Accounts_model->undo_payment($id);
+            $item_info = $this->Invoice_payments_model->get_one($id);
+            echo json_encode(array("success" => true, "invoice_id" => $item_info->invoice_id, "invoice_total_view" => $this->_get_invoice_total_view($item_info->invoice_id), 'message' => lang('record_deleted')));
         } else {
-            if ($this->Invoice_payments_model->delete($id)) {
-                $item_info = $this->Invoice_payments_model->get_one($id);
-                echo json_encode(array("success" => true, "invoice_id" => $item_info->invoice_id, "invoice_total_view" => $this->_get_invoice_total_view($item_info->invoice_id), 'message' => lang('record_deleted')));
-            } else {
-                echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
-            }
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
     }
 
@@ -230,7 +239,7 @@ class Invoice_payments extends MY_Controller {
             $data->note,
             to_currency($data->amount, $data->currency_symbol),
             modal_anchor(get_uri("invoice_payments/payment_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_payment'), "data-post-id" => $data->id, "data-post-invoice_id" => $data->invoice_id,))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("invoice_payments/delete_payment"), "data-action" => "delete"))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("invoice_payments/delete_payment"), "data-action" => "delete-confirmation"))
         );
     }
 
