@@ -9,6 +9,7 @@ class Invoice_payments extends MY_Controller {
         parent::__construct();
         $this->init_permission_checker("invoice");
         $this->load->model("Accounts_model");
+        $this->load->model("Account_transactions_model");
     }
 
     protected function _get_accounts_dropdown_data() {
@@ -123,8 +124,21 @@ class Invoice_payments extends MY_Controller {
             "created_by" => $this->login_user->id,
         );
 
-        $this->Accounts_model->collect_payment($account_id, $amount, $id);
         $invoice_payment_id = $this->Invoice_payments_model->save($invoice_payment_data, $id);
+
+        if($id){
+            $data = array(
+                'account_id' => $account_id,
+                'amount' => $amount,
+                'reference' => $id
+            );
+
+            $this->Account_transactions_model->update_payment($id, $data);
+        }
+        else{
+            $this->Account_transactions_model->add_payment($account_id, $amount, $invoice_payment_id);
+        }
+
         if ($invoice_payment_id) {
 
             //As receiving payment for the invoice, we'll remove the 'draft' status from the invoice 
@@ -154,7 +168,7 @@ class Invoice_payments extends MY_Controller {
         $id = $this->input->post('id');
 
         if ($this->Invoice_payments_model->delete($id)) {
-            $this->Accounts_model->undo_payment($id);
+            $this->Account_transactions_model->delete_payment($id);
             $item_info = $this->Invoice_payments_model->get_one($id);
             echo json_encode(array("success" => true, "invoice_id" => $item_info->invoice_id, "invoice_total_view" => $this->_get_invoice_total_view($item_info->invoice_id), 'message' => lang('record_deleted')));
         } else {

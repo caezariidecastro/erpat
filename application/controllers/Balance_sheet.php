@@ -28,9 +28,9 @@ class Balance_sheet extends MY_Controller {
         return array(
             $data->name,
             $data->number,
-            number_with_decimal($data->initial_balance),
             number_with_decimal($data->debit),
-            number_with_decimal($data->initial_balance - $data->debit)
+            number_with_decimal($data->credit),
+            number_with_decimal($data->debit - $data->credit)
         );
     }
 }

@@ -12,6 +12,7 @@ class Expenses extends MY_Controller {
 
         $this->access_only_allowed_members();
         $this->load->model("Accounts_model");
+        $this->load->model("Account_transactions_model");
     }
 
     //load the expenses list view
@@ -191,8 +192,20 @@ class Expenses extends MY_Controller {
             }
         }
 
-        $this->Accounts_model->deduct_expense($account_id, $amount, $id);
         $save_id = $this->Expenses_model->save($data, $id);
+
+        if($id){
+            $data = array(
+                'account_id' => $account_id,
+                'amount' => $amount,
+                'reference' => $id
+            );
+
+            $this->Account_transactions_model->update_expense($id, $data);
+        }
+        else{
+            $this->Account_transactions_model->add_expense($account_id, $amount, $save_id);
+        }
 
         if ($save_id) {
             save_custom_fields("expenses", $save_id, $this->login_user->is_admin, $this->login_user->user_type);
@@ -223,7 +236,7 @@ class Expenses extends MY_Controller {
                 }
             }
 
-            $this->Accounts_model->undo_expense($id);
+            $this->Account_transactions_model->delete_expense($id);
 
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {

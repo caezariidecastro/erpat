@@ -18,8 +18,8 @@
             columns: [
                 {title: "<?php echo lang('account_name') ?> "},
                 {title: "<?php echo lang('account_number') ?>"},
-                {title: "<?php echo lang('credit') ?>", "class": "text-right"},
                 {title: "<?php echo lang('debit') ?>", "class": "text-right"},
+                {title: "<?php echo lang('credit') ?>", "class": "text-right"},
                 {title: "<?php echo lang('balance') ?>", "class": "text-right"},
             ],
             printColumns: [0, 1, 2, 3, 4],

@@ -1,0 +1,118 @@
+<?php
+
+class Account_transactions_model extends Crud_model {
+
+    private $table = null;
+
+    function __construct() {
+        $this->table = 'account_transactions';
+        parent::__construct($this->table);
+    }
+
+    private function add_transaction($data){
+        $this->db->insert('account_transactions', $data);
+    }
+
+    private function update_transaction($transaction, $type, $reference, $data){
+        $this->db->where('transaction', $transaction);
+        $this->db->where('type', $type);
+        $this->db->where('reference', $reference);
+        $this->db->update('account_transactions', $data);
+    }
+
+    private function delete_transaction($transaction, $type, $reference){
+        $this->db->where('transaction', $transaction);
+        $this->db->where('type', $type);
+        $this->db->where('reference', $reference);
+        $this->db->update('account_transactions', array('deleted' => 1));
+    }
+
+    // Initial balance
+
+    function add_initial_balance($account_id, $amount, $reference){
+        $data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'transaction' => 1,
+            'type' => 1,
+            'reference' => $reference
+        );
+
+        $this->add_transaction($data);
+    }
+
+    function update_initial_balance($reference, $data){
+        $this->update_transaction(1, 1, $reference, $data);
+    }
+
+    function delete_initial_balance($reference){
+        $this->delete_transaction(1, 1, $reference);
+    }
+
+    // Expense
+
+    function add_expense($account_id, $amount, $reference){
+        $data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'transaction' => 2,
+            'type' => 2,
+            'reference' => $reference
+        );
+
+        $this->add_transaction($data);
+    }
+
+    function update_expense($reference, $data){
+        $this->update_transaction(2, 2, $reference, $data);
+    }
+
+    function delete_expense($reference){
+        $this->delete_transaction(2, 2, $reference);
+    }
+
+    // Payment
+
+    function add_payment($account_id, $amount, $reference){
+        $data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'transaction' => 3,
+            'type' => 2,
+            'reference' => $reference
+        );
+
+        $this->add_transaction($data);
+    }
+
+    function update_payment($reference, $data){
+        $this->update_transaction(3, 2, $reference, $data);
+    }
+
+    function delete_payment($reference){
+        $this->delete_transaction(3, 2, $reference);
+    }
+
+    // Transfer
+
+    function add_transfer($account_id, $amount, $reference, $type){
+        $data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'transaction' => 4,
+            'type' => $type,
+            'reference' => $reference
+        );
+
+        $this->add_transaction($data);
+    }
+
+    function update_transfer($type, $reference, $data){
+        $this->update_transaction(4, $type, $reference, $data);
+    }
+
+    function delete_transfer($reference){
+        $this->delete_transaction(4, 2, $reference);
+        $this->delete_transaction(4, 1, $reference);
+    }
+}

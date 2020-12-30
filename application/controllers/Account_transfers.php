@@ -9,6 +9,7 @@ class Account_transfers extends MY_Controller {
         parent::__construct();
         $this->load->model("Account_transfers_model");
         $this->load->model("Accounts_model");
+        $this->load->model("Account_transactions_model");
     }
 
     protected function _get_accounts_dropdown_data() {
@@ -72,8 +73,30 @@ class Account_transfers extends MY_Controller {
             $data["created_by"] = $this->login_user->id;
         }
 
-        $this->Accounts_model->transfer_amount($account_from, $account_to, $amount, $id);
         $saved_id = $this->Account_transfers_model->save($data, $id);
+
+        if($id){
+            $data = array(
+                'account_id' => $account_from,
+                'amount' => $amount,
+                'reference' => $id,
+            );
+
+            $this->Account_transactions_model->update_transfer(2, $id, $data);
+
+            $data = array(
+                'account_id' => $account_to,
+                'amount' => $amount,
+                'reference' => $id,
+            );
+
+            $this->Account_transactions_model->update_transfer(1, $id, $data);
+        }
+        else{
+            $this->Account_transactions_model->add_transfer($account_from, $amount, $saved_id, 2);
+            $this->Account_transactions_model->add_transfer($account_to, $amount, $saved_id, 1);
+        }
+
         if ($saved_id) {
             $options = array("id" => $saved_id);
             $model_info = $this->Account_transfers_model->get_details($options)->row();
@@ -102,7 +125,7 @@ class Account_transfers extends MY_Controller {
         $id = $this->input->post('id');
 
         if ($this->Account_transfers_model->delete($id)) {
-            $this->Accounts_model->undo_amount_transfer($id);
+            $this->Account_transactions_model->delete_transfer($id);
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));

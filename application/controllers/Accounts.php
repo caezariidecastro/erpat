@@ -8,6 +8,7 @@ class Accounts extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model("Accounts_model");
+        $this->load->model("Account_transactions_model");
         $this->load->model("Expenses_model");
         $this->load->model("Invoice_payments_model");
     }
@@ -47,11 +48,12 @@ class Accounts extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        $amount = $this->input->post('initial_balance');
 
         $account_data = array(
             "name" => $this->input->post('account_name'),
             "number" => $this->input->post('account_number'),
-            "initial_balance" => $this->input->post('initial_balance'),
+            "initial_balance" => $amount,
             "remarks" => $this->input->post('remarks'),
         );
 
@@ -61,6 +63,20 @@ class Accounts extends MY_Controller {
         }
 
         $account_id = $this->Accounts_model->save($account_data, $id);
+
+        if($id){
+            $data = array(
+                'account_id' => $account_id,
+                'amount' => $amount,
+                'reference' => $id
+            );
+
+            $this->Account_transactions_model->update_initial_balance($id, $data);
+        }
+        else{
+            $this->Account_transactions_model->add_initial_balance($account_id, $amount, $account_id);
+        }
+
         if ($account_id) {
             $options = array("id" => $account_id);
             $account_info = $this->Accounts_model->get_details($options)->row();
@@ -92,6 +108,7 @@ class Accounts extends MY_Controller {
         }
         else{
             if ($this->Accounts_model->delete($id)) {
+                $this->Account_transactions_model->delete_initial_balance($id);
                 echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
             } else {
                 echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
