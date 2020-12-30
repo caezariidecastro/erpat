@@ -107,5 +107,8 @@ $route['fas/accounts'] = 'accounts/index';
 // Transfers
 $route['fas/transfers'] = 'account_transfers/index';
 
+// Transfers
+$route['fas/balancesheet'] = 'balance_sheet/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

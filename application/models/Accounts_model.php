@@ -100,4 +100,18 @@ class Accounts_model extends Crud_model {
         $this->deduct_amount($account_from, $amount);
         $this->add_amount($account_to, $amount);
     }
+
+    function get_balance_sheet(){
+        $accounts_table = $this->db->dbprefix('accounts');
+        $sql = "SELECT $accounts_table.*,
+        (
+            SELECT SUM(account_transfers.amount)
+            FROM account_transfers
+            WHERE account_transfers.account_from = $accounts_table.id
+            AND account_transfers.deleted = 0
+        ) AS debit
+        FROM $accounts_table
+        WHERE $accounts_table.deleted=0";
+        return $this->db->query($sql);
+    }
 }

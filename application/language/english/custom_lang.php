@@ -35,10 +35,10 @@ $lang["submenu_fas_summary"] = "Summary";
 $lang["submenu_fas_payments"] = "Payments";
 $lang["submenu_fas_expenses"] = "Expenses";
 $lang["submenu_fas_accounts"] = "Accounts";
-$lang["submenu_fas_transfers"] = "Transfers - New";
+$lang["submenu_fas_transfers"] = "Transfers";
 $lang["submenu_fas_return_sale"] = "Return Sale - New";
 $lang["submenu_fas_return_purchase"] = "Return Purchase - New";
-$lang["submenu_fas_balancesheet"] = "Balance sheet - New";
+$lang["submenu_fas_balancesheet"] = "Balance Sheet";
 $lang["submenu_fas_incentives"] = "Incentives";
 $lang["submenu_fas_contributions"] = "Contributions";
 
@@ -131,7 +131,13 @@ $lang["account_number"] = "Account number";
 $lang["account_has_payment_expense_delete_error"] = "Account has existing expense/payment history. Cannot be deleted.";
 
 // Finance and Account > Transfer
-$lang["account_transfers"] = "Account transfers";
-$lang["add_account_transfer"] = "Add account transfer";
-$lang["add_account_transfer"] = "Add account transfer";
-$lang["edit_account_transfer"] = "Edit account transfer";
+$lang["account_transfers"] = "Transfers";
+$lang["add_account_transfer"] = "Add transfer";
+$lang["add_account_transfer"] = "Add transfer";
+$lang["edit_account_transfer"] = "Edit transfer";
+
+// Finance and Account > Balance Sheet
+$lang["balance_sheet"] = "Balance Sheet";
+$lang["credit"] = "Credit";
+$lang["debit"] = "Debit";
+$lang["balance"] = "Balance";
