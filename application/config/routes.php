@@ -113,5 +113,20 @@ $route['fas/balancesheet'] = 'balance_sheet/index';
 // Warehouse
 $route['lms/warehouse'] = 'warehouse/index';
 
+// All Projects
+$route['pms/all_projects'] = 'projects/all_projects';
+
+// My Tasks
+$route['pms/my_tasks'] = 'projects/all_tasks';
+
+// View Gantts
+$route['pms/view_gantts'] = 'projects/all_gantt';
+
+// Timesheets
+$route['pms/timesheets'] = 'projects/all_timesheets';
+
+// Clients
+$route['pms/clients'] = 'clients/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

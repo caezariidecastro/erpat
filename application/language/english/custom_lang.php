@@ -42,11 +42,11 @@ $lang["submenu_fas_balancesheet"] = "Balance Sheet";
 $lang["submenu_fas_incentives"] = "Incentives";
 $lang["submenu_fas_contributions"] = "Contributions";
 
-$lang["submenu_pms_all_projects"] = "All Projects - Move";
-$lang["submenu_pms_my_tasks"] = "My Tasks - Move";
-$lang["submenu_pms_view_gantts"] = "View Gantts - Move";
-$lang["submenu_pms_timesheets"] = "Timesheets - Move";
-$lang["submenu_pms_clients"] = "Clients - Move";
+$lang["submenu_pms_all_projects"] = "All Projects";
+$lang["submenu_pms_my_tasks"] = "My Tasks";
+$lang["submenu_pms_view_gantts"] = "View Gantts";
+$lang["submenu_pms_timesheets"] = "Timesheets";
+$lang["submenu_pms_clients"] = "Clients";
 
 $lang["submenu_sms_pointofsale"] = "Point of Sale - Soon!";
 $lang["submenu_sms_estimates"] = "Estimates";

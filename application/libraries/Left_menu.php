@@ -359,31 +359,31 @@ class Left_menu {
                 ));
             }
 
-            if ($this->ci->login_user->is_admin || $access_client) {
-                $sidebar_menu["clients"] = array("name" => "clients", "url" => "clients", "class" => "fa-briefcase");
-            }
+            // if ($this->ci->login_user->is_admin || $access_client) {
+            //     $sidebar_menu["clients"] = array("name" => "clients", "url" => "clients", "class" => "fa-briefcase");
+            // }
 
             // if (get_setting("module_lead") == "1" && ($this->ci->login_user->is_admin || $access_lead)) {
             //     $sidebar_menu["leads"] = array("name" => "leads", "url" => "leads", "class" => "fa-cubes");
             // }
 
             $project_submenu = array(
-                array("name" => "all_projects", "url" => "projects/all_projects"),
-                array("name" => "tasks", "url" => "projects/all_tasks", "class" => "fa-tasks")
+                // array("name" => "all_projects", "url" => "projects/all_projects"),
+                // array("name" => "tasks", "url" => "projects/all_tasks", "class" => "fa-tasks")
             );
 
-            if (get_setting("module_gantt")) {
-                $project_submenu[] = array("name" => "gantt", "url" => "projects/all_gantt", "class" => "fa-braille");
-            }
+            // if (get_setting("module_gantt")) {
+            //     $project_submenu[] = array("name" => "gantt", "url" => "projects/all_gantt", "class" => "fa-braille");
+            // }
 
 
-            if (get_setting("module_project_timesheet")) {
-                $project_submenu[] = array("name" => "timesheets", "url" => "projects/all_timesheets", "class" => "fa-clock-o");
-            }
+            // if (get_setting("module_project_timesheet")) {
+            //     $project_submenu[] = array("name" => "timesheets", "url" => "projects/all_timesheets", "class" => "fa-clock-o");
+            // }
 
-            $sidebar_menu["projects"] = array("name" => "projects", "url" => "projects", "class" => "fa-th-large",
-                "submenu" => $project_submenu
-            );
+            // $sidebar_menu["projects"] = array("name" => "projects", "url" => "projects", "class" => "fa-th-large",
+            //     "submenu" => $project_submenu
+            // );
 
             // if (get_setting("module_estimate") && get_setting("module_estimate_request") && ($this->ci->login_user->is_admin || $access_estimate)) {
 
