@@ -56,7 +56,7 @@ $lang["submenu_sms_giftcard"] = "Gift Card - Soon!";
 $lang["submenu_sms_coupons"] = "Coupons - Soon!";
 
 $lang["submenu_lms_delivery"] = "Delivery - New";
-$lang["submenu_lms_warehouse"] = "Warehouse - New";
+$lang["submenu_lms_warehouse"] = "Warehouse";
 $lang["submenu_lms_transfers"] = "Transfer - New";
 
 $lang["submenu_mcm_leads"] = "Leads";
@@ -141,3 +141,10 @@ $lang["balance_sheet"] = "Balance Sheet";
 $lang["credit"] = "Credit";
 $lang["debit"] = "Debit";
 $lang["balance"] = "Balance";
+
+// Logistics and Distribution > Warehouse
+$lang["warehouse"] = "Warehouse";
+$lang["zip_code"] = "Zipcode";
+$lang["head"] = "Head";
+$lang["add_warehouse"] = "Add warehouse";
+$lang["edit_warehouse"] = "Edit warehouse";
