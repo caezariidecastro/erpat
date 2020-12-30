@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 30, 2020 at 01:21 PM
+-- Generation Time: Dec 30, 2020 at 01:23 PM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -35,7 +35,7 @@ CREATE TABLE `warehouses` (
   `email` varchar(255) NOT NULL,
   `head` int(11) NOT NULL,
   `created_by` bigint(11) NOT NULL,
-  `created_on` date NOT NULL,
+  `created_on` datetime NOT NULL,
   `deleted` tinyint(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
