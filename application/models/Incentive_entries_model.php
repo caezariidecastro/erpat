@@ -14,6 +14,8 @@ class Incentive_entries_model extends Crud_model {
         $where = "";
         $id = get_array_value($options, "id");
         $category = get_array_value($options, "category");
+        $start = get_array_value($options, "start");
+        $end = get_array_value($options, "end");
 
         if ($id) {
             $where .= " AND $incentive_entries_table.id=$id";
@@ -21,6 +23,10 @@ class Incentive_entries_model extends Crud_model {
 
         if($category){
             $where .= " AND $incentive_entries_table.category = $category";
+        }
+
+        if($start){
+            $where .= " AND $incentive_entries_table.created_on BETWEEN '$start' AND '$end'";
         }
 
         $sql = "SELECT $incentive_entries_table.*, TRIM(CONCAT(emp.first_name, ' ', emp.last_name)) AS employee_name, TRIM(CONCAT(sb.first_name, ' ', sb.last_name)) AS signed_by_name, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name

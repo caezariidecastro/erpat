@@ -27,7 +27,9 @@ class Incentive_entries extends MY_Controller {
 
     function list_data(){
         $list_data = $this->Incentive_entries_model->get_details(array(
-            'category' => $this->input->post('category_select2_filter')
+            'category' => $this->input->post('category_select2_filter'),
+            'start' => $this->input->post('start_date'),
+            'end' => $this->input->post('end_date'),
         ))->result();
         $result = array();
         foreach ($list_data as $data) {
