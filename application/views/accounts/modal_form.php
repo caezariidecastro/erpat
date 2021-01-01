@@ -46,8 +46,6 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('initial_balance'),
                 "type" => "number",
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>

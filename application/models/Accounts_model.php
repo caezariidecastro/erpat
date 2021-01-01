@@ -39,7 +39,7 @@ class Accounts_model extends Crud_model {
             FROM account_transactions
             WHERE account_transactions.account_id = $accounts_table.id
             AND account_transactions.deleted = 0
-            AND account_transactions.type IN 'debit'
+            AND account_transactions.type = 'debit'
         ) AS debit,
         (
             SELECT SUM(account_transactions.amount)

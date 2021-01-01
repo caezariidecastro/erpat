@@ -74,6 +74,7 @@ class Accounts extends MY_Controller {
             $this->Account_transactions_model->update_initial_balance($id, $data);
         }
         else{
+            $amount = $amount ? $amount : 0;
             $this->Account_transactions_model->add_initial_balance($account_id, $amount, $account_id);
         }
 
@@ -108,7 +109,7 @@ class Accounts extends MY_Controller {
         }
         else{
             if ($this->Accounts_model->delete($id)) {
-                $this->Account_transactions_model->delete_initial_balance($id);
+                $this->Account_transactions_model->update_initial_balance($id, array('amount' => 0));
                 echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
             } else {
                 echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
