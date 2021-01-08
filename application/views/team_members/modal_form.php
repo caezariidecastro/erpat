@@ -341,6 +341,6 @@
             }
         });
 
-        $('#ajaxModalTitle').text('Add employee')
+        $('#ajaxModalTitle').text('Add user')
     });
 </script>

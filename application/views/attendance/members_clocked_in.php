@@ -8,7 +8,7 @@
             source: '<?php echo_uri("attendance/clocked_in_members_list_data/"); ?>',
             order: [[2, "desc"]],
             columns: [
-                {title: "<?php echo lang("employee"); ?>", "class": "w20p"},
+                {title: "<?php echo lang("user"); ?>", "class": "w20p"},
                 {visible: false, searchable: false},
                 {title: "<?php echo lang("in_date"); ?>", "class": "w15p", iDataSort: 1},
                 {title: "<?php echo lang("in_time"); ?>", "class": "w15p"}

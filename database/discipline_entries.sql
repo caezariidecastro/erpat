@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `discipline_entries` (
   `id` bigint(10) NOT NULL,
   `date_occurred` date NOT NULL,
-  `employee` bigint(10) NOT NULL,
+  `user` bigint(10) NOT NULL,
   `description` text NOT NULL,
   `witness` bigint(10) NOT NULL,
   `category` bigint(10) NOT NULL,

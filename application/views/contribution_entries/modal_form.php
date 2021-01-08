@@ -2,10 +2,10 @@
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <div class="form-group">
-        <label for="employee" class="col-md-3"><?php echo lang('employee'); ?></label>
+        <label for="user" class="col-md-3"><?php echo lang('user'); ?></label>
         <div class="col-md-9">
             <?php
-            echo form_dropdown("employee", $user_dropdown, $model_info ? $model_info->employee : "", "class='select2 validate-hidden' id='employee' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            echo form_dropdown("user", $user_dropdown, $model_info ? $model_info->user : "", "class='select2 validate-hidden' id='user' data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
         </div>
     </div>

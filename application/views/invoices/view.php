@@ -45,7 +45,7 @@
                     </ul>
                 </span>
                 <?php if ($invoice_status !== "cancelled" && $can_edit_invoices) { ?>
-                    <?php echo modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_item'), array("class" => "btn btn-default", "title" => lang('add_item'), "data-post-invoice_id" => $invoice_info->id)); ?>
+                    <?php echo modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-invoice_id" => $invoice_info->id)); ?>
                     <?php echo modal_anchor(get_uri("invoice_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("class" => "btn btn-default", "title" => lang('add_payment'), "data-post-invoice_id" => $invoice_info->id)); ?>
                 <?php } ?>
             </div>
@@ -176,7 +176,7 @@
             displayLength: 100,
             columns: [
                 {visible: false, searchable: false},
-                {title: '<?php echo lang("item") ?> ', "bSortable": false},
+                {title: '<?php echo lang("service") ?> ', "bSortable": false},
                 {title: '<?php echo lang("quantity") ?>', "class": "text-right w15p", "bSortable": false},
                 {title: '<?php echo lang("rate") ?>', "class": "text-right w15p", "bSortable": false},
                 {title: '<?php echo lang("total") ?>', "class": "text-right w15p", "bSortable": false},

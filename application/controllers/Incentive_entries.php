@@ -60,7 +60,7 @@ class Incentive_entries extends MY_Controller {
         $id = $this->input->post('id');
 
         $incentive_data = array(
-            "employee" => $this->input->post('employee'),
+            "user" => $this->input->post('user'),
             "amount" => $this->input->post('amount'),
             "remarks" => $this->input->post('remarks'),
             "signed_by" => $this->input->post('signed_by'),

@@ -30,7 +30,7 @@ class Contribution_entries extends MY_Controller {
             'start' => $this->input->post('start_date'),
             'end' => $this->input->post('end_date'),
             'category' => $this->input->post('category_select2_filter'),
-            'employee' => $this->input->post('users_select2_filter'),
+            'user' => $this->input->post('users_select2_filter'),
         ))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -59,7 +59,7 @@ class Contribution_entries extends MY_Controller {
         $id = $this->input->post('id');
 
         $contribution_data = array(
-            "employee" => $this->input->post('employee'),
+            "user" => $this->input->post('user'),
             "amount" => $this->input->post('amount'),
             "category" => $this->input->post('category'),
         );

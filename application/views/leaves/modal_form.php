@@ -2,7 +2,7 @@
 <div class="modal-body clearfix">
     <?php if ($form_type == "assign_leave") { ?>
         <div class="form-group">
-            <label for="applicant_id" class=" col-md-3"><?php echo lang('employee'); ?></label>
+            <label for="applicant_id" class=" col-md-3"><?php echo lang('user'); ?></label>
             <div class=" col-md-9">
                 <?php
                 if (isset($team_members_info)) {

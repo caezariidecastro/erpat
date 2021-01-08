@@ -22,7 +22,7 @@
             source: '<?php echo_uri("team/list_data") ?>',
             columns: [
                 {title: "<?php echo lang("title"); ?>"},
-                {title: "<?php echo lang("employees"); ?>"},
+                {title: "<?php echo lang("users"); ?>"},
                 {title: "<?php echo lang("created_on"); ?>"},
                 {title: "<?php echo lang("created_by"); ?>"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}

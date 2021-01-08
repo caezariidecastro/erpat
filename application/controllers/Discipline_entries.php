@@ -59,7 +59,7 @@ class Discipline_entries extends MY_Controller {
 
         $discipline_data = array(
             "date_occurred" => $this->input->post('date_occurred'),
-            "employee" => $this->input->post('employee'),
+            "user" => $this->input->post('user'),
             "description" => $this->input->post('description'),
             "witness" => $this->input->post('witness'),
             "category" => $this->input->post('category'),

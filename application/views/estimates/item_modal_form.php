@@ -4,7 +4,7 @@
     <input type="hidden" name="estimate_id" value="<?php echo $estimate_id; ?>" />
     <input type="hidden" name="add_new_item_to_library" value="" id="add_new_item_to_library" />
     <div class="form-group">
-        <label for="estimate_item_title" class=" col-md-3"><?php echo lang('item'); ?></label>
+        <label for="estimate_item_title" class=" col-md-3"><?php echo lang('service'); ?></label>
         <div class="col-md-9">
             <?php
             echo form_input(array(

@@ -55,9 +55,9 @@ $route['default_controller'] = 'dashboard';
 //this route will move 'about/any-text' to 'domain.com/about/index/any-text'
 $route['about/(:any)'] = 'about/index/$1';
 
-// Employee route
-$route['hrm/employee/view/(:any)'] = 'team_members/view/$1';
-$route['hrm/employee'] = 'team_members/index';
+// Users route
+$route['hrm/user/view/(:any)'] = 'team_members/view/$1';
+$route['hrm/user'] = 'team_members/index';
 
 // Leaves
 $route['hrm/leaves'] = 'leaves/index';
@@ -88,9 +88,6 @@ $route['sms/estimates'] = 'estimates/index';
 
 // Invoices
 $route['sms/invoices'] = 'invoices/index';
-
-// Items
-$route['sms/items'] = 'items/index';
 
 // Payments
 $route['fas/payments'] = 'invoice_payments/index';
@@ -127,6 +124,12 @@ $route['pms/timesheets'] = 'projects/all_timesheets';
 
 // Clients
 $route['pms/clients'] = 'clients/index';
+
+// Items
+$route['pms/services'] = 'items/index';
+
+// Tickets
+$route['help/tickets'] = 'tickets/index';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

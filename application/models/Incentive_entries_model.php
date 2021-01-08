@@ -31,7 +31,7 @@ class Incentive_entries_model extends Crud_model {
 
         $sql = "SELECT $incentive_entries_table.*, TRIM(CONCAT(emp.first_name, ' ', emp.last_name)) AS employee_name, TRIM(CONCAT(sb.first_name, ' ', sb.last_name)) AS signed_by_name, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name
         FROM $incentive_entries_table
-        LEFT JOIN users emp ON emp.id = $incentive_entries_table.employee
+        LEFT JOIN users emp ON emp.id = $incentive_entries_table.user
         LEFT JOIN users sb ON sb.id = $incentive_entries_table.signed_by
         LEFT JOIN users creator ON creator.id = $incentive_entries_table.created_by
         LEFT JOIN incentive_categories cat ON cat.id = $incentive_entries_table.category

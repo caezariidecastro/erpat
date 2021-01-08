@@ -43,7 +43,7 @@
             filterDropdown: [{name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>}],
             dateRangeType: "daily",
             columns: [
-                {title: "<?php echo lang("employee"); ?>", "class": "w20p"},
+                {title: "<?php echo lang("user"); ?>", "class": "w20p"},
                 {visible: false, searchable: false},
                 {title: "<?php echo lang("in_date"); ?>", "class": "w15p", iDataSort: 1},
                 {title: "<?php echo lang("in_time"); ?>", "class": "w15p"},

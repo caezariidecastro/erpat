@@ -783,7 +783,7 @@ class Invoices extends MY_Controller {
             $suggestion[] = array("id" => $item->title, "text" => $item->title);
         }
 
-        $suggestion[] = array("id" => "+", "text" => "+ " . lang("create_new_item"));
+        $suggestion[] = array("id" => "+", "text" => "+ " . lang("create_new_service"));
 
         echo json_encode($suggestion);
     }

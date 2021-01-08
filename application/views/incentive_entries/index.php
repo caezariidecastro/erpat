@@ -14,7 +14,7 @@
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('category') ?>"},
-                {title: "<?php echo lang('employee') ?>"},
+                {title: "<?php echo lang('user') ?>"},
                 {title: "<?php echo lang('signed_by') ?>"},
                 {title: "<?php echo lang('amount') ?>", "class": "text-right"},
                 {title: "<?php echo lang('remarks') ?>"},

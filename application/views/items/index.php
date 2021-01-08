@@ -1,9 +1,9 @@
 <div id="page-content" class="p20 clearfix">
     <div class="panel panel-default">
         <div class="page-title clearfix">
-            <h1> <?php echo lang('items'); ?></h1>
+            <h1> <?php echo lang('services'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("items/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_item'), array("class" => "btn btn-default", "title" => lang('add_item'))); ?>
+                <?php echo modal_anchor(get_uri("items/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'))); ?>
             </div>
         </div>
         <div class="table-responsive">

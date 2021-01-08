@@ -648,7 +648,7 @@ class Team_members extends MY_Controller {
     //prepare the dropdown list of roles
     private function _get_roles_dropdown() {
         $role_dropdown = array(
-            "0" => lang('employee'),
+            // "0" => lang('user'),
             "admin" => lang('admin') //static role
         );
         $roles = $this->Roles_model->get_all()->result();

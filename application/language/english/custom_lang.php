@@ -19,7 +19,7 @@ $lang["menu_sms"] = "Sales & Invoicing";
 $lang["menu_pms"] = "Project Planning";
 
 $lang["submenu_hrm_department"] = "Department";
-$lang["submenu_hrm_employee"] = "Employees";
+$lang["submenu_hrm_employee"] = "Users";
 $lang["submenu_hrm_attendance"] = "Attendance";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
@@ -47,11 +47,11 @@ $lang["submenu_pms_my_tasks"] = "My Tasks";
 $lang["submenu_pms_view_gantts"] = "View Gantts";
 $lang["submenu_pms_timesheets"] = "Timesheets";
 $lang["submenu_pms_clients"] = "Clients";
+$lang["submenu_pms_services"] = "Services";
 
 $lang["submenu_sms_pointofsale"] = "Point of Sale - Soon!";
 $lang["submenu_sms_estimates"] = "Estimates";
 $lang["submenu_sms_invoices"] = "Invoices";
-$lang["submenu_sms_items"] = "Items";
 $lang["submenu_sms_giftcard"] = "Gift Card - Soon!";
 $lang["submenu_sms_coupons"] = "Coupons - Soon!";
 
@@ -61,13 +61,13 @@ $lang["submenu_lms_transfers"] = "Transfer - New";
 
 $lang["submenu_mcm_leads"] = "Leads";
 
-// Human Resource > Employee
-$lang["employee"] = "Employee";
-$lang["employees"] = "Employees";
-$lang["active_employees"] = "Active employees";
-$lang["inactive_employees"] = "Inactive employees";
-$lang["add_employee"] = "Add employee";
-$lang["send_invitation_to_an_employee"] = "Send invitation to an employee.";
+// Human Resource > Users
+$lang["user"] = "Users";
+$lang["users"] = "Users";
+$lang["active_employees"] = "Active users";
+$lang["inactive_employees"] = "Inactive users";
+$lang["add_employee"] = "Add user";
+$lang["send_invitation_to_an_employee"] = "Send invitation to an user.";
 
 // Human Resource > Attendance
 $lang["attendance"] = "Attendance";
@@ -148,3 +148,11 @@ $lang["zip_code"] = "Zipcode";
 $lang["head"] = "Head";
 $lang["add_warehouse"] = "Add warehouse";
 $lang["edit_warehouse"] = "Edit warehouse";
+
+// Project Planning > Services
+$lang["service"] = "Service";
+$lang["services"] = "Services";
+$lang["add_service"] = "Add service";
+$lang["edit_service"] = "Edit service";
+$lang["select_or_create_new_service"] = "Select from list or create new service";
+$lang["create_new_service"] = "Create new service";

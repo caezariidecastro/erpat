@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `contribution_entries` (
   `id` bigint(10) NOT NULL,
-  `employee` bigint(10) NOT NULL,
+  `user` bigint(10) NOT NULL,
   `amount` float NOT NULL,
   `category` bigint(10) NOT NULL,
   `created_on` datetime NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE `contribution_entries` (
 -- Dumping data for table `contribution_entries`
 --
 
-INSERT INTO `contribution_entries` (`id`, `employee`, `amount`, `category`, `created_on`, `created_by`, `deleted`) VALUES
+INSERT INTO `contribution_entries` (`id`, `user`, `amount`, `category`, `created_on`, `created_by`, `deleted`) VALUES
 (1, 2, 640, 1, '2020-12-22 09:31:27', 1, 0);
 
 --

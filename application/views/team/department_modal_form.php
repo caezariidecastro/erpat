@@ -19,9 +19,9 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="members" class=" col-md-3"><?php echo lang('employees'); ?></label>
+        <label for="members" class=" col-md-3"><?php echo lang('users'); ?></label>
         <div class="col-md-9">
-              <input type="text" value="<?php echo $model_info->members; ?>" name="members" id="team_members_dropdown" class="w100p validate-hidden"  data-rule-required="true" data-msg-required="<?php echo lang('field_required'); ?>" placeholder="<?php echo lang('employees'); ?>"  />    
+              <input type="text" value="<?php echo $model_info->members; ?>" name="members" id="team_members_dropdown" class="w100p validate-hidden"  data-rule-required="true" data-msg-required="<?php echo lang('field_required'); ?>" placeholder="<?php echo lang('users'); ?>"  />    
         </div>
     </div>
 </div>

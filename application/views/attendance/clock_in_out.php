@@ -9,7 +9,7 @@
             source: '<?php echo_uri("attendance/clock_in_out_list_data/"); ?>',
             order: [[0, "asc"]],
             columns: [
-                {title: "<?php echo lang("employees"); ?>"},
+                {title: "<?php echo lang("users"); ?>"},
                 {title: "<?php echo lang("status"); ?>", class: "w300"},
                 {title: "<?php echo lang("clock_in_out"); ?>", class: "text-center w200"}
             ]

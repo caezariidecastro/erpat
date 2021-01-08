@@ -22,7 +22,7 @@ class Contribution_categories extends MY_Controller {
 
     protected function _get_users_select2_data() {
         $users = $this->Users_model->get_team_members_for_select2()->result();
-        $user_select2 = array(array('id' => '', 'text'  => '- Employees -'));
+        $user_select2 = array(array('id' => '', 'text'  => '- Users -'));
 
         foreach($users as $user){
             $user_select2[] = array('id' => $user->id, 'text'  => $user->user_name);

@@ -44,7 +44,7 @@ class Expenses extends MY_Controller {
     private function _get_team_members_dropdown() {
         $team_members = $this->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"), 0, 0, "first_name")->result();
 
-        $members_dropdown = array(array("id" => "", "text" => "- " . lang("employees") . " -"));
+        $members_dropdown = array(array("id" => "", "text" => "- " . lang("users") . " -"));
         foreach ($team_members as $team_member) {
             $members_dropdown[] = array("id" => $team_member->id, "text" => $team_member->first_name . " " . $team_member->last_name);
         }

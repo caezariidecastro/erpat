@@ -285,7 +285,7 @@ class Left_menu {
                 $sidebar_menu["menu_hrm"] = array("name" => "menu_hrm", "url" => "hrm", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_hrm_department", "url" => "hrm/department"),
-                    array("name" => "submenu_hrm_employee", "url" => "hrm/employee"),
+                    array("name" => "submenu_hrm_employee", "url" => "hrm/user"),
                     array("name" => "submenu_hrm_attendance", "url" => "hrm/attendance"),
                     array("name" => "submenu_hrm_disciplinary", "url" => "hrm/disciplinary"),
                     array("name" => "submenu_hrm_leaves", "url" => "hrm/leaves"),
@@ -343,8 +343,7 @@ class Left_menu {
                     array("name" => "submenu_sms_giftcard", "url" => "sms/giftcard"),
                     array("name" => "submenu_sms_coupons", "url" => "sms/coupons"),
                     array("name" => "submenu_sms_estimates", "url" => "sms/estimates"),
-                    array("name" => "submenu_sms_invoices", "url" => "sms/invoices"),
-                    array("name" => "submenu_sms_items", "url" => "sms/items")
+                    array("name" => "submenu_sms_invoices", "url" => "sms/invoices")
                 ));
             }
 
@@ -355,7 +354,8 @@ class Left_menu {
                     array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks"),
                     array("name" => "submenu_pms_view_gantts", "url" => "pms/view_gantts"),
                     array("name" => "submenu_pms_timesheets", "url" => "pms/timesheets"),
-                    array("name" => "submenu_pms_clients", "url" => "pms/clients")
+                    array("name" => "submenu_pms_clients", "url" => "pms/clients"),
+                    array("name" => "submenu_pms_services", "url" => "pms/services")
                 ));
             }
 
@@ -431,20 +431,20 @@ class Left_menu {
             //     $sidebar_menu["finance"] = array("name" => "finance", "url" => $finance_url, "class" => "fa-money", "devider" => true, "submenu" => $finance_submenu);
             // }
 
-            if (get_setting("module_ticket") == "1" && ($this->ci->login_user->is_admin || $access_ticket)) {
+            // if (get_setting("module_ticket") == "1" && ($this->ci->login_user->is_admin || $access_ticket)) {
 
-                $ticket_badge = 0;
-                if ($this->ci->login_user->is_admin || $access_ticket === "all") {
-                    $ticket_badge = count_new_tickets();
-                } else if ($access_ticket === "specific") {
-                    $specific_ticket_permission = get_array_value($permissions, "ticket_specific");
-                    $ticket_badge = count_new_tickets($specific_ticket_permission);
-                }
+            //     $ticket_badge = 0;
+            //     if ($this->ci->login_user->is_admin || $access_ticket === "all") {
+            //         $ticket_badge = count_new_tickets();
+            //     } else if ($access_ticket === "specific") {
+            //         $specific_ticket_permission = get_array_value($permissions, "ticket_specific");
+            //         $ticket_badge = count_new_tickets($specific_ticket_permission);
+            //     }
 
-                // 
+            //     // 
 
-                $sidebar_menu["tickets"] = array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
-            }
+            //     $sidebar_menu["tickets"] = array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+            // }
 
 
             // if (get_array_value($this->ci->login_user->permissions, "hide_team_members_list") != "1") {
@@ -473,6 +473,19 @@ class Left_menu {
 
                 $help_knowledge_base_menues = array();
                 $main_url = "help";
+
+                if (get_setting("module_ticket") == "1" && ($this->ci->login_user->is_admin || $access_ticket)) {
+
+                    $ticket_badge = 0;
+                    if ($this->ci->login_user->is_admin || $access_ticket === "all") {
+                        $ticket_badge = count_new_tickets();
+                    } else if ($access_ticket === "specific") {
+                        $specific_ticket_permission = get_array_value($permissions, "ticket_specific");
+                        $ticket_badge = count_new_tickets($specific_ticket_permission);
+                    }
+    
+                    $help_knowledge_base_menues[]= array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+                }    
 
                 if ($module_help) {
                     $help_knowledge_base_menues[] = array("name" => "help", "url" => $main_url, "class" => "fa-question-circle");

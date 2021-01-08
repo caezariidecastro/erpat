@@ -10,7 +10,7 @@
             filterDropdown: [{name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>}],
             rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}}],
             columns: [
-                {title: "<?php echo lang("employee"); ?>"},
+                {title: "<?php echo lang("user"); ?>"},
                 {title: "<?php echo lang("duration"); ?>", "class": "w20p text-right"},
                 {title: "<?php echo lang("hours"); ?>", "class": "w20p text-right"}
             ],

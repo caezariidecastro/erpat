@@ -14,7 +14,7 @@
             dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [
-                {title: "<?php echo lang('employee') ?> ", "class": "w20p"},
+                {title: "<?php echo lang('user') ?> ", "class": "w20p"},
                 {title: "<?php echo lang('category') ?>"},
                 {title: "<?php echo lang('amount') ?>", "class": "text-right"},
                 {title: "<?php echo lang('created_on') ?>",},

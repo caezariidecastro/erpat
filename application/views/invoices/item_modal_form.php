@@ -4,7 +4,7 @@
     <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>" />
     <input type="hidden" name="add_new_item_to_library" value="" id="add_new_item_to_library" />
     <div class="form-group">
-        <label for="invoice_item_title" class=" col-md-3"><?php echo lang('item'); ?></label>
+        <label for="invoice_item_title" class=" col-md-3"><?php echo lang('service'); ?></label>
         <div class="col-md-9">
             <?php
             echo form_input(array(
@@ -12,7 +12,7 @@
                 "name" => "invoice_item_title",
                 "value" => $model_info->title,
                 "class" => "form-control validate-hidden",
-                "placeholder" => lang('select_or_create_new_item'),
+                "placeholder" => lang('select_or_create_new_service'),
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
             ));

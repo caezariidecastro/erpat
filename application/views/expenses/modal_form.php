@@ -109,7 +109,7 @@
         </div>
 
         <div class="form-group">
-            <label for="expense_user_id" class=" col-md-3"><?php echo lang('employee'); ?></label>
+            <label for="expense_user_id" class=" col-md-3"><?php echo lang('user'); ?></label>
             <div class="col-md-9">
                 <?php
                 echo form_dropdown("expense_user_id", $members_dropdown, $model_info->user_id, "class='select2 validate-hidden' id='expense_user_id'");

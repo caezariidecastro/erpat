@@ -1,7 +1,7 @@
 <div id="page-content" class="p20 clearfix">
     <div class="panel panel-default">
         <div class="page-title clearfix">
-            <h1><?php echo lang('employees'); ?></h1>
+            <h1><?php echo lang('users'); ?></h1>
             <div class="title-button-group">
                 <!-- <div class="btn-group" role="group">
                     <button type="button" class="btn btn-default btn-sm active mr-1"  title="<?php echo lang('list_view'); ?>"><i class="fa fa-bars"></i></button>

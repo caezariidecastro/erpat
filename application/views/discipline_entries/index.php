@@ -14,7 +14,7 @@
             columns: [
                 {title: "<?php echo lang('date_occurred') ?>"},
                 {title: "<?php echo lang('category') ?>"},
-                {title: "<?php echo lang('employee') ?>"},
+                {title: "<?php echo lang('user') ?>"},
                 {title: "<?php echo lang('witness') ?>"},
                 {title: "<?php echo lang('description') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},

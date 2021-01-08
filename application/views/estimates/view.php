@@ -119,7 +119,7 @@
             displayLength: 100,
             columns: [
                 {visible: false, searchable: false},
-                {title: "<?php echo lang("item") ?> ", "bSortable": false},
+                {title: "<?php echo lang("service") ?> ", "bSortable": false},
                 {title: "<?php echo lang("quantity") ?>", "class": "text-right w15p", "bSortable": false},
                 {title: "<?php echo lang("rate") ?>", "class": "text-right w15p", "bSortable": false},
                 {title: "<?php echo lang("total") ?>", "class": "text-right w15p", "bSortable": false},
