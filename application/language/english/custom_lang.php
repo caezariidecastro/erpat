@@ -58,6 +58,7 @@ $lang["submenu_sms_coupons"] = "Coupons - Soon!";
 $lang["submenu_lms_delivery"] = "Delivery - New";
 $lang["submenu_lms_warehouse"] = "Warehouse";
 $lang["submenu_lms_transfers"] = "Transfer - New";
+$lang["submenu_lms_items"] = "Items";
 
 $lang["submenu_mcm_leads"] = "Leads";
 

@@ -332,7 +332,8 @@ class Left_menu {
                 "submenu" => array(
                     array("name" => "submenu_lms_delivery", "url" => "lms/delivery"),
                     array("name" => "submenu_lms_warehouse", "url" => "lms/warehouse"),
-                    array("name" => "submenu_lms_transfers", "url" => "lms/transfer")
+                    array("name" => "submenu_lms_transfers", "url" => "lms/transfer"),
+                    array("name" => "submenu_lms_items", "url" => "lms/items"),
                 ));
             }
 
