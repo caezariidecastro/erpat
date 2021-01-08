@@ -9,6 +9,7 @@ $settings_menu = array(
         array("name" => "notifications", "url" => "settings/notifications"),
         array("name" => "integration", "url" => "settings/integration"),
         array("name" => "updates", "url" => "Updates"),
+        array("name" => "units", "url" => "units"),
     ),
     "access_permission" => array(
         array("name" => "roles", "url" => "roles"),

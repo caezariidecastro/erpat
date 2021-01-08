@@ -156,3 +156,11 @@ $lang["add_service"] = "Add service";
 $lang["edit_service"] = "Edit service";
 $lang["select_or_create_new_service"] = "Select from list or create new service";
 $lang["create_new_service"] = "Create new service";
+
+// Units
+$lang["units"] = "Units";
+$lang["unit"] = "Unit";
+$lang["add_unit"] = "Add unit";
+$lang["edit_unit"] = "Edit unit";
+$lang["operator"] = "Operator";
+$lang["value"] = "Value";

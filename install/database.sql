@@ -1319,3 +1319,14 @@ CREATE TABLE IF NOT EXISTS `warehouses` (
 `deleted` tinyint(2) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `units` (
+`id` bigint(10) NOT NULL,
+`title` varchar(255) NOT NULL,
+`operator` char(4) NOT NULL,
+`value` decimal(10,2) NOT NULL,
+`created_on` datetime NOT NULL,
+`created_by` int(11) NOT NULL,
+`deleted` tinyint(4) NOT NULL DEFAULT 0
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
