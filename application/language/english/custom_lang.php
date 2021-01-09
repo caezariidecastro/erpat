@@ -56,13 +56,14 @@ $lang["submenu_sms_coupons"] = "Coupons - Soon!";
 
 $lang["submenu_lms_delivery"] = "Delivery - New";
 $lang["submenu_lms_warehouse"] = "Warehouse";
-$lang["submenu_lms_transfers"] = "Transfer - New";
+$lang["submenu_lms_transfers"] = "Transfer";
 $lang["submenu_lms_items"] = "Items";
+$lang["submenu_lms_inventory"] = "Inventory";
 
 $lang["submenu_mcm_leads"] = "Leads";
 
 // Human Resource > Users
-$lang["user"] = "Users";
+$lang["user"] = "User";
 $lang["users"] = "Users";
 $lang["active_employees"] = "Active users";
 $lang["inactive_employees"] = "Inactive users";
@@ -174,3 +175,17 @@ $lang["vendor"] = "Vendor";
 $lang["add_vendor"] = "Add vendor";
 $lang["edit_vendor"] = "Edit vendor";
 $lang["selling_price"] = "Selling price";
+
+// Logistics and Distribution > Transfer
+$lang["transfers"] = "Transfers";
+$lang["add_transfer"] = "Add transfer";
+$lang["edit_transfer"] = "Edit transfer";
+$lang["reference_number"] = "Reference No.";
+$lang["dispatcher"] = "Dispatcher";
+$lang["driver"] = "Driver";
+
+// Logistics and Distribution > Inventory
+$lang["select_an_item"] = "Select an item to view";
+$lang["add_inventory"] = "Add inventory";
+$lang["opening_stock"] = "Opening stock";
+$lang["duplicate_item_error"] = "Item is already at the selected warehouse";

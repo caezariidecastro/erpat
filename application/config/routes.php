@@ -134,5 +134,11 @@ $route['lms/items'] = 'inventory_item_categories/index';
 // Tickets
 $route['help/tickets'] = 'tickets/index';
 
+// Delivery
+$route['lms/transfer'] = 'inventory_transfers/index';
+
+// Delivery
+$route['lms/inventory'] = 'inventory/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

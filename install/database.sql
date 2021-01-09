@@ -1368,3 +1368,35 @@ CREATE TABLE IF NOT EXISTS `vendors` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `inventory_transfers` (
+`id` bigint(10) NOT NULL,
+`reference_number` varchar(255) NOT NULL,
+`transferee` bigint(10) NOT NULL,
+`receiver` bigint(10) NOT NULL,
+`dispatcher` bigint(10) NOT NULL,
+`driver` bigint(10) NOT NULL,
+`remarks` text NOT NULL,
+`created_on` datetime NOT NULL,
+`created_by` bigint(10) NOT NULL,
+`deleted` tinyint(4) NOT NULL DEFAULT 0
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `inventory` (
+`id` bigint(10) NOT NULL,
+`warehouse` bigint(10) NOT NULL,
+`stock` int(11) NOT NULL,
+`item_id` bigint(10) NOT NULL,
+`name` text NOT NULL,
+`sku` text NOT NULL,
+`unit` bigint(10) NOT NULL,
+`category` bigint(10) NOT NULL,
+`cost_price` decimal(10,2) NOT NULL,
+`selling_price` decimal(10,2) NOT NULL,
+`vendor` bigint(10) NOT NULL,
+`created_on` datetime NOT NULL,
+`created_by` bigint(10) NOT NULL,
+`deleted` tinyint(4) NOT NULL
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
