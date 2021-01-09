@@ -17,7 +17,7 @@
     $(document).ready(function () {
         $("#warehouse-table").appTable({
             source: '<?php echo_uri("warehouse/list_data") ?>',
-            dateRangeType: "monthly",
+            // dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('name') ?> "},

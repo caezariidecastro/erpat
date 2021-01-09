@@ -8,6 +8,7 @@ class Inventory_item_categories extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model("Inventory_item_categories_model");
+        $this->load->model("Vendors_model");
     }
 
     protected function _get_category_select2_data() {
@@ -20,8 +21,19 @@ class Inventory_item_categories extends MY_Controller {
         return $category_select2;
     }
 
+    protected function _get_vendor_select2_data() {
+        $vendors = $this->Vendors_model->get_all()->result();
+        $vendor_select2 = array(array('id' => '', 'text'  => '- Vendors -'));
+
+        foreach ($vendors as $group) {
+            $vendor_select2[] = array('id' => $group->id, 'text' => $group->name) ;
+        }
+        return $vendor_select2;
+    }
+
     function index(){
         $view_data['category_select2'] = $this->_get_category_select2_data();
+        $view_data['vendor_select2'] = $this->_get_vendor_select2_data();
         $this->template->rander("inventory_item_categories/index", $view_data);
     }
 

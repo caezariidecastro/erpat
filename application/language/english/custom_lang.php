@@ -29,7 +29,6 @@ $lang["submenu_pid_productions"] = "Productions - New";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials - New";
 $lang["submenu_pid_purchases"] = "Purchases - New";
 $lang["submenu_pid_brands"] = "Brands - New";
-$lang["submenu_pid_units"] = "Units - New";
 
 $lang["submenu_fas_summary"] = "Summary";
 $lang["submenu_fas_payments"] = "Payments";
@@ -165,3 +164,13 @@ $lang["add_unit"] = "Add unit";
 $lang["edit_unit"] = "Edit unit";
 $lang["operator"] = "Operator";
 $lang["value"] = "Value";
+
+// Logistics and Distribution > Items
+$lang["sku"] = "SKU";
+$lang["cost_price"] = "Cost price";
+$lang["item_editing_instruction"] = "Note: The changes will not be affected on existing warehouse inventory.";
+$lang["vendors"] = "Vendors";
+$lang["vendor"] = "Vendor";
+$lang["add_vendor"] = "Add vendor";
+$lang["edit_vendor"] = "Edit vendor";
+$lang["selling_price"] = "Selling price";

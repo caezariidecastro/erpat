@@ -1172,12 +1172,12 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `account_transactions` (
-`id` int(11) NOT NULL,
-`account_id` int(11) NOT NULL,
+`id` bigint(10) NOT NULL,
+`account_id` bigint(10) NOT NULL,
 `amount` decimal(20,2) NOT NULL,
 `transaction` enum('initial','expense','payment','transfer') NOT NULL,
 `type` enum('debit','credit') NOT NULL,
-`reference` int(11) NOT NULL,
+`reference` bigint(10) NOT NULL,
 `deleted` tinyint(2) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1185,11 +1185,11 @@ PRIMARY KEY (`id`)
 CREATE TABLE IF NOT EXISTS `account_transfers` (
 `id` bigint(10) NOT NULL,
 `date` date NOT NULL,
-`account_from` int(11) NOT NULL,
-`account_to` int(11) NOT NULL,
+`account_from` bigint(10) NOT NULL,
+`account_to` bigint(10) NOT NULL,
 `amount` decimal(20,0) NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1201,7 +1201,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 `initial_balance` decimal(20,2) NOT NULL,
 `remarks` text NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1212,7 +1212,7 @@ CREATE TABLE IF NOT EXISTS `contribution_categories` (
 `description` text NOT NULL,
 `mode_of_payment` text NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1223,7 +1223,7 @@ CREATE TABLE IF NOT EXISTS `contribution_entries` (
 `amount` float NOT NULL,
 `category` bigint(10) NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1234,7 +1234,7 @@ CREATE TABLE IF NOT EXISTS `discipline_categories` (
 `description` text NOT NULL,
 `action` text NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1245,7 +1245,7 @@ CREATE TABLE IF NOT EXISTS `discipline_categories` (
 `description` text NOT NULL,
 `action` text NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1258,7 +1258,7 @@ CREATE TABLE IF NOT EXISTS `discipline_entries` (
 `witness` bigint(10) NOT NULL,
 `category` bigint(10) NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1270,7 +1270,7 @@ CREATE TABLE IF NOT EXISTS `holidays` (
 `date_from` date NOT NULL,
 `date_to` date NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1280,7 +1280,7 @@ CREATE TABLE IF NOT EXISTS `incentive_categories` (
 `title` varchar(255) NOT NULL,
 `description` text NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1292,13 +1292,13 @@ CREATE TABLE IF NOT EXISTS `incentive_entries` (
 `signed_by` bigint(10) NOT NULL,
 `category` bigint(10) NOT NULL,
 `created_on` datetime NOT NULL,
-`created_by` int(11) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `team` (
-`id` int(11) NOT NULL,
+`id` bigint(10) NOT NULL,
 `title` text COLLATE utf8_unicode_ci NOT NULL,
 `members` mediumtext COLLATE utf8_unicode_ci NOT NULL,
 `created_on` datetime NOT NULL,
@@ -1308,13 +1308,13 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `warehouses` (
-`id` int(11) NOT NULL,
+`id` bigint(10) NOT NULL,
 `name` varchar(255) NOT NULL,
 `address` text NOT NULL,
 `zip_code` varchar(255) NOT NULL,
 `email` varchar(255) NOT NULL,
-`head` int(11) NOT NULL,
-`created_by` bigint(11) NOT NULL,
+`head` bigint(10) NOT NULL,
+`created_by` bigint(10) NOT NULL,
 `created_on` datetime NOT NULL,
 `deleted` tinyint(2) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
@@ -1340,3 +1340,31 @@ CREATE TABLE IF NOT EXISTS `inventory_item_categories` (
 `deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `inventory_items` (
+`id` bigint(10) NOT NULL,
+`name` text NOT NULL,
+`sku` text NOT NULL,
+`unit` bigint(10) NOT NULL,
+`category` bigint(10) NOT NULL,
+`cost_price` decimal(10,2) NOT NULL,
+`selling_price` decimal(10,2) NOT NULL,
+`vendor` bigint(10) NOT NULL,
+`created_on` datetime NOT NULL,
+`created_by` bigint(10) NOT NULL,
+`deleted` tinyint(4) NOT NULL
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `vendors` (
+`id` bigint(10) NOT NULL,
+`name` text NOT NULL,
+`contact` varchar(255) NOT NULL,
+`address` text DEFAULT NULL,
+`email` varchar(255) NOT NULL,
+`created_on` datetime NOT NULL,
+`created_by` bigint(10) NOT NULL,
+`deleted` tinyint(4) NOT NULL DEFAULT 0
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+

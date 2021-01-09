@@ -13,9 +13,15 @@ class Warehouse_model extends Crud_model {
         $warehouses_table = $this->db->dbprefix('warehouses');
         $where = "";
         $id = get_array_value($options, "id");
+        $start = get_array_value($options, "start");
+        $end = get_array_value($options, "end");
 
         if ($id) {
             $where .= " AND $warehouses_table.id=$id";
+        }
+
+        if($start){
+            $where .= " AND $warehouses_table.created_on BETWEEN '$start' AND '$end'";
         }
 
         $sql = "SELECT $warehouses_table.*, TRIM(CONCAT(head.first_name, ' ', head.last_name)) AS head_name, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name

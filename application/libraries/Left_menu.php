@@ -315,8 +315,7 @@ class Left_menu {
                     array("name" => "submenu_pid_productions", "url" => "hrm/productions"),
                     array("name" => "submenu_pid_billofmaterials", "url" => "hrm/bill-of-materials"),
                     array("name" => "submenu_pid_purchases", "url" => "hrm/purchases"),
-                    array("name" => "submenu_pid_brands", "url" => "hrm/brands"),
-                    array("name" => "submenu_pid_units", "url" => "hrm/units")
+                    array("name" => "submenu_pid_brands", "url" => "hrm/brands")
                 ));
             }
 
