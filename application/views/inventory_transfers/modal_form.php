@@ -165,7 +165,7 @@
                     };
                     
                     $("<input/>").attr("type", 'hidden')
-                                .attr("name", "items[]")
+                                .attr("name", "inventory_items[]")
                                 .attr("value", JSON.stringify(properties))
                                 .appendTo("#inventory-transfers-form");
                 }
@@ -191,7 +191,7 @@
                 appLoader.show({container: "#item-selection-section"});
 
                 $.ajax({
-                    url: "<?php echo get_uri("inventory_transfers/get_warehouse_item_select2_data") ?>" + `/${warehouse_id}/json`,
+                    url: "<?php echo get_uri("inventory_transfers/get_inventory_items_select2_data") ?>" + `/${warehouse_id}/json`,
                     dataType: "json",
                     success: function (result) {
                         $("#item").show().val("");

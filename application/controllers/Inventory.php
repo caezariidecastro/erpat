@@ -12,16 +12,6 @@ class Inventory extends MY_Controller {
         $this->load->model("Warehouse_model");
     }
 
-    protected function _get_item_dropdown_data() {
-        $items = $this->Inventory_item_entries_model->get_all()->result();
-        $item_dropdown = array('' => '-');
-
-        foreach ($items as $group) {
-            $item_dropdown[$group->id] = $group->name;
-        }
-        return $item_dropdown;
-    }
-
     protected function _get_warehouse_dropdown_data() {
         $Warehouses = $this->Warehouse_model->get_all()->result();
         $warehouse_dropdown = array('' => '-');
@@ -52,11 +42,19 @@ class Inventory extends MY_Controller {
     private function _item_make_row($data) {
         $row = '<div class="pull-left item-row" data-id="'.$data->id.'">
                     <div class="media-body">
-                        <div class="media-heading">
-                            <strong>'.$data->name.'</strong>
-                            <span class="text-off pull-right">Stocks on hand: '.$data->stocks_on_hand.'</span>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="media-heading">
+                                    <strong>'.$data->name.'</strong>
+                                    <br>'.$data->sku.'
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="text-off pull-right text-right">
+                                    Stocks on hand: '.$data->stocks.'
+                                </div>
+                            </div>
                         </div>
-                        '.$data->sku.'
                     </div>
                 </div>';
 
@@ -72,7 +70,6 @@ class Inventory extends MY_Controller {
 
         $view_data['model_info'] = "";
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
-        $view_data['item_dropdown'] = $this->_get_item_dropdown_data();
 
         $this->load->view('inventory/add', $view_data);
     }
@@ -82,14 +79,14 @@ class Inventory extends MY_Controller {
         $detail = '<div class="pull-left item-row" data-id="'.$data->id.'">
                     <div class="media-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="media-heading">
                                     <strong>'.$data->warehouse_name.'</strong>
                                 </div>
                                 '.$data->warehouse_address.'
                             </div>
-                            <div class="col-md-6">
-                                <div class="text-off pull-right">
+                            <div class="col-md-4">
+                                <div class="text-off pull-right text-right">
                                     Available stocks: '.($data->stock - $data->transferred + $data->received ).'
                                 </div>
                             </div>
@@ -149,6 +146,8 @@ class Inventory extends MY_Controller {
         $list_data = $this->Inventory_model->get_details(array(
             'item_id' => $id
         ))->result();
+        // var_dump($list_data);
+
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_inventory_make_row($data);

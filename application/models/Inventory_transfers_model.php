@@ -29,7 +29,7 @@ class Inventory_transfers_model extends Crud_model {
         }
 
         $sql = "SELECT $inventory_transfers_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, TRIM(CONCAT(dispatcher.first_name, ' ', dispatcher.last_name)) AS dispatcher_name, TRIM(CONCAT(driver.first_name, ' ', driver.last_name)) AS driver_name, transferee.name AS transferee_name, receiver.name AS receiver_name, (
-            SELECT COUNT(inventory_transfer_items.item_id)
+            SELECT COUNT(inventory_transfer_items.id)
             FROM inventory_transfer_items
             WHERE inventory_transfer_items.reference_number = $inventory_transfers_table.reference_number
             AND inventory_transfer_items.deleted = 0
@@ -55,9 +55,9 @@ class Inventory_transfers_model extends Crud_model {
     }
 
     function get_transferred_items($reference_number){
-        $sql = "SELECT inventory_transfer_items.*, ii.name AS item_name
+        $sql = "SELECT inventory_transfer_items.*, i.name AS item_name, i.id AS inventory_id
         FROM inventory_transfer_items
-        LEFT JOIN inventory_items ii ON ii.id = inventory_transfer_items.item_id
+        LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
         WHERE inventory_transfer_items.reference_number = '$reference_number'
         AND inventory_transfer_items.deleted = 0";
         return $this->db->query($sql);

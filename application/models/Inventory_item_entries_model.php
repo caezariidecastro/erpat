@@ -28,12 +28,12 @@ class Inventory_item_entries_model extends Crud_model {
             $where .= " AND $inventory_items_table.vendor = $vendor";
         }
 
-        $sql = "SELECT $inventory_items_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, un.title AS unit_name, v.name AS vendor_name, (
+        $sql = "SELECT $inventory_items_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, un.title AS unit_name, v.name AS vendor_name, COALESCE((
             SELECT SUM(inventory.stock)
             FROM inventory
             WHERE item_id = $inventory_items_table.id
             AND inventory.deleted = 0
-        ) AS stocks_on_hand
+        ), 0) AS stocks
         FROM $inventory_items_table
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by
         LEFT JOIN inventory_item_categories cat ON cat.id = $inventory_items_table.category

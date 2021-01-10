@@ -184,6 +184,7 @@ $lang["reference_number"] = "Reference No.";
 $lang["dispatcher"] = "Dispatcher";
 $lang["driver"] = "Driver";
 $lang["transfer_from_and_to_error"] = "From and To cannot be same";
+$lang["item_table_empty_error"] = "Items table is empty";
 
 // Logistics and Distribution > Inventory
 $lang["select_an_item"] = "Select an item to view";
