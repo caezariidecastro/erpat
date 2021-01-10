@@ -1385,7 +1385,7 @@ PRIMARY KEY (`id`)
 CREATE TABLE IF NOT EXISTS `inventory` (
 `id` bigint(10) NOT NULL,
 `warehouse` bigint(10) NOT NULL,
-`stock` int(11) NOT NULL,
+`stock` float(11) NOT NULL,
 `item_id` bigint(10) NOT NULL,
 `name` text NOT NULL,
 `sku` text NOT NULL,
@@ -1396,7 +1396,16 @@ CREATE TABLE IF NOT EXISTS `inventory` (
 `vendor` bigint(10) NOT NULL,
 `created_on` datetime NOT NULL,
 `created_by` bigint(10) NOT NULL,
-`deleted` tinyint(4) NOT NULL
+`deleted` tinyint(4) NOT NULL DEFAULT 0
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `inventory_transfer_items` (
+`id` bigint(10) NOT NULL,
+`item_id` bigint(10) NOT NULL,
+`reference_number` varchar(255) NOT NULL,
+`quantity` float NOT NULL,
+`deleted` tinyint(4) NOT NULL DEFAULT 0
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 

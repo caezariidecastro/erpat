@@ -90,7 +90,7 @@ class Inventory extends MY_Controller {
                             </div>
                             <div class="col-md-6">
                                 <div class="text-off pull-right">
-                                    Available stocks: '.$data->stock.'
+                                    Available stocks: '.($data->stock - $data->transferred + $data->received ).'
                                 </div>
                             </div>
                         </div>
@@ -99,7 +99,7 @@ class Inventory extends MY_Controller {
 
         return array(
             $detail,
-            js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory/delete"), "data-action" => "delete-confirmation"))
+            js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory/delete"), "data-action" => "delete-confirmation", "data-reload-on-success" => "1"))
         );
     }
 
@@ -159,5 +159,19 @@ class Inventory extends MY_Controller {
     function item_details($id){
         $data = $this->load->view('inventory/item_details', array('id'=> $id));
         echo json_encode(array("data" => $data));
+    }
+
+    function delete() {
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+
+        if ($this->Inventory_model->delete($id)) {
+            echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+        }
     }
 }

@@ -29,11 +29,10 @@ class Inventory_transfers_model extends Crud_model {
         }
 
         $sql = "SELECT $inventory_transfers_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, TRIM(CONCAT(dispatcher.first_name, ' ', dispatcher.last_name)) AS dispatcher_name, TRIM(CONCAT(driver.first_name, ' ', driver.last_name)) AS driver_name, transferee.name AS transferee_name, receiver.name AS receiver_name, (
-            0
-            -- SELECT COUNT(inventory_transfer_items.id)
-            -- FROM inventory_transfer_items
-            -- WHERE inventory_transfer_items.transfer_id = $inventory_transfers_table.id
-            -- AND inventory_transfer_items.deleted = 0
+            SELECT COUNT(inventory_transfer_items.item_id)
+            FROM inventory_transfer_items
+            WHERE inventory_transfer_items.reference_number = $inventory_transfers_table.reference_number
+            AND inventory_transfer_items.deleted = 0
         ) AS item_count
         FROM $inventory_transfers_table
         LEFT JOIN users creator ON creator.id = $inventory_transfers_table.created_by
@@ -45,13 +44,22 @@ class Inventory_transfers_model extends Crud_model {
         return $this->db->query($sql);
     }
 
-    function delete_transfer_item($id){
+    function delete_transfer_item($reference_number){
         $this->db->query("UPDATE inventory_transfer_items
         SET deleted = 1
-        WHERE id = $id");
+        WHERE reference_number = '$reference_number'");
     }
 
     function insert_transfer_item($data){
         $this->db->insert('inventory_transfer_items', $data);
+    }
+
+    function get_transferred_items($reference_number){
+        $sql = "SELECT inventory_transfer_items.*, ii.name AS item_name
+        FROM inventory_transfer_items
+        LEFT JOIN inventory_items ii ON ii.id = inventory_transfer_items.item_id
+        WHERE inventory_transfer_items.reference_number = '$reference_number'
+        AND inventory_transfer_items.deleted = 0";
+        return $this->db->query($sql);
     }
 }

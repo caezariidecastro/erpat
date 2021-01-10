@@ -17,7 +17,7 @@
     $(document).ready(function () {
         $("#inventory-transfers-table").appTable({
             source: '<?php echo_uri("inventory_transfers/list_data") ?>',
-            order: [[0, 'desc']],
+            order: [[7, 'desc']],
             columns: [
                 {title: "<?php echo lang('reference_number') ?> ", "class": "w10p"},
                 {title: "<?php echo lang('from') ?> ", "class": "w10p"},
@@ -30,8 +30,8 @@
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4, 5],
-            xlsColumns: [0, 1, 2, 3, 4, 5],
+            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
         });
     });
 </script>

@@ -32,6 +32,7 @@ class Inventory_item_entries_model extends Crud_model {
             SELECT SUM(inventory.stock)
             FROM inventory
             WHERE item_id = $inventory_items_table.id
+            AND inventory.deleted = 0
         ) AS stocks_on_hand
         FROM $inventory_items_table
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by

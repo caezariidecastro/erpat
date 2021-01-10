@@ -38,6 +38,7 @@
         $("#inventory-form").appForm({
             onSuccess: function (result) {
                 $("#inventory-table").appTable({newData: result.data, dataId: result.id});
+                $("#items-table").appTable({reload: true});
             },
             onSubmit: function(){
                 $('#add_item').val($('#item_id').val());

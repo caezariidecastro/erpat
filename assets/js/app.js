@@ -337,6 +337,7 @@ function selectLastlySelectedTab(target) {
                                 appLoader.show({container: form, css: "top:2%; right:46%;"});
                             }
 
+                            console.log('TEst');
 
                             settings.beforeAjaxSubmit(data, self, options);
                         },

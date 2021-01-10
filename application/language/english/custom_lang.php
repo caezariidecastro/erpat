@@ -183,6 +183,7 @@ $lang["edit_transfer"] = "Edit transfer";
 $lang["reference_number"] = "Reference No.";
 $lang["dispatcher"] = "Dispatcher";
 $lang["driver"] = "Driver";
+$lang["transfer_from_and_to_error"] = "From and To cannot be same";
 
 // Logistics and Distribution > Inventory
 $lang["select_an_item"] = "Select an item to view";
