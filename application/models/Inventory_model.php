@@ -54,6 +54,7 @@ class Inventory_model extends Crud_model {
     function item_on_warehouse_check($item_id, $warehouse_id){
         $this->db->where('item_id', $item_id);
         $this->db->where('warehouse', $warehouse_id);
+        $this->db->where('deleted', '0');
         return $this->db->get('inventory')->num_rows();
     }
 }
