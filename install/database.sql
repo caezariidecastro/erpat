@@ -1386,7 +1386,7 @@ CREATE TABLE IF NOT EXISTS `inventory` (
 `id` bigint(10) NOT NULL AUTO_INCREMENT,
 `warehouse` bigint(10) NOT NULL,
 `stock` float(11) NOT NULL,
-`item_id` bigint(10) NOT NULL,
+`inventory_id` bigint(10) NOT NULL,
 `name` text NOT NULL,
 `sku` text NOT NULL,
 `unit` bigint(10) NOT NULL,
