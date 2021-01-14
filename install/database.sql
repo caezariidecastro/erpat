@@ -1386,7 +1386,7 @@ CREATE TABLE IF NOT EXISTS `inventory` (
 `id` bigint(10) NOT NULL AUTO_INCREMENT,
 `warehouse` bigint(10) NOT NULL,
 `stock` float(11) NOT NULL,
-`inventory_id` bigint(10) NOT NULL,
+`item_id` bigint(10) NOT NULL,
 `name` text NOT NULL,
 `sku` text NOT NULL,
 `unit` bigint(10) NOT NULL,
@@ -1402,7 +1402,7 @@ PRIMARY KEY (`id`)
 
 CREATE TABLE IF NOT EXISTS `inventory_transfer_items` (
 `id` bigint(10) NOT NULL AUTO_INCREMENT,
-`item_id` bigint(10) NOT NULL,
+`inventory_id` bigint(10) NOT NULL,
 `reference_number` varchar(255) NOT NULL,
 `quantity` float NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0,
