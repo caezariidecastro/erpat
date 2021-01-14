@@ -1172,7 +1172,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `account_transactions` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `account_id` bigint(10) NOT NULL,
 `amount` decimal(20,2) NOT NULL,
 `transaction` enum('initial','expense','payment','transfer') NOT NULL,
@@ -1183,7 +1183,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `account_transfers` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `date` date NOT NULL,
 `account_from` bigint(10) NOT NULL,
 `account_to` bigint(10) NOT NULL,
@@ -1195,7 +1195,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `accounts` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `name` text NOT NULL,
 `number` text NOT NULL,
 `initial_balance` decimal(20,2) NOT NULL,
@@ -1207,7 +1207,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `contribution_categories` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `title` varchar(255) NOT NULL,
 `description` text NOT NULL,
 `mode_of_payment` text NOT NULL,
@@ -1218,7 +1218,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `contribution_entries` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `user` bigint(10) NOT NULL,
 `amount` float NOT NULL,
 `category` bigint(10) NOT NULL,
@@ -1229,7 +1229,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `discipline_categories` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `title` varchar(255) NOT NULL,
 `description` text NOT NULL,
 `action` text NOT NULL,
@@ -1240,7 +1240,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `discipline_categories` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `title` varchar(255) NOT NULL,
 `description` text NOT NULL,
 `action` text NOT NULL,
@@ -1251,7 +1251,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `discipline_entries` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `date_occurred` date NOT NULL,
 `user` bigint(10) NOT NULL,
 `description` text NOT NULL,
@@ -1264,7 +1264,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `holidays` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `title` varchar(255) NOT NULL,
 `description` text NOT NULL,
 `date_from` date NOT NULL,
@@ -1276,7 +1276,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `incentive_categories` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `title` varchar(255) NOT NULL,
 `description` text NOT NULL,
 `created_on` datetime NOT NULL,
@@ -1286,7 +1286,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `incentive_entries` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `user` bigint(10) NOT NULL,
 `remarks` text NOT NULL,
 `signed_by` bigint(10) NOT NULL,
@@ -1298,7 +1298,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `team` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `title` text COLLATE utf8_unicode_ci NOT NULL,
 `members` mediumtext COLLATE utf8_unicode_ci NOT NULL,
 `created_on` datetime NOT NULL,
@@ -1308,7 +1308,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `warehouses` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `name` varchar(255) NOT NULL,
 `address` text NOT NULL,
 `zip_code` varchar(255) NOT NULL,
@@ -1321,7 +1321,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `units` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `title` varchar(255) NOT NULL,
 `operator` char(4) NOT NULL,
 `value` decimal(10,2) NOT NULL,
@@ -1332,7 +1332,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `inventory_item_categories` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `title` varchar(255) NOT NULL,
 `description` text NOT NULL,
 `created_on` datetime NOT NULL,
@@ -1342,7 +1342,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `inventory_items` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `name` text NOT NULL,
 `sku` text NOT NULL,
 `unit` bigint(10) NOT NULL,
@@ -1357,7 +1357,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `vendors` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `name` text NOT NULL,
 `contact` varchar(255) NOT NULL,
 `address` text DEFAULT NULL,
@@ -1369,7 +1369,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `inventory_transfers` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `reference_number` varchar(255) NOT NULL,
 `transferee` bigint(10) NOT NULL,
 `receiver` bigint(10) NOT NULL,
@@ -1383,7 +1383,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `inventory` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `warehouse` bigint(10) NOT NULL,
 `stock` float(11) NOT NULL,
 `item_id` bigint(10) NOT NULL,
@@ -1401,7 +1401,7 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `inventory_transfer_items` (
-`id` bigint(10) NOT NULL,
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
 `item_id` bigint(10) NOT NULL,
 `reference_number` varchar(255) NOT NULL,
 `quantity` float NOT NULL,
