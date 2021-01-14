@@ -14,6 +14,7 @@ class Inventory_model extends Crud_model {
         $where = "";
         $id = get_array_value($options, "id");
         $item_id = get_array_value($options, "item_id");
+        $item_query = "";
 
         if ($id) {
             $where .= " AND $inventory_table.id=$id";
@@ -21,6 +22,7 @@ class Inventory_model extends Crud_model {
 
         if ($item_id) {
             $where .= " AND $inventory_table.item_id=$item_id";
+            $item_query = "AND i.item_id = $item_id";
         }
 
         $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, $inventory_table.stock, COALESCE((
@@ -30,7 +32,8 @@ class Inventory_model extends Crud_model {
             LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
             WHERE inventory_transfers.deleted = 0
             AND inventory_transfer_items.deleted = 0
-            AND i.item_id = $item_id
+            AND inventory_transfer_items.inventory_id = $inventory_table.id
+            $item_query
             AND inventory_transfers.transferee = $inventory_table.warehouse
         ), 0) AS transferred,
         COALESCE((
@@ -40,7 +43,8 @@ class Inventory_model extends Crud_model {
             LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
             WHERE inventory_transfers.deleted = 0
             AND inventory_transfer_items.deleted = 0
-            AND i.item_id = $item_id
+            AND inventory_transfer_items.inventory_id = $inventory_table.id
+            $item_query
             AND inventory_transfers.receiver = $inventory_table.warehouse
         ), 0) AS received
         FROM $inventory_table

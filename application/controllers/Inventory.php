@@ -146,7 +146,6 @@ class Inventory extends MY_Controller {
         $list_data = $this->Inventory_model->get_details(array(
             'item_id' => $id
         ))->result();
-        // var_dump($list_data);
 
         $result = array();
         foreach ($list_data as $data) {
