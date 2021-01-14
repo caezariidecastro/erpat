@@ -141,7 +141,7 @@ class Estimate_requests extends MY_Controller {
         $client = "";
         if ($data->company_name) {
             if ($data->is_lead) {
-                $client = anchor(get_uri("leads/view/" . $data->client_id), $data->company_name);
+                $client = anchor(get_uri("mcm/leads/view/" . $data->client_id), $data->company_name);
             } else {
                 $client = anchor(get_uri("clients/view/" . $data->client_id), $data->company_name);
             }

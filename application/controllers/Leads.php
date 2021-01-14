@@ -199,7 +199,7 @@ class Leads extends MY_Controller {
         }
 
         $row_data = array(
-            anchor(get_uri("leads/view/" . $data->id), $data->company_name),
+            anchor(get_uri("mcm/leads/view/" . $data->id), $data->company_name),
             $data->primary_contact ? $primary_contact : "",
             $owner
         );

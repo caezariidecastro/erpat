@@ -45,7 +45,7 @@
             <div class="col-md-12 pb10 pt10 ">
                 <i class="fa <?php echo $model_info->is_lead ? "fa-cubes" : "fa-briefcase"; ?>"></i>
                 <?php
-                echo $model_info->is_lead ? anchor("leads/view/" . $model_info->client_id, $model_info->company_name) : anchor("clients/view/" . $model_info->client_id, $model_info->company_name);
+                echo $model_info->is_lead ? anchor("mcm/leads/view/" . $model_info->client_id, $model_info->company_name) : anchor("clients/view/" . $model_info->client_id, $model_info->company_name);
                 ?>
             </div>
         <?php } ?>

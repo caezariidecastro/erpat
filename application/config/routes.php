@@ -82,6 +82,7 @@ $route['fas/incentives'] = 'incentive_categories/index';
 
 // Leads
 $route['mcm/leads'] = 'leads/index';
+$route['mcm/leads/view/(:any)'] = 'leads/view/$1';
 
 // Estimates
 $route['sms/estimates'] = 'estimates/index';

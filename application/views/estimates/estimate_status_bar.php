@@ -4,7 +4,7 @@
         <?php
         if ($estimate_info->is_lead) {
             echo lang("lead") . ": ";
-            echo (anchor(get_uri("leads/view/" . $estimate_info->client_id), $estimate_info->company_name));
+            echo (anchor(get_uri("mcm/leads/view/" . $estimate_info->client_id), $estimate_info->company_name));
         } else {
             echo lang("client") . ": ";
             echo (anchor(get_uri("clients/view/" . $estimate_info->client_id), $estimate_info->company_name));

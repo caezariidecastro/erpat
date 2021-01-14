@@ -7,7 +7,7 @@
         <div class="col-md-6">
             <p> 
                 <?php
-                $client_link = anchor(get_uri("leads/view/" . $lead_info->id), $lead_info->company_name, array("class" => "white-link"));
+                $client_link = anchor(get_uri("mcm/leads/view/" . $lead_info->id), $lead_info->company_name, array("class" => "white-link"));
 
                 if ($this->login_user->user_type === "client") {
                     $client_link = anchor(get_uri("leads/contact_profile/" . $this->login_user->id . "/company"), $lead_info->company_name, array("class" => "white-link"));
