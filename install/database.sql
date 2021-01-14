@@ -1375,7 +1375,7 @@ CREATE TABLE IF NOT EXISTS `inventory_transfers` (
 `receiver` bigint(10) NOT NULL,
 `dispatcher` bigint(10) NOT NULL,
 `driver` bigint(10) NOT NULL,
-`remarks` text NOT NULL,
+`remarks` text NULL,
 `created_on` datetime NOT NULL,
 `created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0
