@@ -32,7 +32,6 @@ class Inventory_model extends Crud_model {
             LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
             WHERE inventory_transfers.deleted = 0
             AND inventory_transfer_items.deleted = 0
-            AND inventory_transfer_items.inventory_id = $inventory_table.id
             $item_query
             AND inventory_transfers.transferee = $inventory_table.warehouse
         ), 0) AS transferred,
@@ -43,7 +42,6 @@ class Inventory_model extends Crud_model {
             LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
             WHERE inventory_transfers.deleted = 0
             AND inventory_transfer_items.deleted = 0
-            AND inventory_transfer_items.inventory_id = $inventory_table.id
             $item_query
             AND inventory_transfers.receiver = $inventory_table.warehouse
         ), 0) AS received
