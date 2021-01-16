@@ -482,7 +482,11 @@ class Team_members extends MY_Controller {
             "user_id" => $user_id,
             "salary" => unformat_currency($this->input->post('salary')),
             "salary_term" => $this->input->post('salary_term'),
-            "date_of_hire" => $this->input->post('date_of_hire')
+            "date_of_hire" => $this->input->post('date_of_hire'),
+            "sss" => $this->input->post('sss'),
+            "tin" => $this->input->post('tin'),
+            "pag_ibig" => $this->input->post('pag_ibig'),
+            "phil_health" => $this->input->post('phil_health')
         );
 
         //we'll save the job title in users table

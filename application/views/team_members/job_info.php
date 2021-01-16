@@ -64,6 +64,66 @@
                     ?>
                 </div>
             </div>
+            <div class="form-group">
+                <label for="sss" class=" col-md-2"><?php echo lang('sss'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "sss",
+                        "name" => "sss",
+                        "value" => $job_info->sss,
+                        "class" => "form-control",
+                        "placeholder" => lang('sss'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tin" class=" col-md-2"><?php echo lang('tin'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "tin",
+                        "name" => "tin",
+                        "value" => $job_info->tin,
+                        "class" => "form-control",
+                        "placeholder" => lang('tin'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="pag_ibig" class=" col-md-2"><?php echo lang('pag_ibig'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "pag_ibig",
+                        "name" => "pag_ibig",
+                        "value" => $job_info->pag_ibig,
+                        "class" => "form-control",
+                        "placeholder" => lang('pag_ibig'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phil_health" class=" col-md-2"><?php echo lang('phil_health'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "phil_health",
+                        "name" => "phil_health",
+                        "value" => $job_info->phil_health,
+                        "class" => "form-control",
+                        "placeholder" => lang('phil_health'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+            </div>
         </div>
 
         <?php if ($this->login_user->is_admin) { ?>
