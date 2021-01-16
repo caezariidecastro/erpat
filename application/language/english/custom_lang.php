@@ -226,6 +226,8 @@ $lang["sss"] = "SSS";
 $lang["tin"] = "TIN";
 $lang["pag_ibig"] = "Pag-ibig";
 $lang["phil_health"] = "PhilHealth";
+$lang["hours_per_day"] = "Hours per day";
+$lang["rate_per_hour"] = "Rate per hour";
 
 // Logistics and Distribution > Vehicles
 $lang["vehicles"] = "Vehicles";

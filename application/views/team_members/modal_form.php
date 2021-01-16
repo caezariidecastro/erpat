@@ -138,6 +138,32 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="hours_per_day" class=" col-md-3"><?php echo lang('hours_per_day'); ?></label>
+                <div class=" col-md-9">
+                    <?php
+                    echo form_input(array(
+                        "id" => "hours_per_day",
+                        "name" => "hours_per_day",
+                        "class" => "form-control",
+                        "placeholder" => lang('hours_per_day')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="rate_per_hour" class=" col-md-3"><?php echo lang('rate_per_hour'); ?></label>
+                <div class=" col-md-9">
+                    <?php
+                    echo form_input(array(
+                        "id" => "rate_per_hour",
+                        "name" => "rate_per_hour",
+                        "class" => "form-control",
+                        "placeholder" => lang('rate_per_hour')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="date_of_hire" class=" col-md-3"><?php echo lang('date_of_hire'); ?></label>
                 <div class=" col-md-9">
                     <?php
