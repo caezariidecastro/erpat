@@ -8,6 +8,8 @@ class Items extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_team_members();
+
+        $this->load->model("Item_categories_model");
     }
 
     protected function validate_access_to_items() {
@@ -28,6 +30,16 @@ class Items extends MY_Controller {
         }
     }
 
+    protected function _get_category_dropdown_data() {
+        $Item_categories = $this->Item_categories_model->get_all()->result();
+        $category_dropdown = array('' => '-');
+
+        foreach ($Item_categories as $group) {
+            $category_dropdown[$group->id] = $group->title;
+        }
+        return $category_dropdown;
+    }
+
     //load note list view
     function index() {
         $this->validate_access_to_items();
@@ -45,6 +57,7 @@ class Items extends MY_Controller {
         ));
 
         $view_data['model_info'] = $this->Items_model->get_one($this->input->post('id'));
+        $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
 
         $this->load->view('items/modal_form', $view_data);
     }
@@ -63,10 +76,19 @@ class Items extends MY_Controller {
         $item_data = array(
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
+            "category" => $this->input->post('category'),
             "unit_type" => $this->input->post('unit_type'),
-            "rate" => unformat_currency($this->input->post('item_rate')),
-            "active" => $this->input->post('active'),
+            "rate" => unformat_currency($this->input->post('item_rate'))
         );
+
+        if($id){
+            $item_data["active"] = $this->input->post('active');
+        }
+
+        if(!$id){
+            $item_data["created_on"] = date('Y-m-d H:i:s');
+            $item_data["created_by"] = $this->login_user->id;
+        }
 
         $item_id = $this->Items_model->save($item_data, $id);
         if ($item_id) {
@@ -111,7 +133,9 @@ class Items extends MY_Controller {
     function list_data() {
         $this->validate_access_to_items();
 
-        $list_data = $this->Items_model->get_details()->result();
+        $list_data = $this->Items_model->get_details(array(
+            'category' => $this->input->post('category_select2_filter')
+        ))->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_item_row($data);
@@ -128,11 +152,14 @@ class Items extends MY_Controller {
         return array(
             $data->title,
             nl2br($data->description),
+            $data->category_name,
             $type,
             $data->rate,
+            $data->created_on,
+            get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             $active_inactive,
             modal_anchor(get_uri("items/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_item'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("items/delete"), "data-action" => "delete"))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("items/delete"), "data-action" => "delete-confirmation"))
         );
     }
 

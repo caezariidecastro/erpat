@@ -7,6 +7,14 @@
             <div class="col-md-12 text-off"> <?php echo lang('item_edit_instruction'); ?></div>
         </div>
     <?php } ?>
+    <div class="form-group">
+        <label for="category" class="col-md-3"><?php echo lang('category'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_dropdown("category", $category_dropdown, $model_info ? $model_info->category : "", "class='select2 validate-hidden' id='category' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <label for="title" class=" col-md-3"><?php echo lang('title'); ?></label>
@@ -49,7 +57,9 @@
                 "name" => "unit_type",
                 "value" => $model_info->unit_type,
                 "class" => "form-control",
-                "placeholder" => lang('unit_type') . ' (Ex: hours, pc, etc.)'
+                "placeholder" => lang('unit_type') . ' (Ex: hours, pc, etc.)',
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>
@@ -97,5 +107,6 @@
         });
 
         $('#active').select2();
+        $('#category').select2();
     });
 </script>

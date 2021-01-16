@@ -1,0 +1,1 @@
+ALTER TABLE `item_categories` ADD `category` BIGINT(10) NOT NULL AFTER `id`;
