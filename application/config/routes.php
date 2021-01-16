@@ -126,6 +126,7 @@ $route['pms/timesheets'] = 'projects/all_timesheets';
 
 // Clients
 $route['pms/clients'] = 'clients/index';
+$route['pms/clients/view/(:any)'] = 'clients/view/$1';
 
 // Services
 $route['pms/services'] = 'items/index';

@@ -341,7 +341,7 @@ class Estimates extends MY_Controller {
             $estimate_url = anchor(get_uri("estimates/preview/" . $data->id), get_estimate_id($data->id));
         }
 
-        $client = anchor(get_uri("clients/view/" . $data->client_id), $data->company_name);
+        $client = anchor(get_uri("pms/clients/view/" . $data->client_id), $data->company_name);
         if ($data->is_lead) {
             $client = anchor(get_uri("leads/view/" . $data->client_id), $data->company_name);
         }

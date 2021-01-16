@@ -877,7 +877,7 @@ class Projects extends MY_Controller {
         $row_data = array(
             anchor(get_uri("pms/projects/view/" . $data->id), $data->id),
             $title,
-            anchor(get_uri("clients/view/" . $data->client_id), $data->company_name),
+            anchor(get_uri("pms/clients/view/" . $data->client_id), $data->company_name),
             $price,
             $data->start_date,
             $start_date,
@@ -1751,7 +1751,7 @@ class Projects extends MY_Controller {
         $row_data = array(
             get_team_member_profile_link($data->user_id, $user),
             $project_title,
-            anchor(get_uri("clients/view/" . $data->timesheet_client_id), $data->timesheet_client_company_name),
+            anchor(get_uri("pms/clients/view/" . $data->timesheet_client_id), $data->timesheet_client_company_name),
             $task_title,
             $data->start_time,
             ($data->hours || get_setting("users_can_input_only_total_hours_instead_of_period")) ? format_to_date($data->start_time) : format_to_datetime($data->start_time),
@@ -1874,7 +1874,7 @@ class Projects extends MY_Controller {
 
             $result[] = array(
                 $project_title,
-                anchor(get_uri("clients/view/" . $data->timesheet_client_id), $data->timesheet_client_company_name),
+                anchor(get_uri("pms/clients/view/" . $data->timesheet_client_id), $data->timesheet_client_company_name),
                 $member,
                 $task_title,
                 $duration,

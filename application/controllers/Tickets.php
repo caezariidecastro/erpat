@@ -343,7 +343,7 @@ class Tickets extends MY_Controller {
         $row_data = array(
             anchor(get_uri("tickets/view/" . $data->id), get_ticket_id($data->id)),
             $title,
-            $data->company_name ? anchor(get_uri("clients/view/" . $data->client_id), $data->company_name) : lang("unknown_client"),
+            $data->company_name ? anchor(get_uri("pms/clients/view/" . $data->client_id), $data->company_name) : lang("unknown_client"),
             $data->project_title ? anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title) : "-",
             $data->ticket_type ? $data->ticket_type : "-",
             $assigned_to,

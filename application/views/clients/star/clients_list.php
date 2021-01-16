@@ -6,7 +6,7 @@
             $icon = "fa fa-briefcase";
 
             $title = "<i class='fa $icon mr10'></i> " . $client->company_name;
-            echo anchor(get_uri("clients/view/" . $client->id), $title, array("class" => "list-group-item"));
+            echo anchor(get_uri("pms/clients/view/" . $client->id), $title, array("class" => "list-group-item"));
         }
     } else {
         ?>

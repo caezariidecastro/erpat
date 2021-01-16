@@ -9,7 +9,7 @@
 
     <span class="ml15"><?php
         echo lang("client") . ": ";
-        echo (anchor(get_uri("clients/view/" . $invoice_info->client_id), $invoice_info->company_name));
+        echo (anchor(get_uri("pms/clients/view/" . $invoice_info->client_id), $invoice_info->company_name));
         ?>
     </span> 
 

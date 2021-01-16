@@ -10,7 +10,7 @@
             <div class="row p20">
                 <p> 
                     <?php
-                    $client_link = anchor(get_uri("clients/view/" . $client_info->id), $client_info->company_name, array("class" => "white-link"));
+                    $client_link = anchor(get_uri("pms/clients/view/" . $client_info->id), $client_info->company_name, array("class" => "white-link"));
 
                     if ($this->login_user->user_type === "client") {
                         $client_link = anchor(get_uri("clients/contact_profile/" . $this->login_user->id . "/company"), $client_info->company_name, array("class" => "white-link"));
