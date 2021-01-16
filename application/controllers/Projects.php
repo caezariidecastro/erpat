@@ -853,7 +853,7 @@ class Projects extends MY_Controller {
             }
         }
 
-        $title = anchor(get_uri("projects/view/" . $data->id), $data->title);
+        $title = anchor(get_uri("pms/projects/view/" . $data->id), $data->title);
         if ($data->labels_list) {
             $project_labels = make_labels_view_data($data->labels_list, true);
             $title .= "<br />" . $project_labels;
@@ -875,7 +875,7 @@ class Projects extends MY_Controller {
 
 
         $row_data = array(
-            anchor(get_uri("projects/view/" . $data->id), $data->id),
+            anchor(get_uri("pms/projects/view/" . $data->id), $data->id),
             $title,
             anchor(get_uri("clients/view/" . $data->client_id), $data->company_name),
             $price,
@@ -1734,7 +1734,7 @@ class Projects extends MY_Controller {
 
         $start_time = $data->start_time;
         $end_time = $data->end_time;
-        $project_title = anchor(get_uri("projects/view/" . $data->project_id), $data->project_title);
+        $project_title = anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title);
         $task_title = modal_anchor(get_uri("projects/task_view"), $data->task_title, array("title" => lang('task_info') . " #$data->task_id", "data-post-id" => $data->task_id));
 
         //if the rich text editor is enabled, don't show the note as title
@@ -1859,7 +1859,7 @@ class Projects extends MY_Controller {
                 $member = get_team_member_profile_link($data->user_id, $user);
             }
 
-            $project_title = anchor(get_uri("projects/view/" . $data->project_id), $data->project_title);
+            $project_title = anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title);
 
             if ($group_by != "member") {
                 $task_title = modal_anchor(get_uri("projects/task_view"), $data->task_title, array("title" => lang('task_info') . " #$data->task_id", "data-post-id" => $data->task_id));
@@ -3263,7 +3263,7 @@ class Projects extends MY_Controller {
         }
         $title .= "<span class='pull-right'>" . $task_point . "</span>";
 
-        $project_title = anchor(get_uri("projects/view/" . $data->project_id), $data->project_title);
+        $project_title = anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title);
 
         $milestone_title = "-";
         if ($data->milestone_title) {

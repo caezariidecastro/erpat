@@ -100,7 +100,7 @@ foreach ($activity_logs as $log) {
                 <?php } ?>
 
                 <?php if (isset($log->log_for_title)) { ?>
-                    <p> <?php echo lang($log->log_for) . ": " . anchor("projects/view/" . $log->log_for_id, $log->log_for_title, array("class" => "dark")); ?></p>
+                    <p> <?php echo lang($log->log_for) . ": " . anchor("pms/projects/view/" . $log->log_for_id, $log->log_for_title, array("class" => "dark")); ?></p>
                 <?php } ?>
             </div>
         </div>

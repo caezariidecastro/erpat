@@ -9,7 +9,7 @@
 
                 echo "<div class='clearfix row projects-row'>";
 
-                echo "<div class='col-md-7 col-sm-7 mt15'>" . anchor(get_uri("projects/view/" . $project->id), $project->title) . "</div>";
+                echo "<div class='col-md-7 col-sm-7 mt15'>" . anchor(get_uri("pms/projects/view/" . $project->id), $project->title) . "</div>";
 
                 $progress = $project->total_points ? round(($project->completed_points / $project->total_points) * 100) : 0;
 

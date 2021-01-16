@@ -34,7 +34,7 @@
 
     <?php if ($ticket_info->project_id != "0" && $show_project_reference == "1") { ?>
         <span class="text-off ml15"><?php echo lang("project") . ": "; ?></span>
-        <?php echo $ticket_info->project_title ? anchor(get_uri("projects/view/" . $ticket_info->project_id), $ticket_info->project_title) : "-"; ?>
+        <?php echo $ticket_info->project_title ? anchor(get_uri("pms/projects/view/" . $ticket_info->project_id), $ticket_info->project_title) : "-"; ?>
     <?php } ?>
 
     <span class="text-off ml15"><?php echo lang("created") . ": "; ?></span>

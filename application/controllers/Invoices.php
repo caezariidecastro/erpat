@@ -459,7 +459,7 @@ class Invoices extends MY_Controller {
 
         $row_data = array($invoice_url,
             anchor(get_uri("clients/view/" . $data->client_id), $data->company_name),
-            $data->project_title ? anchor(get_uri("projects/view/" . $data->project_id), $data->project_title) : "-",
+            $data->project_title ? anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title) : "-",
             $data->bill_date,
             format_to_date($data->bill_date, false),
             $data->due_date,
@@ -561,7 +561,7 @@ class Invoices extends MY_Controller {
         return array(
             $invoice_url,
             anchor(get_uri("clients/view/" . $data->client_id), $data->company_name),
-            $data->project_title ? anchor(get_uri("projects/view/" . $data->project_id), $data->project_title) : "-",
+            $data->project_title ? anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title) : "-",
             $next_recurring_date,
             $next_recurring,
             $data->repeat_every . " " . lang("interval_" . $data->repeat_type),

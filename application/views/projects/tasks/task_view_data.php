@@ -118,7 +118,7 @@ if (!function_exists("get_update_task_info_anchor_data")) {
     ?>
 
     <div class="col-md-12 mb15">
-        <strong><?php echo lang('project') . ": "; ?> </strong> <?php echo anchor(get_uri("projects/view/" . $model_info->project_id), $model_info->project_title); ?>
+        <strong><?php echo lang('project') . ": "; ?> </strong> <?php echo anchor(get_uri("pms/projects/view/" . $model_info->project_id), $model_info->project_title); ?>
     </div>
 
     <?php if ($model_info->ticket_id != "0") { ?>

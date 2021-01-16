@@ -45,7 +45,7 @@
                 </span>
             </div>
             <?php if (!$timer->task_id) { ?>
-                <div class="pt5"> <i class="fa fa-th-large"></i> <?php echo anchor("projects/view/" . $timer->project_id, $timer->project_title, array("class" => "dark")); ?></div>
+                <div class="pt5"> <i class="fa fa-th-large"></i> <?php echo anchor("pms/projects/view/" . $timer->project_id, $timer->project_title, array("class" => "dark")); ?></div>
             <?php } else { ?>
                 <div class="pt5"> <i class="fa fa-tasks"></i> <?php echo modal_anchor(get_uri("projects/task_view"), $timer->task_title, array("title" => lang('task_info') . " #$timer->task_id", "class" => "dark", "data-post-id" => $timer->task_id)); ?></div>
             <?php } ?>

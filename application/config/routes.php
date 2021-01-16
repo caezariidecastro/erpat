@@ -113,6 +113,7 @@ $route['lms/warehouse'] = 'warehouse/index';
 
 // All Projects
 $route['pms/all_projects'] = 'projects/all_projects';
+$route['pms/projects/view/(:any)'] = 'projects/view/$1';
 
 // My Tasks
 $route['pms/my_tasks'] = 'projects/all_tasks';

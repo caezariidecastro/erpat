@@ -54,7 +54,7 @@
 
         <?php if ($expense_info->project_title) { ?>
             <div class="col-md-12 mb15">
-                <strong><?php echo lang('project') . ": "; ?> </strong> <?php echo anchor(get_uri("projects/view/" . $expense_info->project_id), $expense_info->project_title); ?>
+                <strong><?php echo lang('project') . ": "; ?> </strong> <?php echo anchor(get_uri("pms/projects/view/" . $expense_info->project_id), $expense_info->project_title); ?>
             </div>
         <?php } ?>
 

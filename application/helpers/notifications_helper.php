@@ -22,7 +22,7 @@ if (!function_exists('get_notification_config')) {
             }
 
             if (isset($options->project_id)) {
-                $url = get_uri("projects/view/" . $options->project_id . "/tasks?task=" . $id);
+                $url = get_uri("pms/projects/view/" . $options->project_id . "/tasks?task=" . $id);
             }
 
             if ((isset($options->task_id) && $options->task_id) || (isset($options->project_id) && $options->project_id)) {
@@ -37,7 +37,7 @@ if (!function_exists('get_notification_config')) {
         $project_link = function($options) {
             $url = "";
             if (isset($options->project_id)) {
-                $url = get_uri("projects/view/" . $options->project_id);
+                $url = get_uri("pms/projects/view/" . $options->project_id);
 
                 if ($options->event == "project_customer_feedback_added" || $options->event == "project_customer_feedback_replied") {
                     $url .= "/customer_feedback";
@@ -57,7 +57,7 @@ if (!function_exists('get_notification_config')) {
             $id = "";
 
             if (isset($options->project_id)) {
-                $url = get_uri("projects/view/" . $options->project_id . "/files");
+                $url = get_uri("pms/projects/view/" . $options->project_id . "/files");
             }
 
             if (isset($options->project_file_id)) {

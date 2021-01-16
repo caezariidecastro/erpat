@@ -30,7 +30,7 @@
     <span class="ml15"><?php
         if ($estimate_info->project_id) {
             echo lang("project") . ": ";
-            echo (anchor(get_uri("projects/view/" . $estimate_info->project_id), $estimate_info->project_title));
+            echo (anchor(get_uri("pms/projects/view/" . $estimate_info->project_id), $estimate_info->project_title));
         }
         ?>
     </span>

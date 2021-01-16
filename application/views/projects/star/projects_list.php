@@ -11,7 +11,7 @@
             }
             
             $title = "<i class='fa $icon mr10'></i> " . $project->title;
-            echo anchor(get_uri("projects/view/" . $project->id), $title, array("class" => "list-group-item"));
+            echo anchor(get_uri("pms/projects/view/" . $project->id), $title, array("class" => "list-group-item"));
         }
     } else {
         ?>

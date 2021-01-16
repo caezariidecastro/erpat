@@ -4,7 +4,7 @@
     <?php echo make_labels_view_data($invoice_info->labels_list, "", true); ?>
 
     <?php if ($invoice_info->project_id) { ?>
-        <span class="ml15"><?php echo lang("project") . ": " . anchor(get_uri("projects/view/" . $invoice_info->project_id), $invoice_info->project_title); ?></span>
+        <span class="ml15"><?php echo lang("project") . ": " . anchor(get_uri("pms/projects/view/" . $invoice_info->project_id), $invoice_info->project_title); ?></span>
     <?php } ?>
 
     <span class="ml15"><?php
