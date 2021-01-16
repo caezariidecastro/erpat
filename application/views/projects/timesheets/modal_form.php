@@ -27,7 +27,7 @@
 
     <?php if ($show_porject_members_dropdown) { ?>
         <div class="form-group">
-            <label for="user_id" class=" col-md-3"><?php echo lang('member'); ?></label>
+            <label for="user_id" class=" col-md-3"><?php echo lang('user'); ?></label>
             <div class="col-md-9" id="dropdown-apploader-section">
                 <?php
                 echo form_input(array(
@@ -35,7 +35,7 @@
                     "name" => "user_id",
                     "value" => $model_info->user_id,
                     "class" => "form-control",
-                    "placeholder" => lang('member')
+                    "placeholder" => lang('user')
                 ));
                 ?>
             </div>

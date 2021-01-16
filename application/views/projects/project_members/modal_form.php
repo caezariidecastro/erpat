@@ -4,7 +4,7 @@
     <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
 
     <div class="form-group" style="min-height: 50px">
-        <label for="user_id" class=" col-md-3"><?php echo ($add_user_type == "client_contacts") ? lang('contact') : lang('member'); ?></label>
+        <label for="user_id" class=" col-md-3"><?php echo ($add_user_type == "client_contacts") ? lang('contact') : lang('user'); ?></label>
         <div class="col-md-9">
             <div class="select-member-field">
                 <div class="select-member-form clearfix pb10">

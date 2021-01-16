@@ -40,7 +40,7 @@
 
             rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}, showClearButton: true}],
             columns: [
-                {title: "<?php echo lang('member') ?>"},
+                {title: "<?php echo lang('user') ?>"},
                 {title: "<?php echo lang('project') ?>"},
                 {title: "<?php echo lang('client') ?>"},
                 {title: "<?php echo lang('task') ?>"},

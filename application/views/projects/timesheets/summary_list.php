@@ -16,7 +16,7 @@
             columns: [
                 {visible: false, searchable: false},
                 {visible: false, searchable: false},
-                {title: "<?php echo lang("member"); ?>"},
+                {title: "<?php echo lang("user"); ?>"},
                 {title: "<?php echo lang("task"); ?>"},
                 {title: "<?php echo lang("duration"); ?>", "class": "w15p text-right"},
                 {title: "<?php echo lang("hours"); ?>", "class": "w15p text-right"}

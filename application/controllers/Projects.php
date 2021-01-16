@@ -1439,7 +1439,7 @@ class Projects extends MY_Controller {
     private function _get_project_members_dropdown_list_for_filter($project_id) {
 
         $project_members = $this->Project_members_model->get_project_members_dropdown_list($project_id)->result();
-        $project_members_dropdown = array(array("id" => "", "text" => "- " . lang("member") . " -"));
+        $project_members_dropdown = array(array("id" => "", "text" => "- " . lang("user") . " -"));
         foreach ($project_members as $member) {
             $project_members_dropdown[] = array("id" => $member->user_id, "text" => $member->member_name);
         }
@@ -1790,7 +1790,7 @@ class Projects extends MY_Controller {
         $view_data['group_by_dropdown'] = json_encode(
                 array(
                     array("id" => "", "text" => "- " . lang("group_by") . " -"),
-                    array("id" => "member", "text" => lang("member")),
+                    array("id" => "member", "text" => lang("user")),
                     array("id" => "task", "text" => lang("task"))
         ));
 
@@ -1944,7 +1944,7 @@ class Projects extends MY_Controller {
 
         $users = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
 
-        $members_dropdown = array(array("id" => "", "text" => "- " . lang("member") . " -"));
+        $members_dropdown = array(array("id" => "", "text" => "- " . lang("user") . " -"));
         foreach ($users as $id => $name) {
             $members_dropdown[] = array("id" => $id, "text" => $name);
         }
@@ -1976,7 +1976,7 @@ class Projects extends MY_Controller {
         $view_data['group_by_dropdown'] = json_encode(
                 array(
                     array("id" => "", "text" => "- " . lang("group_by") . " -"),
-                    array("id" => "member", "text" => lang("member")),
+                    array("id" => "member", "text" => lang("user")),
                     array("id" => "project", "text" => lang("project")),
                     array("id" => "task", "text" => lang("task"))
         ));

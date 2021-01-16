@@ -50,7 +50,7 @@
             filterDropdown: [{name: "user_id", class: "w200", options: <?php echo $project_members_dropdown; ?>}, {name: "task_id", class: "w200", options: <?php echo $tasks_dropdown; ?>}],
             rangeDatepicker: [{startDate: {name: "start_date", value: ""}, endDate: {name: "end_date", value: ""}, showClearButton: true}],
             columns: [
-                {title: "<?php echo lang('member') ?>"},
+                {title: "<?php echo lang('user') ?>"},
                 {visible: false, searchable: false},
                 {visible: false, searchable: false},
                 {title: "<?php echo lang('task') ?>"},

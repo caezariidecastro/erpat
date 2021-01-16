@@ -332,7 +332,7 @@ class Attendance extends MY_Controller {
 
         $members = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
 
-        $members_dropdown = array(array("id" => "", "text" => "- " . lang("member") . " -"));
+        $members_dropdown = array(array("id" => "", "text" => "- " . lang("user") . " -"));
         foreach ($members as $id => $name) {
             $members_dropdown[] = array("id" => $id, "text" => $name);
         }

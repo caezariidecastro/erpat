@@ -106,8 +106,6 @@
                         "name" => "job_title",
                         "class" => "form-control",
                         "placeholder" => lang('job_title'),
-                        "data-rule-required" => true,
-                        "data-msg-required" => lang("field_required"),
                     ));
                     ?>
                 </div>
@@ -120,7 +118,8 @@
                         "id" => "salary",
                         "name" => "salary",
                         "class" => "form-control",
-                        "placeholder" => lang('salary')
+                        "placeholder" => lang('salary'),
+                        "type" => "number"
                     ));
                     ?>
                 </div>
@@ -152,6 +151,59 @@
                     ?>
                 </div>
             </div>
+            <hr>
+            <div class="form-group">
+                <label for="sss" class=" col-md-3"><?php echo lang('sss'); ?></label>
+                <div class=" col-md-9">
+                    <?php
+                    echo form_input(array(
+                        "id" => "sss",
+                        "name" => "sss",
+                        "class" => "form-control",
+                        "placeholder" => lang('sss')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tin" class=" col-md-3"><?php echo lang('tin'); ?></label>
+                <div class=" col-md-9">
+                    <?php
+                    echo form_input(array(
+                        "id" => "tin",
+                        "name" => "tin",
+                        "class" => "form-control",
+                        "placeholder" => lang('tin')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="pag_ibig" class=" col-md-3"><?php echo lang('pag_ibig'); ?></label>
+                <div class=" col-md-9">
+                    <?php
+                    echo form_input(array(
+                        "id" => "pag_ibig",
+                        "name" => "pag_ibig",
+                        "class" => "form-control",
+                        "placeholder" => lang('pag_ibig')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phil_health" class=" col-md-3"><?php echo lang('phil_health'); ?></label>
+                <div class=" col-md-9">
+                    <?php
+                    echo form_input(array(
+                        "id" => "phil_health",
+                        "name" => "phil_health",
+                        "class" => "form-control",
+                        "placeholder" => lang('phil_health')
+                    ));
+                    ?>
+                </div>
+            </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="account-info-tab">
             <div class="form-group">
@@ -173,46 +225,55 @@
                     ?>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="password" class="col-md-3"><?php echo lang('password'); ?></label>
-                <div class=" col-md-8">
-                    <div class="input-group">
-                        <?php
-                        echo form_password(array(
-                            "id" => "password",
-                            "name" => "password",
-                            "class" => "form-control",
-                            "placeholder" => lang('password'),
-                            "autocomplete" => "off",
-                            "data-rule-required" => true,
-                            "data-msg-required" => lang("field_required"),
-                            "data-rule-minlength" => 6,
-                            "data-msg-minlength" => lang("enter_minimum_6_characters"),
-                            "autocomplete" => "off",
-                            "style" => "z-index:auto;"
-                        ));
-                        ?>
-                        <label for="password" class="input-group-addon clickable" id="generate_password"><span class="fa fa-key"></span> <?php echo lang('generate'); ?></label>
+            <div id="can_login_wrapper">
+                <div class="form-group">
+                    <label for="password" class="col-md-3"><?php echo lang('password'); ?></label>
+                    <div class=" col-md-8">
+                        <div class="input-group">
+                            <?php
+                            echo form_password(array(
+                                "id" => "password",
+                                "name" => "password",
+                                "class" => "form-control",
+                                "placeholder" => lang('password'),
+                                "autocomplete" => "off",
+                                "data-rule-required" => true,
+                                "data-msg-required" => lang("field_required"),
+                                "data-rule-minlength" => 6,
+                                "data-msg-minlength" => lang("enter_minimum_6_characters"),
+                                "autocomplete" => "off",
+                                "style" => "z-index:auto;"
+                            ));
+                            ?>
+                            <label for="password" class="input-group-addon clickable" id="generate_password"><span class="fa fa-key"></span> <?php echo lang('generate'); ?></label>
+                        </div>
+                    </div>
+                    <div class="col-md-1 p0">
+                        <a href="#" id="show_hide_password" class="btn btn-default" title="<?php echo lang('show_text'); ?>"><span class="fa fa-eye"></span></a>
                     </div>
                 </div>
-                <div class="col-md-1 p0">
-                    <a href="#" id="show_hide_password" class="btn btn-default" title="<?php echo lang('show_text'); ?>"><span class="fa fa-eye"></span></a>
+                <div class="form-group">
+                    <label for="role" class="col-md-3"><?php echo lang('role'); ?></label>
+                    <div class="col-md-9">
+                        <?php
+                        echo form_dropdown("role", $role_dropdown, array(), "class='select2 validate-hidden' id='user-role'");
+                        ?>
+                        <div id="user-role-help-block" class="help-block ml10 hide"><i class="fa fa-warning text-warning"></i> <?php echo lang("admin_user_has_all_power"); ?></div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="role" class="col-md-3"><?php echo lang('role'); ?></label>
-                <div class="col-md-9">
-                    <?php
-                    echo form_dropdown("role", $role_dropdown, array(), "class='select2' id='user-role'");
-                    ?>
-                    <div id="user-role-help-block" class="help-block ml10 hide"><i class="fa fa-warning text-warning"></i> <?php echo lang("admin_user_has_all_power"); ?></div>
+                <div class="form-group ">
+                    <div class="col-md-12">  
+                        <?php
+                        echo form_checkbox("email_login_details", "1", true, "id='email_login_details'");
+                        ?> <label for="email_login_details"><?php echo lang('email_login_details'); ?></label>
+                    </div>
                 </div>
             </div>
             <div class="form-group ">
                 <div class="col-md-12">  
-                    <?php
-                    echo form_checkbox("email_login_details", "1", true, "id='email_login_details'");
-                    ?> <label for="email_login_details"><?php echo lang('email_login_details'); ?></label>
+                    <input type="checkbox" name="is_consumer" value="1" id="is_consumer">
+                    <label for="is_consumer">Is logistics consumer?</label>
+                    <div id="user-role-consumer-block" class="help-block ml10 hide"><i class="fa fa-warning text-warning"></i> <?php echo lang(""); ?></div>
                 </div>
             </div>
         </div>
@@ -312,6 +373,18 @@
         });
 
         $("#form-submit").click(function () {
+            if($("#is_consumer").prop("checked")){
+                $("#user-role").removeClass("validate-hidden");
+                $("#user-role").removeAttr("data-rule-required");
+                $("#user-role").removeAttr("data-msg-required");
+                $("#user-role").removeAttr("aria-required");
+            }
+            else{
+                $("#user-role").addClass("validate-hidden");
+                $("#user-role").attr("data-rule-required", 1);
+                $("#user-role").attr("data-msq-required", "<?= lang("field_required")?>");
+                $("#user-role").attr("aria-required", true);
+            }
             $("#team_member-form").trigger('submit');
         });
 
@@ -341,6 +414,33 @@
             }
         });
 
-        $('#ajaxModalTitle').text('Add user')
+        $("#ajaxModalTitle").text("Add user");
+
+        $("#is_consumer").change(function(){
+            if($(this).prop("checked")){
+                $("#password").attr("data-previous", $("#password").val());
+                $("#password").val("");
+                $("#password").removeAttr("data-rule-required");
+                $("#password").removeAttr("data-msg-required");
+                $("#password").removeAttr("aria-required");
+
+                $("#user-role").attr("data-previous", $("#user-role").val());
+                $("#user-role").select2("val", "");
+
+                $("#email_login_details").prop("checked", false);
+                $("#can_login_wrapper").hide();
+            }
+            else{
+                $("#password").val($("#password").attr("data-previous"));
+                $("#password").attr("data-rule-required", 1);
+                $("#password").attr("data-msg-required", "<?= lang("field_required")?>");
+                $("#password").attr("aria-required", true);
+
+                $("#user-role").select2("val", $("#user-role").attr("data-previous"));
+                
+                $("#email_login_details").prop("checked", true);
+                $("#can_login_wrapper").show();
+            }
+        });
     });
 </script>

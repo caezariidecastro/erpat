@@ -155,6 +155,7 @@
             },
             onSubmit: function (data, self, options) {
                 $('#reference_number').removeAttr('disabled');
+                $('input[name^=inventory_items]').remove();
 
                 let itemsTableData = itemsTable.rows().data();
 

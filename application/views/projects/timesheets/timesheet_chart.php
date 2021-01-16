@@ -8,7 +8,7 @@
                 "id" => "members-dropdown",
                 "name" => "members-dropdown",
                 "class" => "select2 w200 reload-timesheet-chart pull-right",
-                "placeholder" => lang('member')
+                "placeholder" => lang('user')
             ));
             ?>
             <?php
