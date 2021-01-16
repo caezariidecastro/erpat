@@ -3,14 +3,14 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Inventory_transfers extends MY_Controller {
+class Deliveries extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model("Inventory_transfers_model");
+        $this->load->model("Deliveries_model");
         $this->load->model("Inventory_model");
         $this->load->model("Warehouse_model");
-        $this->load->model("Inventory_item_entries_model");
+        $this->load->model("Vehicles_model");
     }
 
     protected function _get_warehouse_dropdown_data() {
@@ -23,12 +23,22 @@ class Inventory_transfers extends MY_Controller {
         return $warehouse_dropdown;
     }
 
+    protected function _get_vehicle_dropdown_data() {
+        $Vehicles = $this->Vehicles_model->get_all()->result();
+        $vehicle_dropdown = array('' => '-');
+
+        foreach ($Vehicles as $group) {
+            $vehicle_dropdown[$group->id] = "$group->brand $group->model $group->year $group->color";
+        }
+        return $vehicle_dropdown;
+    }
+
     function index(){
-        $this->template->rander("inventory_transfers/index");
+        $this->template->rander("deliveries/index");
     }
 
     function list_data(){
-        $list_data = $this->Inventory_transfers_model->get_details()->result();
+        $list_data = $this->Deliveries_model->get_details()->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -41,16 +51,17 @@ class Inventory_transfers extends MY_Controller {
 
         return array(
             $data->reference_number,
-            $data->transferee_name,
-            $data->receiver_name,
+            $data->warehouse_name,
+            $data->consumer_name,
             get_team_member_profile_link($data->dispatcher, $data->dispatcher_name, array("target" => "_blank")),
             get_team_member_profile_link($data->driver, $data->driver_name, array("target" => "_blank")),
+            $data->vehicle_name,
             $item_count,
             nl2br($data->remarks),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
-            modal_anchor(get_uri("inventory_transfers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_transfer'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory_transfers/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("deliveries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_delivery'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("deliveries/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
@@ -79,16 +90,16 @@ class Inventory_transfers extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
-        $transferee = $this->input->post('transferee');
-        $receiver = $this->input->post('receiver');
-        $inventory_items = $this->input->post('inventory_items');
+        $warehouse = $this->input->post('warehouse');
+        $delivery_items = $this->input->post('delivery_items');
         $reference_number = $this->input->post('reference_number');
 
         $vendor_data = array(
-            "transferee" => $transferee,
-            "receiver" => $receiver,
+            "warehouse" => $warehouse,
+            "consumer" => $this->input->post('consumer'),
             "dispatcher" => $this->input->post('dispatcher'),
             "driver" => $this->input->post('driver'),
+            "vehicle" => $this->input->post('vehicle'),
             "remarks" => $this->input->post('remarks'),
         );
 
@@ -99,56 +110,36 @@ class Inventory_transfers extends MY_Controller {
         }
 
         if($id){
-            // If edit mode, Delete previous inventory_items
-            $this->Inventory_transfers_model->delete_transfer_item($reference_number);
+            // If edit mode, Delete previous delivery_items
+            $this->Deliveries_model->delete_delivery_item($reference_number);
         }
 
 
-        if($transferee == $receiver){
-            echo json_encode(array("success" => false, 'message' => lang('transfer_from_and_to_error')));
+        if(!$delivery_items){
+            echo json_encode(array("success" => false, 'message' => lang('item_table_empty_error')));
         }
         else{
-            if(!$inventory_items){
-                echo json_encode(array("success" => false, 'message' => lang('item_table_empty_error')));
+            $vendor_id = $this->Deliveries_model->save($vendor_data, $id);
+
+            for($i = 0; $i < count($delivery_items); $i++){
+                $inventory_item = json_decode($delivery_items[$i]);
+
+                $data = array(
+                    'inventory_id' => $inventory_item->id,
+                    'reference_number' => $reference_number,
+                    'quantity' => $inventory_item->value
+                );
+                
+                $this->Deliveries_model->insert_delivery_item($data);
             }
-            else{
-                for($i = 0; $i < count($inventory_items); $i++){
-                    $inventory_item = json_decode($inventory_items[$i]);
-                    $this->validate_items_warehouse($inventory_item->id, $receiver);
-                }
 
-                $vendor_id = $this->Inventory_transfers_model->save($vendor_data, $id);
-    
-                for($i = 0; $i < count($inventory_items); $i++){
-                    $inventory_item = json_decode($inventory_items[$i]);
-    
-                    $data = array(
-                        'inventory_id' => $inventory_item->id,
-                        'reference_number' => $reference_number,
-                        'quantity' => $inventory_item->value
-                    );
-                    
-                    $this->Inventory_transfers_model->insert_transfer_item($data);
-                }
-    
-                if ($vendor_id) {
-                    $options = array("id" => $vendor_id);
-                    $vendor_info = $this->Inventory_transfers_model->get_details($options)->row();
-                    echo json_encode(array("success" => true, "id" => $vendor_info->id, "data" => $this->_make_row($vendor_info), 'message' => lang('record_saved')));
-                } else {
-                    echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
-                }
+            if ($vendor_id) {
+                $options = array("id" => $vendor_id);
+                $vendor_info = $this->Deliveries_model->get_details($options)->row();
+                echo json_encode(array("success" => true, "id" => $vendor_info->id, "data" => $this->_make_row($vendor_info), 'message' => lang('record_saved')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
             }
-        }
-    }
-
-    private function validate_items_warehouse($item_id, $warehouse_id){
-        if(!$this->Inventory_model->item_on_warehouse_check($item_id, $warehouse_id)){
-            $item = $this->Inventory_model->get_one($item_id);
-            $warehouse = $this->Warehouse_model->get_one($warehouse_id);
-
-            echo json_encode(array("success" => false, 'message' => "Item $item->name doesn't exist on warehouse $warehouse->name"));
-            die;
         }
     }
 
@@ -157,14 +148,16 @@ class Inventory_transfers extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $model_info = $this->Inventory_transfers_model->get_one($this->input->post('id'));
+        $model_info = $this->Deliveries_model->get_one($this->input->post('id'));
 
         $view_data['model_info'] = $model_info;
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        $view_data['consumer_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "consumer"));
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
-        $view_data['warehouse_item_select2'] = $model_info->transferee ? $this->get_inventory_items_select2_data($model_info->transferee) : array('id' => '', 'text' => '');
+        $view_data['vehicle_dropdown'] = $this->_get_vehicle_dropdown_data();
+        $view_data['warehouse_item_select2'] = $model_info->warehouse ? $this->get_inventory_items_select2_data($model_info->warehouse) : array('id' => '', 'text' => '');
 
-        $this->load->view('inventory_transfers/modal_form', $view_data);
+        $this->load->view('deliveries/modal_form', $view_data);
     }
 
     function delete() {
@@ -174,19 +167,19 @@ class Inventory_transfers extends MY_Controller {
 
         $id = $this->input->post('id');
 
-        if ($this->Inventory_transfers_model->delete($id)) {
+        if ($this->Deliveries_model->delete($id)) {
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
     }
 
-    function get_transferred_items($reference_number = null){
+    function get_delivered_items($reference_number = null){
         if(!$reference_number){
             echo json_encode(array('data' => []));
         }
         else{
-            $list_data = $this->Inventory_transfers_model->get_transferred_items($reference_number)->result();
+            $list_data = $this->Deliveries_model->get_delivered_items($reference_number)->result();
             $result = array();
             foreach ($list_data as $data) {
                 $result[] = array(

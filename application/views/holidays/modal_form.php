@@ -20,6 +20,38 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="date_from" class=" col-md-3"><?php echo lang('from'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "date_from",
+                "name" => "date_from",
+                "value" => $model_info ? $model_info->date_from : "",
+                "class" => "form-control",
+                "placeholder" => lang('from'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="date_to" class=" col-md-3"><?php echo lang('to'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "date_to",
+                "name" => "date_to",
+                "value" => $model_info ? $model_info->date_to : "",
+                "class" => "form-control",
+                "placeholder" => lang('to'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="description" class="col-md-3"><?php echo lang('description'); ?></label>
         <div class=" col-md-9">
             <?php
@@ -34,35 +66,6 @@
             ?>
         </div>
     </div>
-    <div class="form-group">
-        <label for="date_from" class=" col-md-3"><?php echo lang('from'); ?></label>
-        <div class="col-md-9">
-            <?php
-            echo form_input(array(
-                "id" => "date_from",
-                "name" => "date_from",
-                "value" => $model_info ? $model_info->date_from : "",
-                "class" => "form-control",
-                "placeholder" => lang('from')
-            ));
-            ?>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="date_to" class=" col-md-3"><?php echo lang('to'); ?></label>
-        <div class="col-md-9">
-            <?php
-            echo form_input(array(
-                "id" => "date_to",
-                "name" => "date_to",
-                "value" => $model_info ? $model_info->date_to : "",
-                "class" => "form-control",
-                "placeholder" => lang('to')
-            ));
-            ?>
-        </div>
-    </div>
-
 </div>
 
 <div class="modal-footer">

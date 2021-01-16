@@ -54,11 +54,12 @@ $lang["submenu_sms_invoices"] = "Invoices";
 $lang["submenu_sms_giftcard"] = "Gift Card - Soon!";
 $lang["submenu_sms_coupons"] = "Coupons - Soon!";
 
-$lang["submenu_lms_delivery"] = "Delivery - New";
+$lang["submenu_lms_delivery"] = "Delivery";
 $lang["submenu_lms_warehouse"] = "Warehouse";
 $lang["submenu_lms_transfers"] = "Transfer";
 $lang["submenu_lms_items"] = "Items";
 $lang["submenu_lms_inventory"] = "Inventory";
+$lang["submenu_lms_vehicles"] = "Vehicles";
 
 $lang["submenu_mcm_leads"] = "Leads";
 
@@ -74,10 +75,10 @@ $lang["send_invitation_to_an_employee"] = "Send invitation to an user.";
 $lang["attendance"] = "Attendance";
 
 // Human Resource > Department
-$lang["department"] = "Deparment";
-$lang["add_department"] = "Add deparment";
-$lang["edit_department"] = "Edit deparment";
-$lang["delete_department"] = "Delete deparment";
+$lang["department"] = "Department";
+$lang["add_department"] = "Add department";
+$lang["edit_department"] = "Edit department";
+$lang["delete_department"] = "Delete department";
 
 // Human Resource > Holidays
 $lang["holiday"] = "Holiday";
@@ -191,3 +192,48 @@ $lang["select_an_item"] = "Select an item to view";
 $lang["add_inventory"] = "Add inventory";
 $lang["opening_stock"] = "Opening stock";
 $lang["duplicate_item_error"] = "Item is already at the selected warehouse";
+
+// Logistics and Distribution > Delivery
+$lang["delivery"] = "Delivery";
+$lang["add_delivery"] = "Add delivery";
+$lang["edit_delivery"] = "Edit delivery";
+$lang["consumer"] = "Consumer";
+$lang["vehicle"] = "Vehicle";
+
+$lang["edit_team_member"] = "Edit user";
+$lang["delete_team_member"] = "Delete user";
+$lang["team_member"] = "User";
+$lang["team_members"] = "Users";
+$lang["invite_someone_to_join_as_a_team_member"] = "Invite someone to join as a user.";
+$lang["all_team_members"] = "All users";
+$lang["create_an_account_as_a_team_member"] = "Create an account as a user.";
+$lang["team_member_invitation"] = "user invitation";
+$lang["can_manage_team_members_leave"] = "Can manage user's leaves?";
+$lang["can_manage_team_members_timecards"] = "Can manage user's time cards?";
+$lang["set_team_members_permission"] = "Set users permissions";
+$lang["can_view_team_members_contact_info"] = "Can view user's contact info?";
+$lang["can_view_team_members_social_links"] = "Can view user's social links?";
+$lang["can_update_team_members_general_info_and_social_links"] = "Can update user's general info and social links?";
+$lang["can_manage_team_members_project_timesheet"] = "Can manage user's project timesheet?";
+$lang["hide_team_members_list"] = "Hide users list?";
+$lang["clocked_in_team_members"] = "Clocked in users";
+$lang["clocked_out_team_members"] = "Clocked out users";
+$lang["latest_online_team_members"] = "Latest online users";
+$lang["left_menu_setting_help_message"] = "This will be the default left menu for users. Please note that, the menu items will be distributed as per user's permission.";
+$lang["visible_to_team_members_only"] = "Visible to users only";
+
+$lang["sss"] = "SSS";
+$lang["tin"] = "TIN";
+$lang["pag_ibig"] = "Pag-ibig";
+$lang["phil_health"] = "PhilHealth";
+
+// Logistics and Distribution > Vehicles
+$lang["vehicles"] = "Vehicles";
+$lang["add_vehicle"] = "Add vehicle";
+$lang["edit_vehicle"] = "Edit vehicle";
+$lang["brand"] = "Brand";
+$lang["model"] = "Model";
+$lang["year"] = "Year";
+$lang["color"] = "Color";
+$lang["transmission"] = "Transmission";
+$lang["no_of_wheels"] = "No. of Wheels";
