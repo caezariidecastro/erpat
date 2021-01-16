@@ -64,7 +64,8 @@ class Items extends MY_Controller {
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
             "unit_type" => $this->input->post('unit_type'),
-            "rate" => unformat_currency($this->input->post('item_rate'))
+            "rate" => unformat_currency($this->input->post('item_rate')),
+            "active" => $this->input->post('active'),
         );
 
         $item_id = $this->Items_model->save($item_data, $id);
@@ -122,12 +123,14 @@ class Items extends MY_Controller {
 
     private function _make_item_row($data) {
         $type = $data->unit_type ? $data->unit_type : "";
+        $active_inactive = $data->active == 1 ? "<small class='label label-success'>Active</small>" : "<small class='label label-danger'>Inactive</small>";
 
         return array(
             $data->title,
             nl2br($data->description),
             $type,
             $data->rate,
+            $active_inactive,
             modal_anchor(get_uri("items/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_item'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("items/delete"), "data-action" => "delete"))
         );

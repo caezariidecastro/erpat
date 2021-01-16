@@ -176,6 +176,8 @@ $lang["vendor"] = "Vendor";
 $lang["add_vendor"] = "Add vendor";
 $lang["edit_vendor"] = "Edit vendor";
 $lang["selling_price"] = "Selling price";
+$lang["active_inactive"] = "Active / Inactive";
+$lang["inactive_hidden"] = "Note: Inactive items will not appear in drop down list";
 
 // Logistics and Distribution > Transfer
 $lang["transfers"] = "Transfers";

@@ -37,7 +37,9 @@ class Invoice_items_model extends Crud_model {
 
         $sql = "SELECT $items_table.title
         FROM $items_table
-        WHERE $items_table.deleted=0  AND $items_table.title LIKE '%$keyword%'
+        WHERE $items_table.deleted=0
+        AND $items_table.active=1  
+        AND $items_table.title LIKE '%$keyword%'
         LIMIT 10 
         ";
         return $this->db->query($sql)->result();
