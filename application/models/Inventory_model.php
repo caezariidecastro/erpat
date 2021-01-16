@@ -44,7 +44,17 @@ class Inventory_model extends Crud_model {
             AND inventory_transfer_items.deleted = 0
             $item_query
             AND inventory_transfers.receiver = $inventory_table.warehouse
-        ), 0) AS received
+        ), 0) AS received,
+        COALESCE((
+            SELECT SUM(delivery_items.quantity)
+            FROM delivery_items
+            LEFT JOIN deliveries ON deliveries.reference_number = delivery_items.reference_number
+            LEFT JOIN inventory i ON i.id = delivery_items.inventory_id
+            WHERE deliveries.deleted = 0
+            AND delivery_items.deleted = 0
+            $item_query
+            AND deliveries.warehouse = $inventory_table.warehouse
+        ), 0) AS delivered
         FROM $inventory_table
         LEFT JOIN users ON users.id = $inventory_table.created_by
         LEFT JOIN warehouses w ON w.id = $inventory_table.warehouse

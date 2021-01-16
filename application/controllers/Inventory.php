@@ -87,7 +87,7 @@ class Inventory extends MY_Controller {
                             </div>
                             <div class="col-md-4">
                                 <div class="text-off pull-right text-right">
-                                    Available stocks: '.($data->stock - $data->transferred + $data->received ).'
+                                    Available stocks: '.($data->stock - $data->transferred + $data->received - $data->delivered).'
                                 </div>
                             </div>
                         </div>
