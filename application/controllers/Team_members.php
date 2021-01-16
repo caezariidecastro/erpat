@@ -112,17 +112,22 @@ class Team_members extends MY_Controller {
             exit();
         }
 
+        $no_login_user = ["consumer"];
+
+        $password = $this->input->post("password");
+        $user_type = $this->input->post("is_consumer") ? "consumer" : "staff";
+
         validate_submitted_data(array(
             "email" => "required|valid_email",
             "first_name" => "required",
             "last_name" => "required",
-            "job_title" => "required",
-            "role" => "required"
+            "password" => in_array($user_type, $no_login_user) ? "" : "required",
+            "role" => in_array($user_type, $no_login_user) ? "" : "required"
         ));
 
         $user_data = array(
             "email" => $this->input->post('email'),
-            "password" => password_hash($this->input->post("password"), PASSWORD_DEFAULT),
+            "password" => $password ? password_hash($this->input->post("password"), PASSWORD_DEFAULT) : "",
             "first_name" => $this->input->post('first_name'),
             "last_name" => $this->input->post('last_name'),
             "is_admin" => $this->input->post('is_admin'),
@@ -132,7 +137,7 @@ class Team_members extends MY_Controller {
             "job_title" => $this->input->post('job_title'),
             "phone" => $this->input->post('phone'),
             "gender" => $this->input->post('gender'),
-            "user_type" => "staff",
+            "user_type" => $user_type,
             "created_at" => get_current_utc_time()
         );
 
@@ -157,7 +162,11 @@ class Team_members extends MY_Controller {
                 "user_id" => $user_id,
                 "salary" => $this->input->post('salary') ? $this->input->post('salary') : 0,
                 "salary_term" => $this->input->post('salary_term'),
-                "date_of_hire" => $this->input->post('date_of_hire')
+                "date_of_hire" => $this->input->post('date_of_hire'),
+                "sss" => $this->input->post('sss'),
+                "tin" => $this->input->post('tin'),
+                "pag_ibig" => $this->input->post('pag_ibig'),
+                "phil_health" => $this->input->post('phil_health'),
             );
             $this->Users_model->save_job_info($job_data);
 
@@ -260,7 +269,7 @@ class Team_members extends MY_Controller {
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
         $options = array(
             "status" => $this->input->post("status"),
-            "user_type" => "staff",
+            "user_type" => $this->input->post("staff"),
             "custom_fields" => $custom_fields
         );
 
@@ -648,7 +657,7 @@ class Team_members extends MY_Controller {
     //prepare the dropdown list of roles
     private function _get_roles_dropdown() {
         $role_dropdown = array(
-            // "0" => lang('user'),
+            "" => '-',
             "admin" => lang('admin') //static role
         );
         $roles = $this->Roles_model->get_all()->result();
