@@ -80,7 +80,7 @@
                 $last_estimate = end($estimates);
                 foreach ($estimates as $estimate) {
                     $seperation = ($estimate == $last_estimate) ? "" : ", ";
-                    echo anchor(get_uri("estimates/view/" . $estimate->id), get_estimate_id($estimate->id)) . $seperation;
+                    echo anchor(get_uri("sms/estimates/view/" . $estimate->id), get_estimate_id($estimate->id)) . $seperation;
                 }
                 ?>
             <?php } ?>  

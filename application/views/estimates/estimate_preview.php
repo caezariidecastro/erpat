@@ -30,7 +30,7 @@
             echo "<div class='text-center'>" . anchor("estimates/download_pdf/" . $estimate_info->id, lang("download_pdf"), array("class" => "btn btn-default round")) . "</div>";
         }
         if ($show_close_preview)
-            echo "<div class='text-center'>" . anchor("estimates/view/" . $estimate_info->id, lang("close_preview"), array("class" => "btn btn-default round")) . "</div>"
+            echo "<div class='text-center'>" . anchor("sms/estimates/view/" . $estimate_info->id, lang("close_preview"), array("class" => "btn btn-default round")) . "</div>"
             ?>
 
         <div class="invoice-preview-container bg-white mt15">

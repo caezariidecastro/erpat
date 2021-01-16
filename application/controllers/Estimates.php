@@ -335,7 +335,7 @@ class Estimates extends MY_Controller {
     private function _make_row($data, $custom_fields) {
         $estimate_url = "";
         if ($this->login_user->user_type == "staff") {
-            $estimate_url = anchor(get_uri("estimates/view/" . $data->id), get_estimate_id($data->id));
+            $estimate_url = anchor(get_uri("sms/estimates/view/" . $data->id), get_estimate_id($data->id));
         } else {
             //for client client
             $estimate_url = anchor(get_uri("estimates/preview/" . $data->id), get_estimate_id($data->id));

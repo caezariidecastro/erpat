@@ -450,7 +450,7 @@ class Invoices extends MY_Controller {
     private function _make_row($data, $custom_fields) {
         $invoice_url = "";
         if ($this->login_user->user_type == "staff") {
-            $invoice_url = anchor(get_uri("invoices/view/" . $data->id), get_invoice_id($data->id));
+            $invoice_url = anchor(get_uri("sms/invoices/view/" . $data->id), get_invoice_id($data->id));
         } else {
             $invoice_url = anchor(get_uri("invoices/preview/" . $data->id), get_invoice_id($data->id));
         }
@@ -529,7 +529,7 @@ class Invoices extends MY_Controller {
 
     private function _make_recurring_row($data) {
 
-        $invoice_url = anchor(get_uri("invoices/view/" . $data->id), get_invoice_id($data->id));
+        $invoice_url = anchor(get_uri("sms/invoices/view/" . $data->id), get_invoice_id($data->id));
 
         $cycles = $data->no_of_cycles_completed . "/" . $data->no_of_cycles;
         if (!$data->no_of_cycles) { //if not no of cycles, so it's infinity

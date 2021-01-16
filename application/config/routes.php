@@ -86,6 +86,8 @@ $route['mcm/leads/view/(:any)'] = 'leads/view/$1';
 
 // Estimates
 $route['sms/estimates'] = 'estimates/index';
+$route['sms/estimates/view/(:any)'] = 'estimates/view/$1';
+$route['sms/invoices/view/(:any)'] = 'invoices/view/$1';
 
 // Invoices
 $route['sms/invoices'] = 'invoices/index';

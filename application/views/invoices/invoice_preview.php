@@ -57,7 +57,7 @@
 
 
         if ($show_close_preview) {
-            echo "<div class='text-center'>" . anchor("invoices/view/" . $invoice_info->id, lang("close_preview"), array("class" => "btn btn-default round")) . "</div>";
+            echo "<div class='text-center'>" . anchor("sms/invoices/view/" . $invoice_info->id, lang("close_preview"), array("class" => "btn btn-default round")) . "</div>";
         }
         ?>
 

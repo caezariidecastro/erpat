@@ -22,7 +22,7 @@
         <span class="ml15">
             <?php
             echo lang("created_from") . ": ";
-            echo anchor(get_uri("invoices/view/" . $invoice_info->recurring_invoice_id), get_invoice_id($invoice_info->recurring_invoice_id));
+            echo anchor(get_uri("sms/invoices/view/" . $invoice_info->recurring_invoice_id), get_invoice_id($invoice_info->recurring_invoice_id));
             ?>
         </span>
     <?php } ?>
