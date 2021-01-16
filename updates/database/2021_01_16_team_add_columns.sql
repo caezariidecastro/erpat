@@ -1,0 +1,1 @@
+ALTER TABLE `team` ADD `created_on` DATETIME NOT NULL AFTER `members`, ADD `created_by` BIGINT(10) NOT NULL AFTER `created_on`;
