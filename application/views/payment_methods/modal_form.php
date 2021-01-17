@@ -103,7 +103,16 @@
         }
     }
     ?>
-
+    <div class="form-group">
+        <label for="available_on_payroll" class="col-md-4"><?php echo lang('available_on_payroll'); ?>
+            <span class="help" data-toggle="tooltip" title="<?php echo lang('available_on_payroll_help_text'); ?>"><i class="fa fa-question-circle"></i></span>
+        </label>
+        <div class="col-md-8">
+            <?php
+            echo form_checkbox("available_on_payroll", "1", $model_info->id ? ($model_info->available_on_payroll ? 'checked' : '') : 'checked', "id='available_on_payroll'");
+            ?> 
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">

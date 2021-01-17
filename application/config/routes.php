@@ -107,8 +107,11 @@ $route['fas/accounts'] = 'accounts/index';
 // Transfers
 $route['fas/transfers'] = 'account_transfers/index';
 
-// Transfers
+// Balance Sheet
 $route['fas/balancesheet'] = 'balance_sheet/index';
+
+// Payroll
+$route['fas/payroll'] = 'payroll/index';
 
 // Warehouse
 $route['lms/warehouse'] = 'warehouse/index';

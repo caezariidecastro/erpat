@@ -30,6 +30,7 @@
             columns: [
                 {title: '<?php echo lang("title"); ?>'},
                 {title: '<?php echo lang("description"); ?>'},
+                {title: '<?php echo lang("available_on_payroll"); ?>'},
                 {title: '<?php echo lang("available_on_invoice"); ?>'},
                 {title: '<?php echo lang("minimum_payment_amount"); ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}

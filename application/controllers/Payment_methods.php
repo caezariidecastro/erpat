@@ -126,7 +126,8 @@ class Payment_methods extends MY_Controller {
 
         return array($data->title,
             $data->description,
-            $data->online_payable ? ($data->available_on_invoice ? lang("yes") : lang("no")) : "-",
+            $data->available_on_payroll ? lang("yes") : lang("no"),
+            $data->available_on_invoice ? lang("yes") : lang("no"),
             $data->minimum_payment_amount ? to_decimal_format($data->minimum_payment_amount) : "-",
             $options
         );

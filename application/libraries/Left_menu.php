@@ -306,6 +306,7 @@ class Left_menu {
                     array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet"),
                     array("name" => "submenu_fas_contributions", "url" => "fas/contributions"),
                     array("name" => "submenu_fas_incentives", "url" => "fas/incentives"),
+                    array("name" => "submenu_fas_payroll", "url" => "fas/payroll"),
                 ));
             }
 

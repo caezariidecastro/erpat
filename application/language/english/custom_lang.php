@@ -40,6 +40,7 @@ $lang["submenu_fas_return_purchase"] = "Return Purchase - New";
 $lang["submenu_fas_balancesheet"] = "Balance Sheet";
 $lang["submenu_fas_incentives"] = "Incentives";
 $lang["submenu_fas_contributions"] = "Contributions";
+$lang["submenu_fas_payroll"] = "Payroll";
 
 $lang["submenu_pms_all_projects"] = "All Projects";
 $lang["submenu_pms_my_tasks"] = "My Tasks";
@@ -241,3 +242,13 @@ $lang["year"] = "Year";
 $lang["color"] = "Color";
 $lang["transmission"] = "Transmission";
 $lang["no_of_wheels"] = "No. of Wheels";
+
+// Settings > Payment methods
+$lang["available_on_payroll"] = "Available on payroll";
+$lang["available_on_payroll_help_text"] = "The payment method will appear in payroll modal drop down list";
+
+// Finance & Accounting > Payroll
+$lang["mark_as_paid"] = "Mark as paid";
+$lang["payroll"] = "Payroll";
+$lang["add_payroll"] = "Add payroll";
+$lang["edit_payroll"] = "Edit payroll";
