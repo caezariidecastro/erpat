@@ -797,12 +797,18 @@ CREATE TABLE IF NOT EXISTS `team` (
 
 
 CREATE TABLE IF NOT EXISTS `team_member_job_info` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `date_of_hire` date DEFAULT NULL,
-  `deleted` int(1) NOT NULL DEFAULT '0',
-  `salary` double NOT NULL DEFAULT '0',
+  `salary` double NOT NULL DEFAULT 0,
   `salary_term` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `rate_per_hour` decimal(10,2) DEFAULT NULL,
+  `hours_per_day` float DEFAULT NULL,
+  `date_of_hire` date DEFAULT NULL,
+  `sss` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tin` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pag_ibig` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `phil_health` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;

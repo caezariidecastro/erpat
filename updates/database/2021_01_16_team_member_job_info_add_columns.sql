@@ -1,1 +1,0 @@
-ALTER TABLE `team_member_job_info` ADD `sss` VARCHAR(255) NULL AFTER `salary_term`, ADD `tin` VARCHAR(255) NULL AFTER `sss`, ADD `pag_ibig` VARCHAR(255) NULL AFTER `tin`, ADD `phil_health` VARCHAR(255) NULL AFTER `pag_ibig`;
