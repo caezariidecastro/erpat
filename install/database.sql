@@ -789,6 +789,8 @@ CREATE TABLE IF NOT EXISTS `team` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
   `members` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
   `deleted` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -1294,16 +1296,6 @@ CREATE TABLE IF NOT EXISTS `incentive_entries` (
 `created_on` datetime NOT NULL,
 `created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
-CREATE TABLE IF NOT EXISTS `team` (
-`id` bigint(10) NOT NULL AUTO_INCREMENT,
-`title` text COLLATE utf8_unicode_ci NOT NULL,
-`members` mediumtext COLLATE utf8_unicode_ci NOT NULL,
-`created_on` datetime NOT NULL,
-`created_by` bigint(10) NOT NULL,
-`deleted` int(1) NOT NULL DEFAULT 0,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
