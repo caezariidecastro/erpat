@@ -1,0 +1,1 @@
+CREATE TABLE `erpat`.`inventory_stock_override` ( `id` BIGINT(10) NOT NULL AUTO_INCREMENT , `warehouse` BIGINT(10) NOT NULL , `inventory_id` BIGINT(10) NOT NULL , `stock` FLOAT(10) NOT NULL , `created_on` DATETIME NOT NULL , `created_by` BIGINT(10) NOT NULL , `deleted` TINYINT(1) NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;

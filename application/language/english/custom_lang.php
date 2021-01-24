@@ -192,6 +192,7 @@ $lang["item_table_empty_error"] = "Items table is empty";
 // Logistics and Distribution > Inventory
 $lang["select_an_item"] = "Select an item to view";
 $lang["add_inventory"] = "Add inventory";
+$lang["add_stock"] = "Add stock";
 $lang["opening_stock"] = "Opening stock";
 $lang["duplicate_item_error"] = "Item is already at the selected warehouse";
 

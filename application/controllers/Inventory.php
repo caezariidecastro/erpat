@@ -10,6 +10,7 @@ class Inventory extends MY_Controller {
         $this->load->model("Inventory_model");
         $this->load->model("Inventory_item_entries_model");
         $this->load->model("Warehouse_model");
+        $this->load->model("Inventory_override_model");
     }
 
     protected function _get_warehouse_dropdown_data() {
@@ -64,14 +65,16 @@ class Inventory extends MY_Controller {
     }
 
     function add_inventory_modal_form() {
-        validate_submitted_data(array(
-            "id" => "numeric"
-        ));
-
-        $view_data['model_info'] = "";
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
 
-        $this->load->view('inventory/add', $view_data);
+        $this->load->view('inventory/add_inventory', $view_data);
+    }
+
+    function add_stock_modal_form($warehouse_id, $inventory_id) {
+        $view_data['warehouse_id'] = $warehouse_id;
+        $view_data['inventory_id'] = $inventory_id;
+
+        $this->load->view('inventory/add_stock', $view_data);
     }
 
 
@@ -87,20 +90,31 @@ class Inventory extends MY_Controller {
                             </div>
                             <div class="col-md-4">
                                 <div class="text-off pull-right text-right">
-                                    Available stocks: '.($data->stock - $data->transferred + $data->received - $data->delivered).'
+                                    Available stocks: '.($data->stock + $data->stock_override - $data->transferred + $data->received - $data->delivered).'
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>';
 
+        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory/delete"), "data-action" => "delete-confirmation", "data-reload-on-success" => "1")) . '</li>';
+        $add = '<li role="presentation">' . modal_anchor(get_uri("inventory/add_stock_modal_form/$data->warehouse/$data->id"), "<i class='fa fa-plus-circle'></i> " . lang('add_stock'), array( "title" => lang('add_stock'), "id" => "add_stock_button")) . '</li>';
+
+        $actions = '<span class="dropdown inline-block" style="position: relative; right: 0; margin-top: 0;">
+                        <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                            <i class="fa fa-cogs"></i>&nbsp;
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $add . $delete . '</ul>
+                    </span>';
+
         return array(
             $detail,
-            js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory/delete"), "data-action" => "delete-confirmation", "data-reload-on-success" => "1"))
+            $actions
         );
     }
 
-    function add(){
+    function add_inventory(){
         validate_submitted_data(array(
             "id" => "numeric"
         ));
@@ -142,6 +156,34 @@ class Inventory extends MY_Controller {
         }
     }
 
+    function add_stock(){
+        validate_submitted_data(array(
+            "inventory_id" => "numeric|required",
+            "warehouse_id" => "numeric|required",
+            "quantity" => "required",
+        ));
+
+        $inventory_id = $this->input->post('inventory_id');
+        $warehouse_id = $this->input->post('warehouse_id');
+
+        $inventory_override_data = array(
+            "warehouse" => $warehouse_id,
+            "stock" => $this->input->post('quantity'),
+            "inventory_id" => $inventory_id,
+            "created_on" => date('Y-m-d H:i:s'),
+            "created_by" => $this->login_user->id
+        );
+
+        $override_id = $this->Inventory_override_model->save($inventory_override_data);
+        if ($override_id) {
+            $options = array("id" => $inventory_id);
+            $inventory_info = $this->Inventory_model->get_details($options)->row();
+            echo json_encode(array("success" => true, "id" => $inventory_info->id, "data" => $this->_inventory_make_row($inventory_info), 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     function list_data($id){
         $list_data = $this->Inventory_model->get_details(array(
             'item_id' => $id
@@ -166,10 +208,19 @@ class Inventory extends MY_Controller {
 
         $id = $this->input->post('id');
 
-        if ($this->Inventory_model->delete($id)) {
-            echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
-        } else {
+        $options = array("id" => $id);
+        $inventory_info = $this->Inventory_model->get_details($options)->row();
+
+        if($inventory_info->transferred || $inventory_info->received || $inventory_info->delivered){
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
+        else{
+            if ($this->Inventory_model->delete($id)) {
+                echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+            }
+        }
+
     }
 }

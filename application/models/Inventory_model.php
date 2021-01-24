@@ -54,7 +54,13 @@ class Inventory_model extends Crud_model {
             AND delivery_items.deleted = 0
             $item_query
             AND deliveries.warehouse = $inventory_table.warehouse
-        ), 0) AS delivered
+        ), 0) AS delivered,
+        COALESCE((
+            SELECT SUM(inventory_stock_override.stock)
+            FROM inventory_stock_override
+            WHERE inventory_stock_override.deleted = 0
+            AND inventory_stock_override.inventory_id = $inventory_table.id
+        ), 0) AS stock_override
         FROM $inventory_table
         LEFT JOIN users ON users.id = $inventory_table.created_by
         LEFT JOIN warehouses w ON w.id = $inventory_table.warehouse

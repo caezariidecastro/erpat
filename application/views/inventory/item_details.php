@@ -26,7 +26,7 @@
             source: '<?php echo_uri("inventory/list_data/".$id) ?>',
             columns: [
                 {title: "<?php echo lang('title') ?> ", "class": "text-left"},
-                {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
+                {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}
             ],
         });
 

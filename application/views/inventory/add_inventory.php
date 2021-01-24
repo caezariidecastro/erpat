@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("inventory/add"), array("id" => "inventory-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("inventory/add_inventory"), array("id" => "inventory-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <div class="form-group">
         <label for="warehouse" class="col-md-3"><?php echo lang('warehouse'); ?></label>
@@ -37,7 +37,7 @@
     $(document).ready(function () {
         $("#inventory-form").appForm({
             onSuccess: function (result) {
-                $("#inventory-table").appTable({newData: result.data, dataId: result.id});
+                $("#inventory-table").appTable({reload: true});
                 $("#items-table").appTable({reload: true});
             },
             onSubmit: function(){
