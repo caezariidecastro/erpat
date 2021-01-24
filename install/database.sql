@@ -1407,3 +1407,40 @@ CREATE TABLE IF NOT EXISTS `inventory_transfer_items` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `deliveries` (
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
+`reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`warehouse` bigint(10) NOT NULL,
+`consumer` bigint(10) NOT NULL,
+`dispatcher` bigint(10) NOT NULL,
+`driver` bigint(10) NOT NULL,
+`vehicle` bigint(10) NOT NULL,
+`remarks` text COLLATE utf8_unicode_ci DEFAULT NULL,
+`created_on` datetime NOT NULL,
+`created_by` bigint(10) NOT NULL,
+`deleted` tinyint(4) NOT NULL DEFAULT 0,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `delivery_items` (
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
+`inventory_id` bigint(10) NOT NULL,
+`reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`quantity` float NOT NULL,
+`deleted` tinyint(4) NOT NULL DEFAULT 0,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `vehicles` (
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
+`brand` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`model` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`year` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`color` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`transmission` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`no_of_wheels` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`created_on` datetime NOT NULL,
+`created_by` bigint(10) NOT NULL,
+`deleted` tinyint(4) NOT NULL DEFAULT 0,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
