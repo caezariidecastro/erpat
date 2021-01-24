@@ -102,7 +102,6 @@
         $('#dispatcher').select2();
         $('#driver').select2();
         $('#vehicle').select2();
-        $('#item').select2({data: <?php echo json_encode($warehouse_item_select2)?>});
 
         $("#warehouse").select2();
     });

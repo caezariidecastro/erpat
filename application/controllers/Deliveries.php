@@ -63,25 +63,6 @@ class Deliveries extends MY_Controller {
         );
     }
 
-    function get_inventory_items_select2_data($warehouse = 0, $type = "object") {
-        if($type == 'json'){
-            $items = $this->Inventory_model->get_dropdown_list(array("name"), "id", array("warehouse" => $warehouse));
-            $item_list = array(array("id" => "", "text" => "-"));
-            foreach ($items as $key => $value) {
-                $item_list[] = array("id" => $key, "text" => $value);
-            }
-            echo json_encode($item_list);
-        }
-        else{
-            $items = $this->Inventory_model->get_dropdown_list(array("name"), "id", array("warehouse" => $warehouse));
-            $item_list = array(array("id" => "", "text" => "-"));
-            foreach ($items as $key => $value) {
-                $item_list[] = array("id" => $key, "text" => $value);
-            }
-            return $item_list;
-        }
-    }
-
     function save() {
         validate_submitted_data(array(
             "id" => "numeric"
@@ -128,7 +109,6 @@ class Deliveries extends MY_Controller {
         $view_data['consumer_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "consumer"));
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
         $view_data['vehicle_dropdown'] = $this->_get_vehicle_dropdown_data();
-        $view_data['warehouse_item_select2'] = $model_info->warehouse ? $this->get_inventory_items_select2_data($model_info->warehouse) : array('id' => '', 'text' => '');
 
         $this->load->view('deliveries/modal_form', $view_data);
     }
