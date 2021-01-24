@@ -82,6 +82,87 @@
             ?>
         </div>
     </div>
+    <hr>
+    <div class="form-group">
+        <label for="street" class="col-md-3"><?php echo lang('street'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "street",
+                "name" => "street",
+                "value" => $model_info ? $model_info->street : "",
+                "class" => "form-control",
+                "placeholder" => lang('street'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="city" class="col-md-3"><?php echo lang('city'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "city",
+                "name" => "city",
+                "value" => $model_info ? $model_info->city : "",
+                "class" => "form-control",
+                "placeholder" => lang('city'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="state" class="col-md-3"><?php echo lang('state'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "state",
+                "name" => "state",
+                "value" => $model_info ? $model_info->state : "",
+                "class" => "form-control",
+                "placeholder" => lang('state'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="zip" class="col-md-3"><?php echo lang('zip'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "zip",
+                "name" => "zip",
+                "value" => $model_info ? $model_info->zip : "",
+                "class" => "form-control",
+                "placeholder" => lang('zip'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="country" class="col-md-3"><?php echo lang('country'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "country",
+                "name" => "country",
+                "value" => $model_info ? $model_info->country : "",
+                "class" => "form-control",
+                "placeholder" => lang('country'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">
@@ -95,10 +176,31 @@
         $("#deliveries-form").appForm({
             onSuccess: function (result) {
                 $("#deliveries-table").appTable({newData: result.data, dataId: result.id});
+            },
+            onSubmit: function(){
+                $('#reference_number').removeAttr("disabled");
             }
         });
 
-        $('#consumer').select2();
+        $('#consumer').select2().change(function(e){
+            $.ajax({
+                url: "<?php echo get_uri("consumers/get_consumer"); ?>",
+                data: {id: e.val},
+                cache: false,
+                type: 'POST',
+                dataType: "json",
+                success: function (response) {
+                    if (response && response.success) {
+                        $("#street").val(response.consumer_info.street);
+                        $("#city").val(response.consumer_info.city);
+                        $("#state").val(response.consumer_info.state);
+                        $("#zip").val(response.consumer_info.zip);
+                        $("#country").val(response.consumer_info.country);
+                    }
+                }
+            });
+        });
+
         $('#dispatcher').select2();
         $('#driver').select2();
         $('#vehicle').select2();

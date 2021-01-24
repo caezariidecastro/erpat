@@ -99,4 +99,13 @@ class Consumers extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
     }
+
+    function get_consumer() {
+        $consumer_info = $this->Consumers_model->get_details(array("id" => $this->input->post('id')))->row();
+        if ($consumer_info) {
+            echo json_encode(array("success" => true, "consumer_info" => $consumer_info));
+        } else {
+            echo json_encode(array("success" => false));
+        }
+    }
 }

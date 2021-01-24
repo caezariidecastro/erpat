@@ -26,6 +26,7 @@
                 {title: "<?php echo lang('driver') ?>"},
                 {title: "<?php echo lang('vehicle') ?>"},
                 {title: "<?php echo lang('remarks') ?>"},
+                {title: "<?php echo lang('address') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}

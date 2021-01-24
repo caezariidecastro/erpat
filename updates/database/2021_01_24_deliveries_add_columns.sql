@@ -1,0 +1,1 @@
+ALTER TABLE `deliveries` ADD `street` TEXT NOT NULL AFTER `remarks`, ADD `city` TEXT NOT NULL AFTER `street`, ADD `state` TEXT NOT NULL AFTER `city`, ADD `zip` TEXT NOT NULL AFTER `state`, ADD `country` TEXT NOT NULL AFTER `zip`;

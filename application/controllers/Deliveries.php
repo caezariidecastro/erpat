@@ -58,6 +58,7 @@ class Deliveries extends MY_Controller {
     }
 
     private function _make_row($data) {
+        $address = (trim($data->street) ? trim($data->street) . ", " : "") . (trim($data->state)  ? trim($data->state)  . ", " : "") . (trim($data->city)  ? trim($data->street)  . ", " : "") . (trim($data->zip)  ? trim($data->zip)  . ", " : "") . trim($data->country);
 
         return array(
             $data->reference_number,
@@ -67,6 +68,7 @@ class Deliveries extends MY_Controller {
             get_team_member_profile_link($data->driver, $data->driver_name, array("target" => "_blank")),
             $data->vehicle_name,
             nl2br($data->remarks),
+            $address,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             modal_anchor(get_uri("deliveries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_delivery'), "data-post-id" => $data->id))
@@ -89,6 +91,11 @@ class Deliveries extends MY_Controller {
             "driver" => $this->input->post('driver'),
             "vehicle" => $this->input->post('vehicle'),
             "remarks" => $this->input->post('remarks'),
+            "street" => $this->input->post('street'),
+            "city" => $this->input->post('city'),
+            "state" => $this->input->post('state'),
+            "zip" => $this->input->post('zip'),
+            "country" => $this->input->post('country')
         );
 
         if(!$id){
@@ -98,6 +105,7 @@ class Deliveries extends MY_Controller {
         }
 
         $vendor_id = $this->Deliveries_model->save($vendor_data, $id);
+        // TODO: Implement auto create invoice
 
         if ($vendor_id) {
             $options = array("id" => $vendor_id);
