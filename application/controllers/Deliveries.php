@@ -11,6 +11,7 @@ class Deliveries extends MY_Controller {
         $this->load->model("Inventory_model");
         $this->load->model("Warehouse_model");
         $this->load->model("Vehicles_model");
+        $this->load->model("Consumers_model");
     }
 
     protected function _get_warehouse_dropdown_data() {
@@ -31,6 +32,16 @@ class Deliveries extends MY_Controller {
             $vehicle_dropdown[$group->id] = "$group->brand $group->model $group->year $group->color";
         }
         return $vehicle_dropdown;
+    }
+
+    protected function _get_consumer_dropdown_data() {
+        $Consumers = $this->Consumers_model->get_all()->result();
+        $consumer_dropdown = array('' => '-');
+
+        foreach ($Consumers as $consumer) {
+            $consumer_dropdown[$consumer->id] = "$consumer->first_name $consumer->last_name";
+        }
+        return $consumer_dropdown;
     }
 
     function index(){
@@ -106,7 +117,7 @@ class Deliveries extends MY_Controller {
 
         $view_data['model_info'] = $model_info;
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
-        $view_data['consumer_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "consumer"));
+        $view_data['consumer_dropdown'] = $this->_get_consumer_dropdown_data();
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
         $view_data['vehicle_dropdown'] = $this->_get_vehicle_dropdown_data();
 
