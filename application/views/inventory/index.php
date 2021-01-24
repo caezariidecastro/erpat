@@ -90,10 +90,13 @@
                     $('#item-details-placeholder').hide();
                     $('#item-details-preview').show();
 
+                    appLoader.show();
+
                     $.ajax({
                         url: "<?php echo get_uri("inventory/item_details/"); ?>"+item_id,
                         success: function (result) {
                             $('#result').html(result);
+                            appLoader.hide();
                         }
                     });
                 }
