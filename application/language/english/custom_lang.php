@@ -28,7 +28,6 @@ $lang["submenu_hrm_holidays"] = "Holidays";
 $lang["submenu_pid_productions"] = "Productions - New";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials - New";
 $lang["submenu_pid_purchases"] = "Purchases - New";
-$lang["submenu_pid_brands"] = "Brands - New";
 
 $lang["submenu_fas_summary"] = "Summary";
 $lang["submenu_fas_payments"] = "Payments";

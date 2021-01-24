@@ -313,10 +313,9 @@ class Left_menu {
             if (get_setting("module_pid") == "1") {
                 $sidebar_menu["menu_pid"] = array("name" => "menu_pid", "url" => "hrm", "class" => "fa-industry", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_pid_productions", "url" => "hrm/productions"),
-                    array("name" => "submenu_pid_billofmaterials", "url" => "hrm/bill-of-materials"),
-                    array("name" => "submenu_pid_purchases", "url" => "hrm/purchases"),
-                    array("name" => "submenu_pid_brands", "url" => "hrm/brands")
+                    array("name" => "submenu_pid_productions", "url" => "pid/productions"),
+                    array("name" => "submenu_pid_billofmaterials", "url" => "pid/bill-of-materials"),
+                    array("name" => "submenu_pid_purchases", "url" => "pid/purchases"),
                 ));
             }
 
