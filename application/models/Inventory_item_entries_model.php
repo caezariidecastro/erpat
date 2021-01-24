@@ -33,7 +33,17 @@ class Inventory_item_entries_model extends Crud_model {
             FROM inventory
             WHERE item_id = $inventory_items_table.id
             AND inventory.deleted = 0
-        ), 0) AS stocks
+        ), 0) AS stocks,
+        COALESCE((
+            SELECT SUM(delivery_items.id)
+            FROM delivery_items
+            LEFT JOIN deliveries ON deliveries.reference_number = delivery_items.reference_number
+            LEFT JOIN inventory ON inventory.item_id = delivery_items.inventory_id
+            WHERE inventory.item_id = $inventory_items_table.id
+            AND delivery_items.deleted = 0
+            AND deliveries.deleted = 0
+            AND inventory.deleted = 0
+        ), 0) AS delivered
         FROM $inventory_items_table
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by
         LEFT JOIN inventory_item_categories cat ON cat.id = $inventory_items_table.category

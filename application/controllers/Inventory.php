@@ -51,7 +51,7 @@ class Inventory extends MY_Controller {
                             </div>
                             <div class="col-md-5">
                                 <div class="text-off pull-right text-right">
-                                    Stocks on hand: '.$data->stocks.'
+                                    Stocks on hand: '.($data->stocks - $data->delivered).'
                                 </div>
                             </div>
                         </div>
