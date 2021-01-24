@@ -137,7 +137,7 @@ $route['pms/clients/view/(:any)'] = 'clients/view/$1';
 $route['pms/services'] = 'item_categories/index';
 
 // Items
-$route['lms/items'] = 'inventory_item_categories/index';
+$route['pid/items'] = 'inventory_item_categories/index';
 
 // Tickets
 $route['help/tickets'] = 'tickets/index';
@@ -146,7 +146,7 @@ $route['help/tickets'] = 'tickets/index';
 $route['lms/transfer'] = 'inventory_transfers/index';
 
 // Inventory
-$route['lms/inventory'] = 'inventory/index';
+$route['pid/inventory'] = 'inventory/index';
 
 // Delivery
 $route['lms/delivery'] = 'deliveries/index';

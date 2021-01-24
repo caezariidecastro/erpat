@@ -28,6 +28,8 @@ $lang["submenu_hrm_holidays"] = "Holidays";
 $lang["submenu_pid_productions"] = "Productions - New";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials - New";
 $lang["submenu_pid_purchases"] = "Purchases - New";
+$lang["submenu_pid_items"] = "Items";
+$lang["submenu_pid_inventory"] = "Inventory";
 
 $lang["submenu_fas_summary"] = "Summary";
 $lang["submenu_fas_payments"] = "Payments";
@@ -57,8 +59,6 @@ $lang["submenu_sms_coupons"] = "Coupons - Soon!";
 $lang["submenu_lms_delivery"] = "Delivery";
 $lang["submenu_lms_warehouse"] = "Warehouse";
 $lang["submenu_lms_transfers"] = "Transfer";
-$lang["submenu_lms_items"] = "Items";
-$lang["submenu_lms_inventory"] = "Inventory";
 $lang["submenu_lms_vehicles"] = "Vehicles";
 
 $lang["submenu_mcm_leads"] = "Leads";

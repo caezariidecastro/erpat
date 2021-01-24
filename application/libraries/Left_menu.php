@@ -316,6 +316,8 @@ class Left_menu {
                     array("name" => "submenu_pid_productions", "url" => "pid/productions"),
                     array("name" => "submenu_pid_billofmaterials", "url" => "pid/bill-of-materials"),
                     array("name" => "submenu_pid_purchases", "url" => "pid/purchases"),
+                    array("name" => "submenu_pid_items", "url" => "pid/items"),
+                    array("name" => "submenu_pid_inventory", "url" => "pid/inventory"),
                 ));
             }
 
@@ -332,8 +334,6 @@ class Left_menu {
                     array("name" => "submenu_lms_delivery", "url" => "lms/delivery"),
                     array("name" => "submenu_lms_warehouse", "url" => "lms/warehouse"),
                     array("name" => "submenu_lms_transfers", "url" => "lms/transfer"),
-                    array("name" => "submenu_lms_items", "url" => "lms/items"),
-                    array("name" => "submenu_lms_inventory", "url" => "lms/inventory"),
                     array("name" => "submenu_lms_vehicles", "url" => "lms/vehicles"),
                 ));
             }
