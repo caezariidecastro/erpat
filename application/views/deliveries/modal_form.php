@@ -82,53 +82,6 @@
             ?>
         </div>
     </div>
-    <hr>
-    <div id="add-item-delivery-section">
-        <div class="form-group">
-            <label for="item" class="col-md-3"><?php echo lang('item'); ?></label>
-            <div class="col-md-9" id="item-selection-section">
-                <?php
-                echo form_input(array(
-                    "id" => "item",
-                    "name" => "",
-                    "value" => "",
-                    "class" => "form-control",
-                    "placeholder" => lang('item')
-                ));
-                ?>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="quantity" class="col-md-3"><?php echo lang('quantity'); ?></label>
-            <div class=" col-md-9">
-                <?php
-                echo form_input(array(
-                    "id" => "quantity",
-                    "name" => "",
-                    "value" => '',
-                    "class" => "form-control",
-                    "placeholder" => lang('quantity'),
-                    "type" => 'number'
-                ));
-                ?>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-12">
-                <button type="button" class="btn btn-default pull-right" onclick="add_item_on_item_delivery_table()"><span class="fa fa-plus-circle"></span> <?php echo lang('add'); ?></button>
-            </div>
-        </div>
-        <hr>
-    </div>
-    <div class="form-group">
-        <div class="pull-right mb15">
-            <input type="text" id="search-items" class="datatable-search" placeholder="<?php echo lang('search') ?>">
-        </div>
-        <div class="table-responsive">
-            <table id="deliveries-items-table" class="display" cellspacing="0" width="100%">            
-            </table>
-        </div>
-    </div>
 </div>
 
 <div class="modal-footer">
@@ -138,50 +91,10 @@
 <?php echo form_close(); ?>
 
 <script type="text/javascript">
-    let itemsTable;
-
     $(document).ready(function () {
-        $("#deliveries-items-table").appTable({
-            source: '<?php echo_uri("deliveries/get_delivered_items/".($model_info ? $model_info->reference_number : "")) ?>',
-            order: [[0, 'desc']],
-            columns: [
-                {visible: false},
-                {title: "<?php echo lang('name') ?> "},
-                {title: "<?php echo lang('quantity') ?> "},
-                {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
-            ],
-        });
-
-        itemsTable = $('#deliveries-items-table').DataTable();
-        $('#search-items').keyup(function () {
-            itemsTable.search($(this).val()).draw();
-        });
-
         $("#deliveries-form").appForm({
             onSuccess: function (result) {
                 $("#deliveries-table").appTable({newData: result.data, dataId: result.id});
-            },
-            onSubmit: function (data, self, options) {
-                $('#reference_number').removeAttr('disabled');
-
-                let itemsTableData = itemsTable.rows().data();
-
-                for(let i = 0; i < itemsTableData.length; i++){
-                    let properties = {
-                        id: itemsTableData[i][0],
-                        value: itemsTableData[i][2]
-                    };
-                    
-                    $("<input/>").attr("type", 'hidden')
-                                .attr("name", "delivery_items[]")
-                                .attr("value", JSON.stringify(properties))
-                                .appendTo("#deliveries-form");
-                }
-
-            },
-            onError: function (result) {
-                $('#reference_number').attr('disabled', 'disabled');
-                return true;
             }
         });
 
@@ -191,83 +104,6 @@
         $('#vehicle').select2();
         $('#item').select2({data: <?php echo json_encode($warehouse_item_select2)?>});
 
-        $("#warehouse").select2().on("change", function () {
-            let warehouse_id = $(this).val();
-
-            if (warehouse_id) {
-                $('#item').select2("destroy");
-                $("#item").hide();
-                appLoader.show({container: "#item-selection-section"});
-
-                $.ajax({
-                    url: "<?php echo get_uri("deliveries/get_inventory_items_select2_data") ?>" + `/${warehouse_id}/json`,
-                    dataType: "json",
-                    success: function (result) {
-                        $("#item").show().val("");
-                        $('#item').select2({data: result});
-                        appLoader.hide();
-
-                        $('#add-item-delivery-section').show();
-                    }
-                });
-            }
-        });
-
-        $("#deliveries-items-table tbody").on("click", "a", function () {
-            itemsTable
-                .row($(this).parents('tr'))
-                .remove()
-                .draw();
-        });
+        $("#warehouse").select2();
     });
-    
-
-    function add_item_on_item_delivery_table(){
-        let item = $('#item').select2('val');
-        let item_data = $('#item').select2('data');
-        let quantity = $('#quantity').val();
-
-        if(!item || !quantity){
-            $('#item-error').remove();
-            $('#quantity-error').remove();
-
-            if(!item){
-                $('#item').after('<span id="item-error" class="help-block text-danger">This field is required.</span>');
-
-                $('#item').on('change', function(){
-                    let temp_item = $(this).select2('val');
-                    $('#item-error').remove();
-
-                    if(!temp_item){
-                        $('#item').after('<span id="item-error" class="help-block text-danger">This field is required.</span>');
-                    }
-                });
-            }
-
-            if(!quantity){
-                $('#quantity').after('<span id="quantity-error" class="help-block text-danger">This field is required.</span>');
-
-                $('#quantity').keyup(function(){
-                    let temp_quantity = $('#quantity').val();
-                    $('#quantity-error').remove();
-
-                    if(!temp_quantity){
-                        $('#quantity').after('<span id="quantity-error" class="help-block text-danger">This field is required.</span>');
-                    }
-                });
-            }
-        }
-        else{
-            itemsTable.row.add([
-                item_data.id,
-                item_data.text,
-                quantity,
-                '<a href="#" title="Delete" class="delete"><i class="fa fa-times fa-fw"></i></a>'
-            ]).draw();
-
-            $('#item').select2('val', '');
-            $('#quantity').val('');
-        }
-    }
-    
 </script>

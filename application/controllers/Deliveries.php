@@ -47,7 +47,6 @@ class Deliveries extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $item_count = "<span class='label label-light w50'>".$data->item_count."</span>";
 
         return array(
             $data->reference_number,
@@ -56,7 +55,6 @@ class Deliveries extends MY_Controller {
             get_team_member_profile_link($data->dispatcher, $data->dispatcher_name, array("target" => "_blank")),
             get_team_member_profile_link($data->driver, $data->driver_name, array("target" => "_blank")),
             $data->vehicle_name,
-            $item_count,
             nl2br($data->remarks),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
@@ -91,8 +89,6 @@ class Deliveries extends MY_Controller {
 
         $id = $this->input->post('id');
         $warehouse = $this->input->post('warehouse');
-        $delivery_items = $this->input->post('delivery_items');
-        $reference_number = $this->input->post('reference_number');
 
         $vendor_data = array(
             "warehouse" => $warehouse,
@@ -109,37 +105,14 @@ class Deliveries extends MY_Controller {
             $vendor_data["created_by"] = $this->login_user->id;
         }
 
-        if($id){
-            // If edit mode, Delete previous delivery_items
-            $this->Deliveries_model->delete_delivery_item($reference_number);
-        }
+        $vendor_id = $this->Deliveries_model->save($vendor_data, $id);
 
-
-        if(!$delivery_items){
-            echo json_encode(array("success" => false, 'message' => lang('item_table_empty_error')));
-        }
-        else{
-            $vendor_id = $this->Deliveries_model->save($vendor_data, $id);
-
-            for($i = 0; $i < count($delivery_items); $i++){
-                $inventory_item = json_decode($delivery_items[$i]);
-
-                $data = array(
-                    'inventory_id' => $inventory_item->id,
-                    'reference_number' => $reference_number,
-                    'quantity' => $inventory_item->value
-                );
-                
-                $this->Deliveries_model->insert_delivery_item($data);
-            }
-
-            if ($vendor_id) {
-                $options = array("id" => $vendor_id);
-                $vendor_info = $this->Deliveries_model->get_details($options)->row();
-                echo json_encode(array("success" => true, "id" => $vendor_info->id, "data" => $this->_make_row($vendor_info), 'message' => lang('record_saved')));
-            } else {
-                echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
-            }
+        if ($vendor_id) {
+            $options = array("id" => $vendor_id);
+            $vendor_info = $this->Deliveries_model->get_details($options)->row();
+            echo json_encode(array("success" => true, "id" => $vendor_info->id, "data" => $this->_make_row($vendor_info), 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
     }
 

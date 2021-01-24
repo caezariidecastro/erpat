@@ -25,7 +25,6 @@
                 {title: "<?php echo lang('dispatcher') ?>"},
                 {title: "<?php echo lang('driver') ?>"},
                 {title: "<?php echo lang('vehicle') ?>"},
-                {title: "<?php echo lang('items') ?>"},
                 {title: "<?php echo lang('remarks') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},

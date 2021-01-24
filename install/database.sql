@@ -1422,15 +1422,6 @@ CREATE TABLE IF NOT EXISTS `deliveries` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `delivery_items` (
-`id` bigint(10) NOT NULL AUTO_INCREMENT,
-`inventory_id` bigint(10) NOT NULL,
-`reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-`quantity` float NOT NULL,
-`deleted` tinyint(4) NOT NULL DEFAULT 0,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
 CREATE TABLE IF NOT EXISTS `vehicles` (
 `id` bigint(10) NOT NULL AUTO_INCREMENT,
 `brand` varchar(255) COLLATE utf8_unicode_ci NOT NULL,

@@ -28,22 +28,14 @@ class Inventory_item_entries_model extends Crud_model {
             $where .= " AND $inventory_items_table.vendor = $vendor";
         }
 
+        // TODO: Implement invoice delivery item count here
         $sql = "SELECT $inventory_items_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, un.title AS unit_name, v.name AS vendor_name, COALESCE((
             SELECT SUM(inventory.stock)
             FROM inventory
             WHERE item_id = $inventory_items_table.id
             AND inventory.deleted = 0
         ), 0) AS stocks,
-        COALESCE((
-            SELECT SUM(delivery_items.id)
-            FROM delivery_items
-            LEFT JOIN deliveries ON deliveries.reference_number = delivery_items.reference_number
-            LEFT JOIN inventory ON inventory.item_id = delivery_items.inventory_id
-            WHERE inventory.item_id = $inventory_items_table.id
-            AND delivery_items.deleted = 0
-            AND deliveries.deleted = 0
-            AND inventory.deleted = 0
-        ), 0) AS delivered
+        0 AS delivered
         FROM $inventory_items_table
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by
         LEFT JOIN inventory_item_categories cat ON cat.id = $inventory_items_table.category
