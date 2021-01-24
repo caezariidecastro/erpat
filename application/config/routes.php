@@ -154,5 +154,8 @@ $route['lms/delivery'] = 'deliveries/index';
 // Vehicles
 $route['lms/vehicles'] = 'vehicles/index';
 
+// Consumers
+$route['lms/consumers'] = 'consumers/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

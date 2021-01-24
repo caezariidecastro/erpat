@@ -60,6 +60,7 @@ $lang["submenu_lms_delivery"] = "Delivery";
 $lang["submenu_lms_warehouse"] = "Warehouse";
 $lang["submenu_lms_transfers"] = "Transfer";
 $lang["submenu_lms_vehicles"] = "Vehicles";
+$lang["submenu_lms_consumers"] = "Consumers";
 
 $lang["submenu_mcm_leads"] = "Leads";
 
@@ -252,3 +253,12 @@ $lang["mark_as_paid"] = "Mark as paid";
 $lang["payroll"] = "Payroll";
 $lang["add_payroll"] = "Add payroll";
 $lang["edit_payroll"] = "Edit payroll";
+
+// Logistics & Distribution > Consumers
+$lang["consumers"] = "Consumers";
+$lang["add_consumer"] = "Add consumer";
+$lang["edit_consumer"] = "Edit consumer";
+$lang["first_name"] = "First name";
+$lang["last_name"] = "Last name";
+$lang["zip"] = "Zip";
+$lang["street"] = "Street";
