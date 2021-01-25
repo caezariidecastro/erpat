@@ -805,9 +805,13 @@ if (!function_exists('get_invoice_making_data')) {
     function get_invoice_making_data($invoice_id) {
         $ci = get_instance();
         $invoice_info = $ci->Invoices_model->get_details(array("id" => $invoice_id))->row();
+
+        $ci->load->model('Deliveries_model');
+
         if ($invoice_info) {
             $data['invoice_info'] = $invoice_info;
             $data['client_info'] = $ci->Clients_model->get_one($data['invoice_info']->client_id);
+            $data['delivery_info'] = $ci->Deliveries_model->get_details(array("invoice_id" => $invoice_id))->row();
             $data['invoice_items'] = $ci->Invoice_items_model->get_details(array("invoice_id" => $invoice_id))->result();
             $data['invoice_status_label'] = get_invoice_status_label($invoice_info);
             $data["invoice_total_summary"] = $ci->Invoices_model->get_invoice_total_summary($invoice_id);

@@ -14,6 +14,7 @@ class Inventory_model extends Crud_model {
         $where = "";
         $id = get_array_value($options, "id");
         $item_id = get_array_value($options, "item_id");
+        $warehouse_id = get_array_value($options, "warehouse_id");
         $item_query = "";
 
         if ($id) {
@@ -25,8 +26,12 @@ class Inventory_model extends Crud_model {
             $item_query = "AND i.item_id = $item_id";
         }
 
+        if ($warehouse_id) {
+            $where .= " AND $inventory_table.warehouse=$warehouse_id";
+        }
+
         // TODO: Implement invoice delivery item count here
-        $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, $inventory_table.stock, COALESCE((
+        $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, $inventory_table.stock, units.title AS unit_name, COALESCE((
             SELECT SUM(inventory_transfer_items.quantity)
             FROM inventory_transfer_items
             LEFT JOIN inventory_transfers ON inventory_transfers.reference_number = inventory_transfer_items.reference_number
@@ -56,6 +61,7 @@ class Inventory_model extends Crud_model {
         FROM $inventory_table
         LEFT JOIN users ON users.id = $inventory_table.created_by
         LEFT JOIN warehouses w ON w.id = $inventory_table.warehouse
+        LEFT JOIN units ON units.id = $inventory_table.unit
         WHERE $inventory_table.deleted=0 $where";
         return $this->db->query($sql);
     }

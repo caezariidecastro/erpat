@@ -2,14 +2,12 @@
     .datatable-tools:first-child {
         display:  none;
     }
-    #add-item-delivery-section{
-        display: <?php echo $model_info->id  ? "block" : "none" ?>;
-    }
 </style>
 
 <?php echo form_open(get_uri("deliveries/save"), array("id" => "deliveries-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
+    <input type="hidden" name="invoice_id" value="<?php echo $model_info ? $model_info->invoice_id : "" ?>" />
     <div class="form-group">
         <label for="reference_number" class="col-md-3"><?php echo lang('reference_number'); ?></label>
         <div class=" col-md-9">

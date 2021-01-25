@@ -33,5 +33,31 @@
 
 
         </div>
-<?php } ?>
+    <?php } ?>
+    <?php 
+        if($invoice_info->consumer_id){
+    ?>
+        <div>
+            <?php 
+                echo $invoice_info->consumer_name;
+            ?>
+            <?php if ($delivery_info->street) { ?>
+                <br /><?php echo $delivery_info->street; ?>
+            <?php } ?>
+            <?php if ($delivery_info->city) { ?>
+                <br /><?php echo $delivery_info->city; ?>
+            <?php } ?>
+            <?php if ($delivery_info->state) { ?>
+                <br /><?php echo $delivery_info->state; ?>
+            <?php } ?>
+            <?php if ($delivery_info->zip) { ?>
+                <br /><?php echo $delivery_info->zip; ?>
+            <?php } ?>
+            <?php if ($delivery_info->country) { ?>
+                <br /><?php echo $delivery_info->country; ?>
+            <?php } ?>
+        </div>
+    <?php
+        }
+    ?>
 </span>

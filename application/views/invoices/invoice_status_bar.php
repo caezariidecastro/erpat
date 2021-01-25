@@ -8,14 +8,28 @@
     <?php } ?>
 
     <span class="ml15"><?php
-        echo lang("client") . ": ";
-        echo (anchor(get_uri("pms/clients/view/" . $invoice_info->client_id), $invoice_info->company_name));
+        $client = "";
+        $client_lang = "";
+
+        if($invoice_info->client_id){
+            $client = anchor(get_uri("pms/clients/view/" . $invoice_info->client_id), $invoice_info->company_name);
+            $client_lang = lang("client");
+        }
+
+        if($invoice_info->consumer_id){
+            $client = $invoice_info->consumer_name;
+            $client_lang = lang("consumer");
+        }
+
+        echo $client_lang . ": ";
+        echo $client;
         ?>
     </span> 
 
     <span class="ml15"><?php
-        echo lang("last_email_sent") . ": ";
-        echo (is_date_exists($invoice_info->last_email_sent_date)) ? format_to_date($invoice_info->last_email_sent_date, FALSE) : lang("never");
+        $last_email_sent_lang = $invoice_info->client_id ? lang("last_email_sent") . ": " : "";
+        echo $last_email_sent_lang;
+        echo $invoice_info->client_id ? ((is_date_exists($invoice_info->last_email_sent_date)) ? format_to_date($invoice_info->last_email_sent_date, FALSE) : lang("never")) : "";
         ?>
     </span>
     <?php if ($invoice_info->recurring_invoice_id) { ?>

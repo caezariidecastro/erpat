@@ -12,6 +12,7 @@ class Deliveries extends MY_Controller {
         $this->load->model("Warehouse_model");
         $this->load->model("Vehicles_model");
         $this->load->model("Consumers_model");
+        $this->load->model("Invoices_model");
     }
 
     protected function _get_warehouse_dropdown_data() {
@@ -60,8 +61,16 @@ class Deliveries extends MY_Controller {
     private function _make_row($data) {
         $address = (trim($data->street) ? trim($data->street) . ", " : "") . (trim($data->state)  ? trim($data->state)  . ", " : "") . (trim($data->city)  ? trim($data->street)  . ", " : "") . (trim($data->zip)  ? trim($data->zip)  . ", " : "") . trim($data->country);
 
+        $invoice_url = "";
+        if ($this->login_user->user_type == "staff") {
+            $invoice_url = anchor(get_uri("sms/invoices/view/" . $data->invoice_id), get_invoice_id($data->invoice_id));
+        } else {
+            $invoice_url = anchor(get_uri("invoices/preview/" . $data->invoice_id), get_invoice_id($data->invoice_id));
+        }
+
         return array(
             $data->reference_number,
+            $invoice_url,
             $data->warehouse_name,
             $data->consumer_name,
             get_team_member_profile_link($data->dispatcher, $data->dispatcher_name, array("target" => "_blank")),
@@ -83,10 +92,23 @@ class Deliveries extends MY_Controller {
 
         $id = $this->input->post('id');
         $warehouse = $this->input->post('warehouse');
+        $consumer = $this->input->post('consumer');
+        $invoice_id = $this->input->post('invoice_id');
 
-        $vendor_data = array(
+        // ** Save invoice first
+        $invoice_data = array(
+            "bill_date" => date('Y-m-d'),
+            "due_date" => date("Y-m-d", strtotime("+1 week")),
+            "consumer_id" => $consumer,
+        );
+
+        $invoice_save_id = $this->Invoices_model->save($invoice_data, $invoice_id);
+        // **
+
+        $delivery_data = array(
             "warehouse" => $warehouse,
-            "consumer" => $this->input->post('consumer'),
+            "invoice_id" => $invoice_save_id,
+            "consumer" => $consumer,
             "dispatcher" => $this->input->post('dispatcher'),
             "driver" => $this->input->post('driver'),
             "vehicle" => $this->input->post('vehicle'),
@@ -99,18 +121,17 @@ class Deliveries extends MY_Controller {
         );
 
         if(!$id){
-            $vendor_data["reference_number"] = $this->input->post('reference_number');
-            $vendor_data["created_on"] = date('Y-m-d H:i:s');
-            $vendor_data["created_by"] = $this->login_user->id;
+            $delivery_data["reference_number"] = $this->input->post('reference_number');
+            $delivery_data["created_on"] = date('Y-m-d H:i:s');
+            $delivery_data["created_by"] = $this->login_user->id;
         }
 
-        $vendor_id = $this->Deliveries_model->save($vendor_data, $id);
-        // TODO: Implement auto create invoice
+        $delivery_id = $this->Deliveries_model->save($delivery_data, $id);
 
-        if ($vendor_id) {
-            $options = array("id" => $vendor_id);
-            $vendor_info = $this->Deliveries_model->get_details($options)->row();
-            echo json_encode(array("success" => true, "id" => $vendor_info->id, "data" => $this->_make_row($vendor_info), 'message' => lang('record_saved')));
+        if ($delivery_id) {
+            $options = array("id" => $delivery_id);
+            $delivery_info = $this->Deliveries_model->get_details($options)->row();
+            echo json_encode(array("success" => true, "id" => $delivery_info->id, "data" => $this->_make_row($delivery_info), 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }

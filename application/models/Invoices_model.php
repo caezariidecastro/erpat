@@ -116,7 +116,7 @@ class Invoices_model extends Crud_model {
 
 
         $sql = "SELECT $invoices_table.*, $clients_table.currency, $clients_table.currency_symbol, $clients_table.company_name, $projects_table.title AS project_title,
-           $invoice_value_calculation_query AS invoice_value, IFNULL(payments_table.payment_received,0) AS payment_received, tax_table.percentage AS tax_percentage, tax_table2.percentage AS tax_percentage2, tax_table3.percentage AS tax_percentage3, CONCAT($users_table.first_name, ' ',$users_table.last_name) AS cancelled_by_user, $select_labels_data_query $select_custom_fieds
+           $invoice_value_calculation_query AS invoice_value, IFNULL(payments_table.payment_received,0) AS payment_received, tax_table.percentage AS tax_percentage, tax_table2.percentage AS tax_percentage2, tax_table3.percentage AS tax_percentage3, CONCAT($users_table.first_name, ' ',$users_table.last_name) AS cancelled_by_user, $select_labels_data_query $select_custom_fieds, TRIM(COALESCE(consumers.first_name, ' ', consumers.last_name)) AS consumer_name
         FROM $invoices_table
         LEFT JOIN $clients_table ON $clients_table.id= $invoices_table.client_id
         LEFT JOIN $projects_table ON $projects_table.id= $invoices_table.project_id
@@ -126,6 +126,7 @@ class Invoices_model extends Crud_model {
         LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table3 ON tax_table3.id = $invoices_table.tax_id3
         LEFT JOIN (SELECT invoice_id, SUM(amount) AS payment_received FROM $invoice_payments_table WHERE deleted=0 GROUP BY invoice_id) AS payments_table ON payments_table.invoice_id = $invoices_table.id 
         LEFT JOIN (SELECT invoice_id, SUM(total) AS invoice_value FROM $invoice_items_table WHERE deleted=0 GROUP BY invoice_id) AS items_table ON items_table.invoice_id = $invoices_table.id 
+        LEFT JOIN consumers ON consumers.id = $invoices_table.consumer_id
         $join_custom_fieds
         WHERE $invoices_table.deleted=0 $where";
         return $this->db->query($sql);
@@ -194,8 +195,8 @@ class Invoices_model extends Crud_model {
 
         $result->total_paid = $payment->total_paid;
 
-        $result->currency_symbol = $client->currency_symbol ? $client->currency_symbol : get_setting("currency_symbol");
-        $result->currency = $client->currency ? $client->currency : get_setting("default_currency");
+        $result->currency_symbol = $client && isset($client->currency_symbol) ? $client->currency_symbol : get_setting("currency_symbol");
+        $result->currency = $client && isset($client->currency) ? $client->currency : get_setting("default_currency");
 
         //get discount total
         $result->discount_total = 0;

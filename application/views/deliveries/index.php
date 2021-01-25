@@ -19,9 +19,10 @@
             source: '<?php echo_uri("deliveries/list_data") ?>',
             order: [[8, 'desc']],
             columns: [
-                {title: "<?php echo lang('reference_number') ?> ", "class": "w10p"},
-                {title: "<?php echo lang('warehouse') ?> ", "class": "w10p"},
-                {title: "<?php echo lang('consumer') ?>", "class": "w10p"},
+                {title: "<?php echo lang('reference_number') ?> ", "class": "w8p"},
+                {title: "<?php echo lang('invoice_id') ?> "},
+                {title: "<?php echo lang('warehouse') ?> "},
+                {title: "<?php echo lang('consumer') ?>"},
                 {title: "<?php echo lang('dispatcher') ?>"},
                 {title: "<?php echo lang('driver') ?>"},
                 {title: "<?php echo lang('vehicle') ?>"},

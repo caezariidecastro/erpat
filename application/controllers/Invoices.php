@@ -8,6 +8,18 @@ class Invoices extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->init_permission_checker("invoice");
+        $this->load->model("Inventory_model");
+        $this->load->model("Deliveries_model");
+    }
+
+    function get_inventory_items_select2_data($warehouse_id) {
+        $inventory_items = $this->Inventory_model->get_details(array('warehouse_id' => $warehouse_id))->result();
+
+        foreach ($inventory_items as $inventory_item) {
+            $inventory_items_select2[] = array("id" => $inventory_item->name, "text" => $inventory_item->name, "inventory_id" => $inventory_item->id);
+        }
+
+        echo json_encode($inventory_items_select2);
     }
 
     /* load invoice list view */
@@ -456,9 +468,18 @@ class Invoices extends MY_Controller {
         }
         
         $invoice_labels = make_labels_view_data($data->labels_list, true, true);
+        $client = "";
+
+        if($data->client_id){
+            $client = anchor(get_uri("pms/clients/view/" . $data->client_id), $data->company_name);
+        }
+
+        if($data->consumer_id){
+            $client = $data->consumer_name;
+        }
 
         $row_data = array($invoice_url,
-            anchor(get_uri("pms/clients/view/" . $data->client_id), $data->company_name),
+            $client,
             $data->project_title ? anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title) : "-",
             $data->bill_date,
             format_to_date($data->bill_date, false),
@@ -623,6 +644,24 @@ class Invoices extends MY_Controller {
         $this->load->view('invoices/item_modal_form', $view_data);
     }
 
+    function add_delivery_item_modal_form() {
+        if (!$this->can_edit_invoices()) {
+            redirect("forbidden");
+        }
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $invoice_id = $this->input->post('invoice_id');
+        $options = array("invoice_id" => $invoice_id);
+        $view_data['delivery_info'] = $this->Deliveries_model->get_details($options)->row();
+
+        $view_data['model_info'] = $this->Invoice_items_model->get_one($this->input->post('id'));
+        $view_data['invoice_id'] = $invoice_id;
+        $this->load->view('invoices/add_delivery_item_modal_form', $view_data);
+    }
+
     /* add or edit an invoice item */
 
     function save_item() {
@@ -649,6 +688,7 @@ class Invoices extends MY_Controller {
             "unit_type" => $this->input->post('invoice_unit_type'),
             "rate" => unformat_currency($this->input->post('invoice_item_rate')),
             "total" => $rate * $quantity,
+            "delivery_reference_no" => $this->input->post('delivery_reference_no')
         );
 
         $invoice_item_id = $this->Invoice_items_model->save($invoice_item_data, $id);
@@ -734,14 +774,24 @@ class Invoices extends MY_Controller {
         }
         $type = $data->unit_type ? $data->unit_type : "";
 
+        $actions = "";
+
+        if($data->delivery_reference_no){
+            $actions = modal_anchor(get_uri("invoices/add_delivery_item_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-invoice_id" => $data->invoice_id, "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("invoices/delete_item"), "data-action" => "delete"));
+        }
+        else{
+            $actions = modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("invoices/delete_item"), "data-action" => "delete"));
+        }
+
         return array(
             $data->sort,
             $item,
             to_decimal_format($data->quantity) . " " . $type,
             to_currency($data->rate, $data->currency_symbol),
             to_currency($data->total, $data->currency_symbol),
-            modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("invoices/delete_item"), "data-action" => "delete"))
+            $actions
         );
     }
 

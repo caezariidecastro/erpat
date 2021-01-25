@@ -1,0 +1,1 @@
+ALTER TABLE `invoices` ADD `consumer_id` BIGINT(10) NULL AFTER `client_id`;

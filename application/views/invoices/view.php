@@ -1,3 +1,24 @@
+<!-- WORKAROUND -->
+
+<?php
+    $bill_type_lang = "";
+    $cost_type_lang = "";
+    $add_bill_type_lang = "";
+    
+    if($invoice_info->client_id){
+        $bill_type_lang = lang("service");
+        $cost_type_lang = lang("rate");
+        $add_bill_type_lang = modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-invoice_id" => $invoice_info->id));
+    }
+
+    if($invoice_info->consumer_id){
+        $bill_type_lang = lang("item");
+        $cost_type_lang = lang("amount");
+        $add_bill_type_lang = modal_anchor(get_uri("invoices/add_delivery_item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_item'), array("class" => "btn btn-default", "title" => lang('add_item'), "data-post-invoice_id" => $invoice_info->id));
+    }
+
+?>
+
 <div id="page-content" class="clearfix">
     <div style="max-width: 1000px; margin: auto;">
         <div class="page-title clearfix mt15">
@@ -19,7 +40,8 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <?php if ($invoice_status !== "cancelled" && $can_edit_invoices) { ?>
+                        <?php 
+                            if ($invoice_status !== "cancelled" && $can_edit_invoices && $invoice_info->client_id) { ?>
                             <li role="presentation"><?php echo modal_anchor(get_uri("invoices/send_invoice_modal_form/" . $invoice_info->id), "<i class='fa fa-envelope-o'></i> " . lang('email_invoice_to_client'), array("title" => lang('email_invoice_to_client'), "data-post-id" => $invoice_info->id, "role" => "menuitem", "tabindex" => "-1")); ?> </li>
                         <?php } ?>
                         <li role="presentation"><?php echo anchor(get_uri("invoices/download_pdf/" . $invoice_info->id), "<i class='fa fa-download'></i> " . lang('download_pdf'), array("title" => lang('download_pdf'))); ?> </li>
@@ -45,7 +67,7 @@
                     </ul>
                 </span>
                 <?php if ($invoice_status !== "cancelled" && $can_edit_invoices) { ?>
-                    <?php echo modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-invoice_id" => $invoice_info->id)); ?>
+                    <?php echo $add_bill_type_lang; ?>
                     <?php echo modal_anchor(get_uri("invoice_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("class" => "btn btn-default", "title" => lang('add_payment'), "data-post-invoice_id" => $invoice_info->id)); ?>
                 <?php } ?>
             </div>
@@ -176,9 +198,9 @@
             displayLength: 100,
             columns: [
                 {visible: false, searchable: false},
-                {title: '<?php echo lang("service") ?> ', "bSortable": false},
+                {title: '<?php echo $bill_type_lang ?> ', "bSortable": false},
                 {title: '<?php echo lang("quantity") ?>', "class": "text-right w15p", "bSortable": false},
-                {title: '<?php echo lang("rate") ?>', "class": "text-right w15p", "bSortable": false},
+                {title: '<?php echo $cost_type_lang ?>', "class": "text-right w15p", "bSortable": false},
                 {title: '<?php echo lang("total") ?>', "class": "text-right w15p", "bSortable": false},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100", "bSortable": false, visible: optionVisibility}
             ],

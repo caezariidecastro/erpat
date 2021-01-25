@@ -223,4 +223,21 @@ class Inventory extends MY_Controller {
         }
 
     }
+
+    function get_inventory(){
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+        $options = array("id" => $id);
+        $inventory_info = $this->Inventory_model->get_details($options)->row();
+
+        if($inventory_info){
+            echo json_encode(array("success" => true, 'inventory_info' => $inventory_info));
+        }
+        else{
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
 }
