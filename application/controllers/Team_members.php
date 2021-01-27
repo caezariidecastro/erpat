@@ -112,22 +112,19 @@ class Team_members extends MY_Controller {
             exit();
         }
 
-        $no_login_user = ["consumer"];
-
         $password = $this->input->post("password");
-        $user_type = $this->input->post("is_consumer") ? "consumer" : "staff";
 
         validate_submitted_data(array(
             "email" => "required|valid_email",
             "first_name" => "required",
             "last_name" => "required",
-            "password" => in_array($user_type, $no_login_user) ? "" : "required",
-            "role" => in_array($user_type, $no_login_user) ? "" : "required"
+            "password" => "required",
+            "role" => "required"
         ));
 
         $user_data = array(
             "email" => $this->input->post('email'),
-            "password" => $password ? password_hash($this->input->post("password"), PASSWORD_DEFAULT) : "",
+            "password" => $password ? password_hash($password, PASSWORD_DEFAULT) : "",
             "first_name" => $this->input->post('first_name'),
             "last_name" => $this->input->post('last_name'),
             "is_admin" => $this->input->post('is_admin'),
@@ -137,7 +134,7 @@ class Team_members extends MY_Controller {
             "job_title" => $this->input->post('job_title'),
             "phone" => $this->input->post('phone'),
             "gender" => $this->input->post('gender'),
-            "user_type" => $user_type,
+            "user_type" => "staff",
             "created_at" => get_current_utc_time()
         );
 
