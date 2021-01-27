@@ -92,7 +92,7 @@
         <label for="vendor" class="col-md-3"><?php echo lang('vendor'); ?></label>
         <div class="col-md-9">
             <?php
-            echo form_dropdown("vendor", $vendor_dropdown, $model_info ? $model_info->vendor : "", "class='select2 validate-hidden' id='user' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            echo form_dropdown("vendor", $vendor_dropdown, $model_info ? $model_info->vendor : "", "class='select2 validate-hidden' id='user'");
             ?>
         </div>
     </div>
