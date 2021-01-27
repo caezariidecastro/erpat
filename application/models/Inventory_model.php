@@ -16,18 +16,22 @@ class Inventory_model extends Crud_model {
         $item_id = get_array_value($options, "item_id");
         $warehouse_id = get_array_value($options, "warehouse_id");
         $item_query = "";
+        $delivered_query = "";
 
         if ($id) {
             $where .= " AND $inventory_table.id=$id";
+            $delivered_query .= " AND i.id=$id";
         }
 
         if ($item_id) {
             $where .= " AND $inventory_table.item_id=$item_id";
+            $delivered_query .= " AND i.item_id=$item_id";
             $item_query = "AND i.item_id = $item_id";
         }
 
         if ($warehouse_id) {
             $where .= " AND $inventory_table.warehouse=$warehouse_id";
+            $delivered_query .= " AND i.warehouse=$warehouse_id";
         }
 
         $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, $inventory_table.stock, units.title AS unit_name, COALESCE((
@@ -56,7 +60,7 @@ class Inventory_model extends Crud_model {
             LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
-            $item_query
+            $delivered_query
         ), 0) AS delivered,
         COALESCE((
             SELECT SUM(inventory_stock_override.stock)
