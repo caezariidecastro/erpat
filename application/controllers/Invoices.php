@@ -679,6 +679,7 @@ class Invoices extends MY_Controller {
         $id = $this->input->post('id');
         $rate = unformat_currency($this->input->post('invoice_item_rate'));
         $quantity = unformat_currency($this->input->post('invoice_item_quantity'));
+        $inventory_id = $this->input->post('inventory_id');
 
         $invoice_item_data = array(
             "invoice_id" => $invoice_id,
@@ -688,7 +689,8 @@ class Invoices extends MY_Controller {
             "unit_type" => $this->input->post('invoice_unit_type'),
             "rate" => unformat_currency($this->input->post('invoice_item_rate')),
             "total" => $rate * $quantity,
-            "delivery_reference_no" => $this->input->post('delivery_reference_no')
+            "delivery_reference_no" => $this->input->post('delivery_reference_no'),
+            "inventory_id" => $inventory_id
         );
 
         $invoice_item_id = $this->Invoice_items_model->save($invoice_item_data, $id);

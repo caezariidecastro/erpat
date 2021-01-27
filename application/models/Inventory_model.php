@@ -30,7 +30,6 @@ class Inventory_model extends Crud_model {
             $where .= " AND $inventory_table.warehouse=$warehouse_id";
         }
 
-        // TODO: Implement invoice delivery item count here
         $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, $inventory_table.stock, units.title AS unit_name, COALESCE((
             SELECT SUM(inventory_transfer_items.quantity)
             FROM inventory_transfer_items
@@ -51,7 +50,14 @@ class Inventory_model extends Crud_model {
             $item_query
             AND inventory_transfers.receiver = $inventory_table.warehouse
         ), 0) AS received,
-        0 AS delivered,
+        COALESCE((
+            SELECT SUM(invoice_items.quantity)
+            FROM invoice_items
+            LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
+            WHERE i.deleted = 0
+            AND invoice_items.deleted = 0
+            $item_query
+        ), 0) AS delivered,
         COALESCE((
             SELECT SUM(inventory_stock_override.stock)
             FROM inventory_stock_override

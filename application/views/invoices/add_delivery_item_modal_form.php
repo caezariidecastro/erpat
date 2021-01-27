@@ -3,6 +3,7 @@
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>" />
     <input type="hidden" name="delivery_reference_no" value="<?= $delivery_info->reference_number ?>" />
+    <input type="hidden" id="inventory_id" name="inventory_id" value="<?php echo $model_info ? $model_info->inventory_id : "" ?>" />
     <div class="form-group">
         <div class="col-md-12 text-off"> <?php echo lang('inactive_hidden'); ?></div>
     </div>
@@ -112,9 +113,12 @@
                 }
             }
         }).change(function (e) {
+            let inventory_id = e.added.inventory_id;
+            $('#inventory_id').val(inventory_id);
+
             $.ajax({
                 url: "<?php echo get_uri("inventory/get_inventory"); ?>",
-                data: {id: e.added.inventory_id},
+                data: {id: inventory_id},
                 cache: false,
                 type: 'POST',
                 dataType: "json",
