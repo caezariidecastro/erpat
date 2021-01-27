@@ -157,5 +157,8 @@ $route['lms/vehicles'] = 'vehicles/index';
 // Consumers
 $route['lms/consumers'] = 'consumers/index';
 
+// Sales Matrix
+$route["sms/sales-matrix"] = "sales_matrix/index";
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

@@ -53,6 +53,7 @@ $lang["submenu_pms_services"] = "Services";
 $lang["submenu_sms_pointofsale"] = "Point of Sale - Soon!";
 $lang["submenu_sms_estimates"] = "Estimates";
 $lang["submenu_sms_invoices"] = "Invoices";
+$lang["submenu_sms_salesmatrix"] = "Sales Matrix";
 $lang["submenu_sms_giftcard"] = "Gift Card - Soon!";
 $lang["submenu_sms_coupons"] = "Coupons - Soon!";
 
@@ -262,3 +263,7 @@ $lang["first_name"] = "First name";
 $lang["last_name"] = "Last name";
 $lang["zip"] = "Zip";
 $lang["street"] = "Street";
+
+// Sales and Invoicing > Sales Matrix
+$lang["sales_matrix"] = "Sales Matrix";
+$lang["total_sales"] = "Total sales";

@@ -346,7 +346,8 @@ class Left_menu {
                     array("name" => "submenu_sms_giftcard", "url" => "sms/giftcard"),
                     array("name" => "submenu_sms_coupons", "url" => "sms/coupons"),
                     array("name" => "submenu_sms_estimates", "url" => "sms/estimates"),
-                    array("name" => "submenu_sms_invoices", "url" => "sms/invoices")
+                    array("name" => "submenu_sms_invoices", "url" => "sms/invoices"),
+                    array("name" => "submenu_sms_salesmatrix", "url" => "sms/sales-matrix")
                 ));
             }
 
