@@ -30,6 +30,7 @@ $lang["submenu_pid_billofmaterials"] = "Bill of Materials - New";
 $lang["submenu_pid_purchases"] = "Purchases - New";
 $lang["submenu_pid_items"] = "Items";
 $lang["submenu_pid_inventory"] = "Inventory";
+$lang["submenu_pid_materials"] = "Materials";
 
 $lang["submenu_fas_summary"] = "Summary";
 $lang["submenu_fas_payments"] = "Payments";
@@ -267,3 +268,10 @@ $lang["street"] = "Street";
 // Sales and Invoicing > Sales Matrix
 $lang["sales_matrix"] = "Sales Matrix";
 $lang["total_sales"] = "Total sales";
+
+// Production & Inventory > Materials
+$lang["materials"] = "Materials";
+$lang["inventory"] = "Inventory";
+$lang["add_material_inventory"] = "Add material";
+$lang["select_a_material"] = "Select a material to view";
+$lang["duplicate_material_error"] = "Material is already at the selected warehouse";
