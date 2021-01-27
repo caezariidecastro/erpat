@@ -641,6 +641,7 @@ class Invoices extends MY_Controller {
             $invoice_id = $view_data['model_info']->invoice_id;
         }
         $view_data['invoice_id'] = $invoice_id;
+        $view_data["item_list"] = $this->get_items();
         $this->load->view('invoices/item_modal_form', $view_data);
     }
 
@@ -838,6 +839,18 @@ class Invoices extends MY_Controller {
         $suggestion[] = array("id" => "+", "text" => "+ " . lang("create_new_service"));
 
         echo json_encode($suggestion);
+    }
+
+    function get_items() {
+        $items = $this->Invoice_items_model->get_item_suggestion();
+
+        foreach ($items as $item) {
+            $item_list[] = array("id" => $item->title, "text" => $item->title);
+        }
+
+        $item_list[] = array("id" => "+", "text" => "+ " . lang("create_new_service"));
+
+        return $item_list;
     }
 
     function get_invoice_item_info_suggestion() {

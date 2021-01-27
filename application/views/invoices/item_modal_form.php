@@ -118,22 +118,7 @@
     });
 
     function applySelect2OnItemTitle() {
-        $("#invoice_item_title").select2({
-            showSearchBox: true,
-            ajax: {
-                url: "<?php echo get_uri("invoices/get_invoice_item_suggestion"); ?>",
-                dataType: 'json',
-                quietMillis: 250,
-                data: function (term, page) {
-                    return {
-                        q: term // search term
-                    };
-                },
-                results: function (data, page) {
-                    return {results: data};
-                }
-            }
-        }).change(function (e) {
+        $("#invoice_item_title").select2({data: <?= json_encode($item_list)?>}).change(function (e) {
             if (e.val === "+") {
                 //show simple textbox to input the new item
                 $("#invoice_item_title").select2("destroy").val("").focus();

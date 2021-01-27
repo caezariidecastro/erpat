@@ -103,32 +103,29 @@
     });
     
     function applySelect2OnItemTitle(){
-        $("#invoice_item_title").select2({
-            showSearchBox: true,
-            ajax: {
-                url: "<?php echo get_uri("invoices/get_inventory_items_select2_data/").$delivery_info->warehouse; ?>",
-                dataType: 'json',
-                results: function (data) {
-                    return {results: data};
-                }
+        $.ajax({
+            url: "<?php echo get_uri("invoices/get_inventory_items_select2_data/").$delivery_info->warehouse; ?>", 
+            dataType: 'json',
+            success: function(data){
+                $("#invoice_item_title").select2({data: data}).change(function (e) {
+                    let inventory_id = e.added.inventory_id;
+                    $('#inventory_id').val(inventory_id);
+        
+                    $.ajax({
+                        url: "<?php echo get_uri("inventory/get_inventory"); ?>",
+                        data: {id: inventory_id},
+                        cache: false,
+                        type: 'POST',
+                        dataType: "json",
+                        success: function (response) {
+                            if (response && response.success) {
+                                $("#invoice_unit_type").val(response.inventory_info.unit_name);
+                                $("#invoice_item_rate").val(response.inventory_info.selling_price);
+                            }
+                        }
+                    });
+                });
             }
-        }).change(function (e) {
-            let inventory_id = e.added.inventory_id;
-            $('#inventory_id').val(inventory_id);
-
-            $.ajax({
-                url: "<?php echo get_uri("inventory/get_inventory"); ?>",
-                data: {id: inventory_id},
-                cache: false,
-                type: 'POST',
-                dataType: "json",
-                success: function (response) {
-                    if (response && response.success) {
-                        $("#invoice_unit_type").val(response.inventory_info.unit_name);
-                        $("#invoice_item_rate").val(response.inventory_info.selling_price);
-                    }
-                }
-            });
-        });
+        })
     }
 </script>
