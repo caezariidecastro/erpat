@@ -211,7 +211,7 @@ class Inventory extends MY_Controller {
         $options = array("id" => $id);
         $inventory_info = $this->Inventory_model->get_details($options)->row();
 
-        if($inventory_info->transferred || $inventory_info->received || $inventory_info->delivered){
+        if($inventory_info->transferred || $inventory_info->received || $inventory_info->delivered || $inventory_info->produced){
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
         else{

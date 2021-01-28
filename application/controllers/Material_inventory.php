@@ -207,10 +207,18 @@ class Material_inventory extends MY_Controller {
 
         $id = $this->input->post('id');
 
-        if ($this->Material_inventory_model->delete($id)) {
-            echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
-        } else {
+        $options = array("id" => $id);
+        $inventory_info = $this->Material_inventory_model->get_details($options)->row();
+
+        if($inventory_info->production_quantity){
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+        }
+        else{
+            if ($this->Material_inventory_model->delete($id)) {
+                echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+            }
         }
     }
 

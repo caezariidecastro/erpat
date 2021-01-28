@@ -67,7 +67,15 @@ class Inventory_model extends Crud_model {
             FROM inventory_stock_override
             WHERE inventory_stock_override.deleted = 0
             AND inventory_stock_override.inventory_id = $inventory_table.id
-        ), 0) AS stock_override
+        ), 0) AS stock_override,
+        COALESCE((
+            SELECT SUM(bill_of_materials.quantity)
+            FROM bill_of_materials
+            LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials.id
+            WHERE bill_of_materials.deleted = 0
+            AND productions.status = 'completed'
+            AND bill_of_materials.inventory_id = $inventory_table.id
+        ), 0) AS produced
         FROM $inventory_table
         LEFT JOIN users ON users.id = $inventory_table.created_by
         LEFT JOIN warehouses w ON w.id = $inventory_table.warehouse
