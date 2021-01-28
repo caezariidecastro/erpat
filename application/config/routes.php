@@ -57,6 +57,9 @@ $route['about/(:any)'] = 'about/index/$1';
 
 // Users route
 $route['hrm/user/view/(:any)'] = 'team_members/view/$1';
+$route['hrm/user/view/(:any)/general'] = 'team_members/view/$1/general';
+$route['hrm/user/view/(:any)/account'] = 'team_members/view/$1/account';
+$route['hrm/user/view/(:any)/my_preferences'] = 'team_members/view/$1/my_preferences';
 $route['hrm/user'] = 'team_members/index';
 
 // Leaves
