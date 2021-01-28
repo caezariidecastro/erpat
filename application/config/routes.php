@@ -163,5 +163,8 @@ $route["sms/sales-matrix"] = "sales_matrix/index";
 // Materials
 $route["pid/materials"] = "material_categories/index";
 
+// Bill of Materials
+$route["pid/bill-of-materials"] = "bill_of_materials/index";
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

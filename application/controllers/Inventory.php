@@ -240,4 +240,14 @@ class Inventory extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
     }
+
+    function get_warehouse_inventory_select2_data() {
+        $inventories = $this->Inventory_model->get_details(array('warehouse_id' => $this->input->post('id')))->result();
+        $inventory_select2 = array(array('id' => '', 'text' => '-'));
+
+        foreach ($inventories as $inventory) {
+            $inventory_select2[] = array("id" => $inventory->id, "text" => $inventory->item_name) ;
+        }
+        echo json_encode($inventory_select2);
+    }
 }
