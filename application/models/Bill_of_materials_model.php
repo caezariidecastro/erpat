@@ -40,10 +40,10 @@ class Bill_of_materials_model extends Crud_model {
             $where .= " AND $bill_of_materials_materials_table.bill_of_material_id=$bill_of_material_id";
         }
 
-        $sql = "SELECT $bill_of_materials_materials_table.*, materials.name AS material_name
+        $sql = "SELECT $bill_of_materials_materials_table.*, material_inventory.name AS material_name
         FROM $bill_of_materials_materials_table
         LEFT JOIN users ON users.id = $bill_of_materials_materials_table.created_by
-        LEFT JOIN materials ON materials.id = $bill_of_materials_materials_table.material_id
+        LEFT JOIN material_inventory ON material_inventory.id = $bill_of_materials_materials_table.material_inventory_id
         WHERE $bill_of_materials_materials_table.deleted=0 $where";
         return $this->db->query($sql);
     }

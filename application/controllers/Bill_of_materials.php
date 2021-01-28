@@ -10,7 +10,7 @@ class Bill_of_materials extends MY_Controller {
         $this->load->model("Bill_of_materials_model");
         $this->load->model("Bill_of_materials_materials_model");
         $this->load->model("Warehouse_model");
-        $this->load->model("Material_entries_model");
+        $this->load->model("Material_inventory_model");
     }
 
     protected function _get_warehouse_dropdown_data() {
@@ -24,11 +24,11 @@ class Bill_of_materials extends MY_Controller {
     }
 
     protected function _get_material_dropdown_data() {
-        $materials = $this->Material_entries_model->get_all()->result();
+        $materials = $this->Material_inventory_model->get_details()->result();
         $material_dropdown = array('' => '-');
 
         foreach ($materials as $material) {
-            $material_dropdown[$material->id] = $material->name;
+            $material_dropdown[$material->id] = $material->material_name;
         }
         return $material_dropdown;
     }
@@ -178,7 +178,7 @@ class Bill_of_materials extends MY_Controller {
         ));
 
         $bill_of_materials_materials_data = array(
-            "material_id" => $this->input->post('material_id'),
+            "material_inventory_id" => $this->input->post('material_id'),
             "bill_of_material_id" => $this->input->post('id'),
             "quantity" => $this->input->post('quantity'),
             "created_on" => date('Y-m-d H:i:s'),

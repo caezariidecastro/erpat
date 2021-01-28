@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `bill_of_materials_materials` (
   `id` bigint(10) NOT NULL,
   `bill_of_material_id` bigint(10) NOT NULL,
-  `material_id` bigint(10) NOT NULL,
+  `material_inventory_id` bigint(10) NOT NULL,
   `quantity` float NOT NULL,
   `created_on` datetime NOT NULL,
   `created_by` bigint(10) NOT NULL,
