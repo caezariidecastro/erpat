@@ -48,7 +48,16 @@ class Inventory_item_entries_model extends Crud_model {
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
             AND i.item_id = $inventory_items_table.id
-        ), 0) AS delivered
+        ), 0) AS delivered,
+        COALESCE((
+            SELECT SUM(bill_of_materials.quantity)
+            FROM bill_of_materials
+            LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials.id
+            LEFT JOIN inventory ON inventory.id = bill_of_materials.inventory_id
+            WHERE bill_of_materials.deleted = 0
+            AND productions.status = 'completed'
+            AND inventory.item_id = $inventory_items_table.id
+        ), 0) AS produced
         FROM $inventory_items_table
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by
         LEFT JOIN inventory_item_categories cat ON cat.id = $inventory_items_table.category

@@ -52,7 +52,7 @@ class Material_inventory extends MY_Controller {
                             </div>
                             <div class="col-md-5">
                                 <div class="text-off pull-right text-right">
-                                    Stocks on hand: '.($data->stocks + $data->stocks_override).'
+                                    Stocks on hand: '.($data->stocks + $data->stocks_override - $data->production_quantity).'
                                 </div>
                             </div>
                         </div>
@@ -90,7 +90,7 @@ class Material_inventory extends MY_Controller {
                             </div>
                             <div class="col-md-4">
                                 <div class="text-off pull-right text-right">
-                                    Available stocks: '.($data->stock + $data->stock_override).'
+                                    Available stocks: '.($data->stock + $data->stock_override - $data->production_quantity).'
                                 </div>
                             </div>
                         </div>

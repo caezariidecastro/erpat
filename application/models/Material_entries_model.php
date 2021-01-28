@@ -40,7 +40,16 @@ class Material_entries_model extends Crud_model {
             LEFT JOIN material_inventory_stock_override ON material_inventory_stock_override.material_inventory_id = material_inventory.id
             WHERE material_id = $materials_table.id 
             AND material_inventory.deleted = 0
-        ), 0) AS stocks_override
+        ), 0) AS stocks_override,
+        COALESCE((
+            SELECT SUM(bill_of_materials_materials.quantity)
+            FROM bill_of_materials_materials
+            LEFT JOIN material_inventory ON material_inventory.id = bill_of_materials_materials.material_inventory_id
+            LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials_materials.bill_of_material_id
+            WHERE bill_of_materials_materials.deleted = 0
+            AND material_inventory.material_id = $materials_table.id
+            AND productions.status IN ('ongoing', 'completed')
+        ), 0) AS production_quantity
         FROM $materials_table
         LEFT JOIN users creator ON creator.id = $materials_table.created_by
         LEFT JOIN material_categories cat ON cat.id = $materials_table.category
