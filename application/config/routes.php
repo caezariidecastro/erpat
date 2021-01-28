@@ -166,5 +166,8 @@ $route["pid/materials"] = "material_categories/index";
 // Bill of Materials
 $route["pid/bill-of-materials"] = "bill_of_materials/index";
 
+// Productions
+$route["pid/productions"] = "productions/index";
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

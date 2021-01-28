@@ -25,7 +25,7 @@ $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
 $lang["submenu_hrm_holidays"] = "Holidays";
 
-$lang["submenu_pid_productions"] = "Productions - New";
+$lang["submenu_pid_productions"] = "Productions";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials";
 $lang["submenu_pid_purchases"] = "Purchases - New";
 $lang["submenu_pid_items"] = "Items";
@@ -277,8 +277,14 @@ $lang["select_a_material"] = "Select a material to view";
 $lang["duplicate_material_error"] = "Material is already at the selected warehouse";
 
 // Production & Inventory > Bill of Materials
+$lang["bill_of_material"] = "Bill of Material";
 $lang["bill_of_materials"] = "Bill of Materials";
 $lang["add_bill_of_material"] = "Add bill of material";
 $lang["edit_bill_of_material"] = "Edit bill of material";
 $lang["output"] = "Output";
 $lang["material"] = "Material";
+
+// Production & Inventory > Productions
+$lang["productions"] = "Productions";
+$lang["add_production"] = "Add production";
+$lang["edit_production"] = "Edit production";
