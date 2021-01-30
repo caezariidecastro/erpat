@@ -56,13 +56,14 @@ $lang["submenu_sms_estimates"] = "Estimates";
 $lang["submenu_sms_invoices"] = "Invoices";
 $lang["submenu_sms_salesmatrix"] = "Sales Matrix";
 $lang["submenu_sms_customers"] = "Customers";
-$lang["submenu_sms_giftcard"] = "Gift Card - Soon!";
-$lang["submenu_sms_coupons"] = "Coupons - Soon!";
+$lang["submenu_sms_giftcard"] = "Gift Card - Todo!";
+$lang["submenu_sms_coupons"] = "Coupons - Todo!";
 
 $lang["submenu_lms_delivery"] = "Delivery";
 $lang["submenu_lms_warehouse"] = "Warehouse";
 $lang["submenu_lms_transfers"] = "Transfer";
 $lang["submenu_lms_vehicles"] = "Vehicles";
+$lang["submenu_lms_drivers"] = "Drivers - Todo!";
 $lang["submenu_lms_consumers"] = "Consumers";
 
 $lang["submenu_mcm_leads"] = "Leads";

@@ -269,6 +269,10 @@ class Left_menu {
                 $sidebar_menu["announcements"] = array("name" => "announcements", "url" => "announcements", "class" => "fa-bullhorn");
             }
 
+            if (get_setting("module_todo") == "1") {
+                $sidebar_menu["todo"] = array("name" => "todo", "url" => "todo", "class" => "fa-check-square-o font-16");
+            }
+
             if (get_setting("module_event") == "1") {
                 $sidebar_menu["events"] = array("name" => "events", "url" => "events", "class" => "fa-calendar");
             }
@@ -299,14 +303,12 @@ class Left_menu {
                     array("name" => "submenu_fas_summary", "url" => "fas/summary"),
                     array("name" => "submenu_fas_payments", "url" => "fas/payments"),
                     array("name" => "submenu_fas_expenses", "url" => "fas/expenses"),
-                    array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
-                    array("name" => "submenu_fas_transfers", "url" => "fas/transfers"),
-                    array("name" => "submenu_fas_return_sale", "url" => "fas/return-sale"),
-                    array("name" => "submenu_fas_return_purchase", "url" => "fas/return-purchase"),
-                    array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet"),
                     array("name" => "submenu_fas_contributions", "url" => "fas/contributions"),
                     array("name" => "submenu_fas_incentives", "url" => "fas/incentives"),
                     array("name" => "submenu_fas_payroll", "url" => "fas/payroll"),
+                    array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
+                    array("name" => "submenu_fas_transfers", "url" => "fas/transfers"),
+                    array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet"),
                 ));
             }
 
@@ -315,10 +317,9 @@ class Left_menu {
                 "submenu" => array(
                     array("name" => "submenu_pid_productions", "url" => "pid/productions"),
                     array("name" => "submenu_pid_billofmaterials", "url" => "pid/bill-of-materials"),
-                    // array("name" => "submenu_pid_purchases", "url" => "pid/purchases"),
+                    array("name" => "submenu_pid_materials", "url" => "pid/materials"),
                     array("name" => "submenu_pid_items", "url" => "pid/items"),
                     array("name" => "submenu_pid_inventory", "url" => "pid/inventory"),
-                    array("name" => "submenu_pid_materials", "url" => "pid/materials"),
                 ));
             }
 
@@ -336,6 +337,7 @@ class Left_menu {
                     array("name" => "submenu_lms_warehouse", "url" => "lms/warehouse"),
                     array("name" => "submenu_lms_transfers", "url" => "lms/transfer"),
                     array("name" => "submenu_lms_vehicles", "url" => "lms/vehicles"),
+                    array("name" => "submenu_lms_drivers", "url" => "lms/drivers"),
                     array("name" => "submenu_lms_consumers", "url" => "lms/consumers"),
                 ));
             }
@@ -346,9 +348,9 @@ class Left_menu {
                     array("name" => "submenu_sms_pointofsale", "url" => "sms/point-of-sale"),
                     array("name" => "submenu_sms_giftcard", "url" => "sms/giftcard"),
                     array("name" => "submenu_sms_coupons", "url" => "sms/coupons"),
+                    array("name" => "submenu_sms_salesmatrix", "url" => "sms/sales-matrix"),
                     array("name" => "submenu_sms_estimates", "url" => "sms/estimates"),
                     array("name" => "submenu_sms_invoices", "url" => "sms/invoices"),
-                    array("name" => "submenu_sms_salesmatrix", "url" => "sms/sales-matrix"),
                     array("name" => "submenu_sms_customers", "url" => "sms/customers"),
                 ));
             }
