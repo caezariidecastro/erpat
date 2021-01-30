@@ -485,7 +485,28 @@ class Settings extends MY_Controller {
 
     function save_module_settings() {
 
-        $settings = array("module_timeline", "module_event", "module_todo", "module_note", "module_message", "module_chat", "module_invoice", "module_expense", "module_attendance", "module_leave", "module_estimate", "module_estimate_request", "module_lead", "module_ticket", "module_announcement", "module_project_timesheet", "module_help", "module_knowledge_base", "module_gantt", "module_hrm", "module_fas", "module_pid", "module_mcm", "module_lms", "module_sms", "module_pms", "module_ams");
+        $settings = array(
+            "module_timeline", "module_event", "module_todo", "module_note", "module_message", "module_chat", "module_announcement", 
+        "module_hrm", 
+            "module_hrm_department", "module_hrm_employee", "module_attendance", "module_hrm_disciplinary", "module_leave", "module_hrm_holidays",
+        "module_fas", 
+            "module_fas_summary", "module_fas_payments", "module_expense", "module_fas_returns", "module_fas_contributions", "module_fas_incentives", "module_fas_payroll", "module_fas_accounts", "module_fas_transfer", "module_fas_balancesheet",
+        "module_pid", 
+            "module_pid_productions", "module_pid_billofmaterials", "module_pid_rawmaterials", "module_pid_inventory", "module_pid_products", "module_pid_purchases", "module_pid_supplier",
+        "module_mcm", 
+            "module_lead",
+        "module_lms", 
+            "module_lms_delivery", "module_lms_warehouse", "module_lms_transfer", "module_lms_vehicles", "module_lms_driver", "module_lms_consumer",
+        "module_sms", 
+            "module_sms_pos", "module_sms_giftcard", "module_sms_coupons", "module_sms_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_sms_customers",
+        "module_ams",
+            "module_assets", "module_ams_category", "module_ams_location", "module_vendors", "module_brands", 
+        "module_pms", 
+            "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 
+        "module_hts",  
+            "module_ticket", "module_help", "module_knowledge_base",
+    
+    );
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);

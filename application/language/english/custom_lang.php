@@ -10,6 +10,7 @@ $lang["module_lms"] = "Logistic & Distribution";
 $lang["module_sms"] = "Sales & Invoicing";
 $lang["module_ams"] = "Assets Management";
 $lang["module_pms"] = "Project Planning";
+$lang["module_hts"] = "Help & Support";
 
 $lang["menu_hrm"] = "Human Resource";
 $lang["menu_fas"] = "Finance & Accounting";
@@ -19,6 +20,7 @@ $lang["menu_lms"] = "Logistic & Distribution";
 $lang["menu_sms"] = "Sales & Invoicing";
 $lang["menu_ams"] = "Assets Management";
 $lang["menu_pms"] = "Project Planning";
+$lang["menu_hts"] = "Help & Support";
 
 $lang["submenu_hrm_department"] = "Department";
 $lang["submenu_hrm_employee"] = "Employee";

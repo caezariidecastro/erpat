@@ -486,12 +486,11 @@ class Left_menu {
             //     $sidebar_menu["leaves"] = array("name" => "leaves", "url" => "leaves/leave_info", "class" => "fa-sign-out font-16", "devider" => true);
             // }
 
-
-            $module_help = get_setting("module_help") == "1" ? true : false;
-            $module_knowledge_base = get_setting("module_knowledge_base") == "1" ? true : false;
-
             //prepere the help and suppor menues
-            if ($module_help || $module_knowledge_base) {
+            if (get_setting("module_hts") == "1") {
+
+                $module_help = get_setting("module_help") == "1" ? true : false;
+                $module_knowledge_base = get_setting("module_knowledge_base") == "1" ? true : false;
 
                 $help_knowledge_base_menues = array();
                 $main_url = "help";
