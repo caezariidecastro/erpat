@@ -487,8 +487,8 @@ $lang["delete_ticket_type"] = "Delete ticket type";
 /* payment methods */
 
 $lang["add_payment_method"] = "Add payment method";
-$lang["payment_method"] = "Payment method";
-$lang["payment_methods"] = "Payment methods";
+$lang["payment_method"] = "Payment Method";
+$lang["payment_methods"] = "Payment Methods";
 $lang["edit_payment_method"] = "Edit payment method";
 $lang["delete_payment_method"] = "Delete payment method";
 

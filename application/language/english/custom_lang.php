@@ -19,7 +19,7 @@ $lang["menu_sms"] = "Sales & Invoicing";
 $lang["menu_pms"] = "Project Planning";
 
 $lang["submenu_hrm_department"] = "Department";
-$lang["submenu_hrm_employee"] = "Users";
+$lang["submenu_hrm_employee"] = "Employee";
 $lang["submenu_hrm_attendance"] = "Attendance";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
@@ -294,3 +294,6 @@ $lang["edit_production"] = "Edit production";
 $lang["customers"] = "Customers";
 $lang["add_customer"] = "Add customer";
 $lang["edit_customer"] = "Edit customer";
+
+// Settings Menus
+$lang["components"] = "Components";

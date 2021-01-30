@@ -2,14 +2,15 @@
 $settings_menu = array(
     "app_settings" => array(
         array("name" => "general", "url" => "settings/general"),
+        array("name" => "company", "url" => "settings/company"),
         array("name" => "email", "url" => "settings/email"),
         array("name" => "email_templates", "url" => "email_templates"),
         array("name" => "modules", "url" => "settings/modules"),
-        array("name" => "cron_job", "url" => "settings/cron_job"),
         array("name" => "notifications", "url" => "settings/notifications"),
-        array("name" => "integration", "url" => "settings/integration"),
         array("name" => "updates", "url" => "Updates"),
-        array("name" => "units", "url" => "units"),
+    ),
+    "components" => array(
+        array("name" => "tasks", "url" => "task_status")
     ),
     "access_permission" => array(
         array("name" => "roles", "url" => "roles"),
@@ -24,8 +25,9 @@ $settings_menu = array(
     ),
     "setup" => array(
         array("name" => "custom_fields", "url" => "custom_fields"),
-        array("name" => "tasks", "url" => "task_status"),
-    )
+        array("name" => "cron_job", "url" => "settings/cron_job"),
+        array("name" => "integration", "url" => "settings/integration"),
+    ),
 );
 
 //restricted settings
@@ -34,41 +36,42 @@ if (get_setting("module_attendance") == "1") {
 }
 
 if (get_setting("module_event") == "1") {
-    $settings_menu["setup"][] = array("name" => "events", "url" => "settings/events");
+    $settings_menu["components"][] = array("name" => "events", "url" => "settings/events");
 }
 
 if (get_setting("module_leave") == "1") {
-    $settings_menu["setup"][] = array("name" => "leave_types", "url" => "leave_types");
+    $settings_menu["components"][] = array("name" => "leave_types", "url" => "leave_types");
 }
 
 if (get_setting("module_ticket") == "1") {
-    $settings_menu["setup"][] = array("name" => "tickets", "url" => "ticket_types");
+    $settings_menu["components"][] = array("name" => "tickets", "url" => "ticket_types");
 }
 
 if (get_setting("module_expense") == "1") {
-    $settings_menu["setup"][] = array("name" => "expense_categories", "url" => "expense_categories");
+    $settings_menu["components"][] = array("name" => "expense_categories", "url" => "expense_categories");
 }
 
 if (get_setting("module_invoice") == "1") {
-    $settings_menu["setup"][] = array("name" => "invoices", "url" => "settings/invoices");
+    $settings_menu["components"][] = array("name" => "invoices", "url" => "settings/invoices");
 }
 
 if (get_setting("module_estimate") == "1") {
-    $settings_menu["setup"][] = array("name" => "estimates", "url" => "settings/estimates");
+    $settings_menu["components"][] = array("name" => "estimates", "url" => "settings/estimates");
 }
 
-$settings_menu["setup"][] = array("name" => "payment_methods", "url" => "payment_methods");
-$settings_menu["setup"][] = array("name" => "company", "url" => "settings/company");
-$settings_menu["setup"][] = array("name" => "taxes", "url" => "taxes");
+$settings_menu["components"][] = array("name" => "units", "url" => "units");
+
+$settings_menu["components"][] = array("name" => "payment_methods", "url" => "payment_methods");
+$settings_menu["components"][] = array("name" => "taxes", "url" => "taxes");
 
 if (get_setting("module_lead") == "1") {
-    $settings_menu["setup"][] = array("name" => "leads", "url" => "lead_status");
+    $settings_menu["components"][] = array("name" => "leads", "url" => "lead_status");
 }
 
-$settings_menu["setup"][] = array("name" => "projects", "url" => "settings/projects");
+$settings_menu["components"][] = array("name" => "projects", "url" => "settings/projects");
 
 if (get_setting("module_project_timesheet") == "1") {
-    $settings_menu["setup"][] = array("name" => "timesheets", "url" => "settings/timesheets");
+    $settings_menu["components"][] = array("name" => "timesheets", "url" => "settings/timesheets");
 }
 
 $settings_menu["setup"][] = array("name" => "gdpr", "url" => "settings/gdpr");
@@ -77,6 +80,7 @@ $settings_menu["setup"][] = array("name" => "pages", "url" => "pages");
 $settings_menu["setup"][] = array("name" => "left_menu", "url" => "left_menus");
 
 $settings_menu["setup"][] = array("name" => "footer", "url" => "settings/footer");
+
 ?>
 
 <ul class="nav nav-tabs vertical settings" role="tablist">
