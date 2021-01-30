@@ -1,1 +1,0 @@
-ALTER TABLE `deliveries` ADD `invoice_id` BIGINT(10) NULL AFTER `reference_number`;

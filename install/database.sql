@@ -199,6 +199,7 @@ CREATE TABLE IF NOT EXISTS `events` (
 
 CREATE TABLE IF NOT EXISTS `expenses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(11) NOT NULL,
   `expense_date` date NOT NULL,
   `category_id` int(11) NOT NULL,
   `description` mediumtext COLLATE utf8_unicode_ci,
@@ -221,7 +222,6 @@ CREATE TABLE IF NOT EXISTS `expenses` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-
 CREATE TABLE IF NOT EXISTS `expense_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
@@ -229,10 +229,8 @@ CREATE TABLE IF NOT EXISTS `expense_categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-
-INSERT INTO `expense_categories` (`id`, `title`, `deleted`) VALUES
-(1, 'Miscellaneous expense', 0);
-
+INSERT INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Payroll', '0');
+INSERT INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Miscellaneous', '0');
 
 CREATE TABLE IF NOT EXISTS `items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -240,6 +238,10 @@ CREATE TABLE IF NOT EXISTS `items` (
   `description` text COLLATE utf8_unicode_ci,
   `unit_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `rate` double NOT NULL,
+  `active` TINYINT(4) NOT NULL DEFAULT '1',
+  `category` BIGINT(10) NOT NULL,
+  `created_on` DATETIME NOT NULL,
+  `created_by` BIGINT(10) NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -259,6 +261,7 @@ PRIMARY KEY (`id`)
 CREATE TABLE IF NOT EXISTS `invoices` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `client_id` int(11) NOT NULL,
+  `consumer_id` BIGINT(10) NULL,
   `project_id` int(11) NOT NULL DEFAULT '0',
   `bill_date` date NOT NULL,
   `due_date` date NOT NULL,
@@ -299,6 +302,8 @@ CREATE TABLE IF NOT EXISTS `invoice_items` (
   `total` double NOT NULL,
   `sort` int(11) NOT NULL DEFAULT '0',
   `invoice_id` int(11) NOT NULL,
+  `inventory_id` BIGINT(10) NULL,
+  `delivery_reference_no` TEXT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -306,6 +311,7 @@ CREATE TABLE IF NOT EXISTS `invoice_items` (
 
 CREATE TABLE IF NOT EXISTS `invoice_payments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(11) NOT NULL,
   `amount` double NOT NULL,
   `payment_date` date NOT NULL,
   `payment_method_id` int(11) NOT NULL,
@@ -524,7 +530,6 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-
 CREATE TABLE IF NOT EXISTS `payment_methods` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
@@ -533,6 +538,9 @@ CREATE TABLE IF NOT EXISTS `payment_methods` (
   `online_payable` tinyint(1) NOT NULL DEFAULT '0',
   `available_on_invoice` tinyint(1) NOT NULL DEFAULT '0',
   `minimum_payment_amount` double NOT NULL DEFAULT '0',
+  `available_on_payroll` TINYINT(1) NOT NULL DEFAULT '0',
+  `created_on` DATETIME NULL,
+  `created_by` BIGINT(10) NULL,
   `settings` longtext COLLATE utf8_unicode_ci NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
@@ -543,6 +551,8 @@ INSERT INTO `payment_methods` (`id`, `title`, `type`, `description`, `online_pay
 (2, 'Stripe', 'stripe', 'Stripe online payments', 1, 0, 0, 'a:3:{s:15:"pay_button_text";s:6:"Stripe";s:10:"secret_key";s:6:"";s:15:"publishable_key";s:6:"";}', 0),
 (3, 'PayPal Payments Standard', 'paypal_payments_standard', 'PayPal Payments Standard Online Payments', 1, 0, 0, 'a:4:{s:15:"pay_button_text";s:6:"PayPal";s:5:"email";s:4:"";s:11:"paypal_live";s:1:"0";s:5:"debug";s:1:"0";}', 0);
 
+UPDATE `payment_methods` SET `available_on_payroll` = '1' WHERE `id` = 1;
+UPDATE `payment_methods` SET `available_on_invoice` = '1' WHERE `id` = 1;
 
 CREATE TABLE IF NOT EXISTS `paypal_ipn` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1008,7 +1018,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `last_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `user_type` enum('staff','client','lead') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client',
+  `user_type` enum('staff','client','lead','consumer', 'customer') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client',
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
   `role_id` int(11) NOT NULL DEFAULT '0',
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -1410,12 +1420,18 @@ PRIMARY KEY (`id`)
 CREATE TABLE IF NOT EXISTS `deliveries` (
 `id` bigint(10) NOT NULL AUTO_INCREMENT,
 `reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`invoice_id` bigint(10) NOT NULL,
 `warehouse` bigint(10) NOT NULL,
 `consumer` bigint(10) NOT NULL,
 `dispatcher` bigint(10) NOT NULL,
 `driver` bigint(10) NOT NULL,
 `vehicle` bigint(10) NOT NULL,
 `remarks` text COLLATE utf8_unicode_ci DEFAULT NULL,
+`street` TEXT NOT NULL,
+`city` TEXT NOT NULL,
+`state` TEXT NOT NULL,
+`zip` TEXT NOT NULL,
+`country` TEXT NOT NULL,
 `created_on` datetime NOT NULL,
 `created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0,
@@ -1435,3 +1451,145 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
 `deleted` tinyint(4) NOT NULL DEFAULT 0,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `item_categories` (
+`id` bigint(10) NOT NULL AUTO_INCREMENT,
+`category` int(11) NOT NULL,
+`title` varchar(255) NOT NULL,
+`description` text NOT NULL,
+`created_on` datetime NOT NULL,
+`created_by` bigint(10) NOT NULL,
+`deleted` tinyint(4) NOT NULL DEFAULT 0,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `payroll` ( 
+    `id` BIGINT(10) NOT NULL AUTO_INCREMENT,  
+    `employee_id` BIGINT(10) NOT NULL,  
+    `account_id` BIGINT(10) NOT NULL,  
+    `payment_method_id` BIGINT(10) NOT NULL,  
+    `expense_id` BIGINT(10) NULL,  
+    `amount` DECIMAL(10, 2) NOT NULL,  
+    `note` TEXT NOT NULL,  
+    `created_on` DATETIME NOT NULL,  
+    `created_by` BIGINT(10) NOT NULL,  
+    `deleted` TINYINT(1) NOT NULL DEFAULT '0',    
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `consumers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `last_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `contact` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `street` text COLLATE utf8_unicode_ci NOT NULL,
+  `city` text COLLATE utf8_unicode_ci NOT NULL,
+  `state` text COLLATE utf8_unicode_ci NOT NULL,
+  `zip` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `country` text COLLATE utf8_unicode_ci NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `inventory_stock_override` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `warehouse` BIGINT(10) NOT NULL, 
+  `inventory_id` BIGINT(10) NOT NULL, 
+  `stock` FLOAT(10) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `material_categories` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `material_inventory_stock_override` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `warehouse` bigint(10) NOT NULL,
+  `material_inventory_id` bigint(10) NOT NULL,
+  `stock` float NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `material_inventory` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `warehouse` bigint(10) NOT NULL,
+  `stock` float NOT NULL,
+  `material_id` bigint(10) NOT NULL,
+  `name` text COLLATE utf8_unicode_ci NOT NULL,
+  `sku` text COLLATE utf8_unicode_ci NOT NULL,
+  `unit` bigint(10) NOT NULL,
+  `category` bigint(10) NOT NULL,
+  `cost_price` decimal(10,2) NOT NULL,
+  `vendor` bigint(10) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `materials` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `name` text COLLATE utf8_unicode_ci NOT NULL,
+  `sku` text COLLATE utf8_unicode_ci NOT NULL,
+  `unit` bigint(10) NOT NULL,
+  `category` bigint(10) NOT NULL,
+  `cost_price` decimal(10,2) NOT NULL,
+  `vendor` bigint(10) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `materials` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `name` text COLLATE utf8_unicode_ci NOT NULL,
+  `sku` text COLLATE utf8_unicode_ci NOT NULL,
+  `unit` bigint(10) NOT NULL,
+  `category` bigint(10) NOT NULL,
+  `cost_price` decimal(10,2) NOT NULL,
+  `vendor` bigint(10) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `bill_of_materials_materials` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `bill_of_material_id` bigint(10) NOT NULL,
+  `material_inventory_id` bigint(10) NOT NULL,
+  `quantity` float NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `bill_of_materials` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `inventory_id` bigint(10) NOT NULL,
+  `quantity` float NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;

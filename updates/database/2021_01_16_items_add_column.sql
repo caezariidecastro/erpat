@@ -1,1 +1,0 @@
-ALTER TABLE `items` ADD `active` TINYINT(4) NOT NULL DEFAULT '1' AFTER `rate`;

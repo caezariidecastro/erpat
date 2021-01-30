@@ -1,1 +1,0 @@
-INSERT INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Payroll', '0');

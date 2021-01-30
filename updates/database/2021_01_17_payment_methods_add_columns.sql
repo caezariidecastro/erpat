@@ -1,1 +1,0 @@
-ALTER TABLE `payment_methods` ADD `available_on_payroll` TINYINT(1) NOT NULL DEFAULT '0' AFTER `minimum_payment_amount`, ADD `created_on` DATETIME NULL AFTER `available_on_payroll`, ADD `created_by` BIGINT(10) NULL AFTER `created_on`;

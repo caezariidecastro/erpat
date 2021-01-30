@@ -1,1 +1,0 @@
-ALTER TABLE `invoice_items` ADD `delivery_reference_no` TEXT NULL AFTER `invoice_id`;
