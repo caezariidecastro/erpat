@@ -231,7 +231,7 @@ $lang["all_team_members"] = "All team members";
 $lang["all_team_clients"] = "All Clients";
 
 /* settings */
-$lang["app_settings"] = "App Settings";
+$lang["app_settings"] = "Settings";
 $lang["app_title"] = "App Title";
 $lang["site_logo"] = "Site Logo";
 $lang["invoice_logo"] = "Invoice Logo";
