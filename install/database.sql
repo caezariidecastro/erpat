@@ -1593,3 +1593,13 @@ CREATE TABLE IF NOT EXISTS `bill_of_materials` (
   `deleted` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `productions` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `bill_of_material_id` bigint(10) NOT NULL,
+  `status` enum('draft','ongoing','completed','cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'draft',
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
