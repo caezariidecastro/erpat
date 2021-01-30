@@ -98,10 +98,10 @@ $route['sms/invoices'] = 'invoices/index';
 // Payments
 $route['fas/payments'] = 'invoice_payments/index';
 
-// Payments
+// Expenses
 $route['fas/expenses'] = 'expenses/index';
 
-// Payments
+// Income vs Expenses
 $route['fas/summary'] = 'expenses/income_vs_expenses';
 
 // Accounts
@@ -171,6 +171,9 @@ $route["pid/bill-of-materials"] = "bill_of_materials/index";
 
 // Productions
 $route["pid/productions"] = "productions/index";
+
+// Customers
+$route['sms/customers'] = 'customers/index';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

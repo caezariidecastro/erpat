@@ -37,8 +37,8 @@ $lang["submenu_fas_payments"] = "Payments";
 $lang["submenu_fas_expenses"] = "Expenses";
 $lang["submenu_fas_accounts"] = "Accounts";
 $lang["submenu_fas_transfers"] = "Transfers";
-$lang["submenu_fas_return_sale"] = "Return Sale - New";
-$lang["submenu_fas_return_purchase"] = "Return Purchase - New";
+$lang["submenu_fas_return_sale"] = "Return Sale - Soon";
+$lang["submenu_fas_return_purchase"] = "Return Purchase - Soon";
 $lang["submenu_fas_balancesheet"] = "Balance Sheet";
 $lang["submenu_fas_incentives"] = "Incentives";
 $lang["submenu_fas_contributions"] = "Contributions";
@@ -55,6 +55,7 @@ $lang["submenu_sms_pointofsale"] = "Point of Sale - Soon!";
 $lang["submenu_sms_estimates"] = "Estimates";
 $lang["submenu_sms_invoices"] = "Invoices";
 $lang["submenu_sms_salesmatrix"] = "Sales Matrix";
+$lang["submenu_sms_customers"] = "Customers";
 $lang["submenu_sms_giftcard"] = "Gift Card - Soon!";
 $lang["submenu_sms_coupons"] = "Coupons - Soon!";
 
@@ -288,3 +289,8 @@ $lang["material"] = "Material";
 $lang["productions"] = "Productions";
 $lang["add_production"] = "Add production";
 $lang["edit_production"] = "Edit production";
+
+// Production & Inventory > Customers
+$lang["customers"] = "Customers";
+$lang["add_customer"] = "Add customer";
+$lang["edit_customer"] = "Edit customer";
