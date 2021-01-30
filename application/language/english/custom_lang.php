@@ -29,7 +29,8 @@ $lang["submenu_hrm_holidays"] = "Holidays";
 
 $lang["submenu_pid_productions"] = "Productions";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials";
-$lang["submenu_pid_purchases"] = "Purchases - New";
+$lang["submenu_pid_purchases"] = "Purchases - Todo";
+$lang["submenu_pid_supplier"] = "Supplier - Todo";
 $lang["submenu_pid_items"] = "Products";
 $lang["submenu_pid_inventory"] = "Inventory";
 $lang["submenu_pid_materials"] = "Materials";

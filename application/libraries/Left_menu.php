@@ -319,8 +319,10 @@ class Left_menu {
                     array("name" => "submenu_pid_productions", "url" => "pid/productions"),
                     array("name" => "submenu_pid_billofmaterials", "url" => "pid/bill-of-materials"),
                     array("name" => "submenu_pid_materials", "url" => "pid/materials"),
-                    array("name" => "submenu_pid_items", "url" => "pid/items"),
                     array("name" => "submenu_pid_inventory", "url" => "pid/inventory"),
+                    array("name" => "submenu_pid_items", "url" => "pid/items"),
+                    array("name" => "submenu_pid_purchases", "url" => "pid/purchases"),
+                    array("name" => "submenu_pid_supplier", "url" => "pid/supplier"),
                 ));
             }
 
