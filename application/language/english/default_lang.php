@@ -1033,7 +1033,7 @@ $lang["add_a_todo"] = "Add a to do...";
 
 /* Version 1.9 */
 
-$lang["client_groups"] = "Client groups";
+$lang["client_groups"] = "Groups";
 $lang["add_client_group"] = "Add client group";
 $lang["edit_client_group"] = "Edit client group";
 $lang["delete_client_group"] = "Delete client group";
@@ -1176,9 +1176,9 @@ $lang["fixed_amount"] = "Fixed Amount";
 $lang["before_tax"] = "Before Tax";
 $lang["after_tax"] = "After Tax";
 
-$lang["access_permission"] = "Access Permission";
+$lang["access_permission"] = "Permissions";
 $lang["setup"] = "Setup";
-$lang["client_permissions"] = "Client permissions";
+$lang["client_permissions"] = "Permissions";
 
 $lang["invoice_over_payment_error_message"] = "You can't pay more than your invoice due.";
 $lang["account_already_exists_for_your_company_name"] = "Account already exists for your company name.";
