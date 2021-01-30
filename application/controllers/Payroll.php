@@ -133,7 +133,7 @@ class Payroll extends MY_Controller {
             $expense_data = array(
                 "expense_date" => date('Y-m-d'),
                 "account_id" => $payroll->account_id,
-                "category_id" => 2,
+                "category_id" => 1,
                 "amount" => $payroll->amount,
                 "user_id" => $payroll->employee_id,
             );

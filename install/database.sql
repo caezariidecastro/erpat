@@ -1603,3 +1603,22 @@ CREATE TABLE IF NOT EXISTS `productions` (
   `deleted` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `customers` (
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
+  `first_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `last_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `contact` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `street` text COLLATE utf8_unicode_ci NOT NULL,
+  `city` text COLLATE utf8_unicode_ci NOT NULL,
+  `state` text COLLATE utf8_unicode_ci NOT NULL,
+  `zip` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `country` text COLLATE utf8_unicode_ci NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+ALTER TABLE `incentive_entries` ADD `amount` DECIMAL(10) NOT NULL AFTER `category`;
