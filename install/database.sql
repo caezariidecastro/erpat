@@ -1620,3 +1620,5 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `deleted` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+ALTER TABLE `incentive_entries` ADD `amount` DECIMAL(10) NOT NULL AFTER `category`;
