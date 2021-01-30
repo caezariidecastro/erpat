@@ -355,6 +355,17 @@ class Left_menu {
                 ));
             }
 
+            if (get_setting("module_ams") == "1") {
+                $sidebar_menu["menu_ams"] = array("name" => "menu_ams", "url" => "ams", "class" => "fa-archive", "devider" => true,
+                "submenu" => array(
+                    array("name" => "submenu_ams_assets", "url" => "ams/assets"),
+                    array("name" => "submenu_ams_category", "url" => "ams/category"),
+                    array("name" => "submenu_ams_location", "url" => "ams/location"),
+                    array("name" => "submenu_ams_vendors", "url" => "ams/vendor"),
+                    array("name" => "submenu_ams_maker", "url" => "ams/maker"),
+                ));
+            }
+
             if (get_setting("module_pms") == "1") {
                 $sidebar_menu["menu_pms"] = array("name" => "menu_pms", "url" => "pms", "class" => "fa-cubes", "devider" => true,
                 "submenu" => array(

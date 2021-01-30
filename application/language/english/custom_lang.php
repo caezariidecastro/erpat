@@ -8,6 +8,7 @@ $lang["module_pid"] = "Production & Inventory";
 $lang["module_mcm"] = "Marketing & Campaigns";
 $lang["module_lms"] = "Logistic & Distribution";
 $lang["module_sms"] = "Sales & Invoicing";
+$lang["module_ams"] = "Assets Management";
 $lang["module_pms"] = "Project Planning";
 
 $lang["menu_hrm"] = "Human Resource";
@@ -16,6 +17,7 @@ $lang["menu_pid"] = "Production & Inventory";
 $lang["menu_mcm"] = "Marketing & Campaigns";
 $lang["menu_lms"] = "Logistic & Distribution";
 $lang["menu_sms"] = "Sales & Invoicing";
+$lang["menu_ams"] = "Assets Management";
 $lang["menu_pms"] = "Project Planning";
 
 $lang["submenu_hrm_department"] = "Department";
@@ -50,6 +52,12 @@ $lang["submenu_pms_view_gantts"] = "View Gantts";
 $lang["submenu_pms_timesheets"] = "Timesheets";
 $lang["submenu_pms_clients"] = "Clients";
 $lang["submenu_pms_services"] = "Services";
+
+$lang["submenu_ams_assets"] = "Assets";
+$lang["submenu_ams_category"] = "Category";
+$lang["submenu_ams_location"] = "Location";
+$lang["submenu_ams_vendors"] = "Vendors";
+$lang["submenu_ams_maker"] = "Brands";
 
 $lang["submenu_sms_pointofsale"] = "Point of Sale - Soon!";
 $lang["submenu_sms_estimates"] = "Estimates";
