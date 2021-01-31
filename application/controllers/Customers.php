@@ -28,14 +28,14 @@ class Customers extends MY_Controller {
             $data->first_name,
             $data->last_name,
             $data->email,
-            $data->contact,
+            $data->phone,
             $data->street,
             $data->city,
             $data->state,
             $data->zip,
             $data->country,
-            $data->created_on,
-            get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
+            $data->created_at,
+            $data->created_by ? get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")) : "",
             modal_anchor(get_uri("customers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_customer'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("customers/delete"), "data-action" => "delete-confirmation"))
         );
@@ -52,8 +52,8 @@ class Customers extends MY_Controller {
             "first_name" => $this->input->post('first_name'),
             "last_name" => $this->input->post('last_name'),
             "email" => $this->input->post('email'),
-            "first_name" => $this->input->post('first_name'),
-            "contact" => $this->input->post('contact'),
+            "user_type" => 'customer',
+            "phone" => $this->input->post('phone'),
             "street" => $this->input->post('street'),
             "city" => $this->input->post('city'),
             "state" => $this->input->post('state'),
@@ -62,11 +62,11 @@ class Customers extends MY_Controller {
         );
 
         if(!$id){
-            $customer_data["created_on"] = date('Y-m-d H:i:s');
+            $customer_data["created_at"] = date('Y-m-d H:i:s');
             $customer_data["created_by"] = $this->login_user->id;
         }
 
-        $customer_id = $this->Customers_model->save($customer_data, $id);
+        $customer_id = $this->Users_model->save($customer_data, $id);
         if ($customer_id) {
             $options = array("id" => $customer_id);
             $customer_info = $this->Customers_model->get_details($options)->row();
