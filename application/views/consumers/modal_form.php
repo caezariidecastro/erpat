@@ -54,15 +54,15 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="contact" class=" col-md-3"><?php echo lang('contact'); ?></label>
+        <label for="phone" class=" col-md-3"><?php echo lang('phone'); ?></label>
         <div class="col-md-9">
             <?php
             echo form_input(array(
-                "id" => "contact",
-                "name" => "contact",
-                "value" => $model_info ? $model_info->contact : "",
+                "id" => "phone",
+                "name" => "phone",
+                "value" => $model_info ? $model_info->phone : "",
                 "class" => "form-control validate-hidden",
-                "placeholder" => lang('contact'),
+                "placeholder" => lang('phone'),
                 "autofocus" => true,
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),

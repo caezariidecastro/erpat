@@ -355,9 +355,10 @@ class Team_members extends MY_Controller {
 
 
             //we have an id. view the team_member's profie
-            $options = array("id" => $id, "user_type" => "staff");
+            $viewable_user_types = ["staff", "consumer", "customer"];
+            $options = array("id" => $id);
             $user_info = $this->Users_model->get_details($options)->row();
-            if ($user_info) {
+            if ($user_info && in_array($user_info->user_type, $viewable_user_types)) {
 
                 //check which tabs are viewable for current logged in user
                 $view_data['show_timeline'] = get_setting("module_timeline") ? true : false;
