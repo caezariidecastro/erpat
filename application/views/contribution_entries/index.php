@@ -9,11 +9,13 @@
             source: '<?php echo_uri("contribution_entries/list_data") ?>',
             filterDropdown: [
                 {id: "category_select2_filter", name: "category_select2_filter", class: "w200", options: <?php echo json_encode($category_select2); ?>},
-                {id: "users_select2_filter", name: "users_select2_filter", class: "w200", options: <?php echo json_encode($user_select2); ?>}
+                {id: "users_select2_filter", name: "users_select2_filter", class: "w200", options: <?php echo json_encode($user_select2); ?>},
+                {id: "account_select2_filter", name: "account_select2_filter", class: "w200", options: <?php echo json_encode($account_select2); ?>}
             ],
             dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [
+                {title: "<?php echo lang('account') ?> ", "class": "w20p"},
                 {title: "<?php echo lang('user') ?> ", "class": "w20p"},
                 {title: "<?php echo lang('category') ?>"},
                 {title: "<?php echo lang('amount') ?>", "class": "text-right"},
@@ -23,7 +25,7 @@
             ],
             printColumns: [0, 1, 2, 3, 4],
             xlsColumns: [0, 1, 2, 3, 4],
-            summation: [{column: 2, dataType: 'number'}]
+            summation: [{column: 3, dataType: 'number'}]
         });
     });
 </script>

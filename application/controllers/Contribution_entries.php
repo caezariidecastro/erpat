@@ -9,6 +9,9 @@ class Contribution_entries extends MY_Controller {
         parent::__construct();
         $this->load->model("Contribution_entries_model");
         $this->load->model("Contribution_categories_model");
+        $this->load->model("Accounts_model");
+        $this->load->model("Expenses_model");
+        $this->load->model("Account_transactions_model");
     }
 
     protected function _get_category_dropdown_data() {
@@ -41,13 +44,14 @@ class Contribution_entries extends MY_Controller {
 
     private function _make_row($data) {
         return array(
+            $data->account_name,
             get_team_member_profile_link($data->created_by, $data->employee_name, array("target" => "_blank")),
             $data->category_name,
             number_with_decimal($data->amount),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
-            modal_anchor(get_uri("contribution_entries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_category'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("contribution_entries/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("contribution_entries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_entry'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_entry'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("contribution_entries/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
@@ -57,10 +61,15 @@ class Contribution_entries extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        $expense_id = $this->input->post('expense_id');
+        $account_id = $this->input->post('account_id');
+        $amount = $this->input->post('amount');
+        $user = $this->input->post('user');
 
         $contribution_data = array(
-            "user" => $this->input->post('user'),
-            "amount" => $this->input->post('amount'),
+            "account_id" => $account_id,
+            "user" => $user,
+            "amount" => $amount,
             "category" => $this->input->post('category'),
         );
 
@@ -69,7 +78,11 @@ class Contribution_entries extends MY_Controller {
             $contribution_data["created_by"] = $this->login_user->id;
         }
 
-        $contribution_id = $this->Contribution_entries_model->save($contribution_data, $id);
+        $saved_id = $this->Contribution_entries_model->save($contribution_data, $id);
+
+        $contribution_data["expense_id"] = $this->save_expense($account_id, $amount, $user, $expense_id);
+
+        $contribution_id = $this->Contribution_entries_model->save($contribution_data, $saved_id);
         if ($contribution_id) {
             $options = array("id" => $contribution_id);
             $contribution_info = $this->Contribution_entries_model->get_details($options)->row();
@@ -77,6 +90,40 @@ class Contribution_entries extends MY_Controller {
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
+    }
+
+    private function save_expense($account_id, $amount, $user, $expense_id){
+        $expense_data = array(
+            "account_id" => $account_id,
+            "category_id" => 3,
+            "amount" => $amount,
+            "user_id" => $user,
+        );
+
+        if(!$expense_id){
+            $expense_data["expense_date"] = date('Y-m-d');
+        }
+
+        $saved_id = $this->Expenses_model->save($expense_data, $expense_id);
+
+        $this->save_expense_transaction($account_id, $amount, $expense_id, $saved_id);
+
+        return $saved_id;
+    }
+
+    private function save_expense_transaction($account_id, $amount, $expense_id, $saved_id){
+        $transaction_data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'reference' => $expense_id
+        );
+
+        if(!$expense_id){
+            $this->Account_transactions_model->add_expense($account_id, $amount, $saved_id); 
+        }
+        else{
+            $this->Account_transactions_model->update_expense($expense_id, $transaction_data); 
+        }        
     }
 
     function modal_form() {
@@ -87,6 +134,7 @@ class Contribution_entries extends MY_Controller {
         $view_data['model_info'] = $this->Contribution_entries_model->get_one($this->input->post('id'));
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        $view_data['account_dropdown'] = array("" => "-") + $this->Accounts_model->get_dropdown_list(array("name"), "id", array("deleted" => 0));
 
         $this->load->view('contribution_entries/modal_form', $view_data);
     }
@@ -98,7 +146,12 @@ class Contribution_entries extends MY_Controller {
 
         $id = $this->input->post('id');
 
+        $options = array("id" => $id);
+        $contribution_info = $this->Contribution_entries_model->get_details($options)->row();
+
         if ($this->Contribution_entries_model->delete($id)) {
+            $this->Expenses_model->delete($contribution_info->expense_id);
+            $this->Account_transactions_model->delete_expense($contribution_info->expense_id);
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
