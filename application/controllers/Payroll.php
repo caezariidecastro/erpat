@@ -60,12 +60,15 @@ class Payroll extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        $account_id = $this->input->post('account_id');
+        $expense_id = $this->input->post('expense_id');
+        $amount = $this->input->post('amount');
 
         $payroll_data = array(
             "employee_id" => $this->input->post('employee_id'),
-            "account_id" => $this->input->post('account_id'),
+            "account_id" => $account_id,
             "payment_method_id" => $this->input->post('payment_method_id'),
-            "amount" => $this->input->post('amount'),
+            "amount" => $amount,
             "note" => $this->input->post('note'),
         );
 
@@ -75,6 +78,22 @@ class Payroll extends MY_Controller {
         }
 
         $payroll_id = $this->Payroll_model->save($payroll_data, $id);
+
+        if($id){
+            $transaction_data = array(
+                'account_id' => $account_id,
+                'amount' => $amount,
+                'reference' => $expense_id
+            );
+
+            $expense_data = array(
+                'id' => $expense_id,
+                'amount' => $amount,
+            );
+
+            $this->Account_transactions_model->update_payroll($expense_id, $transaction_data);
+            $this->Expenses_model->save($expense_data, $expense_id);
+        }
 
         if ($payroll_id) {
             $options = array("id" => $payroll_id);
@@ -112,7 +131,7 @@ class Payroll extends MY_Controller {
 
         if ($this->Payroll_model->delete($id)) {
             $this->Expenses_model->delete($payroll_info->expense_id);
-            $this->Account_transactions_model->delete_expense($payroll_info->expense_id);
+            $this->Account_transactions_model->delete_payroll($payroll_info->expense_id);
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -139,7 +158,7 @@ class Payroll extends MY_Controller {
             );
 
             $expense_id = $this->Expenses_model->save($expense_data);
-            $this->Account_transactions_model->add_expense($payroll->account_id, $payroll->amount, $expense_id);
+            $this->Account_transactions_model->add_payroll($payroll->account_id, $payroll->amount, $expense_id);
 
             $payroll_data = array(
                 'expense_id' => $expense_id

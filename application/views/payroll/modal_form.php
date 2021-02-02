@@ -1,6 +1,7 @@
 <?php echo form_open(get_uri("payroll/save"), array("id" => "payroll-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
+    <input type="hidden" name="expense_id" value="<?php echo $model_info ? $model_info->expense_id : "" ?>" />
     <div class="form-group">
         <label for="employee_id" class="col-md-3"><?php echo lang('name'); ?></label>
         <div class="col-md-9">

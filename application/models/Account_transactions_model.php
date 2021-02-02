@@ -115,4 +115,26 @@ class Account_transactions_model extends Crud_model {
         $this->delete_transaction(4, 2, $reference);
         $this->delete_transaction(4, 1, $reference);
     }
+
+    // Payroll
+
+    function add_payroll($account_id, $amount, $reference){
+        $data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'transaction' => 5,
+            'type' => 2,
+            'reference' => $reference
+        );
+
+        $this->add_transaction($data);
+    }
+
+    function update_payroll($reference, $data){
+        $this->update_transaction(5, 2, $reference, $data);
+    }
+
+    function delete_payroll($reference){
+        $this->delete_transaction(5, 2, $reference);
+    }
 }
