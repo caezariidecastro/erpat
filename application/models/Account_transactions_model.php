@@ -78,7 +78,7 @@ class Account_transactions_model extends Crud_model {
             'account_id' => $account_id,
             'amount' => $amount,
             'transaction' => 3,
-            'type' => 2,
+            'type' => 1,
             'reference' => $reference
         );
 
@@ -86,11 +86,11 @@ class Account_transactions_model extends Crud_model {
     }
 
     function update_payment($reference, $data){
-        $this->update_transaction(3, 2, $reference, $data);
+        $this->update_transaction(3, 1, $reference, $data);
     }
 
     function delete_payment($reference){
-        $this->delete_transaction(3, 2, $reference);
+        $this->delete_transaction(3, 1, $reference);
     }
 
     // Transfer
