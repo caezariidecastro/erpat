@@ -119,10 +119,10 @@ class Contribution_entries extends MY_Controller {
         );
 
         if(!$expense_id){
-            $this->Account_transactions_model->add_expense($account_id, $amount, $saved_id); 
+            $this->Account_transactions_model->add_contribution($account_id, $amount, $saved_id); 
         }
         else{
-            $this->Account_transactions_model->update_expense($expense_id, $transaction_data); 
+            $this->Account_transactions_model->update_contribution($expense_id, $transaction_data); 
         }        
     }
 
@@ -151,7 +151,7 @@ class Contribution_entries extends MY_Controller {
 
         if ($this->Contribution_entries_model->delete($id)) {
             $this->Expenses_model->delete($contribution_info->expense_id);
-            $this->Account_transactions_model->delete_expense($contribution_info->expense_id);
+            $this->Account_transactions_model->delete_contribution($contribution_info->expense_id);
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
