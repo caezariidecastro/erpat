@@ -259,7 +259,9 @@ $lang["model"] = "Model";
 $lang["year"] = "Year";
 $lang["color"] = "Color";
 $lang["transmission"] = "Transmission";
-$lang["no_of_wheels"] = "No. of Wheels";
+$lang["no_of_wheels"] = "No. of wheels";
+$lang["plate_number"] = "Plate no.";
+$lang["max_cargo_weight"] = "Max cargo weight (kg)";
 
 // Settings > Payment methods
 $lang["available_on_payroll"] = "Available on payroll";

@@ -25,6 +25,8 @@
                 {title: "<?php echo lang('color') ?>"},
                 {title: "<?php echo lang('transmission') ?>"},
                 {title: "<?php echo lang('no_of_wheels') ?>"},
+                {title: "<?php echo lang('plate_number') ?>"},
+                {title: "<?php echo lang('max_cargo_weight') ?>"},
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}

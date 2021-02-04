@@ -99,6 +99,38 @@
             ?>
         </div>
     </div>
+    <div class="form-group">
+        <label for="plate_number" class=" col-md-3"><?php echo lang('plate_number'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "plate_number",
+                "name" => "plate_number",
+                "value" => $model_info ? $model_info->plate_number : "",
+                "class" => "form-control",
+                "placeholder" => lang('plate_number'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="max_cargo_weight" class=" col-md-3"><?php echo lang('max_cargo_weight'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "max_cargo_weight",
+                "name" => "max_cargo_weight",
+                "value" => $model_info ? $model_info->max_cargo_weight : "",
+                "class" => "form-control",
+                "placeholder" => lang('max_cargo_weight'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">

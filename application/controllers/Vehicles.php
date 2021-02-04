@@ -34,6 +34,8 @@ class Vehicles extends MY_Controller {
             $data->color,
             $data->transmission,
             $data->no_of_wheels,
+            $data->plate_number,
+            $data->max_cargo_weight,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             modal_anchor(get_uri("vehicles/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_vehicle'), "data-post-id" => $data->id))
@@ -55,6 +57,8 @@ class Vehicles extends MY_Controller {
             "color" => $this->input->post('color'),
             "transmission" => $this->input->post('transmission'),
             "no_of_wheels" => $this->input->post('no_of_wheels'),
+            "plate_number" => $this->input->post('plate_number'),
+            "max_cargo_weight" => $this->input->post('max_cargo_weight'),
         );
 
         if(!$id){
