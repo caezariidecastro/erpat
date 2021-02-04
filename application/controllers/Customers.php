@@ -62,6 +62,8 @@ class Customers extends MY_Controller {
         );
 
         if(!$id){
+            $customer_data["disable_login"] = 1;
+            $customer_data["password"] = password_hash(make_random_string(8), PASSWORD_DEFAULT);
             $customer_data["created_at"] = date('Y-m-d H:i:s');
             $customer_data["created_by"] = $this->login_user->id;
         }
