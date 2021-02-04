@@ -29,7 +29,7 @@
     </div>
     <div class="form-group">
         <div class="col-md-12">
-            <button type="submit" class="btn btn-primary pull-right"><span class="fa fa-check-circle"></span> <?php echo lang('add'); ?></button>
+            <button id="form-submit" type="button" class="btn btn-primary pull-right"><span class="fa fa-check-circle"></span> <?php echo lang('add'); ?></button>
         </div>
     </div>
     <?php echo form_close(); ?>
@@ -55,6 +55,8 @@
 </style>
 
 <script type="text/javascript">
+    let bill_of_materials_materials_table;
+
     $(document).ready(function () {
         $("#bill-of-materials-materials-form").appForm({
             closeModalOnSuccess: false,
@@ -71,19 +73,56 @@
 
                 $('#material_id').select2("val", "");
                 $("#quantity").val("");
-            },
+            }
         });
 
         $("#bill-of-materials-materials-table").appTable({
             source: '<?php echo_uri("bill_of_materials/material_list_data?id=".$model_info->id) ?>',
             order: [[0, 'desc']],
             columns: [
+                {visible: false, searchable: false},
                 {title: "<?php echo lang('material') ?> "},
                 {title: "<?php echo lang('quantity') ?>"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
         });
 
+        bill_of_materials_materials_table = $("#bill-of-materials-materials-table").DataTable();
+        bill_of_materials_materials_table.columns(0).visible(false);
+
         $('#material_id').select2();
+
+        $("#form-submit").click(function () {
+            submit();
+        });
     });
+
+    function submit(){
+        if(is_material_already_at_the_table()){
+            if(confirm("Material is already at the table. Are you sure you want to add existing material?")){
+                $("#bill-of-materials-materials-form").trigger('submit');
+            }
+            else{
+                $('#material_id').select2("val", "");
+                $("#quantity").val("");
+            }
+        }
+        else{
+            $("#bill-of-materials-materials-form").trigger('submit');
+        }
+    }
+
+    function is_material_already_at_the_table(){
+        let checker = false;
+
+        bill_of_materials_materials_table.rows().every(function (){
+            let data = this.data();
+
+            if(data[0] == $('#material_id').select2("val")){
+                checker = true;
+            }
+        });
+
+        return checker;
+    }
 </script>
