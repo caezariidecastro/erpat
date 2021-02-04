@@ -47,6 +47,10 @@ class Customers extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        if ($this->Users_model->is_email_exists($this->input->post('email'))) {
+            echo json_encode(array("success" => false, 'message' => lang('duplicate_email')));
+            exit();
+        }
 
         $customer_data = array(
             "first_name" => $this->input->post('first_name'),
