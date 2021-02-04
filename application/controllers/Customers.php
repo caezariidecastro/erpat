@@ -41,22 +41,42 @@ class Customers extends MY_Controller {
         );
     }
 
+    private function email($first_name, $last_name, $email, $password){
+        $email_template = $this->Email_templates_model->get_final_template("login_info");
+
+        $parser_data["SIGNATURE"] = $email_template->signature;
+        $parser_data["USER_FIRST_NAME"] = $first_name;
+        $parser_data["USER_LAST_NAME"] = $last_name;
+        $parser_data["USER_LOGIN_EMAIL"] = $email;
+        $parser_data["USER_LOGIN_PASSWORD"] = $password;
+        $parser_data["DASHBOARD_URL"] = base_url();
+        $parser_data["LOGO_URL"] = get_logo_url();
+
+        $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
+        send_app_mail($email, $email_template->subject, $message);
+    }
+
     function save() {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
 
         $id = $this->input->post('id');
-        if ($this->Users_model->is_email_exists($this->input->post('email'))) {
+        $first_name = $this->input->post('first_name');
+        $last_name = $this->input->post('last_name');
+        $email = $this->input->post('email');
+        $password = make_random_string(8);
+
+        if ($this->Users_model->is_email_exists($email)) {
             echo json_encode(array("success" => false, 'message' => lang('duplicate_email')));
             exit();
         }
 
         $customer_data = array(
-            "first_name" => $this->input->post('first_name'),
-            "last_name" => $this->input->post('last_name'),
-            "email" => $this->input->post('email'),
-            "user_type" => 'customer',
+            "first_name" => $first_name,
+            "last_name" => $last_name,
+            "email" => $email,
+            "user_type" => 'consumer',
             "phone" => $this->input->post('phone'),
             "street" => $this->input->post('street'),
             "city" => $this->input->post('city'),
@@ -67,9 +87,11 @@ class Customers extends MY_Controller {
 
         if(!$id){
             $customer_data["disable_login"] = 1;
-            $customer_data["password"] = password_hash(make_random_string(8), PASSWORD_DEFAULT);
+            $customer_data["password"] = password_hash($password, PASSWORD_DEFAULT);
             $customer_data["created_at"] = date('Y-m-d H:i:s');
             $customer_data["created_by"] = $this->login_user->id;
+
+            $this->email($first_name, $last_name, $email, $password);
         }
 
         $customer_id = $this->Users_model->save($customer_data, $id);
