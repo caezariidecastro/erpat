@@ -62,6 +62,8 @@ class Consumers extends MY_Controller {
         );
 
         if(!$id){
+            $consumer_data["disable_login"] = 1;
+            $consumer_data["password"] = password_hash(make_random_string(8), PASSWORD_DEFAULT);
             $consumer_data["created_at"] = date('Y-m-d H:i:s');
             $consumer_data["created_by"] = $this->login_user->id;
         }
