@@ -29,8 +29,10 @@
             source: '<?php echo_uri("units/list_data") ?>',
             columns: [
                 {title: "<?php echo lang("title"); ?>"},
-                {title: "<?php echo lang("operator"); ?>"},
                 {title: "<?php echo lang("value"); ?>"},
+                {title: "<?php echo lang("operator"); ?>"},
+                {title: "<?php echo lang("base_unit_value"); ?>"},
+                {title: "<?php echo lang("base_unit"); ?>"},
                 {title: "<?php echo lang("created_on"); ?>"},
                 {title: "<?php echo lang("created_by"); ?>"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}

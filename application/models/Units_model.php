@@ -18,9 +18,10 @@ class Units_model extends Crud_model {
             $where .= " AND $units_table.id=$id";
         }
 
-        $sql = "SELECT $units_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name
+        $sql = "SELECT $units_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, base.value AS base_unit_value, base.title AS base_unit_title
         FROM $units_table
         LEFT JOIN users ON users.id = $units_table.created_by
+        LEFT JOIN $units_table AS base ON base.id = $units_table.base_unit
         WHERE $units_table.deleted=0 $where";
         return $this->db->query($sql);
     }

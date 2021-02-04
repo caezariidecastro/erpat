@@ -181,6 +181,9 @@ $lang["add_unit"] = "Add unit";
 $lang["edit_unit"] = "Edit unit";
 $lang["operator"] = "Operator";
 $lang["value"] = "Value";
+$lang["is_base_unit"] = "Is base unit?";
+$lang["base_unit"] = "Base unit";
+$lang["base_unit_value"] = "Base unit value";
 
 // Logistics and Distribution > Items
 $lang["sku"] = "SKU";

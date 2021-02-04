@@ -20,22 +20,6 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="operator" class="col-md-3"><?php echo lang('operator'); ?></label>
-        <div class=" col-md-9">
-            <?php
-            echo form_input(array(
-                "id" => "operator",
-                "name" => "operator",
-                "value" => $model_info ? $model_info->operator : "",
-                "class" => "form-control",
-                "placeholder" => lang('operator'),
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
-            ));
-            ?>
-        </div>
-    </div>
-    <div class="form-group">
         <label for="value" class=" col-md-3"><?php echo lang('value'); ?></label>
         <div class="col-md-9">
             <?php
@@ -52,7 +36,21 @@
             ?>
         </div>
     </div>
-
+    <div id="base_unit_wrapper" class="<?= $model_info->base_unit ? "" : "hide"?>">
+        <?php 
+            if($model_info->base_unit){
+                $this->load->view("units/base_unit");
+            }
+        ?>
+    </div>
+    <div class="form-group">
+        <label for="is_base_unit" class="col-md-3"><?php echo lang('is_base_unit'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_checkbox("is_base_unit", "1", $model_info->id ? ($model_info->base_unit ? false : true) : true, "id='is_base_unit' class='ml15'");
+            ?>                       
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">
@@ -65,8 +63,29 @@
     $(document).ready(function () {
         $("#units-form").appForm({
             onSuccess: function (result) {
-                location.reload();
+                $("#units-table").appTable({newData: result.data, dataId: result.id});
             }
         });
+
+        $("#is_base_unit").change(function(){
+            if($(this).prop("checked")){
+                $('#base_unit_wrapper').html("");
+                $("#base_unit_wrapper").addClass("hide");
+            }
+            else{
+                appLoader.show();
+
+                $.ajax({
+                    url: "<?php echo get_uri("units/base_unit/") . $model_info->id ."/". $model_info->base_unit; ?>",
+                    success: function (result) {
+                        $('#base_unit_wrapper').html(result);
+                        $("#base_unit_wrapper").removeClass("hide");
+                        appLoader.hide();
+                    }
+                });
+            }
+        });
+
+        $("#base_unit").select2();
     });
 </script>
