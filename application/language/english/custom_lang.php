@@ -75,6 +75,7 @@ $lang["submenu_lms_transfers"] = "Transfer";
 $lang["submenu_lms_vehicles"] = "Vehicles";
 $lang["submenu_lms_drivers"] = "Drivers";
 $lang["submenu_lms_consumers"] = "Consumers";
+$lang["passengers"] = "Passengers";
 
 $lang["submenu_mcm_leads"] = "Leads";
 

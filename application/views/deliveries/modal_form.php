@@ -53,8 +53,14 @@
         <label for="driver" class="col-md-3"><?php echo lang('driver'); ?></label>
         <div class="col-md-9">
             <?php
-            echo form_dropdown("driver", $user_dropdown, $model_info ? $model_info->driver : "", "class='select2 validate-hidden' id='driver' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            echo form_dropdown("driver", $driver_dropdown, $model_info ? $model_info->driver : "", "class='select2 validate-hidden' id='driver' data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="passengers" class=" col-md-3"><?php echo lang('passengers'); ?></label>
+        <div class="col-md-9">
+              <input type="text" value="<?php echo $model_info->passengers; ?>" name="passengers" id="passenger_dropdown" class="w100p validate-hidden"  data-rule-required="true" data-msg-required="<?php echo lang('field_required'); ?>" placeholder="-"  />    
         </div>
     </div>
     <div class="form-group">
@@ -204,5 +210,10 @@
         $('#vehicle').select2();
 
         $("#warehouse").select2();
+
+        $("#passenger_dropdown").select2({
+            multiple: true,
+            data: <?php echo $users_select2; ?>
+        });
     });
 </script>

@@ -45,6 +45,17 @@ class Deliveries extends MY_Controller {
         return $consumer_dropdown;
     }
 
+    function get_users_select2_data(){
+        $users = $this->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"))->result();
+        $users_select2 = array();
+
+        foreach ($users as $user) {
+            $users_select2[] = array("id" => $user->id, "text" => $user->first_name . " " . $user->last_name);
+        }
+
+        return $users_select2;
+    }
+
     function index(){
         $this->template->rander("deliveries/index");
     }
@@ -117,7 +128,8 @@ class Deliveries extends MY_Controller {
             "city" => $this->input->post('city'),
             "state" => $this->input->post('state'),
             "zip" => $this->input->post('zip'),
-            "country" => $this->input->post('country')
+            "country" => $this->input->post('country'),
+            "passengers" => $this->input->post('passengers'),
         );
 
         if(!$id){
@@ -144,9 +156,12 @@ class Deliveries extends MY_Controller {
 
         $model_info = $this->Deliveries_model->get_one($this->input->post('id'));
 
+        $view_data['users_select2'] = json_encode($this->get_users_select2_data());
+
         $view_data['model_info'] = $model_info;
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
-        $view_data['consumer_dropdown'] = $this->_get_consumer_dropdown_data();
+        $view_data['driver_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "driver"));
+        $view_data['consumer_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "consumer"));
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
         $view_data['vehicle_dropdown'] = $this->_get_vehicle_dropdown_data();
 
