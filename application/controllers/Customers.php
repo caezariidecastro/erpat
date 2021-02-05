@@ -67,11 +67,6 @@ class Customers extends MY_Controller {
         $email = $this->input->post('email');
         $password = make_random_string(8);
 
-        if ($this->Users_model->is_email_exists($email)) {
-            echo json_encode(array("success" => false, 'message' => lang('duplicate_email')));
-            exit();
-        }
-
         $customer_data = array(
             "first_name" => $first_name,
             "last_name" => $last_name,
@@ -84,8 +79,13 @@ class Customers extends MY_Controller {
             "zip" => $this->input->post('zip'),
             "country" => $this->input->post('country')
         );
-
+        
         if(!$id){
+            if ($this->Users_model->is_email_exists($email)) {
+                echo json_encode(array("success" => false, 'message' => lang('duplicate_email')));
+                exit();
+            }
+
             $customer_data["disable_login"] = 1;
             $customer_data["password"] = password_hash($password, PASSWORD_DEFAULT);
             $customer_data["created_at"] = date('Y-m-d H:i:s');
