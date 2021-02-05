@@ -73,7 +73,7 @@ $lang["submenu_lms_delivery"] = "Delivery";
 $lang["submenu_lms_warehouse"] = "Warehouse";
 $lang["submenu_lms_transfers"] = "Transfer";
 $lang["submenu_lms_vehicles"] = "Vehicles";
-$lang["submenu_lms_drivers"] = "Drivers - Todo!";
+$lang["submenu_lms_drivers"] = "Drivers";
 $lang["submenu_lms_consumers"] = "Consumers";
 
 $lang["submenu_mcm_leads"] = "Leads";
@@ -313,3 +313,13 @@ $lang["edit_customer"] = "Edit customer";
 
 // Settings Menus
 $lang["components"] = "Components";
+
+// Logistics & Distribution > Drivers
+$lang["drivers"] = "Drivers";
+$lang["add_driver"] = "Add driver";
+$lang["edit_driver"] = "Edit driver";
+$lang["license_number"] = "License number";
+$lang["license_image"] = "License image";
+$lang["total_deliveries"] = "Total deliveries";
+$lang["employment_date"] = "Employment date";
+$lang["error_upload"] = "Error uploading file.";

@@ -175,5 +175,8 @@ $route["pid/productions"] = "productions/index";
 // Customers
 $route['sms/customers'] = 'customers/index';
 
+// Drivers
+$route['lms/drivers'] = 'drivers/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
