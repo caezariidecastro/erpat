@@ -12,7 +12,7 @@ class Invoices extends MY_Controller {
         $this->load->model("Deliveries_model");
     }
 
-    function get_inventory_items_select2_data($warehouse_id) {
+    function get_inventory_items_select2_data($warehouse_id = null) {
         $inventory_items = $this->Inventory_model->get_details(array('warehouse_id' => $warehouse_id))->result();
 
         foreach ($inventory_items as $inventory_item) {

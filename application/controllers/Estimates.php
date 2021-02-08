@@ -10,6 +10,27 @@ class Estimates extends MY_Controller {
         $this->init_permission_checker("estimate");
     }
 
+    private function _get_consumer_select2_data() {
+        $consumers = $this->Users_model->get_details(array("user_type" => "consumer"))->result();
+        $consumer_list = array(array("id" => "", "text" => "-"));
+        foreach ($consumers as $value) {
+            $consumer_list[] = array("id" => $value->id, "text" => trim($value->first_name . " " . $value->last_name));
+        }
+        return $consumer_list;
+    }
+
+    function get_clients_and_leads_select2() {
+        $clients_json_select2 = array(array("id" => "", "text" => "-"));
+        $clients = $this->Clients_model->get_all_where(array("deleted" => 0), 0, 0, "is_lead")->result();
+
+        foreach ($clients as $client) {
+            $company_name = $client->is_lead ? lang("lead") . ": " . $client->company_name : $client->company_name;
+            $clients_json_select2[] = array("id" => $client->id, "text" => $company_name);
+        }
+
+        echo json_encode($clients_json_select2);
+    }
+
     /* load estimate list view */
 
     function index() {
@@ -89,7 +110,7 @@ class Estimates extends MY_Controller {
 
         //make the drodown lists
         $view_data['taxes_dropdown'] = array("" => "-") + $this->Taxes_model->get_dropdown_list(array("title"));
-        $view_data['clients_dropdown'] = $this->get_clients_and_leads_dropdown();
+        $view_data['clients_dropdown'] = $this->get_clients_and_leads_dropdown(true);
 
         //don't show clients dropdown for lead's estimate editing
         $client_info = $this->Clients_model->get_one($view_data['model_info']->client_id);
@@ -104,6 +125,7 @@ class Estimates extends MY_Controller {
         $view_data['is_clone'] = $is_clone;
 
         $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("estimates", $view_data['model_info']->id, $this->login_user->is_admin, $this->login_user->user_type)->result();
+        $view_data['consumer_dropdown'] = $this->_get_consumer_select2_data();
 
         $this->load->view('estimates/modal_form', $view_data);
     }
@@ -122,15 +144,18 @@ class Estimates extends MY_Controller {
         ));
 
         $client_id = $this->input->post('estimate_client_id');
+        $type = $this->input->post('type');
         $id = $this->input->post('id');
 
         $estimate_data = array(
-            "client_id" => $client_id,
+            "client_id" => $type == "product" ? 0 : $client_id,
+            "consumer_id" => $type == "product" ? $client_id : NULL,
             "estimate_date" => $this->input->post('estimate_date'),
             "valid_until" => $this->input->post('valid_until'),
             "tax_id" => $this->input->post('tax_id') ? $this->input->post('tax_id') : 0,
             "tax_id2" => $this->input->post('tax_id2') ? $this->input->post('tax_id2') : 0,
-            "note" => $this->input->post('estimate_note')
+            "note" => $this->input->post('estimate_note'),
+            "type" => $this->input->post('type'),
         );
 
         $is_clone = $this->input->post('is_clone');
@@ -346,10 +371,15 @@ class Estimates extends MY_Controller {
             $client = anchor(get_uri("leads/view/" . $data->client_id), $data->company_name);
         }
 
+        if($data->consumer_id){
+            $client = get_team_member_profile_link($data->consumer_id, $data->consumer_name, array("target" => "_blank"));
+        }
+
         $row_data = array(
             $estimate_url,
             $client,
             $data->estimate_date,
+            ucwords($data->type),
             format_to_date($data->estimate_date, false),
             to_currency($data->estimate_value, $data->currency_symbol),
             $this->_get_estimate_status_label($data),
@@ -497,7 +527,26 @@ class Estimates extends MY_Controller {
             $estimate_id = $view_data['model_info']->estimate_id;
         }
         $view_data['estimate_id'] = $estimate_id;
+        $view_data['item_list'] = $this->get_items();
         $this->load->view('estimates/item_modal_form', $view_data);
+    }
+
+    function product_modal_form() {
+        $this->access_only_allowed_members();
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $estimate_id = $this->input->post('estimate_id');
+
+        $view_data['model_info'] = $this->Estimate_items_model->get_one($this->input->post('id'));
+        if (!$estimate_id) {
+            $estimate_id = $view_data['model_info']->estimate_id;
+        }
+        $view_data['estimate_id'] = $estimate_id;
+        $view_data['item_list'] = $this->get_items();
+        $this->load->view('estimates/product_modal_form', $view_data);
     }
 
     /* add or edit an estimate item */
@@ -630,6 +679,18 @@ class Estimates extends MY_Controller {
         echo json_encode($suggestion);
     }
 
+    function get_items() {
+        $items = $this->Invoice_items_model->get_item_suggestion();
+
+        foreach ($items as $item) {
+            $item_list[] = array("id" => $item->title, "text" => $item->title);
+        }
+
+        $item_list[] = array("id" => "+", "text" => "+ " . lang("create_new_service"));
+
+        return $item_list;
+    }
+
     function get_estimate_item_info_suggestion() {
         $item = $this->Invoice_items_model->get_item_info_suggestion($this->input->post("item_name"));
         if ($item) {
@@ -702,6 +763,7 @@ class Estimates extends MY_Controller {
         $this->access_only_allowed_members();
 
         $view_data["estimate_info"] = $this->Estimates_model->get_details(array("id" => $estimate_id))->row();
+        $view_data['consumer_info'] = $this->Users_model->get_one($view_data['estimate_info']->consumer_id);
         $view_data['estimate_status_label'] = $this->_get_estimate_status_label($view_data["estimate_info"]);
         $this->load->view('estimates/estimate_status_bar', $view_data);
     }
@@ -737,6 +799,13 @@ class Estimates extends MY_Controller {
                 if (!$contact->is_primary_contact) {
                     $contacts_dropdown[$contact->id] = $contact->first_name . " " . $contact->last_name;
                 }
+            }
+
+            if($estimate_info->consumer_id){
+                $consumer = $this->Users_model->get_details(array("id" => $estimate_info->consumer_id))->row();
+                $contacts_dropdown = array($consumer->id => $consumer->first_name . " " . $consumer->last_name) ;
+                $contact_first_name = $consumer->first_name ;
+                $contact_last_name = $consumer->last_name;
             }
 
             $view_data['contacts_dropdown'] = $contacts_dropdown;

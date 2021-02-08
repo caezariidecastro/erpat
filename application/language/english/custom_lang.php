@@ -327,3 +327,7 @@ $lang["license_image"] = "License image";
 $lang["total_deliveries"] = "Total deliveries";
 $lang["employment_date"] = "Employment date";
 $lang["error_upload"] = "Error uploading file.";
+
+// Sales & Invoicing > Estimates
+$lang["type"] = "Type";
+$lang["send_to_consumer"] = "Send to consumer";

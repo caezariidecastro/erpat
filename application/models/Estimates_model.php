@@ -68,13 +68,14 @@ class Estimates_model extends Crud_model {
 
 
         $sql = "SELECT $estimates_table.*, $clients_table.currency, $clients_table.currency_symbol, $clients_table.company_name, $projects_table.title as project_title, $clients_table.is_lead,
-           $estimate_value_calculation AS estimate_value, tax_table.percentage AS tax_percentage, tax_table2.percentage AS tax_percentage2 $select_custom_fieds
+           $estimate_value_calculation AS estimate_value, tax_table.percentage AS tax_percentage, tax_table2.percentage AS tax_percentage2 $select_custom_fieds, TRIM(CONCAT(consumer.first_name, ' ', consumer.last_name)) AS consumer_name
         FROM $estimates_table
         LEFT JOIN $clients_table ON $clients_table.id= $estimates_table.client_id
         LEFT JOIN $projects_table ON $projects_table.id= $estimates_table.project_id
         LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table ON tax_table.id = $estimates_table.tax_id
         LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table2 ON tax_table2.id = $estimates_table.tax_id2 
         LEFT JOIN (SELECT estimate_id, SUM(total) AS estimate_value FROM $estimate_items_table WHERE deleted=0 GROUP BY estimate_id) AS items_table ON items_table.estimate_id = $estimates_table.id 
+        LEFT JOIN users consumer ON consumer.id = $estimates_table.consumer_id
         $join_custom_fieds
         WHERE $estimates_table.deleted=0 $where";
         return $this->db->query($sql);
@@ -140,8 +141,8 @@ class Estimates_model extends Crud_model {
 
         $result->estimate_total = $estimate_total - number_format($result->discount_total, 2, ".", "");
 
-        $result->currency_symbol = $client->currency_symbol ? $client->currency_symbol : get_setting("currency_symbol");
-        $result->currency = $client->currency ? $client->currency : get_setting("default_currency");
+        $result->currency_symbol = isset($client->currency_symbol) ? $client->currency_symbol : get_setting("currency_symbol");
+        $result->currency = isset($client->currency) ? $client->currency : get_setting("default_currency");
         return $result;
     }
 

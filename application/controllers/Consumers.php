@@ -136,4 +136,13 @@ class Consumers extends MY_Controller {
             echo json_encode(array("success" => false));
         }
     }
+
+    function get_consumer_select2_data() {
+        $consumers = $this->Users_model->get_details(array("user_type" => "consumer"))->result();
+        $consumer_list = array(array("id" => "", "text" => "-"));
+        foreach ($consumers as $key => $value) {
+            $consumer_list[] = array("id" => $value->id, "text" => trim($value->first_name . " " . $value->last_name));
+        }
+        echo json_encode($consumer_list);
+    }
 }

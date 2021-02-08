@@ -15,7 +15,7 @@
                 "name" => "estimate_item_title",
                 "value" => $model_info->title,
                 "class" => "form-control validate-hidden",
-                "placeholder" => lang('select_or_create_new_item'),
+                "placeholder" => lang('select_or_create_new_service'),
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
             ));
@@ -118,22 +118,7 @@
     });
 
     function applySelect2OnItemTitle() {
-        $("#estimate_item_title").select2({
-            showSearchBox: true,
-            ajax: {
-                url: "<?php echo get_uri("estimates/get_estimate_item_suggestion"); ?>",
-                dataType: 'json',
-                quietMillis: 250,
-                data: function (term, page) {
-                    return {
-                        q: term // search term
-                    };
-                },
-                results: function (data, page) {
-                    return {results: data};
-                }
-            }
-        }).change(function (e) {
+        $("#estimate_item_title").select2({data: <?= json_encode($item_list)?>}).change(function (e) {
             if (e.val === "+") {
                 //show simple textbox to input the new item
                 $("#estimate_item_title").select2("destroy").val("").focus();
