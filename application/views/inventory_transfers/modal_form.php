@@ -77,7 +77,7 @@
     <hr>
     <div id="add-item-transfer-section">
         <div class="form-group">
-            <label for="item" class="col-md-3"><?php echo lang('item'); ?></label>
+            <label for="item" class="col-md-3"><?php echo lang('product'); ?></label>
             <div class="col-md-9" id="item-selection-section">
                 <?php
                 echo form_input(array(
@@ -85,7 +85,7 @@
                     "name" => "",
                     "value" => "",
                     "class" => "form-control",
-                    "placeholder" => lang('item')
+                    "placeholder" => lang('product')
                 ));
                 ?>
             </div>

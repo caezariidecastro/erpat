@@ -43,7 +43,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="inventory_id" class=" col-md-3"><?php echo lang('item'); ?></label>
+        <label for="inventory_id" class=" col-md-3"><?php echo lang('product'); ?></label>
         <div class="col-md-9">
             <?php
             echo form_input(array(

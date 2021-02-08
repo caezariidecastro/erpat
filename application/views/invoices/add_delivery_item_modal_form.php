@@ -8,7 +8,7 @@
         <div class="col-md-12 text-off"> <?php echo lang('inactive_hidden'); ?></div>
     </div>
     <div class="form-group">
-        <label for="invoice_item_title" class=" col-md-3"><?php echo lang('item'); ?></label>
+        <label for="invoice_item_title" class=" col-md-3"><?php echo lang('product'); ?></label>
         <div class="col-md-9" id="invoice_item_title_wrapper">
             <?php
             echo form_input(array(

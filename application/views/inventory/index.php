@@ -20,7 +20,7 @@
                     <div id="message-list-box" class="panel panel-default">
                         <div class="panel-heading clearfix">
                             <div class="pull-left p5" style="font-size: 18px;">
-                                <?= lang('items')?>
+                                <?= lang('products')?>
                             </div>
                             <div class="pull-right">
                                 <input type="text" id="search-items" class="datatable-search" placeholder="<?php echo lang('search') ?>">
@@ -36,7 +36,7 @@
                     <div id="message-details-section" class="panel panel-default"> 
                         <div id="empty-message" class="text-center mb15 box">
                             <div class="box-content" style="vertical-align: middle; height: 100%; padding: 10px"> 
-                                <div><?php echo lang("select_an_item"); ?></div>
+                                <div><?php echo lang("select_a_product"); ?></div>
                                 <span class="fa fa-object-group" style="font-size: 1100%; color:#f6f8f8"></span>
                             </div>
 
@@ -68,7 +68,7 @@
         $("#items-table").appTable({
             source: '<?php echo_uri("inventory/item_list_data/") ?>',
             columns: [
-                {title: '<?php echo lang("item") ?>'},
+                {title: '<?php echo lang("product") ?>'},
             ]
         });
 

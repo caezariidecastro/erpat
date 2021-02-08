@@ -1,7 +1,7 @@
 <div id="page-content" class="clearfix p20">
     <div class="panel clearfix">
-        <ul id="items-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
-            <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("items"); ?></h4></li>
+        <ul id="products-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
+            <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("products"); ?></h4></li>
             <li><a role="presentation" href="<?php echo_uri("inventory_item_entries"); ?>" data-target="#item-entries"><?php echo lang('entries'); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("inventory_item_categories"); ?>" data-target="#item-categories"><?php echo lang('categories'); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("vendors"); ?>" data-target="#item-vendors"><?php echo lang('vendors'); ?></a></li>
@@ -48,9 +48,9 @@
         });
 
         setInterval(function(){
-            $("#items-tabs").find("li.active").text() == "Categories" ? $('#add_category_button').show() : $('#add_category_button').hide()
-            $("#items-tabs").find("li.active").text() == "Entries" ? $('#add_entry_button').show() : $('#add_entry_button').hide();
-            $("#items-tabs").find("li.active").text() == "Vendors" ? $('#add_vendor_button').show() : $('#add_vendor_button').hide();
+            $("#products-tabs").find("li.active").text() == "Categories" ? $('#add_category_button').show() : $('#add_category_button').hide()
+            $("#products-tabs").find("li.active").text() == "Entries" ? $('#add_entry_button').show() : $('#add_entry_button').hide();
+            $("#products-tabs").find("li.active").text() == "Vendors" ? $('#add_vendor_button').show() : $('#add_vendor_button').hide();
         }, 200)
     });
 </script>

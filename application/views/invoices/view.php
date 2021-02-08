@@ -12,9 +12,9 @@
     }
 
     if($invoice_info->consumer_id){
-        $bill_type_lang = lang("item");
+        $bill_type_lang = lang("product");
         $cost_type_lang = lang("amount");
-        $add_bill_type_lang = modal_anchor(get_uri("invoices/add_delivery_item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_item'), array("class" => "btn btn-default", "title" => lang('add_item'), "data-post-invoice_id" => $invoice_info->id));
+        $add_bill_type_lang = modal_anchor(get_uri("invoices/add_delivery_item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_product'), array("class" => "btn btn-default", "title" => lang('add_product'), "data-post-invoice_id" => $invoice_info->id));
     }
 
 ?>

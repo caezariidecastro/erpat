@@ -186,17 +186,20 @@ $lang["is_base_unit"] = "Is base unit?";
 $lang["base_unit"] = "Base unit";
 $lang["base_unit_value"] = "Base unit value";
 
-// Logistics and Distribution > Items
+// Logistics and Distribution > Products
+$lang["products"] = "Products";
+$lang["product"] = "Product";
 $lang["sku"] = "SKU";
 $lang["cost_price"] = "Cost price";
-$lang["item_editing_instruction"] = "Note: The changes will not be affected on existing warehouse inventory.";
+$lang["item_editing_instruction"] = "Note: The changes will not affect existing warehouse inventory.";
 $lang["vendors"] = "Vendors";
 $lang["vendor"] = "Vendor";
 $lang["add_vendor"] = "Add vendor";
 $lang["edit_vendor"] = "Edit vendor";
 $lang["selling_price"] = "Selling price";
 $lang["active_inactive"] = "Active / Inactive";
-$lang["inactive_hidden"] = "Note: Inactive items will not appear in drop down list";
+$lang["inactive_hidden"] = "Note: Inactive products will not appear in drop down list";
+$lang["add_product"] = "Add product";
 
 // Logistics and Distribution > Transfer
 $lang["transfers"] = "Transfers";
@@ -209,7 +212,7 @@ $lang["transfer_from_and_to_error"] = "From and To cannot be same";
 $lang["item_table_empty_error"] = "Items table is empty";
 
 // Logistics and Distribution > Inventory
-$lang["select_an_item"] = "Select an item to view";
+$lang["select_a_product"] = "Select a product to view";
 $lang["add_inventory"] = "Add inventory";
 $lang["add_stock"] = "Add stock";
 $lang["opening_stock"] = "Opening stock";

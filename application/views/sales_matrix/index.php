@@ -17,7 +17,7 @@
             rangeDatepicker: [{startDate: {name: "start_date", value: ""}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}, showClearButton: true}],
             order: [[0, 'desc']],
             columns: [
-                {title: "<?php echo lang('item') ?> "},
+                {title: "<?php echo lang('product') ?> "},
                 {title: "<?php echo lang('category') ?>"},
                 {title: "<?php echo lang('total_sales') ?>",},
             ],
