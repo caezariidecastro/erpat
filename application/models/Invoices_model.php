@@ -116,7 +116,7 @@ class Invoices_model extends Crud_model {
 
 
         $sql = "SELECT $invoices_table.*, $clients_table.currency, $clients_table.currency_symbol, $clients_table.company_name, $projects_table.title AS project_title,
-           $invoice_value_calculation_query AS invoice_value, IFNULL(payments_table.payment_received,0) AS payment_received, tax_table.percentage AS tax_percentage, tax_table2.percentage AS tax_percentage2, tax_table3.percentage AS tax_percentage3, CONCAT($users_table.first_name, ' ',$users_table.last_name) AS cancelled_by_user, $select_labels_data_query $select_custom_fieds, TRIM(COALESCE(consumers.first_name, ' ', consumers.last_name)) AS consumer_name
+           $invoice_value_calculation_query AS invoice_value, IFNULL(payments_table.payment_received,0) AS payment_received, tax_table.percentage AS tax_percentage, tax_table2.percentage AS tax_percentage2, tax_table3.percentage AS tax_percentage3, CONCAT($users_table.first_name, ' ',$users_table.last_name) AS cancelled_by_user, $select_labels_data_query $select_custom_fieds, TRIM(CONCAT(consumers.first_name, ' ', consumers.last_name)) AS consumer_name
         FROM $invoices_table
         LEFT JOIN $clients_table ON $clients_table.id= $invoices_table.client_id
         LEFT JOIN $projects_table ON $projects_table.id= $invoices_table.project_id
