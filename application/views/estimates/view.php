@@ -51,7 +51,7 @@
                         <?php } ?>
                     </ul>
                 </span>
-                <?php echo modal_anchor(get_uri("estimates/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_item'), array("class" => "btn btn-default", "title" => lang('add_item'), "data-post-estimate_id" => $estimate_info->id)); ?>
+                <?php echo modal_anchor(get_uri("estimates/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-estimate_id" => $estimate_info->id)); ?>
             </div>
         </div>
         <div id="estimate-status-bar">
