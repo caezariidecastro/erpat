@@ -341,3 +341,10 @@ $lang["add_supplier"] = "Add supplier";
 $lang["brands"] = "Brands";
 $lang["add_brand"] = "Add brand";
 $lang["edit_brand"] = "Edit brand";
+
+// Assets Management > Location
+$lang["location"] = "Location";
+$lang["add_location"] = "Add location";
+$lang["edit_location"] = "Edit location";
+$lang["parent"] = "Parent";
+$lang["error_max_parenting"] = "Maximum of 3 layers parenting only";

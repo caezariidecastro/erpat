@@ -187,5 +187,8 @@ $route["ams/vendor"] = "asset_vendors/index";
 // Brands
 $route["ams/maker"] = "asset_brands/index";
 
+// Location
+$route["ams/location"] = "asset_locations/index";
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
