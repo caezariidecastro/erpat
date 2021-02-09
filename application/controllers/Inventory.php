@@ -52,7 +52,7 @@ class Inventory extends MY_Controller {
                             </div>
                             <div class="col-md-5">
                                 <div class="text-off pull-right text-right">
-                                    Stocks on hand: '.($data->stocks + $data->produced + $data->stocks_override - $data->delivered).'
+                                    Stocks on hand: '.($data->stocks + $data->produced + $data->stocks_override - $data->delivered - $data->invoiced).'
                                 </div>
                             </div>
                         </div>
@@ -90,7 +90,7 @@ class Inventory extends MY_Controller {
                             </div>
                             <div class="col-md-4">
                                 <div class="text-off pull-right text-right">
-                                    Available stocks: '.($data->stock + $data->stock_override - $data->transferred + $data->received - $data->delivered).'
+                                    Available stocks: '.($data->stock + $data->stock_override - $data->transferred + $data->received - $data->delivered - $data->invoiced).'
                                 </div>
                             </div>
                         </div>
@@ -211,7 +211,7 @@ class Inventory extends MY_Controller {
         $options = array("id" => $id);
         $inventory_info = $this->Inventory_model->get_details($options)->row();
 
-        if($inventory_info->transferred || $inventory_info->received || $inventory_info->delivered || $inventory_info->produced){
+        if($inventory_info->transferred || $inventory_info->received || $inventory_info->delivered || $inventory_info->produced || $inventory_info->invoiced){
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
         else{

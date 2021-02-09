@@ -53,10 +53,18 @@
             <input type="hidden" name="invoice_client_id" value="<?php echo $client_id; ?>" />
         <?php } else { ?>
             <div class="form-group">
-                <label for="invoice_client_id" class=" col-md-3"><?php echo lang('client'); ?></label>
-                <div class="col-md-9">
+                <label for="invoice_client_id" class=" col-md-3" id="invoice_client_id_label"><?= $model_info->consumer_id ? lang("consumer") : lang("client")?></label>
+                <div class="col-md-9" id="invoice_client_selection_wrapper">
                     <?php
-                    echo form_dropdown("invoice_client_id", $clients_dropdown, array($model_info->client_id), "class='select2 validate-hidden' id='invoice_client_id' data-rule-required='true', data-msg-required='" . lang('field_required') . "'");
+                    echo form_input(array(
+                        "id" => "invoice_client_id",
+                        "name" => "invoice_client_id",
+                        "value" => $model_info->consumer_id ? $model_info->consumer_id : $model_info->client_id,
+                        "class" => "form-control",
+                        "data-rule-required" => "true",
+                        "data-msg-required" => lang('field_required'),
+                        "placeholder" => lang('client')
+                    ));
                     ?>
                 </div>
             </div>
@@ -64,7 +72,7 @@
         <?php if ($project_id) { ?>
             <input type="hidden" name="invoice_project_id" value="<?php echo $project_id; ?>" />
         <?php } else { ?>
-            <div class="form-group">
+            <div id="invoice_project_id_wrapper" class="form-group <?= !$model_info->consumer_id ? '' : 'hide'?>">
                 <label for="invoice_project_id" class=" col-md-3"><?php echo lang('project'); ?></label>
                 <div class="col-md-9" id="invoice-porject-dropdown-section">
                     <?php
@@ -213,6 +221,21 @@
                 ?>
             </div>
         </div>
+        <?php if(!$model_info->id){?>
+        <div class="form-group">
+            <label for="type" class=" col-md-3"><?php echo lang('type'); ?></label>
+            <div class="col-md-9">
+                <label for="service" class="mr10">
+                    <input id="service" name="type" type="radio" <?= !$model_info->type ? "checked" : ($model_info->type == "service" ? "checked" : "") ?> value="service"/>
+                    Service
+                </label>
+                <label for="product" class="">
+                    <input id="product" name="type" type="radio" <?= $model_info->type == "product" ? "checked" : "" ?> value="product"/>
+                    Product
+                </label>
+            </div>
+        </div>
+        <?php } ?>
 
         <?php $this->load->view("custom_fields/form/prepare_context_fields", array("custom_fields" => $custom_fields, "label_column" => "col-md-3", "field_column" => " col-md-9")); ?> 
 
@@ -269,10 +292,14 @@
 <?php echo form_close(); ?>
 
 <script type="text/javascript">
+    let client_selection_type = "<?= !$model_info->type ? "client" : ($model_info->type == "service" ? "client" : "consumer") ?>";
+
     $(document).ready(function () {
         if ("<?php echo $estimate_id; ?>") {
             RELOAD_VIEW_AFTER_UPDATE = false; //go to invoice page
         }
+
+        console.log("<?= $model_info->consumer_id?>");
 
         var uploadUrl = "<?php echo get_uri("invoices/upload_file"); ?>";
         var validationUri = "<?php echo get_uri("invoices/validate_invoices_file"); ?>";
@@ -306,7 +333,7 @@
         setDatePicker("#invoice_bill_date, #invoice_due_date");
 
         //load all projects of selected client
-        $("#invoice_client_id").select2().on("change", function () {
+        $("#invoice_client_id").select2({data: <?= json_encode($model_info->consumer_id ? $consumer_dropdown : $clients_dropdown)?>}).on("change", function () {
             var client_id = $(this).val();
             if ($(this).val()) {
                 $('#invoice_project_id').select2("destroy");
@@ -368,5 +395,42 @@
             setDefaultDueDate();
         }
 
+        $("#product").click(function(){
+            $('#invoice_client_id').select2("destroy");
+            $("#invoice_client_id_label").html("Consumer");
+            $("#invoice_client_id").attr("placeholder", "Consumer");
+            $("#invoice_client_id").hide();
+            appLoader.show({container: "#invoice_client_selection_wrapper", css:"left: 7%; bottom: -30px;"});
+
+            $.ajax({
+                url: "<?php echo get_uri("consumers/get_consumer_select2_data") ?>",
+                dataType: "json",
+                success: function (result) {
+                    $("#invoice_client_id").show().val("");
+                    $('#invoice_client_id').select2({data: result});
+                    appLoader.hide();
+                    $("#invoice_project_id_wrapper").addClass("hide");
+                }
+            });
+        });
+
+        $("#service").click(function(){
+            $('#invoice_client_id').select2("destroy");
+            $("#invoice_client_id_label").html("Client");
+            $("#invoice_client_id").attr("placeholder", "Client");
+            $("#invoice_client_id").hide();
+            appLoader.show({container: "#invoice_client_selection_wrapper", css:"left: 7%; bottom: -30px;"});
+
+            $.ajax({
+                url: "<?php echo get_uri("invoices/get_clients_select2_data") ?>",
+                dataType: "json",
+                success: function (result) {
+                    $("#invoice_client_id").show().val("");
+                    $('#invoice_client_id').select2({data: result});
+                    appLoader.hide();
+                    $("#invoice_project_id_wrapper").removeClass("hide");
+                }
+            });
+        });
     });
 </script>

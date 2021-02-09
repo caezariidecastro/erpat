@@ -41,20 +41,38 @@
             <?php 
                 echo $invoice_info->consumer_name;
             ?>
-            <?php if ($delivery_info->street) { ?>
-                <br /><?php echo $delivery_info->street; ?>
-            <?php } ?>
-            <?php if ($delivery_info->city) { ?>
-                <br /><?php echo $delivery_info->city; ?>
-            <?php } ?>
-            <?php if ($delivery_info->state) { ?>
-                <br /><?php echo $delivery_info->state; ?>
-            <?php } ?>
-            <?php if ($delivery_info->zip) { ?>
-                <br /><?php echo $delivery_info->zip; ?>
-            <?php } ?>
-            <?php if ($delivery_info->country) { ?>
-                <br /><?php echo $delivery_info->country; ?>
+            <?php if ($delivery_info) { ?>
+                <?php if ($delivery_info->street) { ?>
+                    <br /><?php echo $delivery_info->street; ?>
+                <?php } ?>
+                <?php if ($delivery_info->city) { ?>
+                    <br /><?php echo $delivery_info->city; ?>
+                <?php } ?>
+                <?php if ($delivery_info->state) { ?>
+                    <br /><?php echo $delivery_info->state; ?>
+                <?php } ?>
+                <?php if ($delivery_info->zip) { ?>
+                    <br /><?php echo $delivery_info->zip; ?>
+                <?php } ?>
+                <?php if ($delivery_info->country) { ?>
+                    <br /><?php echo $delivery_info->country; ?>
+                <?php } ?>
+            <?php } else if ($consumer_info) { ?>
+                <?php if ($consumer_info->street) { ?>
+                    <br /><?php echo $consumer_info->street; ?>
+                <?php } ?>
+                <?php if ($consumer_info->city) { ?>
+                    <br /><?php echo $consumer_info->city; ?>
+                <?php } ?>
+                <?php if ($consumer_info->state) { ?>
+                    <br /><?php echo $consumer_info->state; ?>
+                <?php } ?>
+                <?php if ($consumer_info->zip) { ?>
+                    <br /><?php echo $consumer_info->zip; ?>
+                <?php } ?>
+                <?php if ($consumer_info->country) { ?>
+                    <br /><?php echo $consumer_info->country; ?>
+                <?php } ?>
             <?php } ?>
         </div>
     <?php

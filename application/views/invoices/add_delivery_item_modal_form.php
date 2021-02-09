@@ -2,7 +2,7 @@
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>" />
-    <input type="hidden" name="delivery_reference_no" value="<?= $delivery_info->reference_number ?>" />
+    <input type="hidden" name="delivery_reference_no" value="<?= $delivery_info ? $delivery_info->reference_number : "" ?>" />
     <input type="hidden" id="inventory_id" name="inventory_id" value="<?php echo $model_info ? $model_info->inventory_id : "" ?>" />
     <div class="form-group">
         <div class="col-md-12 text-off"> <?php echo lang('inactive_hidden'); ?></div>
@@ -104,7 +104,7 @@
     
     function applySelect2OnItemTitle(){
         $.ajax({
-            url: "<?php echo get_uri("invoices/get_inventory_items_select2_data/").$delivery_info->warehouse; ?>", 
+            url: "<?php echo get_uri("invoices/get_inventory_items_select2_data/"). ($delivery_info ? $delivery_info->warehouse : ""); ?>", 
             dataType: 'json',
             success: function(data){
                 $("#invoice_item_title").select2({data: data}).change(function (e) {

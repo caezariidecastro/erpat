@@ -22,6 +22,37 @@ class Invoices extends MY_Controller {
         echo json_encode($inventory_items_select2);
     }
 
+    private function _get_consumer_select2_data() {
+        $consumers = $this->Users_model->get_details(array("user_type" => "consumer"))->result();
+        $consumer_list = array(array("id" => "", "text" => "-"));
+        foreach ($consumers as $value) {
+            $consumer_list[] = array("id" => $value->id, "text" => trim($value->first_name . " " . $value->last_name));
+        }
+        return $consumer_list;
+    }
+
+    protected function _get_clients_select2_data() {
+        $clients_json_select2 = array(array("id" => "", "text" => "-"));
+        $clients = $this->Clients_model->get_all_where(array("deleted" => 0, "is_lead" => 0))->result();
+
+        foreach ($clients as $client) {
+            $clients_json_select2[] = array("id" => $client->id, "text" => $client->company_name);
+        }
+
+        return $clients_json_select2;
+    }
+
+    function get_clients_select2_data() {
+        $clients_json_select2 = array(array("id" => "", "text" => "-"));
+        $clients = $this->Clients_model->get_all_where(array("deleted" => 0, "is_lead" => 0))->result();
+
+        foreach ($clients as $client) {
+            $clients_json_select2[] = array("id" => $client->id, "text" => $client->company_name);
+        }
+
+        echo json_encode($clients_json_select2);
+    }
+
     /* load invoice list view */
 
     function index() {
@@ -135,6 +166,8 @@ class Invoices extends MY_Controller {
 
 
         $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("invoices", $model_info->id, $this->login_user->is_admin, $this->login_user->user_type)->result();
+        $view_data["consumer_dropdown"] = $this->_get_consumer_select2_data();
+        $view_data['clients_dropdown'] = $this->_get_clients_select2_data();
 
 
         $this->load->view('invoices/modal_form', $view_data);
@@ -181,10 +214,12 @@ class Invoices extends MY_Controller {
         $repeat_every = $this->input->post('repeat_every');
         $repeat_type = $this->input->post('repeat_type');
         $no_of_cycles = $this->input->post('no_of_cycles');
+        $type = $this->input->post('type');
 
 
         $invoice_data = array(
-            "client_id" => $client_id,
+            "client_id" => $type == "product" ? 0 : $client_id,
+            "consumer_id" => $type == "product" ? $client_id : NULL,
             "project_id" => $this->input->post('invoice_project_id') ? $this->input->post('invoice_project_id') : 0,
             "bill_date" => $bill_date,
             "due_date" => $this->input->post('invoice_due_date'),
@@ -196,7 +231,8 @@ class Invoices extends MY_Controller {
             "repeat_type" => $repeat_type ? $repeat_type : NULL,
             "no_of_cycles" => $no_of_cycles ? $no_of_cycles : 0,
             "note" => $this->input->post('invoice_note'),
-            "labels" => $this->input->post('labels')
+            "labels" => $this->input->post('labels'),
+            "type" => $type,
         );
 
         if ($id) {
@@ -690,7 +726,7 @@ class Invoices extends MY_Controller {
             "unit_type" => $this->input->post('invoice_unit_type'),
             "rate" => unformat_currency($this->input->post('invoice_item_rate')),
             "total" => $rate * $quantity,
-            "delivery_reference_no" => $this->input->post('delivery_reference_no'),
+            "delivery_reference_no" => $this->input->post('delivery_reference_no') ? $this->input->post('delivery_reference_no') : NULL,
             "inventory_id" => $inventory_id
         );
 

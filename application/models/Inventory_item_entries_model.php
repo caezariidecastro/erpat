@@ -45,9 +45,16 @@ class Inventory_item_entries_model extends Crud_model {
             SELECT SUM(invoice_items.quantity)
             FROM invoice_items
             LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
+            LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
             AND i.item_id = $inventory_items_table.id
+            AND (
+                invoice_items.delivery_reference_no IS NOT NULL
+                OR
+                invoice_items.delivery_reference_no != ''
+            )
+            AND invoices.status != 'cancelled'
         ), 0) AS delivered,
         COALESCE((
             SELECT SUM(bill_of_materials.quantity)
@@ -57,7 +64,21 @@ class Inventory_item_entries_model extends Crud_model {
             WHERE bill_of_materials.deleted = 0
             AND productions.status = 'completed'
             AND inventory.item_id = $inventory_items_table.id
-        ), 0) AS produced
+        ), 0) AS produced,
+        COALESCE((
+            SELECT SUM(invoice_items.quantity)
+            FROM invoice_items
+            LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
+            LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
+            WHERE i.deleted = 0
+            AND invoice_items.deleted = 0
+            AND (
+                invoice_items.delivery_reference_no IS NULL
+                OR
+                invoice_items.delivery_reference_no = ''
+            )
+            AND invoices.status != 'cancelled'
+        ), 0) AS invoiced
         FROM $inventory_items_table
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by
         LEFT JOIN inventory_item_categories cat ON cat.id = $inventory_items_table.category

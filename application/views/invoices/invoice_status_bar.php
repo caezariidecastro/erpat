@@ -17,12 +17,13 @@
         }
 
         if($invoice_info->consumer_id){
-            $client = $invoice_info->consumer_name;
+            $client = get_team_member_profile_link($invoice_info->consumer_id, $invoice_info->consumer_name, array("target" => "_blank"));
             $client_lang = lang("consumer");
         }
 
         echo $client_lang . ": ";
         echo $client;
+        
         ?>
     </span> 
 
