@@ -20,8 +20,16 @@ class Sales_matrix_model extends Crud_model {
             FROM invoice_items
             LEFT JOIN deliveries ON deliveries.reference_number = invoice_items.delivery_reference_no
             LEFT JOIN inventory ON inventory.id = invoice_items.inventory_id
-            WHERE deliveries.created_on BETWEEN '$start 00:00:00' AND '$end 23:59:59'
+            LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
+            WHERE (
+                deliveries.created_on BETWEEN '$start 00:00:00' AND '$end 23:59:59' 
+                OR 
+                invoices.bill_date BETWEEN '$start 00:00:00' AND '$end 23:59:59'
+            )
             AND inventory.item_id = $inventory_items_table.id
+            AND invoices.status != 'cancelled'
+            AND invoices.deleted = 0
+            AND inventory.deleted = 0
         ), 0) AS total_sales
         FROM $inventory_items_table
         LEFT JOIN inventory_item_categories cat ON cat.id = $inventory_items_table.category
