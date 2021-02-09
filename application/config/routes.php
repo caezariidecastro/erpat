@@ -181,5 +181,11 @@ $route['lms/drivers'] = 'drivers/index';
 // Suppliers
 $route['pid/supplier'] = 'vendors/index';
 
+// Vendors
+$route["ams/vendor"] = "asset_vendors/index";
+
+// Brands
+$route["ams/maker"] = "asset_brands/index";
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

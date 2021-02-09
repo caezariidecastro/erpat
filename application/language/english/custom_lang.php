@@ -336,3 +336,8 @@ $lang["send_to_consumer"] = "Send to consumer";
 $lang["supplier"] = "Supplier";
 $lang["suppliers"] = "Suppliers";
 $lang["add_supplier"] = "Add supplier";
+
+// Assets Management > Brands
+$lang["brands"] = "Brands";
+$lang["add_brand"] = "Add brand";
+$lang["edit_brand"] = "Edit brand";
