@@ -68,6 +68,7 @@ class Inventory_model extends Crud_model {
                 invoice_items.delivery_reference_no != ''
             )
             AND invoices.status != 'cancelled'
+            AND i.id = $inventory_table.id
         ), 0) AS delivered,
         COALESCE((
             SELECT SUM(inventory_stock_override.stock)
@@ -96,6 +97,7 @@ class Inventory_model extends Crud_model {
                 invoice_items.delivery_reference_no = ''
             )
             AND invoices.status != 'cancelled'
+            AND i.id = $inventory_table.id
         ), 0) AS invoiced
         FROM $inventory_table
         LEFT JOIN users ON users.id = $inventory_table.created_by

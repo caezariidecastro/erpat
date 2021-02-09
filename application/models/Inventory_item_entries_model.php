@@ -78,6 +78,7 @@ class Inventory_item_entries_model extends Crud_model {
                 invoice_items.delivery_reference_no = ''
             )
             AND invoices.status != 'cancelled'
+            AND i.item_id = $inventory_items_table.id
         ), 0) AS invoiced
         FROM $inventory_items_table
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by
