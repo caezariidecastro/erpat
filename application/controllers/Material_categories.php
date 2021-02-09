@@ -23,7 +23,7 @@ class Material_categories extends MY_Controller {
 
     protected function _get_vendor_select2_data() {
         $vendors = $this->Vendors_model->get_all()->result();
-        $vendor_select2 = array(array('id' => '', 'text'  => '- Vendors -'));
+        $vendor_select2 = array(array('id' => '', 'text'  => '- '.lang('suppliers').' -'));
 
         foreach ($vendors as $group) {
             $vendor_select2[] = array('id' => $group->id, 'text' => $group->name) ;

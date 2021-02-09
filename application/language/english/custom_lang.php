@@ -32,7 +32,7 @@ $lang["submenu_hrm_holidays"] = "Holidays";
 $lang["submenu_pid_productions"] = "Productions";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials";
 $lang["submenu_pid_purchases"] = "Purchases - Todo";
-$lang["submenu_pid_supplier"] = "Supplier - Todo";
+$lang["submenu_pid_supplier"] = "Supplier";
 $lang["submenu_pid_items"] = "Products";
 $lang["submenu_pid_inventory"] = "Inventory";
 $lang["submenu_pid_materials"] = "Materials";
@@ -331,3 +331,8 @@ $lang["error_upload"] = "Error uploading file.";
 // Sales & Invoicing > Estimates
 $lang["type"] = "Type";
 $lang["send_to_consumer"] = "Send to consumer";
+
+// Production & Inventory > Supplier
+$lang["supplier"] = "Supplier";
+$lang["suppliers"] = "Suppliers";
+$lang["add_supplier"] = "Add supplier";

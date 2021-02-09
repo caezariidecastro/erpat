@@ -19,7 +19,7 @@
                 {title: "<?php echo lang('category') ?>"},
                 {title: "<?php echo lang('cost_price') ?>"},
                 {title: "<?php echo lang('selling_price') ?>"},
-                {title: "<?php echo lang('vendor') ?>"},
+                {title: "<?php echo lang('supplier') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}

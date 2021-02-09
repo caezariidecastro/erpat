@@ -89,7 +89,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="vendor" class="col-md-3"><?php echo lang('vendor'); ?></label>
+        <label for="vendor" class="col-md-3"><?php echo lang('supplier'); ?></label>
         <div class="col-md-9">
             <?php
             echo form_dropdown("vendor", $vendor_dropdown, $model_info ? $model_info->vendor : "", "class='select2 validate-hidden' id='user'");
