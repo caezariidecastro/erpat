@@ -64,7 +64,7 @@ class Asset_locations extends MY_Controller {
             $location_data["created_by"] = $this->login_user->id;
         }
 
-        $parenting_count = $this->Asset_locations_model->get_parenting_count($parent_id)->row()->parenting_count;
+        $parenting_count = $parent_id ? $this->Asset_locations_model->get_parenting_count($parent_id)->row()->parenting_count : 0;
 
         if($parenting_count == 3){
             echo json_encode(array("success" => false, 'message' => lang('error_max_parenting')));
