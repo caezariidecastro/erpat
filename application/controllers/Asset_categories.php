@@ -10,12 +10,14 @@ class Asset_categories extends MY_Controller {
         $this->load->model("Asset_categories_model");
     }
 
-    protected function _get_category_dropdown_data() {
+    protected function _get_category_dropdown_data($id = null) {
         $categories = $this->Asset_categories_model->get_all()->result();
         $category_dropdown = array('' => '-');
 
         foreach ($categories as $category) {
-            $category_dropdown[$category->id] = $category->title;
+            if($id != $category->id){
+                $category_dropdown[$category->id] = $category->title;
+            }
         }
         return $category_dropdown;
     }
@@ -88,7 +90,7 @@ class Asset_categories extends MY_Controller {
         ));
 
         $view_data['model_info'] = $this->Asset_categories_model->get_one($this->input->post('id'));
-        $view_data["parent_dropdown"] = $this->_get_category_dropdown_data();
+        $view_data["parent_dropdown"] = $this->_get_category_dropdown_data($this->input->post('id'));
 
         $this->load->view('asset_categories/modal_form', $view_data);
     }

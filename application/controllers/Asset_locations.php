@@ -10,12 +10,14 @@ class Asset_locations extends MY_Controller {
         $this->load->model("Asset_locations_model");
     }
 
-    protected function _get_location_dropdown_data() {
+    protected function _get_location_dropdown_data($id = null) {
         $locations = $this->Asset_locations_model->get_all()->result();
         $location_dropdown = array('' => '-');
 
         foreach ($locations as $location) {
-            $location_dropdown[$location->id] = $location->title;
+            if($id != $location->id){
+                $location_dropdown[$location->id] = $location->title;
+            }
         }
         return $location_dropdown;
     }
@@ -88,7 +90,7 @@ class Asset_locations extends MY_Controller {
         ));
 
         $view_data['model_info'] = $this->Asset_locations_model->get_one($this->input->post('id'));
-        $view_data["parent_dropdown"] = $this->_get_location_dropdown_data();
+        $view_data["parent_dropdown"] = $this->_get_location_dropdown_data($this->input->post('id'));
 
         $this->load->view('asset_locations/modal_form', $view_data);
     }
