@@ -31,10 +31,11 @@ class Asset_locations_model extends Crud_model {
 
     function get_parenting_count($id){
         $asset_locations_table = $this->db->dbprefix('asset_locations');
-        $sql = "SELECT COUNT($asset_locations_table.id) + COUNT(parent1.id) + COUNT(parent2.id) AS parenting_count
+        $sql = "SELECT COUNT($asset_locations_table.id) + COUNT(parent1.id) + COUNT(parent2.id) + COUNT(parent3.id) AS parenting_count
         FROM $asset_locations_table
         LEFT JOIN $asset_locations_table parent1 ON parent1.id = $asset_locations_table.parent_id
         LEFT JOIN $asset_locations_table parent2 ON parent2.id = parent1.parent_id
+        LEFT JOIN $asset_locations_table parent3 ON parent3.id = parent2.parent_id
         WHERE $asset_locations_table.deleted=0
         AND $asset_locations_table.id = $id";
         return $this->db->query($sql);
