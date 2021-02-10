@@ -348,3 +348,10 @@ $lang["add_location"] = "Add location";
 $lang["edit_location"] = "Edit location";
 $lang["parent"] = "Parent";
 $lang["error_max_parenting"] = "Maximum of 3 layers parenting only";
+
+// Assets Management > Assets
+$lang["serial_number"] = "Serial no.";
+$lang["purchase_date"] = "Purchase date";
+$lang["warranty_expiry_date"] = "Warranty expiry date";
+$lang["assets"] = "Assets";
+$lang["cost"] = "Cost";

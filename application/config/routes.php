@@ -193,5 +193,8 @@ $route["ams/location"] = "asset_locations/index";
 // Category
 $route["ams/category"] = "asset_categories/index";
 
+// Assets
+$route["ams/assets"] = "asset_entries/index";
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
