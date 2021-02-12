@@ -44,6 +44,7 @@ class Account_transfers extends MY_Controller {
             get_team_member_profile_link($data->account_from, $data->transferee_name, array("target" => "_blank")),
             get_team_member_profile_link($data->account_to, $data->recipient_name, array("target" => "_blank")),
             number_with_decimal($data->amount),
+            nl2br($data->note),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             modal_anchor(get_uri("account_transfers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_account_transfer'), "data-post-id" => $data->id))
@@ -66,6 +67,7 @@ class Account_transfers extends MY_Controller {
             "account_from" => $account_from,
             "account_to" => $account_to,
             "amount" => $amount,
+            "note" => $this->input->post('note')
         );
 
         if(!$id){
