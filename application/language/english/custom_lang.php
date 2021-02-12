@@ -29,7 +29,7 @@ $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
 $lang["submenu_hrm_holidays"] = "Holidays";
 
-$lang["submenu_pid_productions"] = "Productions";
+$lang["submenu_pid_productions"] = "Manufacturing Order";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials";
 $lang["submenu_pid_purchases"] = "Purchases - Todo";
 $lang["submenu_pid_supplier"] = "Supplier";
@@ -309,7 +309,7 @@ $lang["has_existing_bill_of_material_error"] = "Product has existing bill of mat
 $lang["add_bill_of_material_info"] = 'Note: Only warehouses that has an output of selected bill of material will be displayed in "Warehouse" dropdown list';
 
 // Production & Inventory > Productions
-$lang["productions"] = "Productions";
+$lang["productions"] = "Manufacturing Order";
 $lang["add_production"] = "Add production";
 $lang["edit_production"] = "Edit production";
 
