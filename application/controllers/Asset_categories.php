@@ -15,8 +15,10 @@ class Asset_categories extends MY_Controller {
         $category_dropdown = array('' => '-');
 
         foreach ($categories as $category) {
+            $hierarchal_tag = getHierarchalTag($this->Asset_categories_model->get_parenting_count($category->id)->row()->parenting_count, "*");
+            
             if($id != $category->id){
-                $category_dropdown[$category->id] = $category->title;
+                $category_dropdown[$category->id] = "$hierarchal_tag$category->title";
             }
         }
         return $category_dropdown;

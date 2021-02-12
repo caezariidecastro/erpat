@@ -1613,3 +1613,27 @@ if (!function_exists('getToken')) {
         return $token;
     }
 }
+
+if (!function_exists('getHierarchalTag')) {
+    function getHierarchalTag($count, $symbol){
+        $tag = "";
+
+        switch ($count) {
+            case 2:
+                $tag = "$symbol ";
+                break;
+            case 3:
+                $tag = "$symbol$symbol ";
+                break;
+            case 4:
+                $tag = "$symbol$symbol$symbol ";
+                break;
+            
+            default:
+                $tag = "";
+                break;
+        }
+
+        return $tag;
+    }
+}

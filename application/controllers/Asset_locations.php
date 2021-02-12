@@ -15,8 +15,10 @@ class Asset_locations extends MY_Controller {
         $location_dropdown = array('' => '-');
 
         foreach ($locations as $location) {
+            $hierarchal_tag = getHierarchalTag($this->Asset_locations_model->get_parenting_count($location->id)->row()->parenting_count, "*");
+            
             if($id != $location->id){
-                $location_dropdown[$location->id] = $location->title;
+                $location_dropdown[$location->id] = "$hierarchal_tag$location->title";
             }
         }
         return $location_dropdown;

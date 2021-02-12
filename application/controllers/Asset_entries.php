@@ -19,7 +19,8 @@ class Asset_entries extends MY_Controller {
         $location_dropdown = array('' => '-');
 
         foreach ($locations as $location) {
-            $location_dropdown[$location->id] = $location->title;
+            $hierarchal_tag = getHierarchalTag($this->Asset_locations_model->get_parenting_count($location->id)->row()->parenting_count, "*");
+            $location_dropdown[$location->id] = "$hierarchal_tag$location->title";
         }
         return $location_dropdown;
     }
@@ -29,7 +30,8 @@ class Asset_entries extends MY_Controller {
         $category_dropdown = array('' => '-');
 
         foreach ($categories as $category) {
-            $category_dropdown[$category->id] = $category->title;
+            $hierarchal_tag = getHierarchalTag($this->Asset_categories_model->get_parenting_count($category->id)->row()->parenting_count, "*");
+            $category_dropdown[$category->id] = "$hierarchal_tag$category->title";
         }
         return $category_dropdown;
     }
