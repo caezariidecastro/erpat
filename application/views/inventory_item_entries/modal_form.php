@@ -113,6 +113,8 @@
         });
 
         $('.select2').select2();
+
+        $("#ajaxModal .modal-dialog").removeAttr("style");
     });
     
 </script>

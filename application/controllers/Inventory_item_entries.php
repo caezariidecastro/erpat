@@ -60,6 +60,30 @@ class Inventory_item_entries extends MY_Controller {
     }
 
     private function _make_row($data) {
+        $actions = "";
+        $add_bom = "";
+        $delete = "";
+        $edit = "";
+        $add_material = "";
+
+        if($data->bom){
+            $delete = '<li role="presentation">' . modal_anchor(get_uri("bill_of_materials/delete_modal_form"), "<i class='fa fa-times fa-fw'></i> ". lang('delete'), array("class" => "delete", "title" => lang('delete'), "data-post-id" => $data->bom)) . '</li>';
+            $edit = '<li role="presentation">' . modal_anchor(get_uri("bill_of_materials/modal_form"), "<i class='fa fa-pencil'></i> ". lang('edit_bill_of_material'), array("class" => "edit", "title" => lang('edit_bill_of_material'), "data-post-id" => $data->bom, "data-post-item_id" => $data->id)) . '</li>';
+            $add_material = '<li role="presentation">' . modal_anchor(get_uri("bill_of_materials/add_material_modal_form"), "<i class='fa fa-plus-circle'></i> ". lang('add_view_materials'), array("class" => "edit", "title" => lang('add_view_materials'), "data-post-id" => $data->bom)) . '</li>';
+    
+        }
+        else{
+            $add_bom = '<li role="presentation">' . modal_anchor(get_uri("bill_of_materials/modal_form"), "<i class='fa fa-plus-circle'></i> ". lang('add_bill_of_material'), array("class" => "edit", "title" => lang('add_bill_of_material'), "data-post-item_id" => $data->id)) . '</li>';
+        }
+        
+        $actions = '<span class="dropdown inline-block" style="position: relative; right: 0; margin-top: 0;">
+                        <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                            <i class="fa fa-cogs"></i>&nbsp;
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $add_bom . $add_material . $edit . $delete . '</ul>
+                    </span>';
+
         return array(
             $data->name,
             $data->sku,
@@ -70,6 +94,7 @@ class Inventory_item_entries extends MY_Controller {
             $data->vendor_name,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
+            $actions,
             modal_anchor(get_uri("inventory_item_entries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_entry'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_entry'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory_item_entries/delete"), "data-action" => "delete-confirmation"))
         );

@@ -34,6 +34,21 @@
             ?>
         </div>
     </div>
+    <?php 
+        if($item_id){
+    ?>
+    <input type="hidden" name="item_id" value="<?php echo $item_id?>" />
+    <script>
+        $("#bill-of-materials-form").appForm({
+            onSuccess: function (result) {
+                $("#inventory-item-entries-table").appTable({reload: true});
+            }
+        });
+    </script>
+    <?php 
+        }
+        else{
+    ?>
     <div class="form-group">
         <label for="item_id" class="col-md-3"><?php echo lang('product'); ?></label>
         <div class="col-md-9">
@@ -42,6 +57,10 @@
             ?>
         </div>
     </div>
+    <?php 
+        }
+    ?>
+    
     <div class="form-group">
         <label for="quantity" class=" col-md-3"><?php echo lang('quantity'); ?></label>
         <div class="col-md-9">
@@ -76,5 +95,7 @@
         });
 
         $("#item_id").select2();
+
+        $("#ajaxModal .modal-dialog").removeAttr("style");
     });
 </script>

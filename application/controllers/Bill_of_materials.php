@@ -47,7 +47,7 @@ class Bill_of_materials extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("bill_of_materials/delete"), "data-action" => "delete-confirmation", "data-reload-on-success" => "1")) . '</li>';
+        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("bill_of_materials/delete"), "data-action" => "delete-confirmation")) . '</li>';
         $edit = '<li role="presentation">' . modal_anchor(get_uri("bill_of_materials/modal_form"), "<i class='fa fa-pencil'></i> ". lang('edit_bill_of_material'), array("class" => "edit", "title" => lang('edit_bill_of_material'), "data-post-id" => $data->id)) . '</li>';
         $add = '<li role="presentation">' . modal_anchor(get_uri("bill_of_materials/add_material_modal_form"), "<i class='fa fa-plus-circle'></i> ". lang('add_material_inventory'), array("class" => "edit", "title" => lang('add_material_inventory'), "data-post-id" => $data->id)) . '</li>';
 
@@ -116,8 +116,19 @@ class Bill_of_materials extends MY_Controller {
 
         $view_data['model_info'] = $model_info;
         $view_data["product_dropdown"] = $this->_get_product_dropdown_data();
+        $view_data["item_id"] = $this->input->post("item_id");
 
         $this->load->view('bill_of_materials/modal_form', $view_data);
+    }
+
+    function delete_modal_form() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $view_data["id"] = $this->input->post("id");
+
+        $this->load->view('bill_of_materials/delete_modal_form', $view_data);
     }
 
     function add_material_modal_form() {

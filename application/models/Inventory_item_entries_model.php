@@ -79,7 +79,13 @@ class Inventory_item_entries_model extends Crud_model {
             )
             AND invoices.status != 'cancelled'
             AND i.item_id = $inventory_items_table.id
-        ), 0) AS invoiced
+        ), 0) AS invoiced,
+        COALESCE((
+            SELECT bill_of_materials.id
+            FROM bill_of_materials
+            WHERE bill_of_materials.deleted = 0 
+            AND bill_of_materials.item_id = $inventory_items_table.id
+        ), 0) AS bom
         FROM $inventory_items_table
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by
         LEFT JOIN inventory_item_categories cat ON cat.id = $inventory_items_table.category

@@ -22,6 +22,7 @@
                 {title: "<?php echo lang('supplier') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
+                {title: "<?php echo lang('bom') ?>", "class": "text-center dropdown-option w50"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6],

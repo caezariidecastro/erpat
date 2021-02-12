@@ -95,6 +95,8 @@
         $("#form-submit").click(function () {
             submit();
         });
+
+        $("#ajaxModal .modal-dialog").removeAttr("style");
     });
 
     function submit(){

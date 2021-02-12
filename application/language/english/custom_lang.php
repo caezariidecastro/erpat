@@ -307,6 +307,8 @@ $lang["output"] = "Output";
 $lang["material"] = "Material";
 $lang["has_existing_bill_of_material_error"] = "Product has existing bill of material";
 $lang["add_bill_of_material_info"] = 'Note: Only warehouses that has an output of selected bill of material will be displayed in "Warehouse" dropdown list';
+$lang["bom"] = "BOM";
+$lang["add_view_materials"] = "Add/view materials";
 
 // Production & Inventory > Productions
 $lang["productions"] = "Manufacturing Order";
