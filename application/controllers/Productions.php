@@ -9,6 +9,7 @@ class Productions extends MY_Controller {
         parent::__construct();
         $this->load->model("Productions_model");
         $this->load->model("Bill_of_materials_model");
+        $this->load->model("Warehouse_model");
     }
 
     protected function _get_bill_of_material_dropdown_data() {
@@ -21,18 +22,30 @@ class Productions extends MY_Controller {
         return $bill_of_material_dropdown;
     }
 
+    protected function _get_warehouse_select2_data() {
+        $warehouses = $this->Warehouse_model->get_all()->result();
+        $warehouse_select2 = array(array("id" => "", "text" => "- ".lang("warehouses")." -"));
+
+        foreach ($warehouses as $warehouse) {
+            $warehouse_select2[] = array("id" => $warehouse->id, "text" => $warehouse->name);
+        }
+        return $warehouse_select2;
+    }
+
     protected function _get_statuses_dropdown_data() {
         return array("draft" => "Draft", "ongoing" => "Ongoing", "completed" => "Completed", "cancelled" => "Cancelled");
     }
 
     function index(){
-        $this->template->rander("productions/index");
+        $view_data["warehouse_select2"] = $this->_get_warehouse_select2_data();
+        $this->template->rander("productions/index", $view_data);
     }
 
     function list_data(){
         $list_data = $this->Productions_model->get_details(array(
             'start' => $this->input->post('start_date'),
             'end' => $this->input->post('end_date'),
+            'warehouse' => $this->input->post("warehouse_select2_filter")
         ))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -59,6 +72,7 @@ class Productions extends MY_Controller {
         return array(
             $data->bill_of_material_title,
             $data->item_name,
+            $data->warehouse_name,
             $data->quantity,
             $status,
             $data->created_on,

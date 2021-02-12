@@ -17,11 +17,15 @@
     $(document).ready(function () {
         $("#production-table").appTable({
             source: '<?php echo_uri("productions/list_data") ?>',
+            filterDropdown: [
+                {id: "warehouse_select2_filter", name: "warehouse_select2_filter", class: "w200", options: <?php echo json_encode($warehouse_select2); ?>},
+            ],
             dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('bill_of_material') ?> ", "class": "w20p"},
                 {title: "<?php echo lang('output') ?>"},
+                {title: "<?php echo lang('warehouse') ?>"},
                 {title: "<?php echo lang('quantity') ?>"},
                 {title: "<?php echo lang('status') ?>"},
                 {title: "<?php echo lang('created_by') ?>",},

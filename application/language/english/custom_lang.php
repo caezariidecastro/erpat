@@ -162,6 +162,7 @@ $lang["balance"] = "Balance";
 
 // Logistics and Distribution > Warehouse
 $lang["warehouse"] = "Warehouse";
+$lang["warehouses"] = "Warehouses";
 $lang["zip_code"] = "Zipcode";
 $lang["head"] = "Head";
 $lang["add_warehouse"] = "Add warehouse";
