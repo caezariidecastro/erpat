@@ -13,15 +13,9 @@ class Accounts_model extends Crud_model {
         $accounts_table = $this->db->dbprefix('accounts');
         $where = "";
         $id = get_array_value($options, "id");
-        $start = get_array_value($options, "start");
-        $end = get_array_value($options, "end");
 
         if ($id) {
             $where .= " AND $accounts_table.id=$id";
-        }
-
-        if($start){
-            $where .= " AND $accounts_table.created_on BETWEEN '$start' AND '$end'";
         }
 
         $sql = "SELECT $accounts_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name

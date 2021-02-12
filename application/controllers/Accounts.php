@@ -18,10 +18,7 @@ class Accounts extends MY_Controller {
     }
 
     function list_data(){
-        $list_data = $this->Accounts_model->get_details(array(
-            'start' => $this->input->post('start_date'),
-            'end' => $this->input->post('end_date'),
-        ))->result();
+        $list_data = $this->Accounts_model->get_details()->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);

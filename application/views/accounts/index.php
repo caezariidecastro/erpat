@@ -17,7 +17,6 @@
     $(document).ready(function () {
         $("#account-table").appTable({
             source: '<?php echo_uri("accounts/list_data") ?>',
-            dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('account_name') ?> ", "class": "w20p"},
