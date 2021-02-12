@@ -35,27 +35,10 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="warehouse" class="col-md-3"><?php echo lang('warehouse'); ?></label>
+        <label for="item_id" class="col-md-3"><?php echo lang('product'); ?></label>
         <div class="col-md-9">
             <?php
-            echo form_dropdown("warehouse", $warehouse_dropdown, "", "class='select2 validate-hidden' id='warehouse' data-rule-required='true' data-msg-required='".lang("field_required")."'");
-            ?>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="inventory_id" class=" col-md-3"><?php echo lang('product'); ?></label>
-        <div class="col-md-9">
-            <?php
-            echo form_input(array(
-                "id" => "inventory_id",
-                "name" => "inventory_id",
-                "value" => $model_info ? $model_info->inventory_id : "",
-                "class" => "form-control validate-hidden",
-                "placeholder" => lang('inventory_id'),
-                "autofocus" => true,
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
-            ));
+            echo form_dropdown("item_id", $product_dropdown, $model_info ? $model_info->item_id : "", "class='select2 validate-hidden' id='item_id' data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
         </div>
     </div>
@@ -92,34 +75,6 @@
             }
         });
 
-        $('#inventory_id').select2({data: <?= json_encode(array(array('id' => '', 'text' => '-')))?>});
-
-        $('#warehouse').select2().change(function(e){
-            if(e.val){
-                getWarehouseInventory(e.val);
-            }
-        });
-
-        let isUpdate = "<?= isset($model_info->warehouse) ? $model_info->warehouse : ""?>";
-        if(isUpdate){
-            $('#warehouse').select2("val", isUpdate);
-            getWarehouseInventory(isUpdate);
-        }
+        $("#item_id").select2();
     });
-
-    function getWarehouseInventory(id){
-        appLoader.show({container: "#inventory_wrapper"});
-                
-        $.ajax({
-            url: "<?php echo get_uri("inventory/get_warehouse_inventory_select2_data"); ?>",
-            data: {id: id},
-            cache: false,
-            type: 'POST',
-            dataType: "json",
-            success: function (response) {
-                $('#inventory_id').select2({data: response});
-                appLoader.hide();
-            }
-        });
-    }
 </script>

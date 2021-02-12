@@ -1,0 +1,1 @@
+ALTER TABLE `productions` ADD `inventory_id` BIGINT(10) NOT NULL AFTER `bill_of_material_id`;

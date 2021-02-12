@@ -60,7 +60,7 @@ class Inventory_item_entries_model extends Crud_model {
             SELECT SUM(bill_of_materials.quantity)
             FROM bill_of_materials
             LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials.id
-            LEFT JOIN inventory ON inventory.id = bill_of_materials.inventory_id
+            LEFT JOIN inventory ON inventory.id = productions.inventory_id
             WHERE bill_of_materials.deleted = 0
             AND productions.status = 'completed'
             AND inventory.item_id = $inventory_items_table.id

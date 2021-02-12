@@ -18,10 +18,10 @@ class Bill_of_materials_model extends Crud_model {
             $where .= " AND $bill_of_materials_table.id=$id";
         }
 
-        $sql = "SELECT $bill_of_materials_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, inventory.name AS item_name, inventory.warehouse
+        $sql = "SELECT $bill_of_materials_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, inventory_items.name AS item_name
         FROM $bill_of_materials_table
         LEFT JOIN users ON users.id = $bill_of_materials_table.created_by
-        LEFT JOIN inventory ON inventory.id = $bill_of_materials_table.inventory_id
+        LEFT JOIN inventory_items ON inventory_items.id = $bill_of_materials_table.item_id
         WHERE $bill_of_materials_table.deleted=0 $where";
         return $this->db->query($sql);
     }
@@ -46,5 +46,9 @@ class Bill_of_materials_model extends Crud_model {
         LEFT JOIN material_inventory ON material_inventory.id = $bill_of_materials_materials_table.material_inventory_id
         WHERE $bill_of_materials_materials_table.deleted=0 $where";
         return $this->db->query($sql);
+    }
+
+    function has_existing_bill_of_material($item_id){
+        return $this->db->query("SELECT * FROM bill_of_materials WHERE deleted = 0 AND item_id = $item_id")->num_rows() > 0 ? TRUE : FALSE;
     }
 }

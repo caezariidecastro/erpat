@@ -77,6 +77,7 @@ class Productions extends MY_Controller {
 
         $production_data = array(
             "bill_of_material_id" => $this->input->post('bill_of_material_id'),
+            "inventory_id" => $this->input->post('inventory_id')
         );
 
         if(!$id){

@@ -9,18 +9,8 @@ class Bill_of_materials extends MY_Controller {
         parent::__construct();
         $this->load->model("Bill_of_materials_model");
         $this->load->model("Bill_of_materials_materials_model");
-        $this->load->model("Warehouse_model");
         $this->load->model("Material_inventory_model");
-    }
-
-    protected function _get_warehouse_dropdown_data() {
-        $Warehouses = $this->Warehouse_model->get_all()->result();
-        $warehouse_dropdown = array('' => '-');
-
-        foreach ($Warehouses as $group) {
-            $warehouse_dropdown[$group->id] = $group->name;
-        }
-        return $warehouse_dropdown;
+        $this->load->model("Inventory_item_entries_model");
     }
 
     protected function _get_material_dropdown_data() {
@@ -31,6 +21,16 @@ class Bill_of_materials extends MY_Controller {
             $material_dropdown[$material->id] = $material->material_name;
         }
         return $material_dropdown;
+    }
+
+    protected function _get_product_dropdown_data() {
+        $products = $this->Inventory_item_entries_model->get_details()->result();
+        $product_dropdown = array('' => '-');
+
+        foreach ($products as $product) {
+            $product_dropdown[$product->id] = $product->name;
+        }
+        return $product_dropdown;
     }
 
     function index(){
@@ -76,17 +76,23 @@ class Bill_of_materials extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        $item_id = $this->input->post('item_id');
 
         $bill_of_material_data = array(
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
-            "inventory_id" => $this->input->post('inventory_id'),
+            "item_id" => $item_id,
             "quantity" => $this->input->post('quantity'),
         );
 
         if(!$id){
             $bill_of_material_data["created_on"] = date('Y-m-d H:i:s');
             $bill_of_material_data["created_by"] = $this->login_user->id;
+
+            if($this->Bill_of_materials_model->has_existing_bill_of_material($item_id)){
+                echo json_encode(array("success" => false, 'message' => lang('has_existing_bill_of_material_error')));
+                exit;
+            }
         }
 
         $bill_of_material_id = $this->Bill_of_materials_model->save($bill_of_material_data, $id);
@@ -109,7 +115,7 @@ class Bill_of_materials extends MY_Controller {
         $model_info = $id ? $this->Bill_of_materials_model->get_details($options)->row() : $this->Bill_of_materials_model->get_one($id);
 
         $view_data['model_info'] = $model_info;
-        $view_data["warehouse_dropdown"] = $this->_get_warehouse_dropdown_data();
+        $view_data["product_dropdown"] = $this->_get_product_dropdown_data();
 
         $this->load->view('bill_of_materials/modal_form', $view_data);
     }
@@ -135,8 +141,7 @@ class Bill_of_materials extends MY_Controller {
     }
 
     function material_list_data(){
-        $id = $this->input->post('id');
-        $options = array('bill_of_material_id' => $id);
+        $options = array('bill_of_material_id' => $this->input->get('id'));
         $list_data = $this->Bill_of_materials_model->get_materials($options)->result();
         $result = array();
         foreach ($list_data as $data) {

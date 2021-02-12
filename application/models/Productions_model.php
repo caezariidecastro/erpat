@@ -30,7 +30,7 @@ class Productions_model extends Crud_model {
         FROM $productions_table
         LEFT JOIN users ON users.id = $productions_table.created_by
         LEFT JOIN bill_of_materials ON bill_of_materials.id = $productions_table.bill_of_material_id
-        LEFT JOIN inventory ON inventory.id = bill_of_materials.inventory_id
+        LEFT JOIN inventory ON inventory.id = $productions_table.inventory_id
         WHERE $productions_table.deleted=0 $where";
         return $this->db->query($sql);
     }

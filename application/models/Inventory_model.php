@@ -82,7 +82,7 @@ class Inventory_model extends Crud_model {
             LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials.id
             WHERE bill_of_materials.deleted = 0
             AND productions.status = 'completed'
-            AND bill_of_materials.inventory_id = $inventory_table.id
+            AND productions.inventory_id = $inventory_table.id
         ), 0) AS produced,
         COALESCE((
             SELECT SUM(invoice_items.quantity)
@@ -112,5 +112,18 @@ class Inventory_model extends Crud_model {
         $this->db->where('warehouse', $warehouse_id);
         $this->db->where('deleted', '0');
         return $this->db->get('inventory')->num_rows();
+    }
+
+    function get_production_product_warehouse($bill_of_material_id){
+        $inventory_table = $this->db->dbprefix('inventory');
+
+        $sql = "SELECT $inventory_table.*, w.name AS warehouse_name
+        FROM $inventory_table
+        LEFT JOIN inventory_items ON inventory_items.id = $inventory_table.item_id
+        LEFT JOIN warehouses w ON w.id = $inventory_table.warehouse
+        LEFT JOIN bill_of_materials ON bill_of_materials.item_id = $inventory_table.item_id
+        WHERE $inventory_table.deleted=0 
+        AND bill_of_materials.id = $bill_of_material_id";
+        return $this->db->query($sql);
     }
 }

@@ -250,4 +250,14 @@ class Inventory extends MY_Controller {
         }
         echo json_encode($inventory_select2);
     }
+
+    function get_production_product_warehouse_select2_data() {
+        $inventories = $this->Inventory_model->get_production_product_warehouse($this->input->get('id'))->result();
+        $inventory_select2 = array(array('id' => '', 'text' => '-'));
+
+        foreach ($inventories as $inventory) {
+            $inventory_select2[] = array("id" => $inventory->id, "text" => $inventory->warehouse_name) ;
+        }
+        echo json_encode($inventory_select2);
+    }
 }
