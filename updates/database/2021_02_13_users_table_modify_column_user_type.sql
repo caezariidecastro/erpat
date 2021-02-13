@@ -1,0 +1,1 @@
+ALTER TABLE `users` CHANGE `user_type` `user_type` ENUM('staff','client','lead','consumer','customer','driver','supplier') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client';

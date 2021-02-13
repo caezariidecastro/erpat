@@ -18,38 +18,6 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="contact" class="col-md-3"><?php echo lang('contact'); ?></label>
-        <div class=" col-md-9">
-            <?php
-            echo form_input(array(
-                "id" => "contact",
-                "name" => "contact",
-                "value" => $model_info ? $model_info->contact : "",
-                "class" => "form-control",
-                "placeholder" => lang('contact'),
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
-            ));
-            ?>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="email" class="col-md-3"><?php echo lang('email'); ?></label>
-        <div class=" col-md-9">
-            <?php
-            echo form_input(array(
-                "id" => "email",
-                "name" => "email",
-                "value" => $model_info ? $model_info->email : "",
-                "class" => "form-control",
-                "placeholder" => lang('email'),
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
-            ));
-            ?>
-        </div>
-    </div>
-    <div class="form-group">
         <label for="address" class="col-md-3"><?php echo lang('address'); ?></label>
         <div class=" col-md-9">
             <?php
@@ -60,6 +28,70 @@
                 "class" => "form-control",
                 "placeholder" => lang('address'),
                 "data-rich-text-editor" => true
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="city" class="col-md-3"><?php echo lang('city'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "city",
+                "name" => "city",
+                "value" => $model_info ? $model_info->city : "",
+                "class" => "form-control",
+                "placeholder" => lang('city'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="state" class="col-md-3"><?php echo lang('state'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "state",
+                "name" => "state",
+                "value" => $model_info ? $model_info->state : "",
+                "class" => "form-control",
+                "placeholder" => lang('state'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="zip" class="col-md-3"><?php echo lang('zip'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "zip",
+                "name" => "zip",
+                "value" => $model_info ? $model_info->zip : "",
+                "class" => "form-control",
+                "placeholder" => lang('zip'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="country" class="col-md-3"><?php echo lang('country'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "country",
+                "name" => "country",
+                "value" => $model_info ? $model_info->country : "",
+                "class" => "form-control",
+                "placeholder" => lang('country'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>

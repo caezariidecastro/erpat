@@ -20,15 +20,18 @@
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('name') ?> ", "class": "w20p"},
-                {title: "<?php echo lang('contact') ?>"},
-                {title: "<?php echo lang('email') ?>"},
                 {title: "<?php echo lang('address') ?>"},
+                {title: "<?php echo lang('city') ?>"},
+                {title: "<?php echo lang('state') ?>"},
+                {title: "<?php echo lang('zip') ?>"},
+                {title: "<?php echo lang('country') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
+                {title: "<?php echo lang('contacts') ?>", "class": "text-center"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4, 5],
-            xlsColumns: [0, 1, 2, 3, 4, 5],
+            printColumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7],
         });
     });
 </script>
