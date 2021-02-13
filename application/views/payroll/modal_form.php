@@ -33,7 +33,7 @@
             echo form_input(array(
                 "id" => "amount",
                 "name" => "amount",
-                "value" => $model_info->amount ? $model_info->amount : "",
+                "value" => $model_info ? $model_info->amount : "",
                 "class" => "form-control",
                 "placeholder" => lang('amount'),
                 "type" => "number",

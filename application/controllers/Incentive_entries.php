@@ -9,6 +9,9 @@ class Incentive_entries extends MY_Controller {
         parent::__construct();
         $this->load->model("Incentive_entries_model");
         $this->load->model("Incentive_categories_model");
+        $this->load->model("Accounts_model");
+        $this->load->model("Expenses_model");
+        $this->load->model("Account_transactions_model");
     }
 
     protected function _get_category_dropdown_data() {
@@ -30,6 +33,8 @@ class Incentive_entries extends MY_Controller {
             'category' => $this->input->post('category_select2_filter'),
             'start' => $this->input->post('start_date'),
             'end' => $this->input->post('end_date'),
+            'user' => $this->input->post('users_select2_filter'),
+            'account_id' => $this->input->post('account_select2_filter'),
         ))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -41,6 +46,7 @@ class Incentive_entries extends MY_Controller {
     private function _make_row($data) {
         return array(
             $data->category_name,
+            $data->account_name,
             get_team_member_profile_link($data->created_by, $data->employee_name, array("target" => "_blank")),
             get_team_member_profile_link($data->created_by, $data->signed_by_name, array("target" => "_blank")),
             number_with_decimal($data->amount),
@@ -58,10 +64,14 @@ class Incentive_entries extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        $expense_id = $this->input->post('expense_id');
+        $account_id = $this->input->post('account_id');
+        $amount = $this->input->post('amount');
+        $user = $this->input->post('user');
 
         $incentive_data = array(
-            "user" => $this->input->post('user'),
-            "amount" => $this->input->post('amount'),
+            "user" => $user,
+            "account_id" => $account_id,
             "remarks" => $this->input->post('remarks'),
             "signed_by" => $this->input->post('signed_by'),
             "category" => $this->input->post('category'),
@@ -72,7 +82,11 @@ class Incentive_entries extends MY_Controller {
             $incentive_data["created_by"] = $this->login_user->id;
         }
 
-        $incentive_id = $this->Incentive_entries_model->save($incentive_data, $id);
+        $saved_id = $this->Incentive_entries_model->save($incentive_data, $id);
+
+        $incentive_data["expense_id"] = $this->save_expense($account_id, $amount, $user, $expense_id);
+
+        $incentive_id = $this->Incentive_entries_model->save($incentive_data, $saved_id);
         if ($incentive_id) {
             $options = array("id" => $incentive_id);
             $incentive_info = $this->Incentive_entries_model->get_details($options)->row();
@@ -82,14 +96,51 @@ class Incentive_entries extends MY_Controller {
         }
     }
 
+    private function save_expense($account_id, $amount, $user, $expense_id){
+        $expense_data = array(
+            "account_id" => $account_id,
+            "category_id" => 4,
+            "amount" => $amount,
+            "user_id" => $user,
+        );
+
+        if(!$expense_id){
+            $expense_data["expense_date"] = date('Y-m-d');
+        }
+
+        $saved_id = $this->Expenses_model->save($expense_data, $expense_id);
+
+        $this->save_expense_transaction($account_id, $amount, $expense_id, $saved_id);
+
+        return $saved_id;
+    }
+
+    private function save_expense_transaction($account_id, $amount, $expense_id, $saved_id){
+        $transaction_data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'reference' => $expense_id
+        );
+
+        if(!$expense_id){
+            $this->Account_transactions_model->add_incentive($account_id, $amount, $saved_id); 
+        }
+        else{
+            $this->Account_transactions_model->update_incentive($expense_id, $transaction_data); 
+        }        
+    }
+
     function modal_form() {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Incentive_entries_model->get_one($this->input->post('id'));
+        $id = $this->input->post('id');
+
+        $view_data['model_info'] = $id ? $this->Incentive_entries_model->get_details(array("id" => $id))->row() : "";
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        $view_data['account_dropdown'] = array("" => "-") + $this->Accounts_model->get_dropdown_list(array("name"), "id", array("deleted" => 0));
 
         $this->load->view('incentive_entries/modal_form', $view_data);
     }
@@ -101,7 +152,12 @@ class Incentive_entries extends MY_Controller {
 
         $id = $this->input->post('id');
 
+        $options = array("id" => $id);
+        $incentive_info = $this->Incentive_entries_model->get_details($options)->row();
+
         if ($this->Incentive_entries_model->delete($id)) {
+            $this->Expenses_model->delete($incentive_info->expense_id);
+            $this->Account_transactions_model->delete_incentive($incentive_info->expense_id);
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));

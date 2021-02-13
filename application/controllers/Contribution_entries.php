@@ -34,6 +34,7 @@ class Contribution_entries extends MY_Controller {
             'end' => $this->input->post('end_date'),
             'category' => $this->input->post('category_select2_filter'),
             'user' => $this->input->post('users_select2_filter'),
+            'account_id' => $this->input->post('account_select2_filter'),
         ))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -69,7 +70,6 @@ class Contribution_entries extends MY_Controller {
         $contribution_data = array(
             "account_id" => $account_id,
             "user" => $user,
-            "amount" => $amount,
             "category" => $this->input->post('category'),
         );
 
@@ -131,7 +131,9 @@ class Contribution_entries extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Contribution_entries_model->get_one($this->input->post('id'));
+        $id = $this->input->post('id');
+
+        $view_data['model_info'] = $id ? $this->Contribution_entries_model->get_details(array("id" => $id))->row() : "";
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
         $view_data['account_dropdown'] = array("" => "-") + $this->Accounts_model->get_dropdown_list(array("name"), "id", array("deleted" => 0));

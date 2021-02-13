@@ -11,14 +11,43 @@ class Payroll extends MY_Controller {
         $this->load->model("Accounts_model");
         $this->load->model("Expenses_model");
         $this->load->model("Account_transactions_model");
+        $this->load->model("Accounts_model");
+    }
+
+    protected function _get_users_select2_data() {
+        $users = $this->Users_model->get_team_members_for_select2()->result();
+        $user_select2 = array(array('id' => '', 'text'  => '- Users -'));
+
+        foreach($users as $user){
+            $user_select2[] = array('id' => $user->id, 'text'  => $user->user_name);
+        }
+
+        return $user_select2;
+    }
+
+    protected function _get_account_select2_data() {
+        $Accounts = $this->Accounts_model->get_all()->result();
+        $account_select2 = array(array('id' => '', 'text'  => '- Accounts -'));
+
+        foreach ($Accounts as $account) {
+            $account_select2[] = array('id' => $account->id, 'text' => $account->name) ;
+        }
+        return $account_select2;
     }
 
     function index(){
-        $this->template->rander("payroll/index");
+        $view_data['account_select2'] = $this->_get_account_select2_data();
+        $view_data['user_select2'] = $this->_get_users_select2_data();
+        $this->template->rander("payroll/index", $view_data);
     }
 
     function list_data(){
-        $list_data = $this->Payroll_model->get_details()->result();
+        $list_data = $this->Payroll_model->get_details(array(
+            'start' => $this->input->post('start_date'),
+            'end' => $this->input->post('end_date'),
+            'employee_id' => $this->input->post('users_select2_filter'),
+            'account_id' => $this->input->post('account_select2_filter'),
+        ))->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -27,9 +56,9 @@ class Payroll extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $status = "<span class='label label-".($data->expense_id ? "success" : "danger")."'>".($data->expense_id ? "Paid" : "Not paid")."</span>";
+        $status = "<span class='label label-".($data->status == "paid" ? "success" : "danger")."'>".(ucwords($data->status))."</span>";
 
-        $pay = !$data->expense_id ? '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("payroll/pay/$data->id"), "data-action" => "update")) .'</li>' : "";
+        $pay = $data->status == "paid" ? "" : '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("payroll/pay/$data->id"), "data-action" => "update")) .'</li>';
         $edit = '<li role="presentation">' . modal_anchor(get_uri("payroll/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
         $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("payroll/delete"), "data-action" => "delete-confirmation")) . '</li>';
 
@@ -63,12 +92,12 @@ class Payroll extends MY_Controller {
         $account_id = $this->input->post('account_id');
         $expense_id = $this->input->post('expense_id');
         $amount = $this->input->post('amount');
+        $employee_id = $this->input->post('employee_id');
 
         $payroll_data = array(
-            "employee_id" => $this->input->post('employee_id'),
+            "employee_id" => $employee_id,
             "account_id" => $account_id,
             "payment_method_id" => $this->input->post('payment_method_id'),
-            "amount" => $amount,
             "note" => $this->input->post('note'),
         );
 
@@ -77,24 +106,11 @@ class Payroll extends MY_Controller {
             $payroll_data["created_by"] = $this->login_user->id;
         }
 
-        $payroll_id = $this->Payroll_model->save($payroll_data, $id);
+        $saved_id = $this->Payroll_model->save($payroll_data, $id);
 
-        if($id){
-            $transaction_data = array(
-                'account_id' => $account_id,
-                'amount' => $amount,
-                'reference' => $expense_id
-            );
+        $payroll_data["expense_id"] = $this->save_expense($account_id, $amount, $employee_id, $expense_id);
 
-            $expense_data = array(
-                'id' => $expense_id,
-                'amount' => $amount,
-            );
-
-            $this->Account_transactions_model->update_payroll($expense_id, $transaction_data);
-            $this->Expenses_model->save($expense_data, $expense_id);
-        }
-
+        $payroll_id = $this->Payroll_model->save($payroll_data, $saved_id);
         if ($payroll_id) {
             $options = array("id" => $payroll_id);
             $payroll_info = $this->Payroll_model->get_details($options)->row();
@@ -104,14 +120,48 @@ class Payroll extends MY_Controller {
         }
     }
 
+    private function save_expense($account_id, $amount, $user, $expense_id){
+        $expense_data = array(
+            "account_id" => $account_id,
+            "category_id" => 1,
+            "amount" => $amount,
+            "user_id" => $user,
+        );
+
+        if(!$expense_id){
+            $expense_data["expense_date"] = date('Y-m-d');
+        }
+
+        $saved_id = $this->Expenses_model->save($expense_data, $expense_id);
+
+        $this->save_expense_transaction($account_id, $amount, $expense_id, $saved_id);
+
+        return $saved_id;
+    }
+
+    private function save_expense_transaction($account_id, $amount, $expense_id, $saved_id){
+        $transaction_data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'reference' => $expense_id
+        );
+
+        if(!$expense_id){
+            $this->Account_transactions_model->add_contribution($account_id, $amount, $saved_id); 
+        }
+        else{
+            $this->Account_transactions_model->update_contribution($expense_id, $transaction_data); 
+        }        
+    }
+
     function modal_form() {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
 
-        $model_info = $this->Payroll_model->get_one($this->input->post('id'));
+        $id = $this->input->post('id');
 
-        $view_data['model_info'] = $model_info;
+        $view_data['model_info'] = $id ? $this->Payroll_model->get_details(array("id" => $id))->row() : "";
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
         $view_data['payment_methods_dropdown'] = array("" => "-") + $this->Payment_methods_model->get_dropdown_list(array("title"), "id", array("available_on_payroll" => 1, "deleted" => 0));
         $view_data['account_dropdown'] = array("" => "-") + $this->Accounts_model->get_dropdown_list(array("name"), "id", array("deleted" => 0));
@@ -146,23 +196,7 @@ class Payroll extends MY_Controller {
 
     function pay($payroll_id = 0) {
         if ($payroll_id) {
-
-            $payroll = $this->Payroll_model->get_one($payroll_id);
-
-            $expense_data = array(
-                "expense_date" => date('Y-m-d'),
-                "account_id" => $payroll->account_id,
-                "category_id" => 1,
-                "amount" => $payroll->amount,
-                "user_id" => $payroll->employee_id,
-            );
-
-            $expense_id = $this->Expenses_model->save($expense_data);
-            $this->Account_transactions_model->add_payroll($payroll->account_id, $payroll->amount, $expense_id);
-
-            $payroll_data = array(
-                'expense_id' => $expense_id
-            );
+            $payroll_data["status"] = "paid";
 
             $save_id = $this->Payroll_model->save($payroll_data, $payroll_id);
             if ($save_id) {

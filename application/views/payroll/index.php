@@ -17,6 +17,11 @@
     $(document).ready(function () {
         $("#payroll-table").appTable({
             source: '<?php echo_uri("payroll/list_data") ?>',
+            filterDropdown: [
+                {id: "users_select2_filter", name: "users_select2_filter", class: "w200", options: <?php echo json_encode($user_select2); ?>},
+                {id: "account_select2_filter", name: "account_select2_filter", class: "w200", options: <?php echo json_encode($account_select2); ?>}
+            ],
+            dateRangeType: "monthly",
             order: [[7, 'desc']],
             columns: [
                 {title: "<?php echo lang('name') ?>"},

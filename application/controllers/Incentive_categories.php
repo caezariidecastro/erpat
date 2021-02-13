@@ -8,6 +8,7 @@ class Incentive_categories extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model("Incentive_categories_model");
+        $this->load->model("Accounts_model");
     }
 
     protected function _get_category_select2_data() {
@@ -20,8 +21,31 @@ class Incentive_categories extends MY_Controller {
         return $category_select2;
     }
 
+    protected function _get_users_select2_data() {
+        $users = $this->Users_model->get_team_members_for_select2()->result();
+        $user_select2 = array(array('id' => '', 'text'  => '- Users -'));
+
+        foreach($users as $user){
+            $user_select2[] = array('id' => $user->id, 'text'  => $user->user_name);
+        }
+
+        return $user_select2;
+    }
+
+    protected function _get_account_select2_data() {
+        $Accounts = $this->Accounts_model->get_all()->result();
+        $account_select2 = array(array('id' => '', 'text'  => '- Accounts -'));
+
+        foreach ($Accounts as $account) {
+            $account_select2[] = array('id' => $account->id, 'text' => $account->name) ;
+        }
+        return $account_select2;
+    }
+
     function index(){
         $view_data['category_select2'] = $this->_get_category_select2_data();
+        $view_data['account_select2'] = $this->_get_account_select2_data();
+        $view_data['user_select2'] = $this->_get_users_select2_data();
         $this->template->rander("incentive_categories/index", $view_data);
     }
 

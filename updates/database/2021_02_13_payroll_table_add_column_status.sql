@@ -1,0 +1,1 @@
+ALTER TABLE `payroll` ADD `status` ENUM('paid','not paid') NOT NULL DEFAULT 'not paid' AFTER `expense_id`;
