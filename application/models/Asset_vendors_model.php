@@ -35,17 +35,6 @@ class Asset_vendors_model extends Crud_model {
         return $this->db->query($sql);
     }
 
-    function get_primary_contact($asset_vendor_id) {
-        $users_table = $this->db->dbprefix('users');
-
-        $sql = "SELECT $users_table.id, $users_table.first_name, $users_table.last_name
-        FROM $users_table
-        WHERE $users_table.deleted=0 
-        AND $users_table.asset_vendor_id = $asset_vendor_id
-        AND $users_table.is_primary_contact=1";
-        return $this->db->query($sql)->row();
-    }
-
     function get_contacts($options) {
         $users_table = $this->db->dbprefix('users');
         $where = "";
