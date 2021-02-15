@@ -18,7 +18,7 @@
         $("#asset-vendor-table").appTable({
             source: "<?php echo_uri("asset_vendors/list_data") ?>",
             filterDropdown: [
-                {id: "status_select2_filter", name: "status_select2_filter", class: "w200", options: <?php echo json_encode($status_select2); ?>},
+                {id: "status_select2_filter", name: "status_select2_filter", class: "w200", options: <?php echo json_encode($status_select2_filter); ?>},
             ],
             order: [[0, "desc"]],
             columns: [

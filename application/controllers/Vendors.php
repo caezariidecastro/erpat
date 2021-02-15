@@ -10,12 +10,25 @@ class Vendors extends MY_Controller {
         $this->load->model("Vendors_model");
     }
 
+    protected function _get_status_select2_data() {
+        $status_select2 = array(
+            array("id" => "", "text"  => "- All -"),
+            array("id" => "active", "text"  => "Active"),
+            array("id" => "inactive", "text"  => "Inactive"),
+        );
+
+        return $status_select2;
+    }
+
     function index(){
-        $this->template->rander("vendors/index");
+        $view_data["status_select2"] = $this->_get_status_select2_data();
+        $this->template->rander("vendors/index", $view_data);
     }
 
     function list_data(){
-        $list_data = $this->Vendors_model->get_details()->result();
+        $list_data = $this->Vendors_model->get_details(array(
+            "status" => $this->input->post("status_select2_filter")
+        ))->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -45,6 +58,7 @@ class Vendors extends MY_Controller {
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             $data->contacts,
+            $data->status == "active" ? '<small class="label label-success">Active</small>' : '<small class="label label-danger">Inactive</small>',
             modal_anchor(get_uri("vendors/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_vendor'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("vendors/delete"), "data-action" => "delete-confirmation"))
         );
@@ -76,7 +90,8 @@ class Vendors extends MY_Controller {
             "city" => $this->input->post('city'),
             "state" => $this->input->post('state'),
             "zip" => $this->input->post('zip'),
-            "country" => $this->input->post('country')
+            "country" => $this->input->post('country'),
+            "status" => $this->input->post("status"),
         );
 
         if(!$id){
@@ -101,6 +116,7 @@ class Vendors extends MY_Controller {
         ));
 
         $view_data['model_info'] = $this->Vendors_model->get_one($this->input->post('id'));
+        $view_data["status_select2"] = $this->_get_status_select2_data();
 
         $this->load->view('vendors/modal_form', $view_data);
     }

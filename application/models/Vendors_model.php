@@ -13,9 +13,14 @@ class Vendors_model extends Crud_model {
         $vendors_table = $this->db->dbprefix('vendors');
         $where = "";
         $id = get_array_value($options, "id");
+        $status = get_array_value($options, "status");
 
         if ($id) {
             $where .= " AND $vendors_table.id=$id";
+        }
+
+        if ($status) {
+            $where .= " AND $vendors_table.status='$status'";
         }
 
         $sql = "SELECT $vendors_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, (

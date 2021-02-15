@@ -27,7 +27,9 @@
                 "value" => $model_info ? $model_info->address : "",
                 "class" => "form-control",
                 "placeholder" => lang('address'),
-                "data-rich-text-editor" => true
+                "data-rich-text-editor" => true,
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>
@@ -96,6 +98,26 @@
             ?>
         </div>
     </div>
+    <?php if($model_info->id){?>
+    <div class="form-group">
+        <label for="status" class=" col-md-3"><?php echo lang("status")?></label>
+        <div class="col-md-9" id="invoice_client_selection_wrapper">
+            <?php
+            echo form_input(array(
+                "id" => "status",
+                "name" => "status",
+                "value" => $model_info ? $model_info->status : "",
+                "class" => "form-control validate-hidden",
+                "data-rule-required" => "true",
+                "data-msg-required" => lang('field_required'),
+                "placeholder" => lang('status')
+            ));
+            ?>
+        </div>
+    </div>
+    <?php }else{?>
+    <input type="hidden" name="status" value="active"/>
+    <?php }?>
 </div>
 
 <div class="modal-footer">
@@ -106,6 +128,12 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        let isUpdate = "<?php echo $model_info->id?>";
+
+        if(isUpdate){
+            $("#status").select2({data: <?= json_encode(array_replace($status_select2, array(0 => array("id" => "", "text"  => "-"))))?>});
+        }
+
         $("#vendors-form").appForm({
             onSuccess: function (result) {
                 $("#vendors-table").appTable({newData: result.data, dataId: result.id});

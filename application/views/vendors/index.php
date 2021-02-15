@@ -17,6 +17,9 @@
     $(document).ready(function () {
         $("#vendors-table").appTable({
             source: '<?php echo_uri("vendors/list_data") ?>',
+            filterDropdown: [
+                {id: "status_select2_filter", name: "status_select2_filter", class: "w200", options: <?php echo json_encode($status_select2); ?>},
+            ],
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('name') ?> ", "class": "w20p"},
@@ -28,10 +31,11 @@
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<?php echo lang('contacts') ?>", "class": "text-center"},
+                {title: "<?php echo lang("status") ?>", "class": "text-center"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4, 5, 6, 7],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
         });
     });
 </script>
