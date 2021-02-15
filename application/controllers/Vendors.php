@@ -48,8 +48,16 @@ class Vendors extends MY_Controller {
     }
 
     private function _make_row($data) {
+        $primary_contact = $this->Vendors_model->get_contacts(array(
+            "vendor_id" => $data->id,
+            "is_primary_contact" => 1
+        ))->row();
+
+        $primary_contact = $primary_contact ? get_team_member_profile_link($primary_contact->id, $primary_contact->full_name, array("target" => "_blank")) : "";
+
         return array(
             '<a href="'.base_url("pid/supplier/".$data->id."/contacts").'">'.$data->name.'</a>',
+            $primary_contact,
             nl2br($data->address),
             $data->city,
             $data->state,

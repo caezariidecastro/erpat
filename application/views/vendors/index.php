@@ -23,6 +23,7 @@
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('name') ?> ", "class": "w20p"},
+                {title: "<?php echo lang('primary_contact') ?>"},
                 {title: "<?php echo lang('address') ?>"},
                 {title: "<?php echo lang('city') ?>"},
                 {title: "<?php echo lang('state') ?>"},
