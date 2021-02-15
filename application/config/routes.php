@@ -199,5 +199,8 @@ $route["ams/assets"] = "asset_entries/index";
 // Supplier > Contacts
 $route["pid/supplier/(:any)/contacts"] = "vendors/contacts/$1";
 
+// Vendors > Contacts
+$route["pid/vendor/(:any)/contacts"] = "asset_vendors/contacts/$1";
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
