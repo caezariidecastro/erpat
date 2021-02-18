@@ -21,7 +21,7 @@ class Asset_entries_model extends Crud_model {
             $where .= " AND $asset_entries_table.active=$active";
         }
 
-        $sql = "SELECT $asset_entries_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, brand.title AS brand_name, vendor.title AS vendor_name
+        $sql = "SELECT $asset_entries_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, brand.title AS brand_name, vendor.name AS vendor_name
         , (
             SELECT CONCAT(
                 IF(

@@ -51,7 +51,7 @@ class Asset_entries extends MY_Controller {
         $vendor_dropdown = array('' => '-');
 
         foreach ($vendors as $vendor) {
-            $vendor_dropdown[$vendor->id] = $vendor->title;
+            $vendor_dropdown[$vendor->id] = $vendor->name;
         }
         return $vendor_dropdown;
     }
