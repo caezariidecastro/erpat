@@ -31,7 +31,7 @@ $lang["submenu_hrm_holidays"] = "Holidays";
 
 $lang["submenu_pid_productions"] = "Manufacturing Order";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials";
-$lang["submenu_pid_purchases"] = "Purchases - Todo";
+$lang["submenu_pid_purchases"] = "Purchases";
 $lang["submenu_pid_supplier"] = "Supplier";
 $lang["submenu_pid_items"] = "Products";
 $lang["submenu_pid_inventory"] = "Inventory";
@@ -360,3 +360,17 @@ $lang["purchase_date"] = "Purchase date";
 $lang["warranty_expiry_date"] = "Warranty expiry date";
 $lang["assets"] = "Assets";
 $lang["cost"] = "Cost";
+
+// Production & Inventory > Purchases
+$lang["purchases"] = "Purchases";
+$lang["add_purchase"] = "Add purchase";
+$lang["edit_purchase"] = "Edit purchase";
+$lang["purchase_id"] = "Purchase ID";
+$lang["email_purchase_order_to_vendor"] = "Email orders to supplier";
+$lang["purchase_preview"] = "Purchase preview";
+$lang["print_purchase"] = "Print purchase";
+$lang["add_budget"] = "Add budget";
+$lang["budget_list"] = "Budget list";
+$lang["inactive_material_hidden"] = "Note: Inactive materials will not appear in drop down list";
+$lang["edit_material"] = "Edit material";
+$lang["edit_budget"] = "Edit budget";

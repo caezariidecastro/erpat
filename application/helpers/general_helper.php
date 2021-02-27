@@ -933,6 +933,14 @@ if (!function_exists('get_invoice_id')) {
 
 }
 
+if (!function_exists('get_purchase_order_id')) {
+
+    function get_purchase_order_id($purchase_order_id) {
+        return "PO #" . $purchase_order_id;
+    }
+
+}
+
 /**
  * 
  * get estimate number
@@ -1636,4 +1644,44 @@ if (!function_exists('getHierarchalTag')) {
 
         return $tag;
     }
+}
+
+if (!function_exists('get_purchase_order_status_label')) {
+
+    function get_purchase_order_status_label($status) {
+        if($status == "draft"){
+            $status = '<span class="mt0 label label-default large">Draft</span>';
+        }
+
+        if($status == "partially_budgeted"){
+            $status = '<span class="mt0 label label-warning large">Partially budgeted</span>';
+        }
+
+        if($status == "cancelled"){
+            $status = '<span class="mt0 label label-danger large">Cancelled</span>';
+        }
+
+        if($status == "completed"){
+            $status = '<span class="mt0 label label-success large">Completed</span>';
+        }
+
+        return $status;
+    }
+
+}
+
+if (!function_exists('get_purchase_order_making_data')) {
+
+    function get_purchase_order_making_data($purchase_order_id) {
+        $ci = get_instance();
+        $purchase_order_info = $ci->Purchase_orders_model->get_details(array("id" => $purchase_order_id))->row();
+
+        if ($purchase_order_info) {
+            $data['purchase_order_info'] = $purchase_order_info;
+            $data['vendor_info'] = $ci->Vendors_model->get_one($data['purchase_order_info']->vendor_id);
+            $data['purchase_order_status_label'] = get_purchase_order_status_label($purchase_order_info->status);
+            return $data;
+        }
+    }
+
 }
