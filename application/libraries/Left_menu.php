@@ -322,6 +322,7 @@ class Left_menu {
                     array("name" => "submenu_pid_inventory", "url" => "pid/inventory"),
                     array("name" => "submenu_pid_items", "url" => "pid/items"),
                     array("name" => "submenu_pid_purchases", "url" => "pid/purchases"),
+                    array("name" => "submenu_pid_returns", "url" => "pid/returns"),
                     array("name" => "submenu_pid_supplier", "url" => "pid/supplier"),
                 ));
             }

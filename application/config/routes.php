@@ -210,5 +210,8 @@ $route["pid/purchases/view/(:any)"] = "purchase_orders/view/$1";
 $route["pid/purchases/preview/(:any)/(:any)"] = "purchase_orders/preview/$1/$2";
 $route["pid/purchases/preview/(:any)"] = "purchase_orders/preview/$1";
 
+// Returns 
+$route["pid/returns"] = "purchase_order_returns/index";
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

@@ -32,6 +32,7 @@ $lang["submenu_hrm_holidays"] = "Holidays";
 $lang["submenu_pid_productions"] = "Manufacturing Order";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials";
 $lang["submenu_pid_purchases"] = "Purchases";
+$lang["submenu_pid_returns"] = "Returns";
 $lang["submenu_pid_supplier"] = "Supplier";
 $lang["submenu_pid_items"] = "Products";
 $lang["submenu_pid_inventory"] = "Inventory";
@@ -378,3 +379,8 @@ $lang["purchase"] = "PURCHASE";
 $lang["purchase_small_caps"] = "Purchase";
 $lang["send_purchase_request"] = "Send purchase request";
 $lang["purchase_sent_message"] = "The purchase request has been sent!";
+
+// Production & Inventory > Returns
+$lang["returns"] = "Returns";
+$lang["add_return"] = "Add return";
+$lang["has_return_error"] = "has a return already!";

@@ -96,7 +96,7 @@ class Purchase_orders extends MY_Controller {
         $status = get_purchase_order_status_label($data->status);
 
         return array(
-            '<a href="'.base_url("pid/purchases/view/".$data->id).'">Purchase #'.$data->id.'</a>',
+            '<a href="'.base_url("pid/purchases/view/".$data->id).'">'.lang("purchase").' #'.$data->id.'</a>',
             $data->vendor_name,
             number_with_decimal($data->amount),
             nl2br($data->remarks),
