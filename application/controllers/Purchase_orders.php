@@ -120,7 +120,7 @@ class Purchase_orders extends MY_Controller {
             "unit_type" => $this->input->post('unit_type'),
             "rate" => $rate,
             "quantity" => $quantity,
-            "total" => $rate * $quantity,
+            "total" => trim($rate) * trim($quantity),
             "purchase_id" => $purchase_id,
             "material_id" => $this->input->post('material_id'),
             "material_inventory_id" => $this->input->post('material_inventory_id'),
@@ -131,7 +131,10 @@ class Purchase_orders extends MY_Controller {
             $options = array("id" => $purchase_order_material_id);
             $purchase_order_material_info = $this->Purchase_order_materials_model->get_details($options)->row();
 
-            echo json_encode(array("success" => true, "id" => $purchase_order_material_info->id, "data" => $this->_material_make_row($purchase_order_material_info, $vendor_id, $purchase_id ), 'message' => lang('record_saved')));
+            $status = $this->_update_purchase_status($purchase_id);
+            $purchase_status = get_purchase_order_status_label($status);
+
+            echo json_encode(array("success" => true, "id" => $purchase_order_material_info->id, "data" => $this->_material_make_row($purchase_order_material_info, $vendor_id, $purchase_id ), 'message' => lang('record_saved'), "purchase_status" => $purchase_status));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
@@ -181,8 +184,10 @@ class Purchase_orders extends MY_Controller {
         ));
         
         $id = $this->input->post('id');
+        $purchase_id = $this->input->get('purchase_id');
         
         if ($this->Purchase_order_materials_model->delete($id)) {
+            $this->_update_purchase_status($purchase_id);
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -196,7 +201,7 @@ class Purchase_orders extends MY_Controller {
             number_with_decimal($data->rate),
             number_with_decimal($data->total),
             modal_anchor(get_uri("purchase_orders/material_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_purchase'), "data-post-id" => $data->id, "data-post-vendor_id" => $vendor_id, "data-post-purchase_id" => $purchase_id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("purchase_orders/delete_material"), "data-action" => "delete-confirmation"))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("purchase_orders/delete_material?purchase_id=".$purchase_id), "data-action" => "delete-confirmation", "data-reload-on-success" => "1"))
         );
     }
 
@@ -251,9 +256,11 @@ class Purchase_orders extends MY_Controller {
         ));
         
         $id = $this->input->post('id');
+        $purchase_id = $this->input->get('purchase_id');
         
         if ($this->Purchase_order_budgets_model->delete($id)) {
-            $this->Account_transactions_model->delete_purchase($id);
+            $this->Account_transactions_model->delete_purchase_order($id);
+            $this->_update_purchase_status($purchase_id);
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -276,6 +283,9 @@ class Purchase_orders extends MY_Controller {
                     $status = "partially_budgeted";
                 }
             }
+            else{
+                $status = "draft";
+            }
         }
 
         return $status;
@@ -287,7 +297,7 @@ class Purchase_orders extends MY_Controller {
             $data->created_on,
             number_with_decimal($data->amount),
             modal_anchor(get_uri("purchase_orders/budget_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_budget'), "data-post-id" => $data->id, "data-post-purchase_id" => $purchase_id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("purchase_orders/delete_budget"), "data-action" => "delete-confirmation"))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("purchase_orders/delete_budget?purchase_id=".$purchase_id), "data-action" => "delete-confirmation", "data-reload-on-success" => "1"))
         );
     }
 
@@ -341,13 +351,8 @@ class Purchase_orders extends MY_Controller {
             $options = array("id" => $purchase_order_budget_id);
             $purchase_order_budget_info = $this->Purchase_order_budgets_model->get_details($options)->row();
 
-            $purchase_info = array(
-                "status" => $this->_get_purchase_order_status($purchase_id)
-            );
-
-            $this->Purchase_orders_model->save($purchase_info, $purchase_id);
-
-            $purchase_status = get_purchase_order_status_label($purchase_info["status"]);
+            $status = $this->_update_purchase_status($purchase_id);
+            $purchase_status = get_purchase_order_status_label($status);
 
             echo json_encode(array("success" => true, "id" => $purchase_order_budget_info->id, "data" => $this->_budget_make_row($purchase_order_budget_info, $purchase_id), 'message' => lang('record_saved'), "purchase_status" => $purchase_status));
         } else {
@@ -550,5 +555,11 @@ class Purchase_orders extends MY_Controller {
         } else {
             echo json_encode(array('success' => false, 'message' => lang('error_occurred')));
         }
+    }
+
+    private function _update_purchase_status($purchase_id){
+        $purchase_order_data["status"] = $this->_get_purchase_order_status($purchase_id);
+        $this->Purchase_orders_model->save($purchase_order_data, $purchase_id);
+        return $purchase_order_data["status"];
     }
 }

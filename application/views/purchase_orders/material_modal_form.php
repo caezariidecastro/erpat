@@ -25,6 +25,7 @@
                 "value" => $model_info->quantity ? to_decimal_format($model_info->quantity) : "",
                 "class" => "form-control",
                 "placeholder" => lang('quantity'),
+                "type" => "number",
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
             ));
@@ -55,6 +56,7 @@
                 "value" => $model_info->rate ? to_decimal_format($model_info->rate) : "",
                 "class" => "form-control",
                 "placeholder" => lang('amount'),
+                "type" => "number",
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
             ));
@@ -90,6 +92,7 @@
         $("#purchase-order-material-form").appForm({
             onSuccess: function (result) {
                 $("#purchase-order-material-table").appTable({newData: result.data, dataId: result.id});
+                $("#purchase_order_status_label").html(result.purchase_status);
             }
         });
 
