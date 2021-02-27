@@ -37,9 +37,15 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        let reload_on_success = "<?php echo $reload?>";
+
         $("#purchase-orders-form").appForm({
             onSuccess: function (result) {
                 $("#purchase-orders-table").appTable({newData: result.data, dataId: result.id});
+
+                if(reload_on_success){
+                    window.location.reload();
+                }
             }
         });
 

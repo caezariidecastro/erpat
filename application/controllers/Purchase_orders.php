@@ -144,6 +144,7 @@ class Purchase_orders extends MY_Controller {
 
         $view_data['model_info'] = $this->Purchase_orders_model->get_one($this->input->post('id'));
         $view_data["vendor_dropdown"] = $this->_get_vendor_dropdown_data();
+        $view_data["reload"] = $this->input->post("reload");
 
         $this->load->view('purchase_orders/modal_form', $view_data);
     }
@@ -367,5 +368,187 @@ class Purchase_orders extends MY_Controller {
         else{
             $this->Account_transactions_model->update_purchase_order($saved_id, $transaction_data); 
         }  
+    }
+
+    function send_purchase_modal_form($purchase_id = 0) {
+        if ($purchase_id) {
+            $options = array("id" => $purchase_id);
+            $purchase_info = $this->Purchase_orders_model->get_details($options)->row();
+            $view_data['purchase_info'] = $purchase_info;
+
+            $contacts_options = array("user_type" => "supplier", "vendor_id" => $purchase_info->vendor_id);
+            $contacts = $this->Users_model->get_details($contacts_options)->result();
+
+            $primary_contact_info = "";
+            $contacts_dropdown = array();
+            foreach ($contacts as $contact) {
+                if ($contact->is_primary_contact) {
+                    $primary_contact_info = $contact;
+                    $contacts_dropdown[$contact->id] = $contact->first_name . " " . $contact->last_name . " (" . lang("primary_contact") . ")";
+                }
+            }
+
+            foreach ($contacts as $contact) {
+                if (!$contact->is_primary_contact) {
+                    $contacts_dropdown[$contact->id] = $contact->first_name . " " . $contact->last_name;
+                }
+            }
+
+            $view_data['contacts_dropdown'] = $contacts_dropdown;
+
+            $template_data = $this->get_send_purchase_template($purchase_id, 0, "", $purchase_info, $primary_contact_info);
+            $view_data['message'] = get_array_value($template_data, "message");
+            $view_data['subject'] = get_array_value($template_data, "subject");
+
+            $this->load->view('purchase_orders/send_purchase_modal_form', $view_data);
+        } else {
+            show_404();
+        }
+    }
+
+    function get_send_purchase_template($purchase_id = 0, $contact_id = 0, $return_type = "", $purchase_info = "", $contact_info = "") {
+
+        if (!$purchase_info) {
+            $options = array("id" => $purchase_id);
+            $purchase_info = $this->Purchase_orders_model->get_details($options)->row();
+        }
+
+        if (!$contact_info) {
+            $contact_info = $this->Users_model->get_one($contact_id);
+        }
+
+        $email_template = $this->Email_templates_model->get_final_template("send_purchase_request");
+
+        $parser_data["P_ID"] = $purchase_info->id;
+        $parser_data["CONTACT_FIRST_NAME"] = $contact_info->first_name;
+        $parser_data["PURCHASE_URL"] = get_uri("pid/purchases/preview/" . $purchase_info->id);
+        $parser_data['SIGNATURE'] = $email_template->signature;
+        $parser_data["LOGO_URL"] = get_logo_url();
+
+        $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
+        $subject = $email_template->subject;
+
+        if ($return_type == "json") {
+            echo json_encode(array("success" => true, "message_view" => $message));
+        } else {
+            return array(
+                "message" => $message,
+                "subject" => $subject
+            );
+        }
+    }
+
+    function upload_file() {
+        upload_file_to_temp();
+    }
+
+    function validate_purchases_file() {
+        return validate_post_file($this->input->post("file_name"));
+    }
+
+    function download_pdf($purchase_id = 0, $mode = "download") {
+        if ($purchase_id) {
+            $purchase_data = get_purchase_order_making_data($purchase_id);
+
+            prepare_purchase_pdf($purchase_data, $mode);
+        } else {
+            show_404();
+        }
+    }
+
+    function preview($purchase_id = 0, $show_close_preview = false) {
+        if ($purchase_id) {
+            $view_data = get_purchase_order_making_data($purchase_id);
+
+            $view_data['purchase_preview'] = prepare_purchase_pdf($view_data, "html");
+
+            //show a back button
+            $view_data['show_close_preview'] = $show_close_preview && $this->login_user->user_type === "staff" ? true : false;
+
+            $view_data['purchase_id'] = $purchase_id;
+            $view_data['payment_methods'] = $this->Payment_methods_model->get_available_online_payment_methods();
+
+            $this->load->library("paypal");
+            $view_data['paypal_url'] = $this->paypal->get_paypal_url();
+
+            $this->template->rander("purchase_orders/purchase_preview", $view_data);
+        } else {
+            show_404();
+        }
+    }
+
+    function print_purchase($purchase_id = 0) {
+        if ($purchase_id) {
+            $view_data = get_purchase_order_making_data($purchase_id);
+
+            $view_data['purchase_preview'] = prepare_purchase_pdf($view_data, "html");
+
+            echo json_encode(array("success" => true, "print_view" => $this->load->view("purchase_orders/print_purchase", $view_data, true)));
+        } else {
+            echo json_encode(array("success" => false, lang('error_occurred')));
+        }
+    }
+
+    function send_purchase() {
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $purchase_id = $this->input->post('id');
+
+        $contact_id = $this->input->post('contact_id');
+        $cc = $this->input->post('purchase_cc');
+
+        $custom_bcc = $this->input->post('purchase_bcc');
+        $subject = $this->input->post('subject');
+        $message = decode_ajax_post_data($this->input->post('message'));
+
+        $contact = $this->Users_model->get_one($contact_id);
+
+        $purchase_data = get_purchase_order_making_data($purchase_id);
+        $attachement_url = prepare_purchase_pdf($purchase_data, "send_email");
+
+        $default_bcc = get_setting('send_bcc_to'); //get default settings
+        $bcc_emails = "";
+
+        if ($default_bcc && $custom_bcc) {
+            $bcc_emails = $default_bcc . "," . $custom_bcc;
+        } else if ($default_bcc) {
+            $bcc_emails = $default_bcc;
+        } else if ($custom_bcc) {
+            $bcc_emails = $custom_bcc;
+        }
+
+        //add uploaded files
+        $target_path = get_setting("timeline_file_path");
+        $files_data = move_files_from_temp_dir_to_permanent_dir($target_path, "purchase");
+        $attachments = prepare_attachment_of_files(get_setting("timeline_file_path"), $files_data);
+
+        //add purchase pdf
+        array_unshift($attachments, array("file_path" => $attachement_url));
+
+        if (send_app_mail($contact->email, $subject, $message, array("attachments" => $attachments, "cc" => $cc, "bcc" => $bcc_emails))) {
+            // change email status
+            $last_email_sent_date = get_my_local_time();
+            $status_data = array("last_email_sent_date" => $last_email_sent_date);
+            if ($this->Purchase_orders_model->save($status_data, $purchase_id)) {
+                echo json_encode(array('success' => true, 'message' => lang("purchase_sent_message"), "purchase_id" => $purchase_id, "last_email_sent_date" => lang("last_email_sent_date").": ".$last_email_sent_date));
+            }
+
+            // delete the temp purchase
+            if (file_exists($attachement_url)) {
+                unlink($attachement_url);
+            }
+
+            //delete attachments
+            if ($files_data) {
+                $files = unserialize($files_data);
+                foreach ($files as $file) {
+                    delete_app_files($target_path, array($file));
+                }
+            }
+        } else {
+            echo json_encode(array('success' => false, 'message' => lang('error_occurred')));
+        }
     }
 }

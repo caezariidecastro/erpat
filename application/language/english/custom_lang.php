@@ -374,3 +374,7 @@ $lang["budget_list"] = "Budget list";
 $lang["inactive_material_hidden"] = "Note: Inactive materials will not appear in drop down list";
 $lang["edit_material"] = "Edit material";
 $lang["edit_budget"] = "Edit budget";
+$lang["purchase"] = "PURCHASE";
+$lang["purchase_small_caps"] = "Purchase";
+$lang["send_purchase_request"] = "Send purchase request";
+$lang["purchase_sent_message"] = "The purchase request has been sent!";

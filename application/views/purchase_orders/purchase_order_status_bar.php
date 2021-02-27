@@ -7,7 +7,7 @@
         ?>
     </span> 
 
-    <span class="ml15"><?php
+    <span class="ml15" id="last_email_sent_date"><?php
         echo lang("last_email_sent") . ": ";
         echo $purchase_order_info->last_email_sent_date ? $purchase_order_info->last_email_sent_date : lang("never");
         ?>

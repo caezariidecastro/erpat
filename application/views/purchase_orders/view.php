@@ -18,13 +18,13 @@
                         <?php } ?>
                         <li role="presentation"><?php echo anchor(get_uri("purchase_orders/download_pdf/" . $purchase_order_info->id), "<i class='fa fa-download'></i> " . lang('download_pdf'), array("title" => lang('download_pdf'))); ?> </li>
                         <li role="presentation"><?php echo anchor(get_uri("purchase_orders/download_pdf/" . $purchase_order_info->id . "/view"), "<i class='fa fa-file-pdf-o'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "target" => "_blank")); ?> </li>
-                        <li role="presentation"><?php echo anchor(get_uri("purchase_orders/preview/" . $purchase_order_info->id . "/1"), "<i class='fa fa-search'></i> " . lang('purchase_preview'), array("title" => lang('purchase_preview'), "target" => "_blank")); ?> </li>
+                        <li role="presentation"><?php echo anchor(get_uri("pid/purchases/preview/" . $purchase_order_info->id . "/1"), "<i class='fa fa-search'></i> " . lang('purchase_preview'), array("title" => lang('purchase_preview'))); ?> </li>
                         <li role="presentation"><?php echo js_anchor("<i class='fa fa-print'></i> " . lang('print_purchase'), array('title' => lang('print_purchase'), 'id' => 'print-purchase-btn')); ?> </li>
 
                         <li role="presentation" class="divider"></li>
 
                         <?php if ($purchase_order_info->status !== "cancelled") { ?>
-                            <li role="presentation"><?php echo modal_anchor(get_uri("purchase_orders/modal_form"), "<i class='fa fa-edit'></i> " . lang('edit_purchase'), array("title" => lang('edit_purchase'), "data-post-id" => $purchase_order_info->id, "role" => "menuitem", "tabindex" => "-1")); ?> </li>
+                            <li role="presentation"><?php echo modal_anchor(get_uri("purchase_orders/modal_form"), "<i class='fa fa-edit'></i> " . lang('edit_purchase'), array("title" => lang('edit_purchase'), "data-post-id" => $purchase_order_info->id, "role" => "menuitem", "tabindex" => "-1", "data-post-reload" => true)); ?> </li>
                         <?php } ?>
 
                     </ul>
@@ -155,7 +155,7 @@
         appLoader.show();
 
         $.ajax({
-            url: "<?php echo get_uri('purchase_orders/print_purchase_order/' . $purchase_order_info->id) ?>",
+            url: "<?php echo get_uri('purchase_orders/print_purchase/' . $purchase_order_info->id) ?>",
             dataType: 'json',
             success: function (result) {
                 if (result.success) {

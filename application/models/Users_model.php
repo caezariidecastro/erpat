@@ -72,6 +72,7 @@ class Users_model extends Crud_model {
         $status = get_array_value($options, "status");
         $user_type = get_array_value($options, "user_type");
         $client_id = get_array_value($options, "client_id");
+        $vendor_id = get_array_value($options, "vendor_id");
         $exclude_user_id = get_array_value($options, "exclude_user_id");
 
         if ($id) {
@@ -94,6 +95,10 @@ class Users_model extends Crud_model {
 
         if ($client_id) {
             $where .= " AND $users_table.client_id=$client_id";
+        }
+
+        if ($vendor_id) {
+            $where .= " AND $users_table.vendor_id=$vendor_id";
         }
 
         if ($exclude_user_id) {
