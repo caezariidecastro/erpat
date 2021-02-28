@@ -388,3 +388,6 @@ $lang["material_has_return_error"] = "Material is already at the table!";
 $lang["purchased"] = "Purchased";
 $lang["add_return_completed_purchase_info"] = 'Note: Only purchases with "Completed" status will appear in "Purchase ID" dropdown list';
 $lang["add_view_material"] = "Add/view material";
+
+// Roles
+$lang["set_module_permissions"] = "Set module permission";
