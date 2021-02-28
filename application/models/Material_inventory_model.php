@@ -50,7 +50,14 @@ class Material_inventory_model extends Crud_model {
             WHERE purchase_order_materials.material_inventory_id = $material_inventory_table.id
             AND purchase_orders.deleted = 0
             AND purchase_orders.status = 'completed'
-        ), 0) AS purchased
+        ), 0) AS purchased,
+        COALESCE((
+            SELECT SUM(purchase_order_return_materials.quantity)
+            FROM purchase_order_return_materials
+            LEFT JOIN purchase_order_materials ON purchase_order_materials.id = purchase_order_return_materials.purchase_order_material_id
+            WHERE purchase_order_materials.material_inventory_id = $material_inventory_table.id
+            AND purchase_order_return_materials.deleted = 0
+        ), 0) AS returned
         FROM $material_inventory_table
         LEFT JOIN users ON users.id = $material_inventory_table.created_by
         LEFT JOIN warehouses w ON w.id = $material_inventory_table.warehouse

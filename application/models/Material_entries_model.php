@@ -57,7 +57,14 @@ class Material_entries_model extends Crud_model {
             WHERE purchase_order_materials.material_id = $materials_table.id
             AND purchase_orders.deleted = 0
             AND purchase_orders.status = 'completed'
-        ), 0) AS purchased
+        ), 0) AS purchased,
+        COALESCE((
+            SELECT SUM(purchase_order_return_materials.quantity)
+            FROM purchase_order_return_materials
+            LEFT JOIN purchase_order_materials ON purchase_order_materials.id = purchase_order_return_materials.purchase_order_material_id
+            WHERE purchase_order_materials.material_id = $materials_table.id
+            AND purchase_order_return_materials.deleted = 0
+        ), 0) AS returned
         FROM $materials_table
         LEFT JOIN users creator ON creator.id = $materials_table.created_by
         LEFT JOIN material_categories cat ON cat.id = $materials_table.category

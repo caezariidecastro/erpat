@@ -24,7 +24,13 @@ class Purchase_order_returns_model extends Crud_model {
         }
 
         $sql = "SELECT $purchase_order_returns_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, vendor.name AS vendor_name
-        , 0 AS amount
+        , (
+            SELECT COALESCE(SUM(purchase_order_return_materials.quantity * purchase_order_materials.rate), 0)
+            FROM purchase_order_materials
+            LEFT JOIN purchase_order_return_materials ON purchase_order_return_materials.purchase_order_material_id = purchase_order_materials.id
+            WHERE purchase_order_return_materials.purchase_order_return_id = $purchase_order_returns_table.id
+            AND purchase_order_materials.deleted = 0
+        ) AS amount
         FROM $purchase_order_returns_table
         LEFT JOIN users creator ON creator.id = $purchase_order_returns_table.created_by
         LEFT JOIN purchase_orders ON purchase_orders.id = $purchase_order_returns_table.purchase_id
@@ -42,5 +48,22 @@ class Purchase_order_returns_model extends Crud_model {
         WHERE $purchase_order_returns_table.deleted = 0 
         AND $purchase_order_returns_table.purchase_id = $purchase_id";
         return $this->db->query($sql)->row()->count;
+    }
+
+    function get_purchase_return_materials($purchase_order_return_id, $options = array()){
+        $purchase_order_return_materials_table = $this->db->dbprefix('purchase_order_return_materials');
+        $where = "";
+        $id = get_array_value($options, "id");
+
+        if ($id) {
+            $where .= " AND $purchase_order_return_materials_table.id=$id";
+        }
+
+        $sql = "SELECT $purchase_order_return_materials_table.*, purchase_order_materials.title AS material_name
+        FROM $purchase_order_return_materials_table
+        LEFT JOIN purchase_order_materials ON purchase_order_materials.id = $purchase_order_return_materials_table.purchase_order_material_id
+        WHERE $purchase_order_return_materials_table.deleted = 0 
+        AND $purchase_order_return_materials_table.purchase_order_return_id = $purchase_order_return_id";
+        return $this->db->query($sql);
     }
 }

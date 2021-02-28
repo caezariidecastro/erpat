@@ -2,6 +2,9 @@
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <div class="form-group">
+        <div class="col-md-12 text-off"> <?php echo lang('add_return_completed_purchase_info'); ?></div>
+    </div>
+    <div class="form-group">
         <label for="purchase_id" class="col-md-3"><?php echo lang('purchase_id'); ?></label>
         <div class="col-md-9">
             <?php

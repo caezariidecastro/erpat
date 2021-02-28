@@ -3,7 +3,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo lang('returns'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("purchase_order_returns/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_purchase'), array("class" => "btn btn-default", "title" => lang('add_return'))); ?>
+                <?php echo modal_anchor(get_uri("purchase_order_returns/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_return'), array("class" => "btn btn-default", "title" => lang('add_return'))); ?>
             </div>
         </div>
         <div class="table-responsive">

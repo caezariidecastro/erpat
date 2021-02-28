@@ -384,3 +384,7 @@ $lang["purchase_sent_message"] = "The purchase request has been sent!";
 $lang["returns"] = "Returns";
 $lang["add_return"] = "Add return";
 $lang["has_return_error"] = "has a return already!";
+$lang["material_has_return_error"] = "Material is already at the table!";
+$lang["purchased"] = "Purchased";
+$lang["add_return_completed_purchase_info"] = 'Note: Only purchases with "Completed" status will appear in "Purchase ID" dropdown list';
+$lang["add_view_material"] = "Add/view material";

@@ -14,6 +14,7 @@ class Purchase_orders_model extends Crud_model {
         $where = "";
         $id = get_array_value($options, "id");
         $vendor_id = get_array_value($options, "vendor_id");
+        $status = get_array_value($options, "status");
 
         if ($id) {
             $where .= " AND $purchase_orders_table.id=$id";
@@ -21,6 +22,10 @@ class Purchase_orders_model extends Crud_model {
 
         if ($vendor_id) {
             $where .= " AND $purchase_orders_table.vendor_id=$vendor_id";
+        }
+
+        if ($status) {
+            $where .= " AND $purchase_orders_table.status='$status'";
         }
 
         $sql = "SELECT $purchase_orders_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, vendor.name AS vendor_name

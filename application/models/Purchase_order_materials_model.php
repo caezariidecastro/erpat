@@ -36,4 +36,14 @@ class Purchase_order_materials_model extends Crud_model {
         AND $purchase_order_materials_table.purchase_id = $purchase_id";
         return $this->db->query($sql)->row()->total;
     }
+
+    function get_purchase_materials($purchase_id){
+        $purchase_order_materials_table = $this->db->dbprefix('purchase_order_materials');
+
+        $sql = "SELECT $purchase_order_materials_table.*
+        FROM $purchase_order_materials_table
+        WHERE $purchase_order_materials_table.deleted=0
+        AND $purchase_order_materials_table.purchase_id = $purchase_id";
+        return $this->db->query($sql);
+    }
 }
