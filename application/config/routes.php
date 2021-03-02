@@ -202,5 +202,16 @@ $route["pid/supplier/(:any)/contacts"] = "vendors/contacts/$1";
 // Vendors > Contacts
 $route["pid/vendor/(:any)/contacts"] = "asset_vendors/contacts/$1";
 
+// Purchases 
+$route["pid/purchases"] = "purchase_orders/index";
+
+// Purchases > View
+$route["pid/purchases/view/(:any)"] = "purchase_orders/view/$1";
+$route["pid/purchases/preview/(:any)/(:any)"] = "purchase_orders/preview/$1/$2";
+$route["pid/purchases/preview/(:any)"] = "purchase_orders/preview/$1";
+
+// Returns 
+$route["pid/returns"] = "purchase_order_returns/index";
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

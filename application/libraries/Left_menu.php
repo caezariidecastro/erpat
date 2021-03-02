@@ -285,7 +285,8 @@ class Left_menu {
                 $sidebar_menu["messages"] = array("name" => "messages", "url" => "messages", "class" => "fa-envelope", "devider" => true, "badge" => count_unread_message(), "badge_class" => "badge-secondary");
             }
 
-            if (get_setting("module_hrm") == "1") {
+            // Start: Module permissions workaround
+            if (get_setting("module_hrm") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_hrm"))) {
                 $sidebar_menu["menu_hrm"] = array("name" => "menu_hrm", "url" => "hrm", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_hrm_department", "url" => "hrm/department"),
@@ -297,7 +298,7 @@ class Left_menu {
                 ));
             }
 
-            if (get_setting("module_fas") == "1") {
+            if (get_setting("module_fas") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_fas"))) {
                 $sidebar_menu["menu_fas"] = array("name" => "menu_fas", "url" => "fas", "class" => "fa-money", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_fas_summary", "url" => "fas/summary"),
@@ -313,7 +314,7 @@ class Left_menu {
                 ));
             }
 
-            if (get_setting("module_pid") == "1") {
+            if (get_setting("module_pid") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_pid"))) {
                 $sidebar_menu["menu_pid"] = array("name" => "menu_pid", "url" => "hrm", "class" => "fa-industry", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_pid_productions", "url" => "pid/productions"),
@@ -322,18 +323,19 @@ class Left_menu {
                     array("name" => "submenu_pid_inventory", "url" => "pid/inventory"),
                     array("name" => "submenu_pid_items", "url" => "pid/items"),
                     array("name" => "submenu_pid_purchases", "url" => "pid/purchases"),
+                    array("name" => "submenu_pid_returns", "url" => "pid/returns"),
                     array("name" => "submenu_pid_supplier", "url" => "pid/supplier"),
                 ));
             }
 
-            if (get_setting("module_mcm") == "1") {
+            if (get_setting("module_mcm") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_mcm"))) {
                 $sidebar_menu["menu_mcm"] = array("name" => "menu_mcm", "url" => "hrm", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_mcm_leads", "url" => "mcm/leads")
                 ));
             }
 
-            if (get_setting("module_lms") == "1") {
+            if (get_setting("module_lms") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_lms"))) {
                 $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "hrm", "class" => "fa-truck", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_lms_delivery", "url" => "lms/delivery"),
@@ -345,7 +347,7 @@ class Left_menu {
                 ));
             }
 
-            if (get_setting("module_sms") == "1") {
+            if (get_setting("module_sms") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_sms"))) {
                 $sidebar_menu["menu_sms"] = array("name" => "menu_sms", "url" => "hrm", "class" => "fa-tags", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_sms_pointofsale", "url" => "sms/point-of-sale"),
@@ -358,7 +360,7 @@ class Left_menu {
                 ));
             }
 
-            if (get_setting("module_ams") == "1") {
+            if (get_setting("module_ams") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_ams"))) {
                 $sidebar_menu["menu_ams"] = array("name" => "menu_ams", "url" => "ams", "class" => "fa-archive", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_ams_assets", "url" => "ams/assets"),
@@ -369,7 +371,7 @@ class Left_menu {
                 ));
             }
 
-            if (get_setting("module_pms") == "1") {
+            if (get_setting("module_pms") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_pms"))) {
                 $sidebar_menu["menu_pms"] = array("name" => "menu_pms", "url" => "pms", "class" => "fa-cubes", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects"),
@@ -380,6 +382,7 @@ class Left_menu {
                     array("name" => "submenu_pms_services", "url" => "pms/services")
                 ));
             }
+            // End: Module permissions workaround
 
             // if ($this->ci->login_user->is_admin || $access_client) {
             //     $sidebar_menu["clients"] = array("name" => "clients", "url" => "clients", "class" => "fa-briefcase");

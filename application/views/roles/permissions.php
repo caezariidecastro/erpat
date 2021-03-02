@@ -8,7 +8,59 @@
         <div class="panel-body">
 
             <ul class="permission-list">
-
+                <li>
+                    <!-- Start: Module permissions workaround -->
+                    <h5><?php echo lang("set_module_permissions"); ?>:</h5>
+                    <div>
+                        <?php
+                        echo form_checkbox("module_hrm", "1", $module_hrm ? true : false, "id='module_hrm'");
+                        ?>
+                        <label for="module_hrm"><?php echo lang("module_hrm"); ?></label>
+                    </div>
+                    <div>
+                        <?php
+                        echo form_checkbox("module_fas", "1", $module_fas ? true : false, "id='module_fas'");
+                        ?>
+                        <label for="module_fas"><?php echo lang("module_fas"); ?></label>
+                    </div>
+                    <div>
+                        <?php
+                        echo form_checkbox("module_pid", "1", $module_pid ? true : false, "id='module_pid'");
+                        ?>
+                        <label for="module_pid"><?php echo lang("module_pid"); ?></label>
+                    </div>
+                    <div>
+                        <?php
+                        echo form_checkbox("module_mcm", "1", $module_mcm ? true : false, "id='module_mcm'");
+                        ?>
+                        <label for="module_mcm"><?php echo lang("module_mcm"); ?></label>
+                    </div>
+                    <div>
+                        <?php
+                        echo form_checkbox("module_lms", "1", $module_lms ? true : false, "id='module_lms'");
+                        ?>
+                        <label for="module_lms"><?php echo lang("module_lms"); ?></label>
+                    </div>
+                    <div>
+                        <?php
+                        echo form_checkbox("module_sms", "1", $module_sms ? true : false, "id='module_sms'");
+                        ?>
+                        <label for="module_sms"><?php echo lang("module_sms"); ?></label>
+                    </div>
+                    <div>
+                        <?php
+                        echo form_checkbox("module_ams", "1", $module_ams ? true : false, "id='module_ams'");
+                        ?>
+                        <label for="module_ams"><?php echo lang("module_ams"); ?></label>
+                    </div>
+                    <div>
+                        <?php
+                        echo form_checkbox("module_pms", "1", $module_pms ? true : false, "id='module_pms'");
+                        ?>
+                        <label for="module_pms"><?php echo lang("module_pms"); ?></label>
+                    </div>
+                    <!-- End: Module permissions workaround -->
+                </li>
                 <li>
                     <h5><?php echo lang("set_project_permissions"); ?>:</h5>
                     <div>

@@ -100,6 +100,17 @@ class roles extends MY_Controller {
             $view_data['message_permission'] = get_array_value($permissions, "message_permission");
             $view_data['message_permission_specific'] = get_array_value($permissions, "message_permission_specific");
 
+            // Start: Module permissions workaround
+            $view_data["module_hrm"] = get_array_value($permissions, "module_hrm");
+            $view_data["module_fas"] = get_array_value($permissions, "module_fas");
+            $view_data["module_pid"] = get_array_value($permissions, "module_pid");
+            $view_data["module_mcm"] = get_array_value($permissions, "module_mcm");
+            $view_data["module_lms"] = get_array_value($permissions, "module_lms");
+            $view_data["module_sms"] = get_array_value($permissions, "module_sms");
+            $view_data["module_ams"] = get_array_value($permissions, "module_ams");
+            $view_data["module_pms"] = get_array_value($permissions, "module_pms");
+            // End: Module permissions workaround
+
             $this->load->view("roles/permissions", $view_data);
         }
     }
@@ -250,6 +261,14 @@ class roles extends MY_Controller {
             "can_delete_leave_application" => $can_delete_leave_application,
             "message_permission" => $message_permission,
             "message_permission_specific" => $message_permission_specific,
+            "module_hrm" => $this->input->post('module_hrm'),
+            "module_fas" => $this->input->post('module_fas'),
+            "module_pid" => $this->input->post('module_pid'),
+            "module_mcm" => $this->input->post('module_mcm'),
+            "module_lms" => $this->input->post('module_lms'),
+            "module_sms" => $this->input->post('module_sms'),
+            "module_ams" => $this->input->post('module_ams'),
+            "module_pms" => $this->input->post('module_pms'),
         );
 
         $data = array(

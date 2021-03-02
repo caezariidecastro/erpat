@@ -31,7 +31,8 @@ $lang["submenu_hrm_holidays"] = "Holidays";
 
 $lang["submenu_pid_productions"] = "Manufacturing Order";
 $lang["submenu_pid_billofmaterials"] = "Bill of Materials";
-$lang["submenu_pid_purchases"] = "Purchases - Todo";
+$lang["submenu_pid_purchases"] = "Purchases";
+$lang["submenu_pid_returns"] = "Returns";
 $lang["submenu_pid_supplier"] = "Supplier";
 $lang["submenu_pid_items"] = "Products";
 $lang["submenu_pid_inventory"] = "Inventory";
@@ -360,3 +361,33 @@ $lang["purchase_date"] = "Purchase date";
 $lang["warranty_expiry_date"] = "Warranty expiry date";
 $lang["assets"] = "Assets";
 $lang["cost"] = "Cost";
+
+// Production & Inventory > Purchases
+$lang["purchases"] = "Purchases";
+$lang["add_purchase"] = "Add purchase";
+$lang["edit_purchase"] = "Edit purchase";
+$lang["purchase_id"] = "Purchase ID";
+$lang["email_purchase_order_to_vendor"] = "Email orders to supplier";
+$lang["purchase_preview"] = "Purchase preview";
+$lang["print_purchase"] = "Print purchase";
+$lang["add_budget"] = "Add budget";
+$lang["budget_list"] = "Budget list";
+$lang["inactive_material_hidden"] = "Note: Inactive materials will not appear in drop down list";
+$lang["edit_material"] = "Edit material";
+$lang["edit_budget"] = "Edit budget";
+$lang["purchase"] = "PURCHASE";
+$lang["purchase_small_caps"] = "Purchase";
+$lang["send_purchase_request"] = "Send purchase request";
+$lang["purchase_sent_message"] = "The purchase request has been sent!";
+
+// Production & Inventory > Returns
+$lang["returns"] = "Returns";
+$lang["add_return"] = "Add return";
+$lang["has_return_error"] = "has a return already!";
+$lang["material_has_return_error"] = "Material is already at the table!";
+$lang["purchased"] = "Purchased";
+$lang["add_return_completed_purchase_info"] = 'Note: Only purchases with "Completed" status will appear in "Purchase ID" dropdown list';
+$lang["add_view_material"] = "Add/view material";
+
+// Roles
+$lang["set_module_permissions"] = "Set module permission";

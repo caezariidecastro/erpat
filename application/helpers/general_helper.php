@@ -872,6 +872,47 @@ if (!function_exists('prepare_invoice_pdf')) {
 
 }
 
+if (!function_exists('prepare_purchase_pdf')) {
+
+    function prepare_purchase_pdf($purchase_data, $mode = "download") {
+        $ci = get_instance();
+        $ci->load->library('pdf');
+        $ci->pdf->setPrintHeader(false);
+        $ci->pdf->setPrintFooter(false);
+        $ci->pdf->SetCellPadding(1.5);
+        $ci->pdf->setImageScale(1.42);
+        $ci->pdf->AddPage();
+        $ci->pdf->SetFontSize(10);
+
+        if ($purchase_data) {
+
+            $purchase_data["mode"] = $mode;
+
+            $html = $ci->load->view("purchase_orders/purchase_pdf", $purchase_data, true);
+
+            if ($mode != "html") {
+                $ci->pdf->writeHTML($html, true, false, true, false, '');
+            }
+
+            $purchase_info = get_array_value($purchase_data, "purchase_order_info");
+            $pdf_file_name = lang("purchase") . "-" . $purchase_info->id . ".pdf";
+
+            if ($mode === "download") {
+                $ci->pdf->Output($pdf_file_name, "D");
+            } else if ($mode === "send_email") {
+                $temp_download_path = getcwd() . "/" . get_setting("temp_file_path") . $pdf_file_name;
+                $ci->pdf->Output($temp_download_path, "F");
+                return $temp_download_path;
+            } else if ($mode === "view") {
+                $ci->pdf->Output($pdf_file_name, "I");
+            } else if ($mode === "html") {
+                return $html;
+            }
+        }
+    }
+
+}
+
 /**
  * get all data to make an estimate
  * 
@@ -929,6 +970,14 @@ if (!function_exists('get_invoice_id')) {
         $prefix = get_setting("invoice_prefix");
         $prefix = $prefix ? $prefix : strtoupper(lang("invoice")) . " #";
         return $prefix . $invoice_id;
+    }
+
+}
+
+if (!function_exists('get_purchase_order_id')) {
+
+    function get_purchase_order_id($purchase_order_id) {
+        return lang("purchase")." #" . $purchase_order_id;
     }
 
 }
@@ -1636,4 +1685,49 @@ if (!function_exists('getHierarchalTag')) {
 
         return $tag;
     }
+}
+
+if (!function_exists('get_purchase_order_status_label')) {
+
+    function get_purchase_order_status_label($status) {
+        if($status == "draft"){
+            $status = '<span class="mt0 label label-default large">Draft</span>';
+        }
+
+        if($status == "partially_budgeted"){
+            $status = '<span class="mt0 label label-warning large">Partially budgeted</span>';
+        }
+
+        if($status == "cancelled"){
+            $status = '<span class="mt0 label label-danger large">Cancelled</span>';
+        }
+
+        if($status == "completed"){
+            $status = '<span class="mt0 label label-success large">Completed</span>';
+        }
+
+        return $status;
+    }
+
+}
+
+if (!function_exists('get_purchase_order_making_data')) {
+
+    function get_purchase_order_making_data($purchase_order_id) {
+        $ci = get_instance();
+        $ci->load->database();
+        $ci->load->model("Purchase_order_materials_model");
+        $ci->load->model("Vendors_model");
+        $purchase_order_info = $ci->Purchase_orders_model->get_details(array("id" => $purchase_order_id))->row();
+
+        if ($purchase_order_info) {
+            $data['purchase_order_info'] = $purchase_order_info;
+            $data['vendor_info'] = $ci->Vendors_model->get_one($data['purchase_order_info']->vendor_id);
+            $data['purchase_order_status_label'] = get_purchase_order_status_label($purchase_order_info->status);
+            $data["purchase_order_info"]->total = $ci->Purchase_order_materials_model->get_purchase_total_material($purchase_order_id);
+            $data['purchase_order_materials'] = $ci->Purchase_order_materials_model->get_details(array("purchase_id" => $purchase_order_id))->result();
+            return $data;
+        }
+    }
+
 }

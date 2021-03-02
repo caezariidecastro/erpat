@@ -181,4 +181,48 @@ class Account_transactions_model extends Crud_model {
     function delete_incentive($reference){
         $this->delete_transaction(7, 2, $reference);
     }
+
+    // Purchase Order
+
+    function add_purchase_order($account_id, $amount, $reference){
+        $data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'transaction' => 8,
+            'type' => 2,
+            'reference' => $reference
+        );
+
+        $this->add_transaction($data);
+    }
+
+    function update_purchase_order($reference, $data){
+        $this->update_transaction(8, 2, $reference, $data);
+    }
+
+    function delete_purchase_order($reference){
+        $this->delete_transaction(8, 2, $reference);
+    }
+
+    // Purchase Return
+
+    function add_purchase_return($account_id, $amount, $reference){
+        $data = array(
+            'account_id' => $account_id,
+            'amount' => $amount,
+            'transaction' => 9,
+            'type' => 1,
+            'reference' => $reference
+        );
+
+        $this->add_transaction($data);
+    }
+
+    function update_purchase_return($reference, $data){
+        $this->update_transaction(9, 1, $reference, $data);
+    }
+
+    function delete_purchase_return($reference){
+        $this->delete_transaction(9, 1, $reference);
+    }
 }

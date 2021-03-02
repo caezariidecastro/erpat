@@ -131,4 +131,15 @@ class Material_entries extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
     }
+
+    function get_material(){
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+        
+        $options = array("id" => $this->input->post('id'));
+        $material_info = $this->Material_entries_model->get_details($options)->row();
+
+        echo json_encode(array("data" => $material_info, "success" => true));
+    }
 }
