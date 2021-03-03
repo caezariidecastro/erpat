@@ -28,11 +28,11 @@ class Account_transfers_model extends Crud_model {
             )";
         }
 
-        $sql = "SELECT $account_transfers_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, TRIM(CONCAT(transferee.first_name, ' ', transferee.last_name)) AS transferee_name, TRIM(CONCAT(recipient.first_name, ' ', recipient.last_name)) AS recipient_name
+        $sql = "SELECT $account_transfers_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, transferee.name AS transferee_name, recipient.name AS recipient_name
         FROM $account_transfers_table
         LEFT JOIN users creator ON creator.id = $account_transfers_table.created_by
-        LEFT JOIN users transferee ON transferee.id = $account_transfers_table.account_from
-        LEFT JOIN users recipient ON recipient.id = $account_transfers_table.account_to
+        LEFT JOIN accounts transferee ON transferee.id = $account_transfers_table.account_from
+        LEFT JOIN accounts recipient ON recipient.id = $account_transfers_table.account_to
         WHERE $account_transfers_table.deleted=0 $where";
         return $this->db->query($sql);
     }

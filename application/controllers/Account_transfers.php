@@ -41,8 +41,8 @@ class Account_transfers extends MY_Controller {
     private function _make_row($data) {
         return array(
             $data->date,
-            get_team_member_profile_link($data->account_from, $data->transferee_name, array("target" => "_blank")),
-            get_team_member_profile_link($data->account_to, $data->recipient_name, array("target" => "_blank")),
+            $data->transferee_name,
+            $data->recipient_name,
             number_with_decimal($data->amount),
             nl2br($data->note),
             $data->created_on,
