@@ -5,12 +5,12 @@ class Asset_vendors_model extends Crud_model {
     private $table = null;
 
     function __construct() {
-        $this->table = 'asset_vendors';
+        $this->table = 'vendors';
         parent::__construct($this->table);
     }
 
     function get_details($options = array()) {
-        $asset_vendors_table = $this->db->dbprefix('asset_vendors');
+        $asset_vendors_table = $this->db->dbprefix('vendors');
         $where = "";
         $id = get_array_value($options, "id");
         $status = get_array_value($options, "status");

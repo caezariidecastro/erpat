@@ -92,7 +92,7 @@
                             <?php
                             echo form_checkbox("module_hrm_employee", "1", get_setting("module_hrm_employee") ? true : false, "id='module_hrm_employee' class='ml15'");
                             ?>   
-                            <label for="module_hrm_employee"><?php echo lang('submenu_hrm_employee'); ?></label>                    
+                            <label for="module_hrm_employee"><?php echo lang('employee'); ?></label>                    
                         </div>
                         <div class="col-md-4">
                             <?php

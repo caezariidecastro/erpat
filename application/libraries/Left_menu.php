@@ -290,7 +290,7 @@ class Left_menu {
                 $sidebar_menu["menu_hrm"] = array("name" => "menu_hrm", "url" => "hrm", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_hrm_department", "url" => "hrm/department"),
-                    array("name" => "submenu_hrm_employee", "url" => "hrm/user"),
+                    array("name" => "employee", "url" => "hrm/user"),
                     array("name" => "submenu_hrm_attendance", "url" => "hrm/attendance"),
                     array("name" => "submenu_hrm_disciplinary", "url" => "hrm/disciplinary"),
                     array("name" => "submenu_hrm_leaves", "url" => "hrm/leaves"),

@@ -60,14 +60,14 @@ class Team extends MY_Controller {
 
         validate_submitted_data(array(
             "id" => "numeric",
-            "title" => "required",
-            "members" => "required"
+            "title" => "required"
         ));
 
         $id = $this->input->post('id');
         $data = array(
             "title" => $this->input->post('title'),
-            "members" => $this->input->post('members')
+            "heads" => $this->input->post('heads'),
+            "members" => $this->input->post('members'),
         );
 
         if(!$id){
@@ -128,10 +128,14 @@ class Team extends MY_Controller {
     /* prepare a row of team list table */
 
     private function _make_row($data) {
-        $total_members = "<span class='label label-light w100'><i class='fa fa-users'></i> " . count(explode(",", $data->members)) . "</span>";
+        $member_count = empty($data->members[0]) ? '0' : count(explode(",", $data->members));
+        $total_members = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $member_count . "</span>";
+        $head_count = empty($data->heads[0]) ? '0' : count(explode(",", $data->heads));
+        $total_heads = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $head_count . "</span>";
         return array(
             $data->title,
-            modal_anchor(get_uri("team/members_list"), $total_members, array("title" => lang('team_members'), "data-post-members" => $data->members)),
+            modal_anchor(get_uri("team/heads_list"), $total_heads, array("title" => lang('department_heads'), "data-post-heads" => $data->heads)),
+            modal_anchor(get_uri("team/members_list"), $total_members, array("title" => lang('employee'), "data-post-members" => $data->members)),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             modal_anchor(get_uri("team/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_department'), "data-post-id" => $data->id))
@@ -142,6 +146,11 @@ class Team extends MY_Controller {
     function members_list() {
         $view_data['team_members'] = $this->Users_model->get_team_members($this->input->post('members'))->result();
         $this->load->view('team/members_list', $view_data);
+    }
+
+    function heads_list() {
+        $view_data['team_members'] = $this->Users_model->get_team_members($this->input->post('heads'))->result();
+        $this->load->view('team/heads_list', $view_data);
     }
 
 }

@@ -19,9 +19,15 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="members" class=" col-md-3"><?php echo lang('users'); ?></label>
+        <label for="heads" class=" col-md-3"><?php echo lang('heads'); ?></label>
         <div class="col-md-9">
-              <input type="text" value="<?php echo $model_info->members; ?>" name="members" id="team_members_dropdown" class="w100p validate-hidden"  data-rule-required="true" data-msg-required="<?php echo lang('field_required'); ?>" placeholder="<?php echo lang('users'); ?>"  />    
+              <input type="text" value="<?php echo $model_info->heads; ?>" name="heads" id="team_heads_dropdown" class="w100p validate-hidden"  placeholder="<?php echo lang('heads'); ?>"  />    
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="members" class=" col-md-3"><?php echo lang('employee'); ?></label>
+        <div class="col-md-9">
+              <input type="text" value="<?php echo $model_info->members; ?>" name="members" id="team_members_dropdown" class="w100p validate-hidden"  placeholder="<?php echo lang('employee'); ?>"  />    
         </div>
     </div>
 </div>
@@ -39,7 +45,11 @@
                 $("#team-table").appTable({newData: result.data, dataId: result.id});
             }
         });
-    $("#team_members_dropdown").select2({
+        $("#team_heads_dropdown").select2({
+            multiple: true,
+            data: <?php echo ($members_dropdown); ?>
+        });
+        $("#team_members_dropdown").select2({
             multiple: true,
             data: <?php echo ($members_dropdown); ?>
         });

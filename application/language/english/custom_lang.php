@@ -23,7 +23,6 @@ $lang["menu_pms"] = "Project Planning";
 $lang["menu_hts"] = "Help & Support";
 
 $lang["submenu_hrm_department"] = "Department";
-$lang["submenu_hrm_employee"] = "Employee";
 $lang["submenu_hrm_attendance"] = "Attendance";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
@@ -85,7 +84,7 @@ $lang["user"] = "User";
 $lang["users"] = "Users";
 $lang["active_employees"] = "Active users";
 $lang["inactive_employees"] = "Inactive users";
-$lang["add_employee"] = "Add user";
+$lang["add_employee"] = "Add employee";
 $lang["send_invitation_to_an_employee"] = "Send invitation to an user.";
 
 // Human Resource > Attendance
@@ -96,6 +95,11 @@ $lang["department"] = "Department";
 $lang["add_department"] = "Add department";
 $lang["edit_department"] = "Edit department";
 $lang["delete_department"] = "Delete department";
+
+// Human Resource > Department > Heads
+$lang["heads"] = "Heads";
+$lang["department_heads"] = "Department Heads";
+$lang["employee"] = "Employee";
 
 // Human Resource > Holidays
 $lang["holiday"] = "Holiday";
