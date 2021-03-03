@@ -77,7 +77,7 @@ class Asset_entries_model extends Crud_model {
         FROM $asset_entries_table
         LEFT JOIN users ON users.id = $asset_entries_table.created_by
         LEFT JOIN asset_brands brand ON brand.id = $asset_entries_table.brand_id
-        LEFT JOIN asset_vendors vendor ON vendor.id = $asset_entries_table.vendor_id
+        LEFT JOIN vendors vendor ON vendor.id = $asset_entries_table.vendor_id
         WHERE $asset_entries_table.deleted=0 $where";
         return $this->db->query($sql);
     }
