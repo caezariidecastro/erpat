@@ -1712,7 +1712,7 @@ CREATE TABLE IF NOT EXISTS `asset_vendors` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `purchase_order_budgets` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `amount` double NOT NULL,
   `purchase_id` bigint(10) NOT NULL,
   `account_id` bigint(10) DEFAULT NULL,
@@ -1723,7 +1723,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_budgets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
   `quantity` double NOT NULL,
   `unit_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -1737,7 +1737,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `purchase_order_returns` (
-  `id` bigint(10) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `purchase_id` bigint(10) NOT NULL,
   `remarks` text COLLATE utf8_unicode_ci NOT NULL,
   `created_on` datetime NOT NULL,
@@ -1746,8 +1746,8 @@ CREATE TABLE IF NOT EXISTS `purchase_order_returns` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
-  `id` bigint(10) NOT NULL,
+CREATE TABLE IF NOT EXISTS `purchase_orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `vendor_id` bigint(10) NOT NULL,
   `remarks` text NOT NULL,
   `created_on` datetime NOT NULL,
@@ -1761,7 +1761,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `purchase_order_return_materials` (
-  `id` bigint(10) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `purchase_order_return_id` bigint(10) NOT NULL,
   `purchase_order_material_id` bigint(10) NOT NULL,
   `quantity` double NOT NULL,
