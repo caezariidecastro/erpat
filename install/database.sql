@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `lead_source` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
-INSERT INTO `lead_source` (`id`, `title`, `sort`, `deleted`) VALUES
+INSERT IGNORE INTO lead_source(`id`, `title`, `sort`, `deleted`) VALUES
 (1, 'Google', 1, 0),
 (2, 'Facebook', 2, 0),
 (3, 'Twitter', 3, 0),
@@ -89,7 +89,8 @@ CREATE TABLE IF NOT EXISTS `lead_status` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
- INSERT INTO `lead_status` (`id`, `title`, `color`, `sort`, `deleted`) VALUES 
+
+INSERT IGNORE INTO lead_status(`id`, `title`, `color`, `sort`, `deleted`) VALUES 
 ('1', 'New', '#f1c40f', '0', '0'), 
 ('2', 'Qualified', '#2d9cdb', '1', '0'),  
 ('3', 'Discussion', '#29c2c2', '2', '0'),  
@@ -138,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `email_templates` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
-INSERT INTO `email_templates` (`id`, `template_name`, `email_subject`, `default_message`, `custom_message`, `deleted`) VALUES
+INSERT IGNORE INTO email_templates(`id`, `template_name`, `email_subject`, `default_message`, `custom_message`, `deleted`) VALUES
 (1, 'login_info', 'Login details', '<div style="background-color: #eeeeef; padding: 50px 0; "><div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;">  <h1>Login Details</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p style="color: rgb(85, 85, 85); font-size: 14px;"> Hello {USER_FIRST_NAME}, &nbsp;{USER_LAST_NAME},<br><br>An account has been created for you.</p>            <p style="color: rgb(85, 85, 85); font-size: 14px;"> Please use the following info to login your dashboard:</p>            <hr>            <p style="color: rgb(85, 85, 85); font-size: 14px;">Dashboard URL:&nbsp;<a href="{DASHBOARD_URL}" target="_blank">{DASHBOARD_URL}</a></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;"></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Email: {USER_LOGIN_EMAIL}</span><br></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Password:&nbsp;{USER_LOGIN_PASSWORD}</span></p>            <p style="color: rgb(85, 85, 85);"><br></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>', '', 0),
 (2, 'reset_password', 'Reset password', '<div style="background-color: #eeeeef; padding: 50px 0; "><div style="max-width:640px; margin:0 auto; "><div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Reset Password</h1>\n </div>\n <div style="padding: 20px; background-color: rgb(255, 255, 255); color:#555;">                    <p style="font-size: 14px;"> Hello {ACCOUNT_HOLDER_NAME},<br><br>A password reset request has been created for your account.&nbsp;</p>\n                    <p style="font-size: 14px;"> To initiate the password reset process, please click on the following link:</p>\n                    <p style="font-size: 14px;"><a href="{RESET_PASSWORD_URL}" target="_blank">Reset Password</a></p>\n                    <p style="font-size: 14px;"></p>\n                    <p style=""><span style="font-size: 14px; line-height: 20px;"><br></span></p>\n<p style=""><span style="font-size: 14px; line-height: 20px;">If you''ve received this mail in error, it''s likely that another user entered your email address by mistake while trying to reset a password.</span><br></p>\n<p style=""><span style="font-size: 14px; line-height: 20px;">If you didn''t initiate the request, you don''t need to take any further action and can safely disregard this email.</span><br></p>\n<p style="font-size: 14px;"><br></p>\n<p style="font-size: 14px;">{SIGNATURE}</p>\n                </div>\n            </div>\n        </div>', '', 0),
 (3, 'team_member_invitation', 'You are invited', '<div style="background-color: #eeeeef; padding: 50px 0; "><div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Account Invitation</h1>   </div>  <div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello,</span><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="font-weight: bold;"><br></span></span></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="font-weight: bold;">{INVITATION_SENT_BY}</span> has sent you an invitation to join with a team.</span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{INVITATION_URL}" target="_blank">Accept this Invitation</a></span></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">If you don''t want to accept this invitation, simply ignore this email.</span><br><br></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>', '', 0),
@@ -157,15 +158,13 @@ INSERT INTO `email_templates` (`id`, `template_name`, `email_subject`, `default_
 (16, 'recurring_invoice_creation_reminder', 'Recurring invoice creation reminder', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 40px;padding-right: 18px;padding-bottom: 40px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> <h2 style="display: block;margin: 0;padding: 0;font-family: Arial;font-size: 30px;font-style: normal;font-weight: bold;line-height: 100%;letter-spacing: -1px;text-align: center;color: #ffffff !important;">Invoice Cration Reminder</h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p> Hello,<br>We would like to remind you that a recurring invoice will be created on {NEXT_RECURRING_DATE}.</p><p></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%; text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-size: 16px; padding: 10px; text-size-adjust: 100%;"><a href="{INVOICE_URL}" target="_blank" style="font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;">View Invoice</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 0),
 (17, 'project_task_deadline_reminder', 'Project task deadline reminder', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"> <div style=\"max-width:640px; margin:0 auto; \"> <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>{APP_TITLE}</h1></div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">  <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello,</span></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">This is to remind you that there are some tasks which deadline is {DEADLINE}.</span></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">{TASKS_LIST}</span></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><br></span></p><p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>  </div> </div></div>', '', 0),
 (18, 'estimate_sent', 'New estimate', '<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;\"> <tbody><tr> <td align=\"center\" valign=\"top\" style=\"padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody><tr> <td align=\"center\" valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;\"> <tbody><tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody> <tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table align=\"left\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\" width=\"100%\"> <tbody><tr> <td valign=\"top\" style=\"padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;\"> <h2 style=\"display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;\"><font color=\"#ffffff\" face=\"Arial\"><span style=\"letter-spacing: -1px;\"><b>ESTIMATE #{ESTIMATE_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody> <tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table align=\"left\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\" width=\"100%\"> <tbody><tr> <td valign=\"top\" style=\"padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;\"><p> Hello {CONTACT_FIRST_NAME},<br></p><p>Here is the estimate. Please check the attachment.</p><p></p></td></tr><tr><td valign=\"top\" style=\"padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%; text-size-adjust: 100%;\"><tbody><tr><td style=\"padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"><tbody><tr><td align=\"center\" valign=\"middle\" style=\"font-size: 16px; padding: 10px; text-size-adjust: 100%;\"><a href=\"{ESTIMATE_URL}\" target=\"_blank\" style=\"font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;\">Show Estimate</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign=\"top\" style=\"padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;\"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 0);
-INSERT INTO `email_templates` (`id`, `template_name`, `email_subject`, `default_message`, `custom_message`, `deleted`) VALUES
+INSERT IGNORE INTO email_templates(`id`, `template_name`, `email_subject`, `default_message`, `custom_message`, `deleted`) VALUES
 (19, 'estimate_request_received', 'Estimate request received', '<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;\"> <tbody><tr> <td align=\"center\" valign=\"top\" style=\"padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody><tr> <td align=\"center\" valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;\"> <tbody><tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody> <tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table align=\"left\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\" width=\"100%\"> <tbody><tr> <td valign=\"top\" style=\"padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;\"> <h2 style=\"display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;\"><font color=\"#ffffff\" face=\"Arial\"><span style=\"letter-spacing: -1px;\"><b>ESTIMATE REQUEST #{ESTIMATE_REQUEST_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody> <tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table align=\"left\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\" width=\"100%\"> <tbody><tr> <td valign=\"top\" style=\"padding: 20px 18px 0px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;\"><p style=\"color: rgb(96, 96, 96); font-family: Arial; font-size: 15px;\"><span style=\"background-color: transparent;\">A new estimate request has been received from {CONTACT_FIRST_NAME}.</span><br></p><p style=\"color: rgb(96, 96, 96); font-family: Arial; font-size: 15px;\"></p></td></tr><tr><td valign=\"top\" style=\"padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%; text-size-adjust: 100%;\"><tbody><tr><td style=\"padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"><tbody><tr><td align=\"center\" valign=\"middle\" style=\"font-size: 16px; padding: 10px; text-size-adjust: 100%;\"><a href=\"{ESTIMATE_REQUEST_URL}\" target=\"_blank\" style=\"font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;\">Show Estimate Request</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign=\"top\" style=\"padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;\"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 0),
 (20, 'estimate_rejected', 'Estimate rejected', '<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;\"> <tbody><tr> <td align=\"center\" valign=\"top\" style=\"padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody><tr> <td align=\"center\" valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;\"> <tbody><tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody> <tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table align=\"left\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\" width=\"100%\"> <tbody><tr> <td valign=\"top\" style=\"padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;\"> <h2 style=\"display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;\"><font color=\"#ffffff\" face=\"Arial\"><span style=\"letter-spacing: -1px;\"><b>ESTIMATE #{ESTIMATE_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody> <tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table align=\"left\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\" width=\"100%\"> <tbody><tr> <td valign=\"top\" style=\"padding: 20px 18px 0px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;\"><p style=\"\"><font color=\"#606060\" face=\"Arial\"><span style=\"font-size: 15px;\">The estimate #{ESTIMATE_ID} has been rejected.</span></font><br></p><p style=\"color: rgb(96, 96, 96); font-family: Arial; font-size: 15px;\"></p></td></tr><tr><td valign=\"top\" style=\"padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%; text-size-adjust: 100%;\"><tbody><tr><td style=\"padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"><tbody><tr><td align=\"center\" valign=\"middle\" style=\"font-size: 16px; padding: 10px; text-size-adjust: 100%;\"><a href=\"{ESTIMATE_URL}\" target=\"_blank\" style=\"font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;\">Show Estimate</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign=\"top\" style=\"padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;\"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 0),
 (21, 'estimate_accepted', 'Estimate accepted', '<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;\"> <tbody><tr> <td align=\"center\" valign=\"top\" style=\"padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody><tr> <td align=\"center\" valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;\"> <tbody><tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody> <tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table align=\"left\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\" width=\"100%\"> <tbody><tr> <td valign=\"top\" style=\"padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;\"> <h2 style=\"display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;\"><font color=\"#ffffff\" face=\"Arial\"><span style=\"letter-spacing: -1px;\"><b>ESTIMATE #{ESTIMATE_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <tbody> <tr> <td valign=\"top\" style=\"mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"> <table align=\"left\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\" width=\"100%\"> <tbody><tr> <td valign=\"top\" style=\"padding: 20px 18px 0px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;\"><p style=\"\"><font color=\"#606060\" face=\"Arial\"><span style=\"font-size: 15px;\">The estimate #{ESTIMATE_ID} has been accepted.</span></font><br></p><p style=\"color: rgb(96, 96, 96); font-family: Arial; font-size: 15px;\"></p></td></tr><tr><td valign=\"top\" style=\"padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width: 100%; text-size-adjust: 100%;\"><tbody><tr><td style=\"padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;\"><tbody><tr><td align=\"center\" valign=\"middle\" style=\"font-size: 16px; padding: 10px; text-size-adjust: 100%;\"><a href=\"{ESTIMATE_URL}\" target=\"_blank\" style=\"font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;\">Show Estimate</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign=\"top\" style=\"padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;\"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 0),
 (22, 'new_client_greetings', 'Welcome!', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Welcome to {COMPANY_NAME}</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello {CONTACT_FIRST_NAME},</span></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Thank you for creating your account. </span></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">We are happy to see you here.<br></span></p><hr><p style=\"color: rgb(85, 85, 85); font-size: 14px;\">Dashboard URL:&nbsp;<a href=\"{DASHBOARD_URL}\" target=\"_blank\">{DASHBOARD_URL}</a></p><p style=\"color: rgb(85, 85, 85); font-size: 14px;\"></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Email: {CONTACT_LOGIN_EMAIL}</span><br></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Password:&nbsp;{CONTACT_LOGIN_PASSWORD}</span></p><p style=\"color: rgb(85, 85, 85);\"><br></p><p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', '', 0),
-(23, 'verify_email', 'Verify your email', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"><div style=\"max-width:640px; margin:0 auto; \"><div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Account verification</h1></div><div style=\"padding: 20px; background-color: rgb(255, 255, 255); color:#555;\"><p style=\"font-size: 14px;\">To initiate the signup process, please click on the following link:<br></p><p style=\"font-size: 14px;\"><br></p>', '', 0);
-
-
-
+(23, 'verify_email', 'Verify your email', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"><div style=\"max-width:640px; margin:0 auto; \"><div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Account verification</h1></div><div style=\"padding: 20px; background-color: rgb(255, 255, 255); color:#555;\"><p style=\"font-size: 14px;\">To initiate the signup process, please click on the following link:<br></p><p style=\"font-size: 14px;\"><br></p>', '', 0),
+(24, 'send_purchase_request', 'New purchase request', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"> <div style=\"max-width:640px; margin:0 auto; \"> <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>PURCHASE #{P_ID}</h1></div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\"> <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello {CONTACT_FIRST_NAME},</span><br></p><p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\">Thank you for your business cooperation.</span><br></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Our purchase request for materials has been generated and is attached here.</span></p><p style=\"\"><br></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a style=\"background-color: #00b393; padding: 10px 15px; color: #ffffff;\" href=\"{PURCHASE_URL}\" target=\"_blank\">Show Purchase Request</a></span></p><p style=\"\"><br></p><p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p> </div> </div></div>', '', '0');
 
 CREATE TABLE IF NOT EXISTS `events` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -230,6 +229,8 @@ CREATE TABLE IF NOT EXISTS `expense_categories` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 INSERT INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Payroll', '0');
+INSERT INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Contribution', '0');
+INSERT INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Incentive', '0');
 INSERT INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Miscellaneous', '0');
 
 CREATE TABLE IF NOT EXISTS `items` (
@@ -359,7 +360,7 @@ CREATE TABLE IF NOT EXISTS `leave_types` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-INSERT INTO `leave_types` (`id`, `title`, `status`, `color`, `description`, `deleted`) VALUES
+INSERT IGNORE INTO leave_types(`id`, `title`, `status`, `color`, `description`, `deleted`) VALUES
 (1, 'Casual Leave', 'active', '#83c340', '', 0);
 
 
@@ -436,7 +437,7 @@ CREATE TABLE IF NOT EXISTS `notification_settings` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
-INSERT INTO `notification_settings` (`id`, `event`, `category`, `enable_email`, `enable_web`, `notify_to_team`, `notify_to_team_members`, `notify_to_terms`, `sort`, `deleted`) VALUES
+INSERT IGNORE INTO notification_settings(`id`, `event`, `category`, `enable_email`, `enable_web`, `notify_to_team`, `notify_to_team_members`, `notify_to_terms`, `sort`, `deleted`) VALUES
 (1, 'project_created', 'project', 0, 0, '', '', '', 1, 0),
 (2, 'project_deleted', 'project', 0, 0, '', '', '', 2, 0),
 (3, 'project_task_created', 'project', 0, 1, '', '', 'project_members,task_assignee', 3, 0),
@@ -546,13 +547,10 @@ CREATE TABLE IF NOT EXISTS `payment_methods` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-INSERT INTO `payment_methods` (`id`, `title`, `type`, `description`, `online_payable`, `available_on_invoice`, `minimum_payment_amount`, `settings`, `deleted`) VALUES
-(1, 'Cash', 'custom', 'Cash payments', 0, 0, 0, '', 0),
-(2, 'Stripe', 'stripe', 'Stripe online payments', 1, 0, 0, 'a:3:{s:15:"pay_button_text";s:6:"Stripe";s:10:"secret_key";s:6:"";s:15:"publishable_key";s:6:"";}', 0),
-(3, 'PayPal Payments Standard', 'paypal_payments_standard', 'PayPal Payments Standard Online Payments', 1, 0, 0, 'a:4:{s:15:"pay_button_text";s:6:"PayPal";s:5:"email";s:4:"";s:11:"paypal_live";s:1:"0";s:5:"debug";s:1:"0";}', 0);
-
-UPDATE `payment_methods` SET `available_on_payroll` = '1' WHERE `id` = 1;
-UPDATE `payment_methods` SET `available_on_invoice` = '1' WHERE `id` = 1;
+INSERT IGNORE INTO payment_methods(`id`, `title`, `type`, `description`, `online_payable`, `available_on_invoice`, `available_on_payroll`, `minimum_payment_amount`, `settings`, `deleted`) VALUES
+(1, 'Cash', 'custom', 'Cash payments', 0, 1, 1, 0, '', 0),
+(2, 'Stripe', 'stripe', 'Stripe online payments', 1, 0, 0, 0, 'a:3:{s:15:"pay_button_text";s:6:"Stripe";s:10:"secret_key";s:6:"";s:15:"publishable_key";s:6:"";}', 0),
+(3, 'PayPal Payments Standard', 'paypal_payments_standard', 'PayPal Payments Standard Online Payments', 1, 0, 0, 0, 'a:4:{s:15:"pay_button_text";s:6:"PayPal";s:5:"email";s:4:"";s:11:"paypal_live";s:1:"0";s:5:"debug";s:1:"0";}', 0);
 
 CREATE TABLE IF NOT EXISTS `paypal_ipn` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -670,7 +668,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-INSERT INTO `settings` (`setting_name`, `setting_value`, `deleted`) VALUES
+INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
 ('accepted_file_formats', 'jpg,jpeg,doc', 0),
 ('allowed_ip_addresses', '', 0),
 ('app_title', 'BusiNext - Multi-Business Management', 0),
@@ -791,7 +789,7 @@ CREATE TABLE IF NOT EXISTS `taxes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-INSERT INTO `taxes` (`id`, `title`, `percentage`, `deleted`) VALUES
+INSERT IGNORE INTO taxes(`id`, `title`, `percentage`, `deleted`) VALUES
 (1, 'Tax (10%)', 10, 0);
 
 
@@ -878,7 +876,7 @@ CREATE TABLE IF NOT EXISTS `ticket_types` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-INSERT INTO `ticket_types` (`id`, `title`, `deleted`) VALUES
+INSERT IGNORE INTO ticket_types(`id`, `title`, `deleted`) VALUES
 (1, 'General Support', 0);
 
 
@@ -918,6 +916,7 @@ CREATE TABLE IF NOT EXISTS `custom_field_values` (
 CREATE TABLE IF NOT EXISTS `estimates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `client_id` int(11) NOT NULL,
+  `consumer_id` int(11) NOT NULL,
   `estimate_request_id` int(11) NOT NULL DEFAULT '0',
   `estimate_date` date NOT NULL,
   `valid_until` date NOT NULL,
@@ -930,6 +929,7 @@ CREATE TABLE IF NOT EXISTS `estimates` (
   `discount_amount` double NOT NULL,
   `discount_amount_type` enum('percentage','fixed_amount') COLLATE utf8_unicode_ci NOT NULL,
   `project_id` int(11) NOT NULL DEFAULT '0',
+  `type` enum('service','product') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'service',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -990,7 +990,7 @@ CREATE TABLE IF NOT EXISTS `help_categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
-CREATE TABLE `help_articles` (
+CREATE TABLE IF NOT EXISTS `help_articles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -1018,7 +1018,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `last_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `user_type` enum('staff','client','lead','consumer', 'customer') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client',
+  `user_type` enum('staff','client','lead','consumer','customer','driver', 'supplier','vendor') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client',
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
   `role_id` int(11) NOT NULL DEFAULT '0',
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -1027,12 +1027,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   `status` enum('active','inactive') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active',
   `message_checked_at` datetime DEFAULT NULL,
   `client_id` int(11) NOT NULL DEFAULT '0',
+  `vendor_id` int(11) NOT NULL DEFAULT '0',
   `notification_checked_at` datetime DEFAULT NULL,
   `is_primary_contact` tinyint(1) NOT NULL DEFAULT '0',
   `job_title` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Untitled',
   `disable_login` tinyint(1) NOT NULL DEFAULT '0',
   `note` mediumtext COLLATE utf8_unicode_ci,
   `address` text COLLATE utf8_unicode_ci,
+  `street` text COLLATE utf8_unicode_ci,
+  `city` text COLLATE utf8_unicode_ci,
+  `state` text COLLATE utf8_unicode_ci,
+  `zip` text COLLATE utf8_unicode_ci,
+  `country` text COLLATE utf8_unicode_ci,
   `alternative_address` text COLLATE utf8_unicode_ci,
   `phone` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `alternative_phone` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1041,11 +1047,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   `gender` enum('male','female') COLLATE utf8_unicode_ci DEFAULT NULL,
   `sticky_note` mediumtext COLLATE utf8_unicode_ci,
   `skype` text COLLATE utf8_unicode_ci,
+  `asset_vendor_id` BIGINT(10) NULL,
   `enable_web_notification` tinyint(1) NOT NULL DEFAULT '1',
   `enable_email_notification` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` datetime DEFAULT NULL,
+  `created_by` int(11) NOT NULL DEFAULT '0',
   `last_online` datetime DEFAULT NULL,
   `requested_account_removal` tinyint(1) NOT NULL DEFAULT '0',
+  `license_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `license_image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `deleted` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user_type` (`user_type`),
@@ -1055,7 +1065,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
-INSERT INTO `users` (`id`, `first_name`, `last_name`, `user_type`, `is_admin`, `role_id`, `email`, `password`, `image`, `status`, `message_checked_at`, `client_id`, `notification_checked_at`, `is_primary_contact`, `job_title`, `disable_login`, `note`, `address`, `alternative_address`, `phone`, `alternative_phone`, `dob`, `ssn`, `gender`, `sticky_note`, `skype`, `enable_web_notification`, `enable_email_notification`, `created_at`, `deleted`) VALUES
+INSERT IGNORE INTO users(`id`, `first_name`, `last_name`, `user_type`, `is_admin`, `role_id`, `email`, `password`, `image`, `status`, `message_checked_at`, `client_id`, `notification_checked_at`, `is_primary_contact`, `job_title`, `disable_login`, `note`, `address`, `alternative_address`, `phone`, `alternative_phone`, `dob`, `ssn`, `gender`, `sticky_note`, `skype`, `enable_web_notification`, `enable_email_notification`, `created_at`, `deleted`) VALUES
 (1, 'admin_first_name', 'admin_last_name', 'staff', 1, 0, 'admin_email', 'admin_password', NULL, 'active', NULL, 0, NULL, 0, 'Admin', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'male', NULL, NULL, 1, 1, 'admin_created_at', 0);
 
 
@@ -1097,7 +1107,7 @@ CREATE TABLE IF NOT EXISTS `client_groups` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
-CREATE TABLE `task_status` ( 
+CREATE TABLE IF NOT EXISTS `task_status` ( 
   `id` INT NOT NULL AUTO_INCREMENT , 
   `title` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
   `key_name` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
@@ -1107,7 +1117,7 @@ CREATE TABLE `task_status` (
   PRIMARY KEY (`id`)
  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
  
- INSERT INTO `task_status` (`id`, `title`, `key_name`, `color`, `sort`, `deleted`) VALUES ('1', 'To Do', 'to_do', '#F9A52D', '0', '0'), ('2', 'In progress', 'in_progress', '#1672B9', '1', '0'),  ('3', 'Done', 'done', '#00B393', '2', '0') ;
+ INSERT IGNORE INTO task_status(`id`, `title`, `key_name`, `color`, `sort`, `deleted`) VALUES ('1', 'To Do', 'to_do', '#F9A52D', '0', '0'), ('2', 'In progress', 'in_progress', '#1672B9', '1', '0'),  ('3', 'Done', 'done', '#00B393', '2', '0') ;
  
  
 CREATE TABLE IF NOT EXISTS `leads` (
@@ -1193,7 +1203,7 @@ CREATE TABLE IF NOT EXISTS `account_transactions` (
 `id` bigint(10) NOT NULL AUTO_INCREMENT,
 `account_id` bigint(10) NOT NULL,
 `amount` decimal(20,2) NOT NULL,
-`transaction` enum('initial','expense','payment','transfer') NOT NULL,
+`transaction` enum('initial','expense','payment','transfer','payroll','contribution','incentive','purchase_order','purchase_return') NOT NULL,
 `type` enum('debit','credit') NOT NULL,
 `reference` bigint(10) NOT NULL,
 `deleted` tinyint(2) NOT NULL DEFAULT 0,
@@ -1206,6 +1216,7 @@ CREATE TABLE IF NOT EXISTS `account_transfers` (
 `account_from` bigint(10) NOT NULL,
 `account_to` bigint(10) NOT NULL,
 `amount` decimal(20,0) NOT NULL,
+`note` TEXT NULL,
 `created_on` datetime NOT NULL,
 `created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0,
@@ -1237,8 +1248,9 @@ PRIMARY KEY (`id`)
 
 CREATE TABLE IF NOT EXISTS `contribution_entries` (
 `id` bigint(10) NOT NULL AUTO_INCREMENT,
+`account_id` bigint(10) NOT NULL,
+`expense_id` bigint(10) NOT NULL,
 `user` bigint(10) NOT NULL,
-`amount` float NOT NULL,
 `category` bigint(10) NOT NULL,
 `created_on` datetime NOT NULL,
 `created_by` bigint(10) NOT NULL,
@@ -1309,6 +1321,8 @@ CREATE TABLE IF NOT EXISTS `incentive_entries` (
 `remarks` text NOT NULL,
 `signed_by` bigint(10) NOT NULL,
 `category` bigint(10) NOT NULL,
+`account_id` BIGINT(10) NOT NULL,
+`expense_id` BIGINT(10) NOT NULL,
 `created_on` datetime NOT NULL,
 `created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0,
@@ -1330,8 +1344,9 @@ PRIMARY KEY (`id`)
 
 CREATE TABLE IF NOT EXISTS `units` (
 `id` bigint(10) NOT NULL AUTO_INCREMENT,
+`base_unit` int(11) NOT NULL,
 `title` varchar(255) NOT NULL,
-`operator` char(4) NOT NULL,
+`operator` char(4) NULL,
 `value` decimal(10,2) NOT NULL,
 `created_on` datetime NOT NULL,
 `created_by` int(11) NOT NULL,
@@ -1370,6 +1385,11 @@ CREATE TABLE IF NOT EXISTS `vendors` (
 `contact` varchar(255) NOT NULL,
 `address` text DEFAULT NULL,
 `email` varchar(255) NOT NULL,
+`status` ENUM('active','inactive') NOT NULL DEFAULT 'active',
+`city` TEXT NOT NULL, 
+`state` TEXT NOT NULL, 
+`zip` TEXT NOT NULL, 
+`country` TEXT NOT NULL,
 `created_on` datetime NOT NULL,
 `created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0,
@@ -1425,6 +1445,7 @@ CREATE TABLE IF NOT EXISTS `deliveries` (
 `consumer` bigint(10) NOT NULL,
 `dispatcher` bigint(10) NOT NULL,
 `driver` bigint(10) NOT NULL,
+`passengers` TEXT NOT NULL,
 `vehicle` bigint(10) NOT NULL,
 `remarks` text COLLATE utf8_unicode_ci DEFAULT NULL,
 `street` TEXT NOT NULL,
@@ -1446,6 +1467,8 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
 `color` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 `transmission` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 `no_of_wheels` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`plate_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+`max_cargo_weight` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 `created_on` datetime NOT NULL,
 `created_by` bigint(10) NOT NULL,
 `deleted` tinyint(4) NOT NULL DEFAULT 0,
@@ -1469,7 +1492,7 @@ CREATE TABLE IF NOT EXISTS `payroll` (
     `account_id` BIGINT(10) NOT NULL,  
     `payment_method_id` BIGINT(10) NOT NULL,  
     `expense_id` BIGINT(10) NULL,  
-    `amount` DECIMAL(10, 2) NOT NULL,  
+    `status` ENUM('paid','not paid') NOT NULL DEFAULT 'not paid',
     `note` TEXT NOT NULL,  
     `created_on` DATETIME NOT NULL,  
     `created_by` BIGINT(10) NOT NULL,  
@@ -1586,7 +1609,7 @@ CREATE TABLE IF NOT EXISTS `bill_of_materials` (
   `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `inventory_id` bigint(10) NOT NULL,
+  `item_id` bigint(10) NOT NULL,
   `quantity` float NOT NULL,
   `created_on` datetime NOT NULL,
   `created_by` bigint(10) NOT NULL,
@@ -1597,6 +1620,7 @@ CREATE TABLE IF NOT EXISTS `bill_of_materials` (
 CREATE TABLE IF NOT EXISTS `productions` (
   `id` BIGINT(10) NOT NULL AUTO_INCREMENT, 
   `bill_of_material_id` bigint(10) NOT NULL,
+  `inventory_id` BIGINT(10) NOT NULL,
   `status` enum('draft','ongoing','completed','cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'draft',
   `created_on` datetime NOT NULL,
   `created_by` bigint(10) NOT NULL,
@@ -1622,3 +1646,126 @@ CREATE TABLE IF NOT EXISTS `customers` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 ALTER TABLE `incentive_entries` ADD `amount` DECIMAL(10) NOT NULL AFTER `category`;
+
+CREATE TABLE IF NOT EXISTS `asset_brands` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `title` text COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `asset_categories` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `parent_id` bigint(10) NULL,
+  `title` text COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `asset_entries` ( 
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT , 
+  `title` TEXT NOT NULL , 
+  `description` TEXT NOT NULL , 
+  `category_id` BIGINT(10) NOT NULL , 
+  `location_id` BIGINT(10) NOT NULL , 
+  `vendor_id` BIGINT(10) NOT NULL , 
+  `type` ENUM('own','lease','rental','contract','service') NOT NULL , 
+  `serial_number` TEXT NOT NULL , `brand_id` TEXT NOT NULL , 
+  `model` TEXT NOT NULL , `cost` DECIMAL(10, 2) NOT NULL , 
+  `purchase_date` DATE NOT NULL , 
+  `warranty_expiry_date` DATE NOT NULL , 
+  `created_on` DATETIME NOT NULL , 
+  `created_by` BIGINT(10) NOT NULL , 
+  `deleted` TINYINT(1) NOT NULL DEFAULT '0' , 
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `asset_locations` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `parent_id` bigint(10) NULL,
+  `title` text COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `asset_vendors` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `title` text COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `purchase_order_budgets` (
+  `id` int(11) NOT NULL,
+  `amount` double NOT NULL,
+  `purchase_id` bigint(10) NOT NULL,
+  `account_id` bigint(10) DEFAULT NULL,
+  `created_by` int(11) DEFAULT 1,
+  `created_on` datetime DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
+  `id` int(11) NOT NULL,
+  `title` text COLLATE utf8_unicode_ci NOT NULL,
+  `quantity` double NOT NULL,
+  `unit_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `rate` double NOT NULL,
+  `total` double NOT NULL,
+  `purchase_id` int(11) NOT NULL,
+  `material_id` bigint(10) NOT NULL,
+  `material_inventory_id` bigint(10) DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `purchase_order_returns` (
+  `id` bigint(10) NOT NULL,
+  `purchase_id` bigint(10) NOT NULL,
+  `remarks` text COLLATE utf8_unicode_ci NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
+  `id` bigint(10) NOT NULL,
+  `vendor_id` bigint(10) NOT NULL,
+  `remarks` text NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `status` enum('draft','completed','cancelled','partially_budgeted') NOT NULL,
+  `cancelled_at` datetime DEFAULT NULL,
+  `cancelled_by` bigint(10) DEFAULT NULL,
+  `last_email_sent_date` datetime DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `purchase_order_return_materials` (
+  `id` bigint(10) NOT NULL,
+  `purchase_order_return_id` bigint(10) NOT NULL,
+  `purchase_order_material_id` bigint(10) NOT NULL,
+  `quantity` double NOT NULL,
+  `remarks` text COLLATE utf8_unicode_ci NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
