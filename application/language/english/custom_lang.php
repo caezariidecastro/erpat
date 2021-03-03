@@ -81,11 +81,11 @@ $lang["submenu_mcm_leads"] = "Leads";
 
 // Human Resource > Users
 $lang["user"] = "User";
-$lang["users"] = "Users";
-$lang["active_employees"] = "Active users";
-$lang["inactive_employees"] = "Inactive users";
+$lang["users"] = "Employee";
+$lang["active_employees"] = "Active";
+$lang["inactive_employees"] = "Inactive";
 $lang["add_employee"] = "Add employee";
-$lang["send_invitation_to_an_employee"] = "Send invitation to an user.";
+$lang["send_invitation_to_an_employee"] = "Send invitation.";
 
 // Human Resource > Attendance
 $lang["attendance"] = "Attendance";
