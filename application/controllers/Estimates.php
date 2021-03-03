@@ -149,7 +149,7 @@ class Estimates extends MY_Controller {
 
         $estimate_data = array(
             "client_id" => $type == "product" ? 0 : $client_id,
-            "consumer_id" => $type == "product" ? $client_id : NULL,
+            "consumer_id" => $type == "product" ? $client_id : 0,
             "estimate_date" => $this->input->post('estimate_date'),
             "valid_until" => $this->input->post('valid_until'),
             "tax_id" => $this->input->post('tax_id') ? $this->input->post('tax_id') : 0,
