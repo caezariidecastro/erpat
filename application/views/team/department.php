@@ -22,6 +22,7 @@
             source: '<?php echo_uri("team/list_data") ?>',
             columns: [
                 {title: "<?php echo lang("title"); ?>"},
+                {title: "<?php echo lang("description"); ?>"},
                 {title: "<?php echo lang("heads"); ?>"},
                 {title: "<?php echo lang("employee"); ?>"},
                 {title: "<?php echo lang("created_on"); ?>"},

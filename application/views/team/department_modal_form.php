@@ -19,6 +19,22 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="description" class=" col-md-3"><?php echo lang('description'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_textarea(array(
+                "id" => "description",
+                "name" => "description",
+                "value" => $model_info->description,
+                "class" => "form-control",
+                "placeholder" => lang('description'),
+                "style" => "height:150px;",
+                "data-rich-text-editor" => true
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="heads" class=" col-md-3"><?php echo lang('heads'); ?></label>
         <div class="col-md-9">
               <input type="text" value="<?php echo $model_info->heads; ?>" name="heads" id="team_heads_dropdown" class="w100p validate-hidden"  placeholder="<?php echo lang('heads'); ?>"  />    

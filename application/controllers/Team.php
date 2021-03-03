@@ -66,6 +66,7 @@ class Team extends MY_Controller {
         $id = $this->input->post('id');
         $data = array(
             "title" => $this->input->post('title'),
+            "description" => $this->input->post('description'),
             "heads" => $this->input->post('heads'),
             "members" => $this->input->post('members'),
         );
@@ -134,6 +135,7 @@ class Team extends MY_Controller {
         $total_heads = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $head_count . "</span>";
         return array(
             $data->title,
+            $data->description,
             modal_anchor(get_uri("team/heads_list"), $total_heads, array("title" => lang('department_heads'), "data-post-heads" => $data->heads)),
             modal_anchor(get_uri("team/members_list"), $total_members, array("title" => lang('employee'), "data-post-members" => $data->members)),
             $data->created_on,

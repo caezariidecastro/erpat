@@ -796,6 +796,7 @@ INSERT IGNORE INTO taxes(`id`, `title`, `percentage`, `deleted`) VALUES
 CREATE TABLE IF NOT EXISTS `team` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
+  `description` mediumtext COLLATE utf8_unicode_ci,
   `heads` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `members` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `created_on` datetime NOT NULL,
