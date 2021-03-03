@@ -1771,3 +1771,6 @@ CREATE TABLE IF NOT EXISTS `purchase_order_return_materials` (
   `deleted` tinyint(4) NOT NULL DEFAULT 0, 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- 2021-03-03 22:12
+ALTER TABLE `units` ADD `abbreviation` VARCHAR(255) NOT NULL AFTER `title`;

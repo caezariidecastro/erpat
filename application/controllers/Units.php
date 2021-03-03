@@ -36,6 +36,7 @@ class Units extends MY_Controller {
     private function _make_row($data) {
         return array(
             $data->title,
+            $data->abbreviation,
             $data->value,
             $data->operator,
             $data->base_unit_value,
@@ -58,6 +59,7 @@ class Units extends MY_Controller {
 
         $unit_data = array(
             "title" => $this->input->post('title'),
+            "abbreviation" => $this->input->post('abbreviation'),
             "value" => $this->input->post('value'),
         );
 

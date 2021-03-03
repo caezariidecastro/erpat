@@ -191,6 +191,7 @@ $lang["value"] = "Value";
 $lang["is_base_unit"] = "Is base unit?";
 $lang["base_unit"] = "Base unit";
 $lang["base_unit_value"] = "Base unit value";
+$lang["abbreviation"] = "Abbreviation";
 
 // Logistics and Distribution > Products
 $lang["products"] = "Products";

@@ -20,6 +20,23 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="abbreviation" class=" col-md-3"><?php echo lang('abbreviation'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "abbreviation",
+                "name" => "abbreviation",
+                "value" => $model_info ? $model_info->abbreviation : "",
+                "class" => "form-control validate-hidden",
+                "placeholder" => lang('abbreviation'),
+                "autofocus" => true,
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="value" class=" col-md-3"><?php echo lang('value'); ?></label>
         <div class="col-md-9">
             <?php
