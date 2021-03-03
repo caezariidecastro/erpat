@@ -149,6 +149,7 @@ $lang["add_account"] = "Add account";
 $lang["edit_account"] = "Edit account";
 $lang["delete_account"] = "Delete account";
 $lang["initial_balance"] = "Initial balance";
+$lang["current_balance"] = "Current balance";
 $lang["account_name"] = "Account name";
 $lang["account_number"] = "Account number";
 $lang["account_has_payment_expense_delete_error"] = "Account has existing expense/payment history. Cannot be deleted.";

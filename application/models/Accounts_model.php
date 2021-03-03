@@ -18,7 +18,21 @@ class Accounts_model extends Crud_model {
             $where .= " AND $accounts_table.id=$id";
         }
 
-        $sql = "SELECT $accounts_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name
+        $sql = "SELECT $accounts_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, COALESCE((
+            SELECT SUM(account_transactions.amount)
+            FROM account_transactions
+            WHERE account_transactions.account_id = $accounts_table.id
+            AND account_transactions.deleted = 0
+            AND account_transactions.type = 'debit'
+        ), 0) 
+        -
+        COALESCE((
+            SELECT SUM(account_transactions.amount)
+            FROM account_transactions
+            WHERE account_transactions.account_id = $accounts_table.id
+            AND account_transactions.deleted = 0
+            AND account_transactions.type = 'credit'
+        ), 0) AS current_balance
         FROM $accounts_table
         LEFT JOIN users ON users.id = $accounts_table.created_by
         WHERE $accounts_table.deleted=0 $where";

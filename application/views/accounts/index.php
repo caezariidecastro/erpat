@@ -21,15 +21,16 @@
             columns: [
                 {title: "<?php echo lang('account_name') ?> ", "class": "w20p"},
                 {title: "<?php echo lang('account_number') ?>"},
-                {title: "<?php echo lang('initial_balance') ?>", "class": "w100 text-right"},
                 {title: "<?php echo lang('remarks') ?>", "class": "w20p"},
+                {title: "<?php echo lang('initial_balance') ?>", "class": "w100 text-right"},
+                {title: "<?php echo lang('current_balance') ?>", "class": "w100 text-right"},
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<?php echo lang('date_created') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5],
             xlsColumns: [0, 1, 2, 3, 4, 5],
-            summation: [{column: 2, dataType: "number"}]
+            summation: [{column: 3, dataType: "number"}, {column: 4, dataType: "number"}]
         });
     });
 </script>

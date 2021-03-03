@@ -30,8 +30,9 @@ class Accounts extends MY_Controller {
         return array(
             $data->name,
             $data->number,
-            number_with_decimal($data->initial_balance),
             nl2br($data->remarks),
+            number_with_decimal($data->initial_balance),
+            number_with_decimal($data->current_balance),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             modal_anchor(get_uri("accounts/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_account'), "data-post-id" => $data->id))
