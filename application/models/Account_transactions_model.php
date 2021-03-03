@@ -124,7 +124,8 @@ class Account_transactions_model extends Crud_model {
             'amount' => $amount,
             'transaction' => 5,
             'type' => 2,
-            'reference' => $reference
+            'reference' => $reference,
+            'deleted' => '1'
         );
 
         $this->add_transaction($data);

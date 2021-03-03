@@ -147,10 +147,10 @@ class Payroll extends MY_Controller {
         );
 
         if(!$expense_id){
-            $this->Account_transactions_model->add_contribution($account_id, $amount, $saved_id); 
+            $this->Account_transactions_model->add_payroll($account_id, $amount, $saved_id); 
         }
         else{
-            $this->Account_transactions_model->update_contribution($expense_id, $transaction_data); 
+            $this->Account_transactions_model->update_payroll($expense_id, $transaction_data); 
         }        
     }
 
@@ -199,6 +199,15 @@ class Payroll extends MY_Controller {
             $payroll_data["status"] = "paid";
 
             $save_id = $this->Payroll_model->save($payroll_data, $payroll_id);
+
+            $options = array("id" => $payroll_id);
+            $payroll_info = $this->Payroll_model->get_details($options)->row();
+
+            $transaction_data = array(
+                'deleted' => '0'
+            );
+
+            $this->Account_transactions_model->update_payroll($payroll_info->expense_id, $transaction_data);
             if ($save_id) {
                 echo json_encode(array("success" => true, "data" => $this->_row_data($payroll_id), "id" => $payroll_id, "message" => lang("record_saved")));
             } else {
