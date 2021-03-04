@@ -42,7 +42,6 @@ $lang["submenu_fas_payments"] = "Payments";
 $lang["submenu_fas_expenses"] = "Expenses";
 $lang["submenu_fas_accounts"] = "Accounts";
 $lang["submenu_fas_transfers"] = "Transfers";
-$lang["submenu_fas_returns"] = "Returns";
 $lang["submenu_fas_balancesheet"] = "Balance Sheet";
 $lang["submenu_fas_incentives"] = "Incentives";
 $lang["submenu_fas_contributions"] = "Contributions";
