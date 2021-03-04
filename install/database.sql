@@ -669,7 +669,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 
 
 INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
-('accepted_file_formats', 'jpg,jpeg,doc', 0),
+('accepted_file_formats', 'txt,jpg,jpeg,png,doc,docx,xls,xlsx,ppt,pptx', 0),
 ('allowed_ip_addresses', '', 0),
 ('app_title', 'BusiNext - Multi-Business Management', 0),
 ('company_email', 'admin_email', 0),
