@@ -717,7 +717,7 @@ INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
 
 
 CREATE TABLE IF NOT EXISTS `social_links` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `facebook` text COLLATE utf8_unicode_ci,
   `twitter` text COLLATE utf8_unicode_ci,
@@ -808,7 +808,7 @@ CREATE TABLE IF NOT EXISTS `team` (
 
 
 CREATE TABLE IF NOT EXISTS `team_member_job_info` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `salary` double NOT NULL DEFAULT 0,
   `salary_term` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -820,8 +820,7 @@ CREATE TABLE IF NOT EXISTS `team_member_job_info` (
   `pag_ibig` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `phil_health` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `deleted` int(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
