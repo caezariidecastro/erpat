@@ -490,7 +490,7 @@ class Left_menu {
             // }
 
             //prepere the help and suppor menues
-            if (get_setting("module_hts") == "1") {
+            if (get_setting("module_hts") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_hts"))) {
 
                 $module_help = get_setting("module_help") == "1" ? true : false;
                 $module_knowledge_base = get_setting("module_knowledge_base") == "1" ? true : false;

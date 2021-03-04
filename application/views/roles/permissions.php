@@ -59,6 +59,12 @@
                         ?>
                         <label for="module_pms"><?php echo lang("module_pms"); ?></label>
                     </div>
+                    <div>
+                        <?php
+                        echo form_checkbox("module_hts", "1", $module_hts ? true : false, "id='module_hts'");
+                        ?>
+                        <label for="module_hts"><?php echo lang("module_hts"); ?></label>
+                    </div>
                     <!-- End: Module permissions workaround -->
                 </li>
                 <li>
