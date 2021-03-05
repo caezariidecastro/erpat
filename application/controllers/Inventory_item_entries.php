@@ -158,4 +158,20 @@ class Inventory_item_entries extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
     }
+
+    function get_item(){
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+        
+        $id = $this->input->post("id");
+        $json = $this->input->post("json");
+        if($id){
+            $data = $this->Inventory_item_entries_model->get_details(array("id" => $id))->row();
+            if($json){
+                echo json_encode(array("success" => true, "data" => $data));
+            }
+            return $data;
+        }
+    }
 }

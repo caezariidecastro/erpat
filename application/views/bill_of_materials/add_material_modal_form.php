@@ -12,7 +12,7 @@
     </div>
     <div class="form-group">
         <label for="quantity" class=" col-md-3"><?php echo lang('quantity'); ?></label>
-        <div class="col-md-9">
+        <div class="col-md-6">
             <?php
             echo form_input(array(
                 "id" => "quantity",
@@ -21,6 +21,21 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('quantity'),
                 "autofocus" => true,
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+        <div class="col-md-3">
+            <?php
+            echo form_input(array(
+                "id" => "unit_type",
+                "name" => "unit_type",
+                "value" => "",
+                "class" => "form-control validate-hidden",
+                "placeholder" => lang('unit_type'),
+                "autofocus" => true,
+                "disabled" => "disabled",
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
             ));
@@ -83,6 +98,7 @@
                 {visible: false, searchable: false},
                 {title: "<?php echo lang('material') ?> "},
                 {title: "<?php echo lang('quantity') ?>"},
+                {title: "<?php echo lang('unit_type') ?>"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
         });
@@ -90,7 +106,19 @@
         bill_of_materials_materials_table = $("#bill-of-materials-materials-table").DataTable();
         bill_of_materials_materials_table.columns(0).visible(false);
 
-        $('#material_id').select2();
+        $('#material_id').select2().change(function(){
+            $.ajax({
+                url: "<?php echo base_url()?>material_inventory/get_material_inventory",
+                data: {id: $(this).val()},
+                method: "POST",
+                dataType: "json",
+                success: function(response){
+                    if(response.success){
+                        $("#unit_type").val(response.material_inventory_info.unit_name);
+                    }
+                }
+            })
+        });
 
         $("#form-submit").click(function () {
             submit();

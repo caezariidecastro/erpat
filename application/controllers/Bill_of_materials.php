@@ -18,7 +18,7 @@ class Bill_of_materials extends MY_Controller {
         $material_dropdown = array('' => '-');
 
         foreach ($materials as $material) {
-            $material_dropdown[$material->id] = $material->material_name;
+            $material_dropdown[$material->id] = $material->material_name . " (".$material->warehouse_name.")";
         }
         return $material_dropdown;
     }
@@ -49,7 +49,7 @@ class Bill_of_materials extends MY_Controller {
     private function _make_row($data) {
         $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("bill_of_materials/delete"), "data-action" => "delete-confirmation")) . '</li>';
         $edit = '<li role="presentation">' . modal_anchor(get_uri("bill_of_materials/modal_form"), "<i class='fa fa-pencil'></i> ". lang('edit_bill_of_material'), array("class" => "edit", "title" => lang('edit_bill_of_material'), "data-post-id" => $data->id)) . '</li>';
-        $add = '<li role="presentation">' . modal_anchor(get_uri("bill_of_materials/add_material_modal_form"), "<i class='fa fa-plus-circle'></i> ". lang('add_material_inventory'), array("class" => "edit", "title" => lang('add_material_inventory'), "data-post-id" => $data->id)) . '</li>';
+        $add = '<li role="presentation">' . modal_anchor(get_uri("bill_of_materials/add_material_modal_form"), "<i class='fa fa-plus-circle'></i> ". lang('add_view_material'), array("class" => "edit", "title" => lang('add_view_material'), "data-post-id" => $data->id)) . '</li>';
 
         $actions = '<span class="dropdown inline-block" style="position: relative; right: 0; margin-top: 0;">
                         <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
@@ -117,6 +117,7 @@ class Bill_of_materials extends MY_Controller {
         $view_data['model_info'] = $model_info;
         $view_data["product_dropdown"] = $this->_get_product_dropdown_data();
         $view_data["item_id"] = $this->input->post("item_id");
+        $view_data["unit_name"] = $model_info->item_id ? $this->Inventory_item_entries_model->get_details(array("id" => $model_info->item_id))->row()->unit_name : "";
 
         $this->load->view('bill_of_materials/modal_form', $view_data);
     }
@@ -147,6 +148,7 @@ class Bill_of_materials extends MY_Controller {
             $data->id,
             $data->material_name,
             $data->quantity,
+            $data->unit_name,
             js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("bill_of_materials/delete_material"), "data-action" => "delete-confirmation"))
         );
     }

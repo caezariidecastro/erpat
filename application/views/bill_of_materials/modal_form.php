@@ -63,7 +63,7 @@
     
     <div class="form-group">
         <label for="quantity" class=" col-md-3"><?php echo lang('quantity'); ?></label>
-        <div class="col-md-9">
+        <div class="col-md-6">
             <?php
             echo form_input(array(
                 "id" => "quantity",
@@ -72,6 +72,21 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('quantity'),
                 "autofocus" => true,
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+        <div class="col-md-3">
+            <?php
+            echo form_input(array(
+                "id" => "unit_type",
+                "name" => "unit_type",
+                "value" => $unit_name,
+                "class" => "form-control validate-hidden",
+                "placeholder" => lang('unit_type'),
+                "autofocus" => true,
+                "disabled" => "disabled",
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
             ));
@@ -94,7 +109,22 @@
             }
         });
 
-        $("#item_id").select2();
+        $("#item_id").select2().change(function(){
+            $.ajax({
+                url: "<?php echo base_url()?>inventory_item_entries/get_item",
+                method: "POST",
+                data: {
+                    id: $(this).val(),
+                    json: true
+                },
+                dataType: "json",
+                success: function(response){
+                    if(response.success){
+                        $("#unit_type").val(response.data.unit_name);
+                    }
+                }
+            })
+        });
 
         $("#ajaxModal .modal-dialog").removeAttr("style");
     });
