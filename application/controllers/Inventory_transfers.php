@@ -161,6 +161,7 @@ class Inventory_transfers extends MY_Controller {
 
         $view_data['model_info'] = $model_info;
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        $view_data['driver_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "driver"));
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
         $view_data['warehouse_item_select2'] = $model_info->transferee ? $this->get_inventory_items_select2_data($model_info->transferee) : array('id' => '', 'text' => '');
 
