@@ -1763,3 +1763,19 @@ CREATE TABLE IF NOT EXISTS `purchase_order_return_materials` (
 
 -- 2021-03-03 22:12
 ALTER TABLE `units` ADD `abbreviation` VARCHAR(255) NOT NULL AFTER `title`;
+
+-- 2021-03-05 16:35
+CREATE TABLE IF NOT EXISTS `asset_vendors` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `name` text COLLATE utf8_unicode_ci NOT NULL,
+  `address` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0,
+  `city` text COLLATE utf8_unicode_ci NOT NULL,
+  `state` text COLLATE utf8_unicode_ci NOT NULL,
+  `zip` text COLLATE utf8_unicode_ci NOT NULL,
+  `country` text COLLATE utf8_unicode_ci NOT NULL,
+  `status` enum('active','inactive') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active', 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
