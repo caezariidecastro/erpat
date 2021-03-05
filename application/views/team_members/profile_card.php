@@ -1,6 +1,6 @@
 <div id="page-content" class="p20 clearfix">
     <div class="page-title clearfix mb20">
-        <h1><?php echo lang('team_members'); ?></h1>
+        <h1><?php echo lang('employee'); ?></h1>
         <div class="title-button-group">
             <?php
             echo anchor(get_uri("team_members"), "<i class='fa fa-bars'></i>", array("class" => "btn btn-default btn-sm mr-1", "title" => lang('list_view')));
@@ -8,7 +8,7 @@
 
             if ($this->login_user->is_admin) {
                 echo modal_anchor(get_uri("team_members/invitation_modal"), "<i class='fa fa-envelope-o'></i> " . lang('send_invitation'), array("class" => "btn btn-default", "title" => lang('send_invitation')));
-                echo modal_anchor(get_uri("team_members/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_team_member'), array("class" => "btn btn-default", "title" => lang('add_team_member')));
+                echo modal_anchor(get_uri("team_members/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_employee'), array("class" => "btn btn-default", "title" => lang('add_employee')));
             }
             ?>
         </div>

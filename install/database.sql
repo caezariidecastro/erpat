@@ -669,7 +669,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 
 
 INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
-('accepted_file_formats', 'jpg,jpeg,doc', 0),
+('accepted_file_formats', 'txt,jpg,jpeg,png,doc,docx,xls,xlsx,ppt,pptx', 0),
 ('allowed_ip_addresses', '', 0),
 ('app_title', 'BusiNext - Multi-Business Management', 0),
 ('company_email', 'admin_email', 0),
@@ -710,13 +710,14 @@ INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
 ('module_lms', '1', 0),
 ('module_sms', '1', 0),
 ('module_pms', '1', 0),
+('module_hts', '1', 0),
 ('signin_page_background', 'sigin-background-image.jpg', 0),
 ('show_theme_color_changer', 'yes', 0),
 ('task_point_range', '5', 0);
 
 
 CREATE TABLE IF NOT EXISTS `social_links` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `facebook` text COLLATE utf8_unicode_ci,
   `twitter` text COLLATE utf8_unicode_ci,
@@ -807,7 +808,7 @@ CREATE TABLE IF NOT EXISTS `team` (
 
 
 CREATE TABLE IF NOT EXISTS `team_member_job_info` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `salary` double NOT NULL DEFAULT 0,
   `salary_term` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -819,8 +820,7 @@ CREATE TABLE IF NOT EXISTS `team_member_job_info` (
   `pag_ibig` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `phil_health` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `deleted` int(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
@@ -1700,19 +1700,8 @@ CREATE TABLE IF NOT EXISTS `asset_locations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `asset_vendors` (
-  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
-  `title` text COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT 1,
-  `created_on` datetime NOT NULL,
-  `created_by` bigint(10) NOT NULL,
-  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS `purchase_order_budgets` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `amount` double NOT NULL,
   `purchase_id` bigint(10) NOT NULL,
   `account_id` bigint(10) DEFAULT NULL,
@@ -1723,7 +1712,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_budgets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
   `quantity` double NOT NULL,
   `unit_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -1737,7 +1726,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `purchase_order_returns` (
-  `id` bigint(10) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `purchase_id` bigint(10) NOT NULL,
   `remarks` text COLLATE utf8_unicode_ci NOT NULL,
   `created_on` datetime NOT NULL,
@@ -1746,8 +1735,8 @@ CREATE TABLE IF NOT EXISTS `purchase_order_returns` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
-  `id` bigint(10) NOT NULL,
+CREATE TABLE IF NOT EXISTS `purchase_orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `vendor_id` bigint(10) NOT NULL,
   `remarks` text NOT NULL,
   `created_on` datetime NOT NULL,
@@ -1761,7 +1750,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_materials` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `purchase_order_return_materials` (
-  `id` bigint(10) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `purchase_order_return_id` bigint(10) NOT NULL,
   `purchase_order_material_id` bigint(10) NOT NULL,
   `quantity` double NOT NULL,

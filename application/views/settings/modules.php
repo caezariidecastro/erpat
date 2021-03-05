@@ -149,12 +149,6 @@
                         </div>
                         <div class="col-md-4">
                             <?php
-                            echo form_checkbox("module_fas_returns", "1", get_setting("module_fas_returns") ? true : false, "id='module_fas_returns' class='ml15'");
-                            ?>   
-                            <label for="module_fas_returns"><?php echo lang('submenu_fas_returns'); ?></label>                    
-                        </div>
-                        <div class="col-md-4">
-                            <?php
                             echo form_checkbox("module_fas_contributions", "1", get_setting("module_fas_contributions") ? true : false, "id='module_fas_contributions' class='ml15'");
                             ?>   
                             <label for="module_fas_contributions"><?php echo lang('contributions'); ?></label>                    
@@ -235,6 +229,12 @@
                             echo form_checkbox("module_pid_purchases", "1", get_setting("module_pid_purchases") ? true : false, "id='module_pid_purchases' class='ml15'");
                             ?>   
                             <label for="module_pid_purchases"><?php echo lang('submenu_pid_purchases'); ?></label>                    
+                        </div>
+                        <div class="col-md-4">
+                            <?php
+                            echo form_checkbox("module_pid_returns", "1", get_setting("module_pid_returns") ? true : false, "id='module_pid_returns' class='ml15'");
+                            ?>   
+                            <label for="module_pid_returns"><?php echo lang('submenu_pid_returns'); ?></label>                    
                         </div>
                         <div class="col-md-4">
                             <?php

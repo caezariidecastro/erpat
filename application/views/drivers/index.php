@@ -23,7 +23,6 @@
                 {title: "<?php echo lang('license_number') ?>"},
                 {title: "<?php echo lang('license_image') ?>"},
                 {title: "<?php echo lang('total_deliveries') ?>"},
-                {title: "<?php echo lang('employment_date') ?>"},
                 {title: "<?php echo lang('created_on') ?>"},
                 {title: "<?php echo lang('created_by') ?>"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}

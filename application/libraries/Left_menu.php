@@ -304,7 +304,6 @@ class Left_menu {
                     array("name" => "submenu_fas_summary", "url" => "fas/summary"),
                     array("name" => "submenu_fas_payments", "url" => "fas/payments"),
                     array("name" => "submenu_fas_expenses", "url" => "fas/expenses"),
-                    array("name" => "submenu_fas_returns", "url" => "fas/returns"),
                     array("name" => "submenu_fas_contributions", "url" => "fas/contributions"),
                     array("name" => "submenu_fas_incentives", "url" => "fas/incentives"),
                     array("name" => "submenu_fas_payroll", "url" => "fas/payroll"),
@@ -490,7 +489,7 @@ class Left_menu {
             // }
 
             //prepere the help and suppor menues
-            if (get_setting("module_hts") == "1") {
+            if (get_setting("module_hts") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_hts"))) {
 
                 $module_help = get_setting("module_help") == "1" ? true : false;
                 $module_knowledge_base = get_setting("module_knowledge_base") == "1" ? true : false;

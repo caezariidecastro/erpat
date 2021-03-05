@@ -31,7 +31,6 @@ class Drivers extends MY_Controller {
             $data->license_number,
             $data->license_image ? modal_anchor(get_uri("drivers/view_license?file_path=".$file_path), "<img src='".$file_path."' style='width: 100px; height: auto;'/>", array( "title" => lang('license_image'), "data-post-id" => $data->id)) : "",
             $data->total_deliveries,
-            $data->date_of_hire,
             $data->created_at,
             $data->created_by ? get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")) : "",
             modal_anchor(get_uri("drivers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_driver'), "data-post-id" => $data->id))
