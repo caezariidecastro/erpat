@@ -1779,3 +1779,9 @@ CREATE TABLE IF NOT EXISTS `asset_vendors` (
   `status` enum('active','inactive') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active', 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- 2021-03-05 20:54
+ALTER TABLE `deliveries` ADD `status` ENUM('draft','ongoing','completed','cancelled') NOT NULL DEFAULT 'draft' AFTER `country`;
+
+-- 2021-03-05 21:08
+ALTER TABLE `deliveries` DROP `warehouse`;

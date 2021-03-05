@@ -23,9 +23,11 @@ class Invoice_items_model extends Crud_model {
             $where .= " AND $invoice_items_table.invoice_id=$invoice_id";
         }
 
-        $sql = "SELECT $invoice_items_table.*, (SELECT $clients_table.currency_symbol FROM $clients_table WHERE $clients_table.id=$invoices_table.client_id limit 1) AS currency_symbol
+        $sql = "SELECT $invoice_items_table.*, (SELECT $clients_table.currency_symbol FROM $clients_table WHERE $clients_table.id=$invoices_table.client_id limit 1) AS currency_symbol, warehouses.name AS warehouse_name
         FROM $invoice_items_table
         LEFT JOIN $invoices_table ON $invoices_table.id=$invoice_items_table.invoice_id
+        LEFT JOIN inventory ON inventory.id = $invoice_items_table.inventory_id
+        LEFT JOIN warehouses ON warehouses.id = inventory.warehouse
         WHERE $invoice_items_table.deleted=0 $where
         ORDER BY $invoice_items_table.sort ASC";
         return $this->db->query($sql);

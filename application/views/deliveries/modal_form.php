@@ -8,6 +8,16 @@
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <input type="hidden" name="invoice_id" value="<?php echo $model_info ? $model_info->invoice_id : "" ?>" />
+    <?php if($model_info->id){?>
+    <div class="form-group">
+        <label for="status" class="col-md-3"><?php echo lang('status'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_dropdown("status", $status_dropdown, $model_info ? $model_info->status : "", "class='select2 validate-hidden' id='status' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            ?>
+        </div>
+    </div>
+    <?php }?>
     <div class="form-group">
         <label for="reference_number" class="col-md-3"><?php echo lang('reference_number'); ?></label>
         <div class=" col-md-9">
@@ -22,14 +32,6 @@
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
             ));
-            ?>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="warehouse" class="col-md-3"><?php echo lang('warehouse'); ?></label>
-        <div class="col-md-9">
-            <?php
-            echo form_dropdown("warehouse", $warehouse_dropdown, $model_info ? $model_info->warehouse : "", "class='select2 validate-hidden' id='warehouse' data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
         </div>
     </div>
@@ -209,7 +211,7 @@
         $('#driver').select2();
         $('#vehicle').select2();
 
-        $("#warehouse").select2();
+        $("#status").select2();
 
         $("#passenger_dropdown").select2({
             multiple: true,

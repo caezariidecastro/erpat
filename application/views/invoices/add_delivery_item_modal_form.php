@@ -104,7 +104,7 @@
     
     function applySelect2OnItemTitle(){
         $.ajax({
-            url: "<?php echo get_uri("invoices/get_inventory_items_select2_data/"). ($delivery_info ? $delivery_info->warehouse : ""); ?>", 
+            url: "<?php echo get_uri("invoices/get_inventory_items_select2_data/"); ?>", 
             dataType: 'json',
             success: function(data){
                 $("#invoice_item_title").select2({data: data}).change(function (e) {

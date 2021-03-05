@@ -52,7 +52,7 @@ class Inventory extends MY_Controller {
                             </div>
                             <div class="col-md-5">
                                 <div class="text-off pull-right text-right">
-                                    Stocks on hand: '.($data->stocks + $data->produced + $data->stocks_override - $data->delivered - $data->invoiced).'
+                                    Stocks on hand: '.(get_current_item_inventory_count($data)).'
                                 </div>
                             </div>
                         </div>
@@ -90,7 +90,7 @@ class Inventory extends MY_Controller {
                             </div>
                             <div class="col-md-4">
                                 <div class="text-off pull-right text-right">
-                                    Available stocks: '.($data->stock + $data->stock_override + $data->produced - $data->transferred + $data->received - $data->delivered - $data->invoiced).'
+                                    Available stocks: '.(get_current_item_warehouse_count($data)).'
                                 </div>
                             </div>
                         </div>

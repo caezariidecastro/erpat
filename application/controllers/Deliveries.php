@@ -9,20 +9,9 @@ class Deliveries extends MY_Controller {
         parent::__construct();
         $this->load->model("Deliveries_model");
         $this->load->model("Inventory_model");
-        $this->load->model("Warehouse_model");
         $this->load->model("Vehicles_model");
         $this->load->model("Consumers_model");
         $this->load->model("Invoices_model");
-    }
-
-    protected function _get_warehouse_dropdown_data() {
-        $Warehouses = $this->Warehouse_model->get_all()->result();
-        $warehouse_dropdown = array('' => '-');
-
-        foreach ($Warehouses as $group) {
-            $warehouse_dropdown[$group->id] = $group->name;
-        }
-        return $warehouse_dropdown;
     }
 
     protected function _get_vehicle_dropdown_data() {
@@ -69,6 +58,37 @@ class Deliveries extends MY_Controller {
         echo json_encode(array("data" => $result));
     }
 
+    private function _get_status_label($status){
+        $labeled_status = "";
+
+        if($status == "draft"){
+            $labeled_status = "<span class='label label-default'>Draft</span>";
+        }
+
+        if($status == "ongoing"){
+            $labeled_status = "<span class='label label-primary'>Ongoing</span>";
+        }
+
+        if($status == "completed"){
+            $labeled_status = "<span class='label label-success'>Completed</span>";
+        }
+
+        if($status == "cancelled"){
+            $labeled_status = "<span class='label label-danger'>Cancelled</span>";
+        }
+
+        return $labeled_status;
+    }
+
+    private function _get_statuses(){
+        return array(
+            "draft" => "Draft",
+            "ongoing" => "Ongoing",
+            "completed" => "Completed",
+            "cancelled" => "Cancelled"
+        );
+    }
+
     private function _make_row($data) {
         $address = (trim($data->street) ? trim($data->street) . ", " : "") . (trim($data->state)  ? trim($data->state)  . ", " : "") . (trim($data->city)  ? trim($data->street)  . ", " : "") . (trim($data->zip)  ? trim($data->zip)  . ", " : "") . trim($data->country);
 
@@ -82,8 +102,7 @@ class Deliveries extends MY_Controller {
         return array(
             $data->reference_number,
             $invoice_url,
-            $data->warehouse_name,
-            $data->consumer_name,
+            get_team_member_profile_link($data->consumer, $data->consumer_name, array("target" => "_blank")),
             get_team_member_profile_link($data->dispatcher, $data->dispatcher_name, array("target" => "_blank")),
             get_team_member_profile_link($data->driver, $data->driver_name, array("target" => "_blank")),
             $data->vehicle_name,
@@ -91,6 +110,7 @@ class Deliveries extends MY_Controller {
             $address,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
+            $this->_get_status_label($data->status),
             modal_anchor(get_uri("deliveries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_delivery'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("deliveries/delete"), "data-action" => "delete-confirmation"))
         );
@@ -102,7 +122,6 @@ class Deliveries extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
-        $warehouse = $this->input->post('warehouse');
         $consumer = $this->input->post('consumer');
         $invoice_id = $this->input->post('invoice_id');
 
@@ -117,7 +136,6 @@ class Deliveries extends MY_Controller {
         // **
 
         $delivery_data = array(
-            "warehouse" => $warehouse,
             "invoice_id" => $invoice_save_id,
             "consumer" => $consumer,
             "dispatcher" => $this->input->post('dispatcher'),
@@ -131,6 +149,10 @@ class Deliveries extends MY_Controller {
             "country" => $this->input->post('country'),
             "passengers" => $this->input->post('passengers'),
         );
+
+        if($id){
+            $delivery_data["status"] = $this->input->post("status");
+        }
 
         if(!$id){
             $delivery_data["reference_number"] = $this->input->post('reference_number');
@@ -162,8 +184,8 @@ class Deliveries extends MY_Controller {
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
         $view_data['driver_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "driver"));
         $view_data['consumer_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "consumer"));
-        $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
         $view_data['vehicle_dropdown'] = $this->_get_vehicle_dropdown_data();
+        $view_data["status_dropdown"] = $this->_get_statuses();
 
         $this->load->view('deliveries/modal_form', $view_data);
     }

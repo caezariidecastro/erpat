@@ -16,7 +16,7 @@ class Invoices extends MY_Controller {
         $inventory_items = $this->Inventory_model->get_details(array('warehouse_id' => $warehouse_id))->result();
 
         foreach ($inventory_items as $inventory_item) {
-            $inventory_items_select2[] = array("id" => $inventory_item->name, "text" => $inventory_item->name, "inventory_id" => $inventory_item->id);
+            $inventory_items_select2[] = array("id" => $inventory_item->name, "text" => $inventory_item->name . " (". $inventory_item->warehouse_name . ": " . get_current_item_warehouse_count($inventory_item) . " ) ", "inventory_id" => $inventory_item->id);
         }
 
         echo json_encode($inventory_items_select2);
@@ -810,6 +810,10 @@ class Invoices extends MY_Controller {
         $item = "<div class='item-row strong mb5' data-id='$data->id'>$move_icon $data->title</div>";
         if ($data->description) {
             $item .= "<span $desc_style>" . nl2br($data->description) . "</span>";
+        }
+        if ($data->warehouse_name) {
+            $item .= $data->description ? "<br>" : "";
+            $item .= "<span $desc_style>" . nl2br($data->warehouse_name) . "</span>";
         }
         $type = $data->unit_type ? $data->unit_type : "";
 

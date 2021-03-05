@@ -59,6 +59,7 @@ class Inventory_model extends Crud_model {
             FROM invoice_items
             LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
             LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
+            LEFT JOIN deliveries ON deliveries.reference_number = invoice_items.delivery_reference_no
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
             $delivered_query
@@ -67,7 +68,23 @@ class Inventory_model extends Crud_model {
                 OR
                 invoice_items.delivery_reference_no != ''
             )
-            AND invoices.status != 'cancelled'
+            AND invoices.status NOT IN ('draft', 'cancelled')
+            AND (
+                (
+                    SELECT ROUND(SUM(invoice_payments.amount), 2)
+                    FROM invoice_payments
+                    WHERE invoice_payments.invoice_id = invoices.id
+                    AND invoice_payments.deleted = 0
+                )
+                = 
+                (
+                    SELECT ROUND(SUM(ii.total), 2)
+                    FROM invoice_items ii
+                    WHERE ii.invoice_id = invoices.id
+                    AND ii.deleted = 0
+                )
+            )
+            AND deliveries.status = 'completed'
             AND i.id = $inventory_table.id
         ), 0) AS delivered,
         COALESCE((
@@ -96,7 +113,22 @@ class Inventory_model extends Crud_model {
                 OR
                 invoice_items.delivery_reference_no = ''
             )
-            AND invoices.status != 'cancelled'
+            AND invoices.status NOT IN ('draft', 'cancelled')
+            AND (
+                (
+                    SELECT ROUND(SUM(invoice_payments.amount), 2)
+                    FROM invoice_payments
+                    WHERE invoice_payments.invoice_id = invoices.id
+                    AND invoice_payments.deleted = 0
+                )
+                = 
+                (
+                    SELECT ROUND(SUM(ii.total), 2)
+                    FROM invoice_items ii
+                    WHERE ii.invoice_id = invoices.id
+                    AND ii.deleted = 0
+                )
+            )
             AND i.id = $inventory_table.id
         ), 0) AS invoiced
         FROM $inventory_table

@@ -21,7 +21,6 @@
             columns: [
                 {title: "<?php echo lang('reference_number') ?> ", "class": "w8p"},
                 {title: "<?php echo lang('invoice_id') ?> "},
-                {title: "<?php echo lang('warehouse') ?> "},
                 {title: "<?php echo lang('consumer') ?>"},
                 {title: "<?php echo lang('dispatcher') ?>"},
                 {title: "<?php echo lang('driver') ?>"},
@@ -30,6 +29,7 @@
                 {title: "<?php echo lang('address') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
+                {title: "<?php echo lang('status') ?>", "class": "text-center option w100"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
