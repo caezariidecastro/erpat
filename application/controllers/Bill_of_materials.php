@@ -145,7 +145,6 @@ class Bill_of_materials extends MY_Controller {
 
     private function _material_make_row($data){
         return array(
-            $data->id,
             $data->material_name,
             $data->quantity,
             $data->unit_name,
@@ -195,22 +194,33 @@ class Bill_of_materials extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
+        
+        $material_inventory_id = $this->input->post('material_id');
+        $bill_of_material_id = $this->input->post('id');
+
+        $material_inventory_info = $this->Material_inventory_model->get_one($material_inventory_id);
 
         $bill_of_materials_materials_data = array(
-            "material_inventory_id" => $this->input->post('material_id'),
-            "bill_of_material_id" => $this->input->post('id'),
+            "material_inventory_id" => $material_inventory_id,
+            "bill_of_material_id" => $bill_of_material_id,
             "quantity" => $this->input->post('quantity'),
             "created_on" => date('Y-m-d H:i:s'),
             "created_by" =>  $this->login_user->id,
         );
 
-        $bill_of_materials_materials_id = $this->Bill_of_materials_materials_model->save($bill_of_materials_materials_data);
-        if ($bill_of_materials_materials_id) {
-            $options = array("id" => $bill_of_materials_materials_id);
-            $bill_of_materials_materials_info = $this->Bill_of_materials_materials_model->get_details($options)->row();
-            echo json_encode(array("success" => true, "id" => $bill_of_materials_materials_info->id, "data" => $this->_material_make_row($bill_of_materials_materials_info), 'message' => lang('record_saved')));
-        } else {
-            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        if($this->Bill_of_materials_materials_model->is_bill_of_material_has_material($bill_of_material_id, $material_inventory_info->material_id)){
+            echo json_encode(array("success" => false, 'message' => lang('material_already_added_error')));
         }
+        else{
+            $bill_of_materials_materials_id = $this->Bill_of_materials_materials_model->save($bill_of_materials_materials_data);
+            if ($bill_of_materials_materials_id) {
+                $options = array("id" => $bill_of_materials_materials_id);
+                $bill_of_materials_materials_info = $this->Bill_of_materials_materials_model->get_details($options)->row();
+                echo json_encode(array("success" => true, "id" => $bill_of_materials_materials_info->id, "data" => $this->_material_make_row($bill_of_materials_materials_info), 'message' => lang('record_saved')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            }
+        }
+
     }
 }
