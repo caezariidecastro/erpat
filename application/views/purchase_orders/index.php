@@ -19,10 +19,12 @@
             source: '<?php echo_uri("purchase_orders/list_data") ?>',
             filterDropdown: [
                 {id: "vendor_select2_filter", name: "vendor_select2_filter", class: "w200", options: <?php echo json_encode($vendor_select2); ?>},
+                {id: "account_select2_filter", name: "account_select2_filter", class: "w200", options: <?php echo json_encode($account_select2); ?>},
             ],
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('purchase_id') ?> "},
+                {title: "<?php echo lang('account') ?>"},
                 {title: "<?php echo lang('supplier') ?>"},
                 {title: "<?php echo lang('amount') ?>"},
                 {title: "<?php echo lang('remarks') ?>"},

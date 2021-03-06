@@ -1785,3 +1785,9 @@ ALTER TABLE `deliveries` ADD `status` ENUM('draft','ongoing','completed','cancel
 
 -- 2021-03-05 21:08
 ALTER TABLE `deliveries` DROP `warehouse`;
+
+-- 2021-03-06 17:34
+ALTER TABLE `purchase_orders` ADD `account_id` BIGINT(10) NOT NULL AFTER `vendor_id`;
+
+-- 2021-03-06 17:40
+ALTER TABLE `purchase_order_budgets` DROP `account_id`;

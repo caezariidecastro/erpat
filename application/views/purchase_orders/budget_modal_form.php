@@ -2,14 +2,7 @@
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <input type="hidden" name="purchase_id" value="<?php echo $purchase_id; ?>" />
-    <div class="form-group">
-        <label for="account" class="col-md-3"><?php echo lang('account'); ?></label>
-        <div class="col-md-9">
-            <?php
-            echo form_dropdown("account_id", $account_dropdown, $model_info ? $model_info->account_id : "", "class='select2 validate-hidden' id='account' data-rule-required='true' data-msg-required='".lang("field_required")."'");
-            ?>
-        </div>
-    </div>
+    <input type="hidden" name="account_id" value="<?php echo $account_id; ?>" />
     <div class="form-group">
         <label for="amount" class=" col-md-3"><?php echo lang('amount'); ?></label>
         <div class="col-md-9">

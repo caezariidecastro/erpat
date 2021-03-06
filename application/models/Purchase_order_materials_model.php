@@ -21,8 +21,10 @@ class Purchase_order_materials_model extends Crud_model {
             $where .= " AND $purchase_order_materials_table.purchase_id=$purchase_id";
         }
 
-        $sql = "SELECT $purchase_order_materials_table.*
+        $sql = "SELECT $purchase_order_materials_table.*, warehouses.name AS warehouse_name
         FROM $purchase_order_materials_table
+        LEFT JOIN material_inventory ON material_inventory.id = $purchase_order_materials_table.material_inventory_id
+        LEFT JOIN warehouses ON warehouses.id = material_inventory.warehouse
         WHERE $purchase_order_materials_table.deleted=0 $where";
         return $this->db->query($sql);
     }

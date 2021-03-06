@@ -29,6 +29,16 @@ class Purchase_orders extends MY_Controller {
         return $vendor_dropdown;
     }
 
+    protected function _get_account_dropdown_data() {
+        $account = $this->Accounts_model->get_all()->result();
+        $account_dropdown = array('' => '-');
+
+        foreach ($account as $account) {
+            $account_dropdown[$account->id] = $account->name;
+        }
+        return $account_dropdown;
+    }
+
     protected function _get_vendor_select2_data() {
         $vendor = $this->Vendors_model->get_all()->result();
         $vendor_select2 = array(array("id" => "", "text" => "- ".lang("suppliers")." -"));
@@ -37,6 +47,16 @@ class Purchase_orders extends MY_Controller {
             $vendor_select2[] = array("id" => $vendor->id, "text" => $vendor->name);
         }
         return $vendor_select2;
+    }
+
+    protected function _get_account_select2_data() {
+        $account = $this->Accounts_model->get_all()->result();
+        $account_select2 = array(array("id" => "", "text" => "- ".lang("accounts")." -"));
+
+        foreach ($account as $account) {
+            $account_select2[] = array("id" => $account->id, "text" => $account->name);
+        }
+        return $account_select2;
     }
 
     protected function _get_accounts_dropdown_data() {
@@ -51,6 +71,7 @@ class Purchase_orders extends MY_Controller {
 
     function index(){
         $view_data["vendor_select2"] = $this->_get_vendor_select2_data();
+        $view_data["account_select2"] = $this->_get_account_select2_data();
         $this->template->rander("purchase_orders/index", $view_data);
     }
 
@@ -63,6 +84,7 @@ class Purchase_orders extends MY_Controller {
 
         $purchase_order_data = array(
             "vendor_id" => $this->input->post('vendor_id'),
+            "account_id" => $this->input->post('account_id'),
             "remarks" => $this->input->post('remarks'),
         );
 
@@ -83,7 +105,8 @@ class Purchase_orders extends MY_Controller {
 
     function list_data(){
         $list_data = $this->Purchase_orders_model->get_details(array(
-            "vendor_id" => $this->input->post("vendor_select2_filter")
+            "vendor_id" => $this->input->post("vendor_select2_filter"),
+            "account_id" => $this->input->post("account_select2_filter"),
         ))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -97,6 +120,7 @@ class Purchase_orders extends MY_Controller {
 
         return array(
             '<a href="'.base_url("pid/purchases/view/".$data->id).'">'.lang("purchase").' #'.$data->id.'</a>',
+            $data->account_name,
             $data->vendor_name,
             number_with_decimal($data->amount),
             nl2br($data->remarks),
@@ -147,6 +171,7 @@ class Purchase_orders extends MY_Controller {
 
         $view_data['model_info'] = $this->Purchase_orders_model->get_one($this->input->post('id'));
         $view_data["vendor_dropdown"] = $this->_get_vendor_dropdown_data();
+        $view_data["account_dropdown"] = $this->_get_account_dropdown_data();
         $view_data["reload"] = $this->input->post("reload");
 
         $this->load->view('purchase_orders/modal_form', $view_data);
@@ -195,9 +220,11 @@ class Purchase_orders extends MY_Controller {
     }
 
     private function _material_make_row($data, $vendor_id, $purchase_id) {
+        $title = "<div class='item-row strong mb5'>$data->title</div><span>" . $data->warehouse_name . "</span>";
+
         return array(
-            $data->title,
-            $data->quantity,
+            $title,
+            $data->quantity . " " .  $data->unit_type,
             number_with_decimal($data->rate),
             number_with_decimal($data->total),
             modal_anchor(get_uri("purchase_orders/material_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_purchase'), "data-post-id" => $data->id, "data-post-vendor_id" => $vendor_id, "data-post-purchase_id" => $purchase_id))
@@ -274,7 +301,7 @@ class Purchase_orders extends MY_Controller {
         $status = $purchase_info->status;
         
         if($status != "cancelled"){ // draft|partially_budgeted|completed
-            if($total_material > 0 && $total_material > 0){
+            if($total_material > 0 && $total_budget > 0){
                 if(round($total_material) <= round($total_budget)){
                     $status = "completed";
                 }
@@ -319,9 +346,11 @@ class Purchase_orders extends MY_Controller {
             "id" => "numeric"
         ));
 
+        $purchase_id = $this->input->post("purchase_id");
+
         $view_data['model_info'] = $this->Purchase_order_budgets_model->get_one($this->input->post('id'));
-        $view_data["purchase_id"] = $this->input->post("purchase_id");
-        $view_data["account_dropdown"] = $this->_get_accounts_dropdown_data();
+        $view_data["purchase_id"] = $purchase_id;
+        $view_data["account_id"] = $this->Purchase_orders_model->get_one($purchase_id)->account_id;
 
         $this->load->view('purchase_orders/budget_modal_form', $view_data);
     }
@@ -335,7 +364,6 @@ class Purchase_orders extends MY_Controller {
         $budget_data = array(
             "amount" => $amount,
             "purchase_id" => $this->input->post("purchase_id"),
-            "account_id" => $account_id,
         );
 
         if(!$id){

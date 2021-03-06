@@ -201,7 +201,7 @@ class Purchase_order_returns extends MY_Controller {
             $return_id = $this->Purchase_order_return_materials_model->save($return_data);
 
             $amount = $this->Purchase_order_materials_model->get_one($purchase_order_material_id)->rate * $quantity;
-            $account_id = $this->Purchase_order_budgets_model->get_details(array("purchase_id" => $purchase_id))->row()->account_id;
+            $account_id = $this->Purchase_orders_model->get_details(array("purchase_id" => $purchase_id))->row()->account_id;
 
             $this->Account_transactions_model->add_purchase_return($account_id, $amount, $return_id);
 

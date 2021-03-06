@@ -1,7 +1,14 @@
 <?php echo form_open(get_uri("purchase_orders/save"), array("id" => "purchase-orders-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
-
+    <div class="form-group">
+        <label for="account_id" class="col-md-3"><?php echo lang('account'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_dropdown("account_id", $account_dropdown, $model_info ? $model_info->account_id : "", "class='select2 validate-hidden' data-rule-required='true' data-msg-required='".lang("field_required")."' id='account_id'");
+            ?>
+        </div>
+    </div>
     <div class="form-group">
         <label for="vendor_id" class="col-md-3"><?php echo lang('supplier'); ?></label>
         <div class="col-md-9">
@@ -50,5 +57,6 @@
         });
 
         $("#vendor_id").select2();
+        $("#account_id").select2();
     });
 </script>
