@@ -33,7 +33,7 @@ $lang["submenu_pid_billofmaterials"] = "Bill of Materials";
 $lang["submenu_pid_purchases"] = "Purchases";
 $lang["submenu_pid_returns"] = "Returns";
 $lang["submenu_pid_supplier"] = "Supplier";
-$lang["submenu_pid_items"] = "Products";
+$lang["submenu_pid_products"] = "Products";
 $lang["submenu_pid_inventory"] = "Inventory";
 $lang["submenu_pid_materials"] = "Materials";
 

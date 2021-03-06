@@ -727,6 +727,22 @@ if (!function_exists('get_team_member_profile_link')) {
 
 }
 
+if (!function_exists('get_supplier_contact_link')) {
+
+    function get_supplier_contact_link($id = 0, $name = "", $attributes = array()) {
+        return anchor("pid/supplier/" . $id . "/contacts", $name, $attributes);
+    }
+
+}
+
+if (!function_exists('get_vendor_contact_link')) {
+
+    function get_vendor_contact_link($id = 0, $name = "", $attributes = array()) {
+        return anchor("pid/vendor/" . $id . "/contacts", $name, $attributes);
+    }
+
+}
+
 
 /**
  * team members profile anchor. only clickable to team members

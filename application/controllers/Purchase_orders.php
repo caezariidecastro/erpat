@@ -121,7 +121,7 @@ class Purchase_orders extends MY_Controller {
         return array(
             '<a href="'.base_url("pid/purchases/view/".$data->id).'">'.lang("purchase").' #'.$data->id.'</a>',
             $data->account_name,
-            $data->vendor_name,
+            get_supplier_contact_link($data->vendor_id, $data->vendor_name),
             number_with_decimal($data->amount),
             nl2br($data->remarks),
             $data->created_on,

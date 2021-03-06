@@ -66,7 +66,7 @@ class Material_entries extends MY_Controller {
             $data->unit_name,
             $data->category_name,
             number_with_decimal($data->cost_price),
-            $data->vendor_name,
+            get_supplier_contact_link($data->vendor, $data->vendor_name),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             modal_anchor(get_uri("material_entries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_entry'), "data-post-id" => $data->id))

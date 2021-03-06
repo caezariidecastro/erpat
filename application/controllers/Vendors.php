@@ -56,7 +56,7 @@ class Vendors extends MY_Controller {
         $primary_contact = $primary_contact ? get_team_member_profile_link($primary_contact->id, $primary_contact->full_name, array("target" => "_blank")) : "";
 
         return array(
-            '<a href="'.base_url("pid/supplier/".$data->id."/contacts").'">'.$data->name.'</a>',
+            get_supplier_contact_link($data->id, $data->name),
             $primary_contact,
             nl2br($data->address),
             $data->city,
@@ -73,8 +73,10 @@ class Vendors extends MY_Controller {
     }
 
     private function _make_contact_row($data) {
+        $contact = get_team_member_profile_link($data->id, $data->full_name .( $data->is_primary_contact ? " (".lang("primary_contact").") " : ""), array("target" => "_blank"));
+
         return array(
-            get_team_member_profile_link($data->id, $data->full_name, array("target" => "_blank")),
+            $contact,
             $data->job_title,
             $data->email,
             $data->phone,

@@ -91,7 +91,7 @@ class Inventory_item_entries extends MY_Controller {
             $data->category_name,
             number_with_decimal($data->cost_price),
             number_with_decimal($data->selling_price),
-            $data->vendor_name,
+            get_supplier_contact_link($data->vendor, $data->vendor_name),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             $actions,

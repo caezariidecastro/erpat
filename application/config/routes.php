@@ -139,8 +139,8 @@ $route['pms/clients/view/(:any)'] = 'clients/view/$1';
 // Services
 $route['pms/services'] = 'item_categories/index';
 
-// Items
-$route['pid/items'] = 'inventory_item_categories/index';
+// Products
+$route['pid/products'] = 'inventory_item_categories/index';
 
 // Tickets
 $route['help/tickets'] = 'tickets/index';

@@ -91,7 +91,7 @@ class Asset_entries extends MY_Controller {
             $data->purchase_date,
             $data->warranty_expiry_date,
             ucwords($data->type),
-            $data->vendor_name,
+            get_vendor_contact_link($data->vendor_id, $data->vendor_name),
             $data->category_name,
             $data->location_name,
             $data->created_on,
