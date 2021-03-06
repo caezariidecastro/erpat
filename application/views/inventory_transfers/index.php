@@ -24,6 +24,7 @@
                 {title: "<?php echo lang('to') ?>", "class": "w10p"},
                 {title: "<?php echo lang('dispatcher') ?>"},
                 {title: "<?php echo lang('driver') ?>"},
+                {title: "<?php echo lang('vehicle') ?>"},
                 {title: "<?php echo lang('items') ?>"},
                 {title: "<?php echo lang('remarks') ?>", "class": "w15p"},
                 {title: "<?php echo lang('created_on') ?>",},

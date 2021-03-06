@@ -11,6 +11,7 @@ class Inventory_transfers extends MY_Controller {
         $this->load->model("Inventory_model");
         $this->load->model("Warehouse_model");
         $this->load->model("Inventory_item_entries_model");
+        $this->load->model("Vehicles_model");
     }
 
     protected function _get_warehouse_dropdown_data() {
@@ -21,6 +22,16 @@ class Inventory_transfers extends MY_Controller {
             $warehouse_dropdown[$group->id] = $group->name;
         }
         return $warehouse_dropdown;
+    }
+
+    protected function _get_vehicle_dropdown_data() {
+        $Vehicles = $this->Vehicles_model->get_all()->result();
+        $vehicle_dropdown = array('' => '-');
+
+        foreach ($Vehicles as $group) {
+            $vehicle_dropdown[$group->id] = "$group->brand $group->model $group->year $group->color";
+        }
+        return $vehicle_dropdown;
     }
 
     function index(){
@@ -45,6 +56,7 @@ class Inventory_transfers extends MY_Controller {
             $data->receiver_name,
             get_team_member_profile_link($data->dispatcher, $data->dispatcher_name, array("target" => "_blank")),
             get_team_member_profile_link($data->driver, $data->driver_name, array("target" => "_blank")),
+            $data->vehicle_name,
             $item_count,
             nl2br($data->remarks),
             $data->created_on,
@@ -54,22 +66,20 @@ class Inventory_transfers extends MY_Controller {
         );
     }
 
-    function get_inventory_items_select2_data($warehouse = 0, $type = "object") {
-        if($type == 'json'){
-            $items = $this->Inventory_model->get_dropdown_list(array("name"), "id", array("warehouse" => $warehouse));
-            $item_list = array(array("id" => "", "text" => "-"));
-            foreach ($items as $key => $value) {
-                $item_list[] = array("id" => $key, "text" => $value);
-            }
-            echo json_encode($item_list);
+    function get_inventory_items_select2_data($warehouse_id = null, $type = "object") {
+        $inventory_items = $this->Inventory_model->get_details(array('warehouse_id' => $warehouse_id))->result();
+
+        $inventory_items_select2 = array(array("id" => "", "text" => "-"));
+
+        foreach ($inventory_items as $inventory_item) {
+            $inventory_items_select2[] = array("id" => $inventory_item->id, "text" => $inventory_item->name . " (".$inventory_item->warehouse_name.": " . get_current_item_warehouse_count($inventory_item) . " ) ", "unit_type" => $inventory_item->unit_name, "");
+        }
+
+        if($type == "json"){
+            echo json_encode($inventory_items_select2);
         }
         else{
-            $items = $this->Inventory_model->get_dropdown_list(array("name"), "id", array("warehouse" => $warehouse));
-            $item_list = array(array("id" => "", "text" => "-"));
-            foreach ($items as $key => $value) {
-                $item_list[] = array("id" => $key, "text" => $value);
-            }
-            return $item_list;
+            return $inventory_items_select2;
         }
     }
 
@@ -89,6 +99,7 @@ class Inventory_transfers extends MY_Controller {
             "receiver" => $receiver,
             "dispatcher" => $this->input->post('dispatcher'),
             "driver" => $this->input->post('driver'),
+            "vehicle_id" => $this->input->post('vehicle_id'),
             "remarks" => $this->input->post('remarks'),
         );
 
@@ -163,6 +174,7 @@ class Inventory_transfers extends MY_Controller {
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
         $view_data['driver_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "driver"));
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
+        $view_data['vehicle_dropdown'] = $this->_get_vehicle_dropdown_data();
         $view_data['warehouse_item_select2'] = $model_info->transferee ? $this->get_inventory_items_select2_data($model_info->transferee) : array('id' => '', 'text' => '');
 
         $this->load->view('inventory_transfers/modal_form', $view_data);
@@ -194,6 +206,7 @@ class Inventory_transfers extends MY_Controller {
                     $data->inventory_id,
                     $data->item_name,
                     $data->quantity,
+                    $data->unit_name,
                     '<a href="#" title="Delete" class="delete"><i class="fa fa-times fa-fw"></i></a>'
                 );
             }

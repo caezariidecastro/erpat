@@ -60,6 +60,14 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="vehicle_id" class="col-md-3"><?php echo lang('vehicle'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_dropdown("vehicle_id", $vehicle_dropdown, $model_info ? $model_info->vehicle_id : "", "class='select2 validate-hidden' id='vehicle_id' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="remarks" class="col-md-3"><?php echo lang('remarks'); ?></label>
         <div class=" col-md-9">
             <?php
@@ -92,7 +100,7 @@
         </div>
         <div class="form-group">
             <label for="quantity" class="col-md-3"><?php echo lang('quantity'); ?></label>
-            <div class=" col-md-9">
+            <div class=" col-md-6">
                 <?php
                 echo form_input(array(
                     "id" => "quantity",
@@ -101,6 +109,19 @@
                     "class" => "form-control",
                     "placeholder" => lang('quantity'),
                     "type" => 'number'
+                ));
+                ?>
+            </div>
+            <div class=" col-md-3">
+                <?php
+                echo form_input(array(
+                    "id" => "unit_type",
+                    "name" => "",
+                    "value" => '',
+                    "class" => "form-control",
+                    "placeholder" => lang('unit_type'),
+                    "type" => 'text',
+                    "disabled" => "disabled"
                 ));
                 ?>
             </div>
@@ -140,6 +161,7 @@
                 {visible: false},
                 {title: "<?php echo lang('name') ?> "},
                 {title: "<?php echo lang('quantity') ?> "},
+                {title: "<?php echo lang('unit_type') ?> "},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
         });
@@ -181,7 +203,13 @@
         $('#receiver').select2();
         $('#dispatcher').select2();
         $('#driver').select2();
-        $('#item').select2({data: <?php echo json_encode($warehouse_item_select2)?>});
+        $('#vehicle_id').select2();
+        $('#item').select2({data: <?php echo json_encode($warehouse_item_select2)?>}).change(function(e){
+            console.log(e);
+            if($(this).val()){
+                $("#unit_type").val(e.added.unit_type);
+            }
+        });
 
         $("#transferee").select2().on("change", function () {
             let warehouse_id = $(this).val();
@@ -200,6 +228,7 @@
                         appLoader.hide();
 
                         $('#add-item-transfer-section').show();
+                        itemsTable.clear().draw();
                     }
                 });
             }
@@ -254,11 +283,13 @@
                 item_data.id,
                 item_data.text,
                 quantity,
+                item_data.unit_type,
                 '<a href="#" title="Delete" class="delete"><i class="fa fa-times fa-fw"></i></a>'
             ]).draw();
 
             $('#item').select2('val', '');
             $('#quantity').val('');
+            $('#unit_type').val('');
         }
     }
     
