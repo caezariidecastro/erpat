@@ -46,8 +46,8 @@ class Asset_entries extends MY_Controller {
         return $brand_dropdown;
     }
 
-    protected function _get_vendor_dropdown_data() {
-        $vendors = $this->Asset_vendors_model->get_all()->result();
+    protected function _get_vendor_dropdown_data($status = null) {
+        $vendors = $this->Asset_vendors_model->get_details(array("status" => $status))->result();
         $vendor_dropdown = array('' => '-');
 
         foreach ($vendors as $vendor) {
@@ -144,11 +144,13 @@ class Asset_entries extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Asset_entries_model->get_one($this->input->post('id'));
+        $id = $this->input->post('id');
+
+        $view_data['model_info'] = $this->Asset_entries_model->get_one($id);
         $view_data["brand_dropdown"] = $this->_get_brand_dropdown_data();
         $view_data["category_dropdown"] = $this->_get_category_dropdown_data();
         $view_data["location_dropdown"] = $this->_get_location_dropdown_data();
-        $view_data["vendor_dropdown"] = $this->_get_vendor_dropdown_data();
+        $view_data["vendor_dropdown"] = $this->_get_vendor_dropdown_data($id ? "" : "active");
         $view_data["type_dropdown"] = $this->_get_type_dropdown_data();
 
         $this->load->view('asset_entries/modal_form', $view_data);

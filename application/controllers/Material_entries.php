@@ -33,8 +33,8 @@ class Material_entries extends MY_Controller {
         return $units_dropdown;
     }
 
-    protected function _get_vendor_dropdown_data() {
-        $vendor = $this->Vendors_model->get_all()->result();
+    protected function _get_vendor_dropdown_data($status = null) {
+        $vendor = $this->Vendors_model->get_details(array("status" => $status))->result();
         $vendor_dropdown = array('' => '-');
 
         foreach ($vendor as $group) {
@@ -110,10 +110,12 @@ class Material_entries extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Material_entries_model->get_one($this->input->post('id'));
+        $id = $this->input->post('id');
+
+        $view_data['model_info'] = $this->Material_entries_model->get_one($id);
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
         $view_data['units_dropdown'] = $this->_get_units_dropdown_data();
-        $view_data['vendor_dropdown'] = $this->_get_vendor_dropdown_data();
+        $view_data['vendor_dropdown'] = $this->_get_vendor_dropdown_data($id ? "" : "active");
 
         $this->load->view('material_entries/modal_form', $view_data);
     }

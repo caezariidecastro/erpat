@@ -21,8 +21,8 @@ class Inventory_item_categories extends MY_Controller {
         return $category_select2;
     }
 
-    protected function _get_vendor_select2_data() {
-        $vendors = $this->Vendors_model->get_all()->result();
+    protected function _get_vendor_select2_data($status = null) {
+        $vendors = $this->Vendors_model->get_details(array("status" => $status))->result();
         $vendor_select2 = array(array('id' => '', 'text'  => '- '.lang('suppliers').' -'));
 
         foreach ($vendors as $group) {

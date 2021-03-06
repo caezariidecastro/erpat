@@ -19,8 +19,8 @@ class Purchase_orders extends MY_Controller {
         $this->load->model("Account_transactions_model");
     }
 
-    protected function _get_vendor_dropdown_data() {
-        $vendor = $this->Vendors_model->get_all()->result();
+    protected function _get_vendor_dropdown_data($status = null) {
+        $vendor = $this->Vendors_model->get_details(array("status" => $status))->result();
         $vendor_dropdown = array('' => '-');
 
         foreach ($vendor as $vendor) {
@@ -169,8 +169,10 @@ class Purchase_orders extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Purchase_orders_model->get_one($this->input->post('id'));
-        $view_data["vendor_dropdown"] = $this->_get_vendor_dropdown_data();
+        $id = $this->input->post('id');
+
+        $view_data['model_info'] = $this->Purchase_orders_model->get_one($id);
+        $view_data["vendor_dropdown"] = $this->_get_vendor_dropdown_data($id ? "" : "active");
         $view_data["account_dropdown"] = $this->_get_account_dropdown_data();
         $view_data["reload"] = $this->input->post("reload");
 
