@@ -3,6 +3,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo lang('assets'); ?></h1>
             <div class="title-button-group">
+                <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "asset_entry")); ?>
                 <?php echo modal_anchor(get_uri("asset_entries/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_entry'), array("class" => "btn btn-default", "title" => lang('add_entry'))); ?>
             </div>
         </div>
@@ -33,6 +34,7 @@
                 {title: "<?php echo lang("location") ?>"},
                 {title: "<?php echo lang("created_on") ?>"},
                 {title: "<?php echo lang("created_by") ?>"},
+                {title: "<?php echo lang("labels") ?>", "class": "text-center option w100"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4],

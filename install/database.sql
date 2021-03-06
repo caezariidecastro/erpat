@@ -1791,3 +1791,6 @@ ALTER TABLE `purchase_orders` ADD `account_id` BIGINT(10) NOT NULL AFTER `vendor
 
 -- 2021-03-06 17:40
 ALTER TABLE `purchase_order_budgets` DROP `account_id`;
+
+-- 2021-03-06 19:55
+ALTER TABLE `labels` CHANGE `context` `context` ENUM('event','invoice','note','project','task','ticket','to_do','asset_entry') CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;

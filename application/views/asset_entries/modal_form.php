@@ -3,6 +3,22 @@
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
 
     <div class="form-group">
+        <label for="asset_entry_labels" class=" col-md-3"><?php echo lang('labels'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "asset_entry_labels",
+                "name" => "labels",
+                "value" => $model_info->labels,
+                "class" => "form-control validate-hidden",
+                "placeholder" => lang('labels'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="title" class=" col-md-3"><?php echo lang('title'); ?></label>
         <div class="col-md-9">
             <?php
@@ -177,5 +193,7 @@
         });
 
         $(".select2").select2();
+
+        $("#asset_entry_labels").select2({multiple: true, data: <?php echo json_encode($label_suggestions); ?>});
     });
 </script>

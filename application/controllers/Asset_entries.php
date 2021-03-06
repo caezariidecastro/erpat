@@ -81,6 +81,8 @@ class Asset_entries extends MY_Controller {
     }
 
     private function _make_row($data) {
+        $labels = $data->labels ? make_labels_view_data($data->labels_list, true) : "";
+
         return array(
             $data->title,
             nl2br($data->description),
@@ -96,6 +98,7 @@ class Asset_entries extends MY_Controller {
             $data->location_name,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
+            $labels,
             modal_anchor(get_uri("asset_entries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_entry'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("asset_entries/delete"), "data-action" => "delete-confirmation"))
         );
@@ -120,7 +123,8 @@ class Asset_entries extends MY_Controller {
             "type" => $this->input->post("type"),
             "vendor_id" => $this->input->post("vendor_id"),
             "category_id" => $this->input->post("category_id"),
-            "location_id" => $this->input->post("location_id")
+            "location_id" => $this->input->post("location_id"),
+            "labels" => $this->input->post("labels"),
         );
 
         if(!$id){
@@ -152,6 +156,7 @@ class Asset_entries extends MY_Controller {
         $view_data["location_dropdown"] = $this->_get_location_dropdown_data();
         $view_data["vendor_dropdown"] = $this->_get_vendor_dropdown_data($id ? "" : "active");
         $view_data["type_dropdown"] = $this->_get_type_dropdown_data();
+        $view_data['label_suggestions'] = $this->make_labels_dropdown("asset_entry", $view_data['model_info']->labels);
 
         $this->load->view('asset_entries/modal_form', $view_data);
     }

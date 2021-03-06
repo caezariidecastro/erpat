@@ -21,6 +21,8 @@ class Asset_entries_model extends Crud_model {
             $where .= " AND $asset_entries_table.active=$active";
         }
 
+        $select_labels_data_query = $this->get_labels_data_query();
+
         $sql = "SELECT $asset_entries_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, brand.title AS brand_name, vendor.name AS vendor_name
         , (
             SELECT CONCAT(
@@ -74,6 +76,7 @@ class Asset_entries_model extends Crud_model {
             WHERE asset_categories.deleted=0
             AND asset_categories.id = $asset_entries_table.category_id
         ) AS category_name
+        , $select_labels_data_query
         FROM $asset_entries_table
         LEFT JOIN users ON users.id = $asset_entries_table.created_by
         LEFT JOIN asset_brands brand ON brand.id = $asset_entries_table.brand_id
