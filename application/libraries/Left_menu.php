@@ -309,7 +309,7 @@ class Left_menu {
                     array("name" => "submenu_fas_payroll", "url" => "fas/payroll"),
                     array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
                     array("name" => "submenu_fas_transfers", "url" => "fas/transfers"),
-                    array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet"),
+                    // array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet"),
                 ));
             }
 

@@ -1,13 +1,6 @@
-<div id="page-content" class="p20 clearfix">
-    <div class="panel panel-default">
-        <div class="page-title clearfix">
-            <h1> <?php echo lang('balance_sheet'); ?></h1>
-        </div>
-        <div class="table-responsive">
-            <table id="balance-sheet-table" class="display" cellspacing="0" width="100%">            
-            </table>
-        </div>
-    </div>
+<div class="table-responsive">
+    <table id="balance-sheet-table" class="display" cellspacing="0" width="100%">            
+    </table>
 </div>
 
 <script type="text/javascript">

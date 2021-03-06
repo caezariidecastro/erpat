@@ -4,6 +4,7 @@
             <li class="title-tab"><h4 class="pl15 pt5 pr15"><?php echo lang("income_vs_expenses"); ?></h4></li>
             <li><a id="income-vs-expenses-chart-button" role="presentation" class="active" href="javascript:;" data-target="#income-vs-expenses-chart-tab"><?php echo lang("chart"); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("expenses/income_vs_expenses_summary/"); ?>" data-target="#income-vs-expenses-summary"><?php echo lang("summary"); ?></a></li>
+            <li><a role="presentation" href="#" data-target="#balancesheet"><?php echo lang("balance_sheet"); ?></a></li>
             <span class="help pull-right p15" data-toggle="tooltip" data-placement="left" title="<?php echo lang('income_expenses_widget_help_message') ?>"><i class="fa fa-question-circle"></i></span>
         </ul>
 
@@ -34,6 +35,9 @@
             </div>
 
             <div role="tabpanel" class="tab-pane fade" id="income-vs-expenses-summary"></div>
+            <div role="tabpanel" class="tab-pane fade" id="balancesheet">
+                <?php $this->load->view("balance_sheet/index")?>
+            </div>
         </div>
 
     </div>
