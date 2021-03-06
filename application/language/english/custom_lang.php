@@ -273,6 +273,7 @@ $lang["transmission"] = "Transmission";
 $lang["no_of_wheels"] = "No. of wheels";
 $lang["plate_number"] = "Plate no.";
 $lang["max_cargo_weight"] = "Max cargo weight (kg)";
+$lang["image"] = "Image";
 
 // Settings > Payment methods
 $lang["available_on_payroll"] = "Available on payroll";

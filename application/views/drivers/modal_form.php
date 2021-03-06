@@ -131,7 +131,6 @@
             
             reader.onload = function(e) {
                 $('#add_license_image_preview').attr('src', e.target.result);
-                $("#edit_preview_wrapper").hide();
             }
             
             reader.readAsDataURL(input.files[0]);

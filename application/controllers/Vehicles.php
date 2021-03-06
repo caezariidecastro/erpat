@@ -27,6 +27,8 @@ class Vehicles extends MY_Controller {
     }
 
     private function _make_row($data) {
+        $file_path = base_url(get_setting("profile_image_path").$data->image);
+
         return array(
             $data->brand,
             $data->model,
@@ -36,6 +38,7 @@ class Vehicles extends MY_Controller {
             $data->no_of_wheels,
             $data->plate_number,
             $data->max_cargo_weight,
+            $data->image ? modal_anchor(get_uri("vehicles/view_image?file_path=".$file_path), "<img src='".$file_path."' style='width: 100px; height: auto;'/>", array( "title" => lang('image'), "data-post-id" => $data->id)) : "",
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             modal_anchor(get_uri("vehicles/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_vehicle'), "data-post-id" => $data->id))
@@ -49,6 +52,7 @@ class Vehicles extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        $delete_file = $this->input->post('delete_file');
 
         $vehicle_data = array(
             "brand" => $this->input->post('brand'),
@@ -64,6 +68,32 @@ class Vehicles extends MY_Controller {
         if(!$id){
             $vehicle_data["created_on"] = date('Y-m-d H:i:s');
             $vehicle_data["created_by"] = $this->login_user->id;
+        }
+
+        if ($_FILES) {
+            $config['upload_path'] = get_setting("profile_image_path");
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('image'))
+            {
+                $upload_data = $this->upload->data();
+                $file_name = $upload_data["file_name"];
+                $image_data = array("image" => $file_name);
+                $this->Vehicles_model->save($image_data, $id);
+            }
+            else
+            {
+                echo json_encode(array("success" => false, 'message' => $this->upload->display_errors()));
+                exit();
+            }
+        }
+
+        if($delete_file){
+            unlink(get_setting("profile_image_path").$delete_file[0]);
+            $image_data = array("image" => $file_name);
+            $this->Vehicles_model->save($image_data, $id);
         }
 
         $vehicle_id = $this->Vehicles_model->save($vehicle_data, $id);
@@ -98,5 +128,10 @@ class Vehicles extends MY_Controller {
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
+    }
+
+    function view_image(){
+        $view_data["file_path"] = $this->input->get("file_path");
+        $this->load->view("vehicles/view_image", $view_data);
     }
 }

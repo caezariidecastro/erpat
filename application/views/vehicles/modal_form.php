@@ -131,6 +131,21 @@
             ?>
         </div>
     </div>
+    <div class="form-group">
+        <label for="image" class=" col-md-3"><?php echo lang('image'); ?></label>
+        <div class="col-md-9">
+            <input id="image" class="form-control <?= $model_info->image ? 'hide' : ''?>" type="file" name="image"/>
+            <?php
+            $this->load->view("vehicles/file_preview", array("file_name" => $model_info->image));
+            ?>
+        </div>
+    </div>
+    <div class="form-group" id="add_preview_wrapper">
+        <label class=" col-md-3"></label>
+        <div class="col-md-9">
+            <img id="add_image_preview" style="width: 100%; height: auto;" src="" alt="">
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">
@@ -146,5 +161,22 @@
                 $("#vehicle-table").appTable({newData: result.data, dataId: result.id});
             }
         });
+
+        $("#image").change(function() {
+            readURL(this);
+        });
     });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function(e) {
+                $('#add_image_preview').attr('src', e.target.result);
+                $("#edit_preview_wrapper").hide();
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>

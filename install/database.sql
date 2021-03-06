@@ -1797,3 +1797,6 @@ ALTER TABLE `labels` CHANGE `context` `context` ENUM('event','invoice','note','p
 
 -- 2021-03-06 20:15
 ALTER TABLE `inventory_transfers` ADD `vehicle_id` BIGINT(10) NOT NULL AFTER `driver`;
+
+-- 2021-03-06 22:07
+ALTER TABLE `vehicles` ADD `image` TEXT NULL AFTER `max_cargo_weight`;
