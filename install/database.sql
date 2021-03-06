@@ -1800,3 +1800,6 @@ ALTER TABLE `inventory_transfers` ADD `vehicle_id` BIGINT(10) NOT NULL AFTER `dr
 
 -- 2021-03-06 22:07
 ALTER TABLE `vehicles` ADD `image` TEXT NULL AFTER `max_cargo_weight`;
+
+-- 2021-03-0 24:17
+ALTER TABLE `asset_entries` ADD `labels` TEXT NULL AFTER `description`;
