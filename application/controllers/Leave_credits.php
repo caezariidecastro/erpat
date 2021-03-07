@@ -78,8 +78,6 @@ class Leave_credits extends MY_Controller {
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
         $action = $this->input->post('action');
-
-        log_message("error", "UserID: " . $user_id);
         
         $options = array(
             "start_date" => $start_date,
