@@ -23,4 +23,12 @@ class Expense_categories_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function get_details_by_title($title) {
+        $expense_categories_table = $this->db->dbprefix('expense_categories');
+        $sql = "SELECT $expense_categories_table.*
+        FROM $expense_categories_table
+        WHERE $expense_categories_table.deleted=0 
+        AND $expense_categories_table.title = '$title'";
+        return $this->db->query($sql);
+    }
 }

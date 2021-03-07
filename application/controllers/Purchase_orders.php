@@ -17,6 +17,7 @@ class Purchase_orders extends MY_Controller {
         $this->load->model("Material_inventory_model");
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
+        $this->load->model("Expenses_model");
     }
 
     protected function _get_vendor_dropdown_data($status = null) {
@@ -197,8 +198,11 @@ class Purchase_orders extends MY_Controller {
         ));
         
         $id = $this->input->post('id');
+
+        $purchase_info = $this->Purchase_orders_model->get_details(array("id" => $id))->row();
         
         if ($this->Purchase_orders_model->delete($id)) {
+            $this->Expenses_model->delete($purchase_info->expense_id);
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -388,6 +392,38 @@ class Purchase_orders extends MY_Controller {
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
+    }
+
+    private function _activate_all_budget($purchase_id){
+        $purchase_budgets = $this->Purchase_order_budgets_model->get_details(array("purchase_id" => $purchase_id))->result();
+
+        foreach($purchase_budgets as $budget){
+            $transaction_data["deleted"] = "0";
+            $this->Account_transactions_model->update_purchase_order($budget->id, $transaction_data); 
+        }
+    }
+
+    private function _delete_all_budget($purchase_id){
+        $purchase_budgets = $this->Purchase_order_budgets_model->get_details(array("purchase_id" => $purchase_id))->result();
+
+        foreach($purchase_budgets as $budget){
+            $transaction_data["deleted"] = "1";
+            $this->Account_transactions_model->update_purchase_order($budget->id, $transaction_data); 
+        }
+    }
+
+    private function save_expense($account_id, $amount, $vendor_id){
+        $expense_category_info = $this->Expense_categories_model->get_details_by_title("Purchase")->row();
+
+        $expense_data = array(
+            "account_id" => $account_id,
+            "category_id" => $expense_category_info->id,
+            "amount" => $amount,
+            "vendor_id" => $vendor_id,
+            "expense_date" => get_my_local_time("Y-m-d")
+        );
+
+        return $this->Expenses_model->save($expense_data);
     }
 
     private function save_purchase_transaction($account_id, $amount, $id, $saved_id){
@@ -590,6 +626,31 @@ class Purchase_orders extends MY_Controller {
     private function _update_purchase_status($purchase_id){
         $purchase_order_data["status"] = $this->_get_purchase_order_status($purchase_id);
         $this->Purchase_orders_model->save($purchase_order_data, $purchase_id);
+
+        $purchase_info = $this->Purchase_orders_model->get_details(array("id" => $purchase_id))->row();
+
+        // Delete previous expense related to purchase (if there is)
+        if($purchase_info->expense_id){
+            $expense_data["deleted"] = "1";
+            $this->Expenses_model->save($expense_data, $purchase_info->expense_id);
+        }
+
+        $purchase_data["expense_id"] = NULL;
+
+        if($purchase_order_data["status"] == "completed"){
+            $total_budget = $this->Purchase_order_budgets_model->get_purchase_total_budget($purchase_id);
+
+            // Save expense_id on purchase
+            $purchase_data["expense_id"] = $this->save_expense($purchase_info->account_id, $total_budget, $purchase_info->vendor_id);
+
+            $this->_activate_all_budget($purchase_id);
+        }
+        else{
+            $this->_delete_all_budget($purchase_id);
+        }
+        
+        $this->Purchase_orders_model->save($purchase_data, $purchase_id);
+
         return $purchase_order_data["status"];
     }
 }
