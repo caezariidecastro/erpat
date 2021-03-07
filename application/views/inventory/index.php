@@ -11,51 +11,49 @@
     }
 </style>
 
-<div id="page-content" class="clearfix p20">
-    <div class="row">
-        <div class="box">
-            <div class="box-content message-view">
-                <input type="hidden" id="item_id">
-                <div class="col-sm-12 col-md-4">
-                    <div id="message-list-box" class="panel panel-default">
-                        <div class="panel-heading clearfix">
-                            <div class="pull-left p5" style="font-size: 18px;">
-                                <?= lang('products')?>
-                            </div>
-                            <div class="pull-right">
-                                <input type="text" id="search-items" class="datatable-search" placeholder="<?php echo lang('search') ?>">
-                            </div>
+<div class="row mt20">
+    <div class="box">
+        <div class="box-content message-view">
+            <input type="hidden" id="item_id">
+            <div class="col-sm-12 col-md-4">
+                <div id="message-list-box" class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <div class="pull-left p5" style="font-size: 18px;">
+                            <?= lang('products')?>
                         </div>
-                        <div class="table-responsive">
-                            <table id="items-table" class="display no-thead no-padding clickable" cellspacing="0" width="100%">            
-                            </table>
+                        <div class="pull-right">
+                            <input type="text" id="search-items" class="datatable-search" placeholder="<?php echo lang('search') ?>">
                         </div>
                     </div>
+                    <div class="table-responsive">
+                        <table id="items-table" class="display no-thead no-padding clickable" cellspacing="0" width="100%">            
+                        </table>
+                    </div>
                 </div>
-                <div class="col-sm-12 col-md-8" id="item-details-placeholder">
-                    <div id="message-details-section" class="panel panel-default"> 
-                        <div id="empty-message" class="text-center mb15 box">
-                            <div class="box-content" style="vertical-align: middle; height: 100%; padding: 10px"> 
-                                <div><?php echo lang("select_a_product"); ?></div>
-                                <span class="fa fa-object-group" style="font-size: 1100%; color:#f6f8f8"></span>
-                            </div>
+            </div>
+            <div class="col-sm-12 col-md-8" id="item-details-placeholder">
+                <div id="message-details-section" class="panel panel-default"> 
+                    <div id="empty-message" class="text-center mb15 box">
+                        <div class="box-content" style="vertical-align: middle; height: 100%; padding: 10px"> 
+                            <div><?php echo lang("select_a_product"); ?></div>
+                            <span class="fa fa-object-group" style="font-size: 1100%; color:#f6f8f8"></span>
+                        </div>
 
-                        </div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-8" id="item-details-preview">
-                    <div id="message-details-section" class="panel panel-default"> 
-                        <div id="empty-message" class="text-center mb15 box">
-                            <div class="box-content" style="vertical-align: middle; height: 100%; padding: 10px" id="result"> 
-                            </div>
+            </div>
+            <div class="col-sm-12 col-md-8" id="item-details-preview">
+                <div id="message-details-section" class="panel panel-default"> 
+                    <div id="empty-message" class="text-center mb15 box">
+                        <div class="box-content" style="vertical-align: middle; height: 100%; padding: 10px" id="result"> 
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </div>
+
+
 </div>
 <style type="text/css">
     .datatable-tools:first-child {
