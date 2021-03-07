@@ -58,6 +58,7 @@ if (isset($page_type) && $page_type === "full") {
         </div>
         <div role="tabpanel" class="tab-pane fade" id="team_member-yearly-leaves"></div>
         <div role="tabpanel" class="tab-pane fade" id="team_member-leave-credit">
+            <?php $this->load->view("team_members/leave_credits");?>
         </div>
     </div>
 </div>
