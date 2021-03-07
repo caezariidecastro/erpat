@@ -29,7 +29,7 @@ class Leaves extends MY_Controller {
     }
 
     function index() {
-        $this->check_module_availability("module_leave");
+        $this->check_module_availability("module_leave");        
         $this->template->rander("leaves/index");
     }
 
@@ -71,7 +71,7 @@ class Leaves extends MY_Controller {
         $leave_data['created_by'] = $this->login_user->id;
         $leave_data['checked_by'] = $this->login_user->id;
         $leave_data['checked_at'] = $leave_data['created_at'];
-        $leave_data['status'] = "approved";
+        $leave_data['status'] = "pending";
 
         //hasn't full access? allow to update only specific member's record, excluding loged in user's own record
         $this->access_only_allowed_members($leave_data['applicant_id']);
@@ -495,6 +495,64 @@ class Leaves extends MY_Controller {
         return $leave_type_dropdown;
     }
 
+    // load leave credits tab 
+    function leave_credits() {
+        $fields = array("first_name", "last_name");
+        $where = array("user_type" => "staff");
+        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        
+        $this->load->view("leaves/leave_credits", $view_data);
+    }
+
+    // load leave types tab 
+    function leave_types() {
+        $this->load->view("leaves/leave_types");
+    }
+
+    //load leave type add/edit form
+    function modal_form_type() {
+        $view_data['model_info'] = $this->Leave_types_model->get_one($this->input->post('id'));
+        $this->load->view('leaves/modal_form_type', $view_data);
+    }
+
+    //load leave type add form
+    function modal_form_add_credit() {
+        self::modal_form_credit("add");
+    }
+    
+
+    //load leave type deduct form
+    function modal_form_deduct_credit() {
+        self::modal_form_credit("deduct");
+    }
+    
+    //load leave type add/deduct form
+    function modal_form_credit($form_type) {
+        if ($applicant_id) {
+            $view_data['team_members_info'] = $this->Users_model->get_one($applicant_id);
+        } else {
+
+            //show all members list to only admin and other members who has permission to manage all member's leave
+            //show only specific members list who has limited access
+            if ($this->access_type === "all") {
+                $where = array("user_type" => "staff");
+            } else {
+                $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
+            }
+            $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
+        }
+
+        $view_data['model_info'] = $this->Leave_types_model->get_one($this->input->post('id'));
+
+        if($form_type === "add") {
+            $view_data['credit_form_action'] = "debit";
+            $this->load->view('leaves/modal_form_credit', $view_data);
+        } else if($form_type === "deduct") {
+            $view_data['credit_form_action'] = "credit";
+            $this->load->view('leaves/modal_form_credit', $view_data);
+        }
+        
+    }
 }
 
 /* End of file leaves.php */

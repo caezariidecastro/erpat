@@ -1,3 +1,9 @@
+
+<div class="page-title clearfix">
+    <div class="title-button-group">
+        <?php echo modal_anchor(get_uri("leaves/apply_leave_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('apply_leave'), array("class" => "btn btn-default", "title" => lang('apply_leave'))); ?>
+    </div>
+</div>
 <div class="table-responsive">
     <table id="pending-approval-table" class="display" cellspacing="0" width="100%">            
     </table>

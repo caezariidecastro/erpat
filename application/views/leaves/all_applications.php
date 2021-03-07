@@ -1,3 +1,9 @@
+
+<div class="page-title clearfix">
+    <div class="title-button-group">
+        <?php echo modal_anchor(get_uri("leaves/assign_leave_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('assign_leave'), array("class" => "btn btn-default", "title" => lang('assign_leave'))); ?>
+    </div>
+</div>
 <div class="table-responsive">
     <table id="all-application-table" class="display" cellspacing="0" width="100%">            
     </table>

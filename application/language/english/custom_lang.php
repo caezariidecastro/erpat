@@ -398,3 +398,16 @@ $lang["add_view_material"] = "Add/view material";
 
 // Roles
 $lang["set_module_permissions"] = "Set module permission";
+
+// Leave Credits
+$lang["credits"] = "Credits";
+$lang["leave_credits"] = "Leave credits";
+$lang["add_leave_credits"] = "Add";
+$lang["remove_leave_credits"] = "Deduct";
+$lang["leave_approver"] = "Approved By";
+$lang["approve_date"] = "Approved date";
+$lang["approve_by"] = "Approved by";
+$lang["number_of_days"] = "Number of Days";
+$lang["leave_credit_add_form"] = "Add Leave Credit";
+$lang["leave_credit_deduct_form"] = "Deduct Leave Credit";
+$lang["leave_credit_info"] = "Leave Credit Reference";

@@ -16,6 +16,7 @@ if (isset($page_type) && $page_type === "full") {
         </li>
         <li><a id="monthly-leaves-button"  role="presentation" class="active" href="javascript:;" data-target="#team_member-monthly-leaves"><?php echo lang("monthly"); ?></a></li>
         <li><a role="presentation" href="<?php echo_uri("team_members/yearly_leaves/"); ?>" data-target="#team_member-yearly-leaves"><?php echo lang('yearly'); ?></a></li>
+        <li><a role="presentation" href="<?php echo_uri("team_members/leave_credits/"); ?>" data-target="#team_member-leave-credit"><?php echo lang('credits'); ?></a></li>
         <?php if ($this->login_user->id === $applicant_id) { ?>
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
@@ -41,6 +42,8 @@ if (isset($page_type) && $page_type === "full") {
                             {title: '<?php echo lang("date") ?>', "class": "w20p"},
                             {title: '<?php echo lang("duration") ?>', "class": "w20p"},
                             {title: '<?php echo lang("status") ?>', "class": "w15p"},
+                            {title: '<?php echo lang("created_by") ?>', "class": "w15p"},
+                            {targets: [6], visible: false, searchable: false},
                             {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
                         ],
                         printColumns: [1, 2, 3, 4],
@@ -54,5 +57,7 @@ if (isset($page_type) && $page_type === "full") {
             </script>
         </div>
         <div role="tabpanel" class="tab-pane fade" id="team_member-yearly-leaves"></div>
+        <div role="tabpanel" class="tab-pane fade" id="team_member-leave-credit">
+        </div>
     </div>
 </div>

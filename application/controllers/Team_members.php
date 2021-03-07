@@ -798,7 +798,13 @@ class Team_members extends MY_Controller {
         $this->load->view("team_members/yearly_leaves");
     }
 
-    //show yearly leave list of a team member
+    //show credit leave list of a team member
+    function leave_credits() {
+        $view_data["user_id"] = $user_id;
+        $this->load->view("team_members/leave_credits", $view_data);
+    }
+
+    //show yearly expense list of a team member
     function expense_info($user_id) {
         $view_data["user_id"] = $user_id;
         $this->load->view("team_members/expenses", $view_data);

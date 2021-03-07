@@ -39,10 +39,6 @@ if (get_setting("module_event") == "1") {
     $settings_menu["components"][] = array("name" => "events", "url" => "settings/events");
 }
 
-if (get_setting("module_leave") == "1") {
-    $settings_menu["components"][] = array("name" => "leave_types", "url" => "leave_types");
-}
-
 if (get_setting("module_ticket") == "1") {
     $settings_menu["components"][] = array("name" => "tickets", "url" => "ticket_types");
 }

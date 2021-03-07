@@ -179,6 +179,7 @@ $autoload['model'] = array(
     'Lead_status_model',
     'Lead_source_model',
     'Labels_model',
-    'Verification_model'
+    'Verification_model',
+    'Leave_credits_model'
 );
 
