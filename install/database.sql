@@ -1817,3 +1817,6 @@ CREATE TABLE IF NOT EXISTS `leave_credits` (
   `deleted` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- 2021-03-05 18:54
+ALTER TABLE `inventory_transfers` ADD `status` ENUM('draft','ongoing','completed','cancelled') NOT NULL DEFAULT 'draft' AFTER `remarks`;

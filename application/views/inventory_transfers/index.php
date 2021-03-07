@@ -29,6 +29,7 @@
                 {title: "<?php echo lang('remarks') ?>", "class": "w15p"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
+                {title: "<?php echo lang('status') ?>", "class": "text-center"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],

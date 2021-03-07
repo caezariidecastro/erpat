@@ -43,6 +43,7 @@ class Inventory_model extends Crud_model {
             AND inventory_transfer_items.deleted = 0
             $item_query
             AND inventory_transfers.transferee = $inventory_table.warehouse
+            AND inventory_transfers.status = 'completed'
         ), 0) AS transferred,
         COALESCE((
             SELECT SUM(inventory_transfer_items.quantity)
@@ -53,6 +54,7 @@ class Inventory_model extends Crud_model {
             AND inventory_transfer_items.deleted = 0
             $item_query
             AND inventory_transfers.receiver = $inventory_table.warehouse
+            AND inventory_transfers.status = 'completed'
         ), 0) AS received,
         COALESCE((
             SELECT SUM(invoice_items.quantity)
