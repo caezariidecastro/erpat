@@ -555,19 +555,14 @@ class Leaves extends MY_Controller {
     
     //load leave type add/deduct form
     function modal_form_credit($form_type) {
-        if ($applicant_id) {
-            $view_data['team_members_info'] = $this->Users_model->get_one($applicant_id);
+        //show all members list to only admin and other members who has permission to manage all member's leave
+        //show only specific members list who has limited access
+        if ($this->access_type === "all") {
+            $where = array("user_type" => "staff");
         } else {
-
-            //show all members list to only admin and other members who has permission to manage all member's leave
-            //show only specific members list who has limited access
-            if ($this->access_type === "all") {
-                $where = array("user_type" => "staff");
-            } else {
-                $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
-            }
-            $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
+            $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
         }
+        $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
 
         $view_data['model_info'] = $this->Leave_types_model->get_one($this->input->post('id'));
 
