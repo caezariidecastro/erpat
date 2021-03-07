@@ -20,7 +20,7 @@
             source: "<?php echo_uri("asset_entries/list_data") ?>",
             order: [[0, "desc"]],
             columns: [
-                {title: "<?php echo lang("title") ?> "},
+                {title: "<?php echo lang("title") ?> ", "class": "w15p"},
                 {title: "<?php echo lang("description") ?>"},
                 {title: "<?php echo lang("cost") ?>"},
                 {title: "<?php echo lang("serial_number") ?>"},
@@ -34,7 +34,6 @@
                 {title: "<?php echo lang("location") ?>"},
                 {title: "<?php echo lang("created_on") ?>"},
                 {title: "<?php echo lang("created_by") ?>"},
-                {title: "<?php echo lang("labels") ?>", "class": "text-center option w100"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4],

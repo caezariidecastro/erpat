@@ -81,10 +81,11 @@ class Asset_entries extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $labels = $data->labels ? make_labels_view_data($data->labels_list, true) : "";
+        $labels = $data->labels ? "<span class='pull-right'>" . make_labels_view_data($data->labels_list, true) . "</span>" : "";
+        $title = $data->title . $labels;
 
         return array(
-            $data->title,
+            $title,
             nl2br($data->description),
             number_with_decimal($data->cost),
             $data->serial_number,
@@ -98,7 +99,6 @@ class Asset_entries extends MY_Controller {
             $data->location_name,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
-            $labels,
             modal_anchor(get_uri("asset_entries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_entry'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("asset_entries/delete"), "data-action" => "delete-confirmation"))
         );
