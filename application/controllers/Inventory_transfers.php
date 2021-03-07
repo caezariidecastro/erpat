@@ -61,6 +61,7 @@ class Inventory_transfers extends MY_Controller {
             nl2br($data->remarks),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
+            $this->_get_status_label($data->status),
             modal_anchor(get_uri("inventory_transfers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_transfer'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory_transfers/delete"), "data-action" => "delete-confirmation"))
         );
@@ -94,7 +95,7 @@ class Inventory_transfers extends MY_Controller {
         $inventory_items = $this->input->post('inventory_items');
         $reference_number = $this->input->post('reference_number');
 
-        $vendor_data = array(
+        $transfer_data = array(
             "transferee" => $transferee,
             "receiver" => $receiver,
             "dispatcher" => $this->input->post('dispatcher'),
@@ -104,14 +105,15 @@ class Inventory_transfers extends MY_Controller {
         );
 
         if(!$id){
-            $vendor_data["reference_number"] = $this->input->post('reference_number');
-            $vendor_data["created_on"] = date('Y-m-d H:i:s');
-            $vendor_data["created_by"] = $this->login_user->id;
+            $transfer_data["reference_number"] = $this->input->post('reference_number');
+            $transfer_data["created_on"] = date('Y-m-d H:i:s');
+            $transfer_data["created_by"] = $this->login_user->id;
         }
 
         if($id){
             // If edit mode, Delete previous inventory_items
             $this->Inventory_transfers_model->delete_transfer_item($reference_number);
+            $transfer_data["status"] = $this->input->post("status");
         }
 
 
@@ -128,7 +130,7 @@ class Inventory_transfers extends MY_Controller {
                     $this->validate_items_warehouse($inventory_item->id, $receiver);
                 }
 
-                $vendor_id = $this->Inventory_transfers_model->save($vendor_data, $id);
+                $transfer_id = $this->Inventory_transfers_model->save($transfer_data, $id);
     
                 for($i = 0; $i < count($inventory_items); $i++){
                     $inventory_item = json_decode($inventory_items[$i]);
@@ -142,10 +144,10 @@ class Inventory_transfers extends MY_Controller {
                     $this->Inventory_transfers_model->insert_transfer_item($data);
                 }
     
-                if ($vendor_id) {
-                    $options = array("id" => $vendor_id);
-                    $vendor_info = $this->Inventory_transfers_model->get_details($options)->row();
-                    echo json_encode(array("success" => true, "id" => $vendor_info->id, "data" => $this->_make_row($vendor_info), 'message' => lang('record_saved')));
+                if ($transfer_id) {
+                    $options = array("id" => $transfer_id);
+                    $transfer_info = $this->Inventory_transfers_model->get_details($options)->row();
+                    echo json_encode(array("success" => true, "id" => $transfer_info->id, "data" => $this->_make_row($transfer_info), 'message' => lang('record_saved')));
                 } else {
                     echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
                 }
@@ -176,6 +178,7 @@ class Inventory_transfers extends MY_Controller {
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
         $view_data['vehicle_dropdown'] = $this->_get_vehicle_dropdown_data();
         $view_data['warehouse_item_select2'] = $model_info->transferee ? $this->get_inventory_items_select2_data($model_info->transferee) : array('id' => '', 'text' => '');
+        $view_data["status_dropdown"] = $this->_get_statuses();
 
         $this->load->view('inventory_transfers/modal_form', $view_data);
     }
@@ -212,5 +215,36 @@ class Inventory_transfers extends MY_Controller {
             }
             echo json_encode(array("data" => $result));
         }
+    }
+
+    private function _get_status_label($status){
+        $labeled_status = "";
+
+        if($status == "draft"){
+            $labeled_status = "<span class='label label-default'>Draft</span>";
+        }
+
+        if($status == "ongoing"){
+            $labeled_status = "<span class='label label-primary'>Ongoing</span>";
+        }
+
+        if($status == "completed"){
+            $labeled_status = "<span class='label label-success'>Completed</span>";
+        }
+
+        if($status == "cancelled"){
+            $labeled_status = "<span class='label label-danger'>Cancelled</span>";
+        }
+
+        return $labeled_status;
+    }
+
+    private function _get_statuses(){
+        return array(
+            "draft" => "Draft",
+            "ongoing" => "Ongoing",
+            "completed" => "Completed",
+            "cancelled" => "Cancelled"
+        );
     }
 }
