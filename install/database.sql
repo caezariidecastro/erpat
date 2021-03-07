@@ -1818,5 +1818,14 @@ CREATE TABLE IF NOT EXISTS `leave_credits` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- 2021-03-05 18:54
+-- 2021-03-07 18:54
 ALTER TABLE `inventory_transfers` ADD `status` ENUM('draft','ongoing','completed','cancelled') NOT NULL DEFAULT 'draft' AFTER `remarks`;
+
+-- 2021-03-07 21:02
+INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Purchase', '0');
+
+-- 2021-03-07 21:17
+ALTER TABLE `purchase_orders` ADD `expense_id` BIGINT(10) NULL AFTER `id`;
+
+-- 2021-03-07 22:30
+ALTER TABLE `expenses` ADD `vendor_id` BIGINT(10) NOT NULL AFTER `client_id`;

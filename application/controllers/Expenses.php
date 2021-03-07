@@ -297,6 +297,13 @@ class Expenses extends MY_Controller {
             $description .= lang("team_member") . ": " . $data->linked_user_name;
         }
 
+        if ($data->vendor_name) {
+            if ($description) {
+                $description .= "<br /> ";
+            }
+            $description .= lang("supplier") . ": " . $data->vendor_name;
+        }
+
         if ($data->recurring) {
             //show recurring information
             $recurring_stopped = false;

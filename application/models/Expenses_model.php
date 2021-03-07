@@ -16,6 +16,7 @@ class Expenses_model extends Crud_model {
         $users_table = $this->db->dbprefix('users');
         $taxes_table = $this->db->dbprefix('taxes');
         $clients_table = $this->db->dbprefix('clients');
+        $vendors_table = $this->db->dbprefix('vendors');
 
 
         $where = "";
@@ -63,6 +64,7 @@ class Expenses_model extends Crud_model {
 
         $sql = "SELECT $expenses_table.*, $expense_categories_table.title as category_title, 
                  CONCAT($users_table.first_name, ' ', $users_table.last_name) AS linked_user_name,
+                 $vendors_table.name AS vendor_name,
                  $clients_table.company_name AS linked_client_name,
                  $projects_table.title AS project_title,
                  tax_table.percentage AS tax_percentage,
@@ -73,6 +75,7 @@ class Expenses_model extends Crud_model {
         LEFT JOIN $clients_table ON $clients_table.id= $expenses_table.client_id
         LEFT JOIN $projects_table ON $projects_table.id= $expenses_table.project_id
         LEFT JOIN $users_table ON $users_table.id= $expenses_table.user_id
+        LEFT JOIN $vendors_table ON $vendors_table.id = $expenses_table.vendor_id
         LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table ON tax_table.id = $expenses_table.tax_id
         LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table2 ON tax_table2.id = $expenses_table.tax_id2
             $join_custom_fields
