@@ -1980,3 +1980,7 @@ ALTER TABLE `users` MODIFY IF EXISTS `license_image` varchar(255) COLLATE utf8_u
 -- 2021-03-07 03:21
 ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `asset_vendor_id` int(11) NOT NULL DEFAULT '0' AFTER `skype`;
 ALTER TABLE `users` MODIFY IF EXISTS `asset_vendor_id` int(11) NOT NULL DEFAULT '0' AFTER `skype`;
+
+-- 2021-03-07 04:04
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `created_at`;
+ALTER TABLE `users` MODIFY IF EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `created_at`;
