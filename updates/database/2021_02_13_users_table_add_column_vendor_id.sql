@@ -1,1 +1,0 @@
-ALTER TABLE `users` ADD `vendor_id` BIGINT(10) NOT NULL AFTER `client_id`;

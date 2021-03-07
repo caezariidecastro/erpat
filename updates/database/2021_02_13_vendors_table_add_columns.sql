@@ -1,1 +1,0 @@
-ALTER TABLE `vendors` ADD `city` TEXT NOT NULL AFTER `deleted`, ADD `state` TEXT NOT NULL AFTER `city`, ADD `zip` TEXT NOT NULL AFTER `state`, ADD `country` TEXT NOT NULL AFTER `zip`;

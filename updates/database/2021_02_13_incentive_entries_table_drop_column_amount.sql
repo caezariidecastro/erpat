@@ -1,1 +1,0 @@
-ALTER TABLE `incentive_entries` DROP `amount`;

@@ -1,2 +1,0 @@
-ALTER TABLE `users` ADD `street` TEXT NULL AFTER `address`, ADD `city` TEXT NULL AFTER `street`, ADD `state` TEXT NULL AFTER `city`, ADD `zip` TEXT NULL AFTER `state`, ADD `country` TEXT NULL AFTER `zip`;
-ALTER TABLE `users` ADD `created_by` BIGINT(10) NOT NULL AFTER `created_at`;
