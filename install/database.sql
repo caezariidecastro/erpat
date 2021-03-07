@@ -1824,7 +1824,7 @@ CREATE TABLE IF NOT EXISTS `leave_credits` (
   `action` ENUM('debit','credit') CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `counts` bigint(10) NOT NULL DEFAULT 0,
   `remarks` text COLLATE utf8_unicode_ci NOT NULL,
-  `created_on` datetime NOT NULL,
+  `date_created` datetime NOT NULL,
   `created_by` bigint(10) NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
