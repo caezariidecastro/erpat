@@ -89,7 +89,7 @@ class Leave_types extends MY_Controller {
             "<span style='background-color:" . $data->color . "' class='color-tag pull-left'></span>" . $data->title,
             $data->description ? $data->description : "-",
             lang($data->status),
-            modal_anchor(get_uri("leave_types/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_leave_type'), "data-post-id" => $data->id))
+            modal_anchor(get_uri("leaves/modal_form_type"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_leave_type'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_leave_type'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("leave_types/delete"), "data-action" => "delete"))
         );
     }

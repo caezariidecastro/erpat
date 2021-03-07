@@ -1801,5 +1801,19 @@ ALTER TABLE `inventory_transfers` ADD `vehicle_id` BIGINT(10) NOT NULL AFTER `dr
 -- 2021-03-06 22:07
 ALTER TABLE `vehicles` ADD `image` TEXT NULL AFTER `max_cargo_weight`;
 
--- 2021-03-0 24:17
+-- 2021-03-07 24:17
 ALTER TABLE `asset_entries` ADD `labels` TEXT NULL AFTER `description`;
+
+-- 2021-03-07 09:27
+CREATE TABLE IF NOT EXISTS `leave_credits` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `user_id` bigint(10) NOT NULL DEFAULT 0,
+  `leave_id` bigint(10) NOT NULL DEFAULT 0,
+  `action` ENUM('debit','credit') CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `counts` bigint(10) NOT NULL DEFAULT 0,
+  `remarks` text COLLATE utf8_unicode_ci NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
