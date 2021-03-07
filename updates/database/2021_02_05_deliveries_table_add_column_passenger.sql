@@ -1,0 +1,1 @@
+ALTER TABLE `deliveries` ADD `passengers` TEXT NOT NULL AFTER `driver`;

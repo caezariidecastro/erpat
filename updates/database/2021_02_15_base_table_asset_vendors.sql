@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS `asset_vendors` LIKE `vendors`;

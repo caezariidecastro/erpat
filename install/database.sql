@@ -1809,8 +1809,8 @@ ALTER TABLE `inventory_transfers` ADD COLUMN IF NOT EXISTS`vehicle_id` BIGINT(10
 ALTER TABLE `inventory_transfers` MODIFY IF EXISTS `vehicle_id` BIGINT(10) NOT NULL AFTER `driver`;
 
 -- 2021-03-06 22:07
-ALTER TABLE `vehicles` ADD COLUMN IF NOT EXISTS `image` TEXT NULL AFTER `max_cargo_weight`;
-ALTER TABLE `vehicles` MODIFY IF EXISTS `image` TEXT NULL AFTER `max_cargo_weight`;
+ALTER TABLE `vehicles` ADD COLUMN IF NOT EXISTS `image` TEXT NULL AFTER `id`;
+ALTER TABLE `vehicles` MODIFY IF EXISTS `image` TEXT NULL AFTER `id`;
 
 -- 2021-03-07 24:17
 ALTER TABLE `asset_entries` ADD COLUMN IF NOT EXISTS `labels` TEXT NULL AFTER `description`;

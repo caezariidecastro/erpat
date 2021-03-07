@@ -1,0 +1,2 @@
+ALTER TABLE `users` ADD `license_number` VARCHAR(255) NULL AFTER `requested_account_removal`, ADD `license_image` VARCHAR(255) NULL AFTER `license_number`;
+ALTER TABLE `users` CHANGE `user_type` `user_type` ENUM('staff','client','lead','consumer','customer','driver') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client';

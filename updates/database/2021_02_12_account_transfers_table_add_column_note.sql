@@ -1,0 +1,1 @@
+ALTER TABLE `account_transfers` ADD `note` TEXT NULL AFTER `amount`;

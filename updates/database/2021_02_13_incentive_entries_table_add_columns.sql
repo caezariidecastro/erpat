@@ -1,0 +1,1 @@
+ALTER TABLE `incentive_entries` ADD `account_id` BIGINT(10) NOT NULL AFTER `category`, ADD `expense_id` BIGINT(10) NOT NULL AFTER `account_id`;
