@@ -386,6 +386,9 @@ $lang["purchase"] = "PURCHASE";
 $lang["purchase_small_caps"] = "Purchase";
 $lang["send_purchase_request"] = "Send purchase request";
 $lang["purchase_sent_message"] = "The purchase request has been sent!";
+$lang["mark_purchase_as_cancelled"] = "Mark purchase as cancelled";
+$lang["cancel_confirmation"] = "Are you sure you want to cancel this purchase?";
+$lang["mark_purchase_as_draft"] = "Mark purchase as draft";
 
 // Production & Inventory > Returns
 $lang["returns"] = "Returns";

@@ -654,4 +654,21 @@ class Purchase_orders extends MY_Controller {
 
         return $purchase_order_data["status"];
     }
+
+    function cancel_form(){
+        $view_data["id"] = $this->input->post("id");
+        $this->load->view('purchase_orders/cancel_form', $view_data);
+    }
+
+    function cancel(){
+        $id = $this->input->post("id");
+        $data = array("status" => "cancelled");
+        $this->Purchase_orders_model->save($data, $id);
+    }
+
+    function mark_as_draft(){
+        $id = $this->input->post("id");
+        $data = array("status" => "draft");
+        $this->Purchase_orders_model->save($data, $id);
+    }
 }

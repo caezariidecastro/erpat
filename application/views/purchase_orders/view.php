@@ -21,9 +21,16 @@
                         <li role="presentation"><?php echo anchor(get_uri("pid/purchases/preview/" . $purchase_order_info->id . "/1"), "<i class='fa fa-search'></i> " . lang('purchase_preview'), array("title" => lang('purchase_preview'))); ?> </li>
                         <li role="presentation"><?php echo js_anchor("<i class='fa fa-print'></i> " . lang('print_purchase'), array('title' => lang('print_purchase'), 'id' => 'print-purchase-btn')); ?> </li>
 
-                        <li role="presentation" class="divider"></li>
+                        <?php if ($purchase_order_info->status == "draft") { ?>
+                            <li role="presentation"><?php echo modal_anchor(get_uri("purchase_orders/cancel_form"), "<i class='fa fa-close'></i> " . lang('mark_purchase_as_cancelled'), array("title" => lang('mark_purchase_as_cancelled'), "data-post-id" => $purchase_order_info->id)); ?> </li>
+                        <?php } ?>
+
+                        <?php if ($purchase_order_info->status == "cancelled") { ?>
+                            <li role="presentation"><?php echo js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_announcement'), "class" => "delete", "data-id" => $purchase_order_info->id, "data-action-url" => get_uri("announcements/delete"), "data-action" => "delete")); ?> </li>
+                        <?php } ?>
 
                         <?php if ($purchase_order_info->status !== "cancelled") { ?>
+                            <li role="presentation" class="divider"></li>
                             <li role="presentation"><?php echo modal_anchor(get_uri("purchase_orders/modal_form"), "<i class='fa fa-edit'></i> " . lang('edit_purchase'), array("title" => lang('edit_purchase'), "data-post-id" => $purchase_order_info->id, "role" => "menuitem", "tabindex" => "-1", "data-post-reload" => true)); ?> </li>
                         <?php } ?>
 
