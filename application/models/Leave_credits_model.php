@@ -43,4 +43,38 @@ class Leave_credits_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function get_balance($options = array()) {
+        $leave_credits_table = $this->db->dbprefix('leave_credits');
+        $users_table = $this->db->dbprefix('users');
+        $where = "";
+
+        $user_id = get_array_value($options, "user_id");
+        if ($user_id) {
+            $where .= " AND $leave_credits_table.user_id=$user_id";
+        }
+
+        $sql = "SELECT 
+            SUM(IF($leave_credits_table.action='debit',$leave_credits_table.counts,0)) AS debits, 
+            SUM(IF($leave_credits_table.action='credit',$leave_credits_table.counts,0)) AS credits 
+        FROM $leave_credits_table 
+        WHERE $leave_credits_table.deleted=0 $where";
+
+        $result = $this->db->query($sql);
+        if($result->num_rows() > 0) {
+            $row = $result->result();
+            return array (
+                "debit" => $row[0]->debits,
+                "credit" => $row[0]->credits,
+                "balance" => $row[0]->debits - $row[0]->credits
+            );
+        } else {
+            return array (
+                "debit" => 0,
+                "credit" => 0,
+                "balance" => 0
+            );
+        }
+        
+    }
+
 }

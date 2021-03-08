@@ -107,11 +107,12 @@ class Leave_credits extends MY_Controller {
     private function _make_row($data) {
         $label_column_text = $data->action == "debit" ? "DEBIT" : "CREDIT";
         $label_column_color = $data->action == "debit" ? "#4f72ff" : "#ff4747";
+        $label_column_count = $data->action == "debit" ? $data->counts : "-".$data->counts;
 
         return array(
             get_team_member_profile_link($data->user_id, $data->fullname, array("target" => "_blank")),
             "<span class='mt0 label' style='background-color:".$label_column_color.";' title=" . lang("label") . ">" . strtoupper($label_column_text) . "</span> ",
-            $data->counts ? $data->counts : "0",
+            $label_column_count,
             $data->remarks ? $data->remarks : "-",
             $data->date_created ? $data->date_created : "-",
             get_team_member_profile_link($data->created_by, $data->creator, array("target" => "_blank")),

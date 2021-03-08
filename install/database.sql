@@ -547,6 +547,9 @@ CREATE TABLE IF NOT EXISTS `payment_methods` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
+ALTER TABLE `payment_methods` ADD COLUMN IF NOT EXISTS `available_on_payroll` tinyint(1) NOT NULL DEFAULT '0' AFTER `minimum_payment_amount`;
+ALTER TABLE `payment_methods` MODIFY IF EXISTS `available_on_payroll` tinyint(1) NOT NULL DEFAULT '0' AFTER `minimum_payment_amount`;
+
 INSERT IGNORE INTO payment_methods(`id`, `title`, `type`, `description`, `online_payable`, `available_on_invoice`, `available_on_payroll`, `minimum_payment_amount`, `settings`, `deleted`) VALUES
 (1, 'Cash', 'custom', 'Cash payments', 0, 1, 1, 0, '', 0),
 (2, 'Stripe', 'stripe', 'Stripe online payments', 1, 0, 0, 0, 'a:3:{s:15:"pay_button_text";s:6:"Stripe";s:10:"secret_key";s:6:"";s:15:"publishable_key";s:6:"";}', 0),
@@ -936,6 +939,8 @@ CREATE TABLE IF NOT EXISTS `estimates` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
+ALTER TABLE `estimates` ADD COLUMN IF NOT EXISTS `consumer_id` int(11) NOT NULL AFTER `client_id`;
+ALTER TABLE `estimates` MODIFY IF EXISTS `consumer_id` int(11) NOT NULL AFTER `client_id`;
 
 CREATE TABLE IF NOT EXISTS `estimate_forms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1067,8 +1072,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
-INSERT IGNORE INTO users(`id`, `first_name`, `last_name`, `user_type`, `is_admin`, `role_id`, `email`, `password`, `image`, `status`, `message_checked_at`, `client_id`, `notification_checked_at`, `is_primary_contact`, `job_title`, `disable_login`, `note`, `address`, `alternative_address`, `phone`, `alternative_phone`, `dob`, `ssn`, `gender`, `sticky_note`, `skype`, `enable_web_notification`, `enable_email_notification`, `created_at`, `deleted`) VALUES
-(1, 'admin_first_name', 'admin_last_name', 'staff', 1, 0, 'admin_email', 'admin_password', NULL, 'active', NULL, 0, NULL, 0, 'Admin', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'male', NULL, NULL, 1, 1, 'admin_created_at', 0);
+INSERT IGNORE INTO users(`id`, `first_name`, `last_name`, `user_type`, `is_admin`, `role_id`, `email`, `password`, `image`, `status`, `message_checked_at`, `client_id`, `notification_checked_at`, `is_primary_contact`, `job_title`, `disable_login`, `note`, `alternative_address`, `phone`, `alternative_phone`, `dob`, `ssn`, `gender`, `sticky_note`, `skype`, `enable_web_notification`, `enable_email_notification`, `created_at`, `deleted`) VALUES
+(1, 'admin_first_name', 'admin_last_name', 'staff', 1, 0, 'admin_email', 'admin_password', NULL, 'active', NULL, 0, NULL, 0, 'Admin', 0, NULL, NULL, NULL, NULL, NULL, NULL, 'male', NULL, NULL, 1, 1, 'admin_created_at', 0);
 
 
 CREATE TABLE IF NOT EXISTS `general_files` (
@@ -1647,7 +1652,8 @@ CREATE TABLE IF NOT EXISTS `customers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-ALTER TABLE `incentive_entries` ADD `amount` DECIMAL(10) NOT NULL AFTER `category`;
+ALTER TABLE `incentive_entries` ADD COLUMN IF NOT EXISTS `amount` DECIMAL(10) NOT NULL AFTER `category`;
+ALTER TABLE `incentive_entries` MODIFY IF EXISTS `amount` DECIMAL(10) NOT NULL AFTER `category`;
 
 CREATE TABLE IF NOT EXISTS `asset_brands` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT ,
@@ -1762,7 +1768,8 @@ CREATE TABLE IF NOT EXISTS `purchase_order_return_materials` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- 2021-03-03 22:12
-ALTER TABLE `units` ADD `abbreviation` VARCHAR(255) NOT NULL AFTER `title`;
+ALTER TABLE `units` ADD COLUMN IF NOT EXISTS `abbreviation` VARCHAR(255) NOT NULL AFTER `title`;
+ALTER TABLE `units` MODIFY IF EXISTS `abbreviation` VARCHAR(255) NOT NULL AFTER `title`;
 
 -- 2021-03-05 16:35
 CREATE TABLE IF NOT EXISTS `asset_vendors` (
@@ -1781,28 +1788,33 @@ CREATE TABLE IF NOT EXISTS `asset_vendors` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- 2021-03-05 20:54
-ALTER TABLE `deliveries` ADD `status` ENUM('draft','ongoing','completed','cancelled') NOT NULL DEFAULT 'draft' AFTER `country`;
+ALTER TABLE `deliveries` ADD COLUMN IF NOT EXISTS `status` ENUM('draft','ongoing','completed','cancelled') NOT NULL DEFAULT 'draft' AFTER `country`;
+ALTER TABLE `deliveries` MODIFY IF EXISTS `status` ENUM('draft','ongoing','completed','cancelled') NOT NULL DEFAULT 'draft' AFTER `country`;
 
 -- 2021-03-05 21:08
-ALTER TABLE `deliveries` DROP `warehouse`;
+ALTER TABLE `deliveries` DROP IF EXISTS `warehouse`;
 
 -- 2021-03-06 17:34
-ALTER TABLE `purchase_orders` ADD `account_id` BIGINT(10) NOT NULL AFTER `vendor_id`;
+ALTER TABLE `purchase_orders` ADD COLUMN IF NOT EXISTS `account_id` BIGINT(10) NOT NULL AFTER `vendor_id`;
+ALTER TABLE `purchase_orders` MODIFY IF EXISTS `account_id` BIGINT(10) NOT NULL AFTER `vendor_id`;
 
 -- 2021-03-06 17:40
-ALTER TABLE `purchase_order_budgets` DROP `account_id`;
+ALTER TABLE `purchase_order_budgets` DROP IF EXISTS `account_id`;
 
 -- 2021-03-06 19:55
 ALTER TABLE `labels` CHANGE `context` `context` ENUM('event','invoice','note','project','task','ticket','to_do','asset_entry') CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 
 -- 2021-03-06 20:15
-ALTER TABLE `inventory_transfers` ADD `vehicle_id` BIGINT(10) NOT NULL AFTER `driver`;
+ALTER TABLE `inventory_transfers` ADD COLUMN IF NOT EXISTS`vehicle_id` BIGINT(10) NOT NULL AFTER `driver`;
+ALTER TABLE `inventory_transfers` MODIFY IF EXISTS `vehicle_id` BIGINT(10) NOT NULL AFTER `driver`;
 
 -- 2021-03-06 22:07
-ALTER TABLE `vehicles` ADD `image` TEXT NULL AFTER `max_cargo_weight`;
+ALTER TABLE `vehicles` ADD COLUMN IF NOT EXISTS `image` TEXT NULL AFTER `id`;
+ALTER TABLE `vehicles` MODIFY IF EXISTS `image` TEXT NULL AFTER `id`;
 
 -- 2021-03-07 24:17
-ALTER TABLE `asset_entries` ADD `labels` TEXT NULL AFTER `description`;
+ALTER TABLE `asset_entries` ADD COLUMN IF NOT EXISTS `labels` TEXT NULL AFTER `description`;
+ALTER TABLE `asset_entries` MODIFY IF EXISTS `labels` TEXT NULL AFTER `description`;
 
 -- 2021-03-07 09:27
 CREATE TABLE IF NOT EXISTS `leave_credits` (
@@ -1812,20 +1824,163 @@ CREATE TABLE IF NOT EXISTS `leave_credits` (
   `action` ENUM('debit','credit') CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `counts` bigint(10) NOT NULL DEFAULT 0,
   `remarks` text COLLATE utf8_unicode_ci NOT NULL,
-  `created_on` datetime NOT NULL,
+  `date_created` datetime NOT NULL,
   `created_by` bigint(10) NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- 2021-03-07 18:54
-ALTER TABLE `inventory_transfers` ADD `status` ENUM('draft','ongoing','completed','cancelled') NOT NULL DEFAULT 'draft' AFTER `remarks`;
+ALTER TABLE `inventory_transfers` ADD COLUMN IF NOT EXISTS `status` ENUM('draft','ongoing','completed','cancelled') NOT NULL DEFAULT 'draft' AFTER `remarks`;
+ALTER TABLE `inventory_transfers` MODIFY IF EXISTS `status` ENUM('draft','ongoing','completed','cancelled') NOT NULL DEFAULT 'draft' AFTER `remarks`;
 
 -- 2021-03-07 21:02
 INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Purchase', '0');
 
 -- 2021-03-07 21:17
-ALTER TABLE `purchase_orders` ADD `expense_id` BIGINT(10) NULL AFTER `id`;
+ALTER TABLE `purchase_orders` ADD COLUMN IF NOT EXISTS `expense_id` BIGINT(10) NULL AFTER `id`;
+ALTER TABLE `purchase_orders` MODIFY IF EXISTS `expense_id` BIGINT(10) NULL AFTER `id`;
 
 -- 2021-03-07 22:30
-ALTER TABLE `expenses` ADD `vendor_id` BIGINT(10) NOT NULL AFTER `client_id`;
+ALTER TABLE `expenses` ADD COLUMN IF NOT EXISTS `vendor_id` BIGINT(10) NOT NULL AFTER `client_id`;
+ALTER TABLE `expenses` MODIFY IF EXISTS `vendor_id` BIGINT(10) NOT NULL AFTER `client_id`;
+
+-- 2021-03-07 02:30
+ALTER TABLE `estimates` ADD COLUMN IF NOT EXISTS `type` ENUM('service', 'product') NOT NULL DEFAULT 'service' AFTER `status`;
+ALTER TABLE `estimates` MODIFY IF EXISTS `type` ENUM('service', 'product') NOT NULL DEFAULT 'service' AFTER `status`;
+
+-- 2021-03-07 02:35
+ALTER TABLE `expenses` ADD COLUMN IF NOT EXISTS `account_id` int(11) NOT NULL DEFAULT '0' AFTER `id`;
+ALTER TABLE `expenses` MODIFY IF EXISTS `account_id` int(11) NOT NULL DEFAULT '0' AFTER `id`;
+
+-- 2021-03-07 02:39
+ALTER TABLE `invoices` ADD COLUMN IF NOT EXISTS `consumer_id` int(11) NOT NULL DEFAULT '0' AFTER `client_id`;
+ALTER TABLE `invoices` MODIFY IF EXISTS `consumer_id` int(11) NOT NULL DEFAULT '0' AFTER `client_id`;
+
+-- 2021-03-07 02:40
+ALTER TABLE `invoice_items` ADD COLUMN IF NOT EXISTS `invoice_id` int(11) NOT NULL DEFAULT '0' AFTER `id`;
+ALTER TABLE `invoice_items` MODIFY IF EXISTS `invoice_id` int(11) NOT NULL DEFAULT '0' AFTER `id`;
+
+-- 2021-03-07 02:41
+ALTER TABLE `invoice_items` ADD COLUMN IF NOT EXISTS `inventory_id` int(11) NOT NULL DEFAULT '0' AFTER `invoice_id`;
+ALTER TABLE `invoice_items` MODIFY IF EXISTS `inventory_id` int(11) NOT NULL DEFAULT '0' AFTER `invoice_id`;
+
+-- 2021-03-07 02:42
+ALTER TABLE `invoice_items` ADD COLUMN IF NOT EXISTS `delivery_reference_no` text COLLATE utf8_unicode_ci NOT NULL AFTER `description`;
+ALTER TABLE `invoice_items` MODIFY IF EXISTS `delivery_reference_no` text COLLATE utf8_unicode_ci NOT NULL AFTER `description`;
+
+-- 2021-03-07 02:44
+ALTER TABLE `invoice_payments` ADD COLUMN IF NOT EXISTS `account_id` int(11) NOT NULL DEFAULT '0' AFTER `id`;
+ALTER TABLE `invoice_payments` MODIFY IF EXISTS `account_id` int(11) NOT NULL DEFAULT '0' AFTER `id`;
+
+-- 2021-03-07 02:46
+ALTER TABLE `items` ADD COLUMN IF NOT EXISTS `active` int(4) NOT NULL DEFAULT '1' AFTER `rate`;
+ALTER TABLE `items` MODIFY IF EXISTS `active` tinyint(4) NOT NULL DEFAULT '1' AFTER `rate`;
+
+-- 2021-03-07 02:47
+ALTER TABLE `items` ADD COLUMN IF NOT EXISTS `category` int(11) NOT NULL DEFAULT '0' AFTER `active`;
+ALTER TABLE `items` MODIFY IF EXISTS `category` int(11) NOT NULL DEFAULT '0' AFTER `active`;
+
+-- 2021-03-07 02:48
+ALTER TABLE `items` ADD COLUMN IF NOT EXISTS `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `category`;
+ALTER TABLE `items` MODIFY IF EXISTS `date_created` int(11) NOT NULL DEFAULT '0' AFTER `category`;
+
+-- 2021-03-07 02:49
+ALTER TABLE `items` ADD COLUMN IF NOT EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `date_created`;
+ALTER TABLE `items` MODIFY IF EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `date_created`;
+
+-- 2021-03-07 02:51
+ALTER TABLE `payment_methods` ADD COLUMN IF NOT EXISTS `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `available_on_payroll`;
+ALTER TABLE `payment_methods` MODIFY IF EXISTS `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `available_on_payroll`;
+
+-- 2021-03-07 02:59
+ALTER TABLE `payment_methods` ADD COLUMN IF NOT EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `created_on`;
+ALTER TABLE `payment_methods` MODIFY IF EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `created_on`;
+
+-- 2021-03-07 03:02
+ALTER TABLE `team` ADD COLUMN IF NOT EXISTS `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `members`;
+ALTER TABLE `team` MODIFY IF EXISTS `date_created` int(11) NOT NULL DEFAULT '0' AFTER `members`;
+
+-- 2021-03-07 03:03
+ALTER TABLE `team` ADD COLUMN IF NOT EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `date_created`;
+ALTER TABLE `team` MODIFY IF EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `date_created`;
+
+-- 2021-03-07 03:04
+ALTER TABLE `team` ADD COLUMN IF NOT EXISTS `heads` mediumtext COLLATE utf8_unicode_ci NOT NULL AFTER `members`;
+ALTER TABLE `team` MODIFY IF EXISTS `heads` mediumtext COLLATE utf8_unicode_ci NOT NULL AFTER `members`;
+
+-- 2021-03-07 03:05
+ALTER TABLE `team` ADD COLUMN IF NOT EXISTS `description` mediumtext COLLATE utf8_unicode_ci NOT NULL AFTER `title`;
+ALTER TABLE `team` MODIFY IF EXISTS `description` mediumtext COLLATE utf8_unicode_ci NOT NULL AFTER `title`;
+
+-- 2021-03-07 03:07
+ALTER TABLE `team_member_job_info` ADD COLUMN IF NOT EXISTS `sss` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `date_of_hire`;
+ALTER TABLE `team_member_job_info` MODIFY IF EXISTS `sss` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `date_of_hire`;
+
+-- 2021-03-07 03:08
+ALTER TABLE `team_member_job_info` ADD COLUMN IF NOT EXISTS `tin` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `sss`;
+ALTER TABLE `team_member_job_info` MODIFY IF EXISTS `tin` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `sss`;
+
+-- 2021-03-07 03:09
+ALTER TABLE `team_member_job_info` ADD COLUMN IF NOT EXISTS `pag_ibig` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `tin`;
+ALTER TABLE `team_member_job_info` MODIFY IF EXISTS `pag_ibig` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `tin`;
+
+-- 2021-03-07 03:09
+ALTER TABLE `team_member_job_info` ADD COLUMN IF NOT EXISTS `phil_health` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `pag_ibig`;
+ALTER TABLE `team_member_job_info` MODIFY IF EXISTS `phil_health` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `pag_ibig`;
+
+-- 2021-03-07 03:10
+ALTER TABLE `team_member_job_info` ADD COLUMN IF NOT EXISTS `salary` double NOT NULL AFTER `user_id`;
+ALTER TABLE `team_member_job_info` MODIFY IF EXISTS `salary` double NOT NULL AFTER `user_id`;
+
+-- 2021-03-07 03:11
+ALTER TABLE `team_member_job_info` ADD COLUMN IF NOT EXISTS `salary_term` varchar(20) COLLATE utf8_unicode_ci NOT NULL AFTER `salary`;
+ALTER TABLE `team_member_job_info` MODIFY IF EXISTS `salary_term` varchar(20) COLLATE utf8_unicode_ci NOT NULL AFTER `salary`;
+
+-- 2021-03-07 03:12
+ALTER TABLE `team_member_job_info` ADD COLUMN IF NOT EXISTS `rate_per_hour` double NOT NULL AFTER `salary_term`;
+ALTER TABLE `team_member_job_info` MODIFY IF EXISTS `rate_per_hour` decimal(10,2) NOT NULL AFTER `salary_term`;
+
+-- 2021-03-07 03:14
+ALTER TABLE `team_member_job_info` ADD COLUMN IF NOT EXISTS `hours_per_day` float NOT NULL AFTER `rate_per_hour`;
+ALTER TABLE `team_member_job_info` MODIFY IF EXISTS `hours_per_day` float NOT NULL AFTER `rate_per_hour`;
+
+-- 2021-03-07 03:15
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `street` text COLLATE utf8_unicode_ci NOT NULL AFTER `note`;
+ALTER TABLE `users` MODIFY IF EXISTS `street` text COLLATE utf8_unicode_ci NOT NULL AFTER `note`;
+
+-- 2021-03-07 03:16
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `city` text COLLATE utf8_unicode_ci NOT NULL AFTER `street`;
+ALTER TABLE `users` MODIFY IF EXISTS `city` text COLLATE utf8_unicode_ci NOT NULL AFTER `street`;
+
+-- 2021-03-07 03:17
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `state` text COLLATE utf8_unicode_ci NOT NULL AFTER `city`;
+ALTER TABLE `users` MODIFY IF EXISTS `state` text COLLATE utf8_unicode_ci NOT NULL AFTER `city`;
+
+-- 2021-03-07 03:17
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `zip` text COLLATE utf8_unicode_ci NOT NULL AFTER `state`;
+ALTER TABLE `users` MODIFY IF EXISTS `zip` text COLLATE utf8_unicode_ci NOT NULL AFTER `state`;
+
+-- 2021-03-07 03:17
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `country` text COLLATE utf8_unicode_ci NOT NULL AFTER `zip`;
+ALTER TABLE `users` MODIFY IF EXISTS `country` text COLLATE utf8_unicode_ci NOT NULL AFTER `zip`;
+
+-- 2021-03-07 03:18
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `vendor_id` int(11) NOT NULL DEFAULT '0' AFTER `client_id`;
+ALTER TABLE `users` MODIFY IF EXISTS `vendor_id` int(11) NOT NULL DEFAULT '0' AFTER `client_id`;
+
+-- 2021-03-07 03:19
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `license_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `requested_account_removal`;
+ALTER TABLE `users` MODIFY IF EXISTS `license_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `requested_account_removal`;
+
+-- 2021-03-07 03:20
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `license_image` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `license_number`;
+ALTER TABLE `users` MODIFY IF EXISTS `license_image` varchar(255) COLLATE utf8_unicode_ci NOT NULL AFTER `license_number`;
+
+-- 2021-03-07 03:21
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `asset_vendor_id` int(11) NOT NULL DEFAULT '0' AFTER `skype`;
+ALTER TABLE `users` MODIFY IF EXISTS `asset_vendor_id` int(11) NOT NULL DEFAULT '0' AFTER `skype`;
+
+-- 2021-03-07 04:04
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `created_at`;
+ALTER TABLE `users` MODIFY IF EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `created_at`;

@@ -12,8 +12,8 @@
     <?php if ($show_total_project_hours) { ?>
         <div class="box-content widget-container">
             <div class="panel-body ">
-                <h1 class=""><?php echo $total_project_hours; ?></h1>
-                <span class="text-off uppercase"><?php echo lang("total_project_hours"); ?></span>
+                <h1 class=""><?php echo $total_credits_balance; ?></h1>
+                <span class="text-off uppercase"><?php echo lang("total_credits_balance"); ?></span>
             </div>
         </div>
     <?php } ?>
