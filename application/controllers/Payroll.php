@@ -121,9 +121,11 @@ class Payroll extends MY_Controller {
     }
 
     private function save_expense($account_id, $amount, $user, $expense_id){
+        $expense_category_info = $this->Expense_categories_model->get_details_by_title("Payroll")->row();
+
         $expense_data = array(
             "account_id" => $account_id,
-            "category_id" => 1,
+            "category_id" => $expense_category_info->id,
             "amount" => $amount,
             "user_id" => $user,
         );

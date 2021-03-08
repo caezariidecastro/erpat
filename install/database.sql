@@ -1984,3 +1984,10 @@ ALTER TABLE `users` MODIFY IF EXISTS `asset_vendor_id` int(11) NOT NULL DEFAULT 
 -- 2021-03-07 04:04
 ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `created_at`;
 ALTER TABLE `users` MODIFY IF EXISTS `created_by` int(11) NOT NULL DEFAULT '0' AFTER `created_at`;
+
+-- 2021-03-08 14:41
+ALTER TABLE `expense_categories` ADD COLUMN IF NOT EXISTS `is_editable` TINYINT(1) NOT NULL DEFAULT '1' AFTER `title`;
+ALTER TABLE `expense_categories` MODIFY IF EXISTS `is_editable` TINYINT(1) NOT NULL DEFAULT '1' AFTER `title`;
+
+-- 2021-03-08 14:44
+UPDATE `expense_categories` SET `is_editable` = '0' WHERE `expense_categories`.`title` IN ('Payroll', 'Contribution', 'Incentive', 'Purchase');

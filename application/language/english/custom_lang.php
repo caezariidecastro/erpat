@@ -414,3 +414,6 @@ $lang["leave_credit_info"] = "Leave Credit Reference";
 $lang["total_credits_balance"] = "Total Leave Credit";
 $lang["leave_credits_insufficient"] = "You do not have sufficient leave credits.";
 $lang["leave_credits_insufficient_admin"] = "The employee do not have sufficient leave credits.";
+
+// Expense Categories
+$lang["record_cannot_be_edited"] = "Record cannot be edited.";
