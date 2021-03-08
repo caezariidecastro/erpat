@@ -662,13 +662,38 @@ class Purchase_orders extends MY_Controller {
 
     function cancel(){
         $id = $this->input->post("id");
-        $data = array("status" => "cancelled");
-        $this->Purchase_orders_model->save($data, $id);
+        $data = array(
+            "status" => "cancelled",
+            "cancelled_at" => get_my_local_time(),
+            "cancelled_by" => $this->login_user->id
+        );
+
+        if($this->Purchase_orders_model->save($data, $id)){
+            echo json_encode(array('success' => true, 'message' => lang("success")));
+        }
+        else{
+            echo json_encode(array('success' => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function draft_form(){
+        $view_data["id"] = $this->input->post("id");
+        $this->load->view('purchase_orders/draft_form', $view_data);
     }
 
     function mark_as_draft(){
         $id = $this->input->post("id");
-        $data = array("status" => "draft");
-        $this->Purchase_orders_model->save($data, $id);
+        $data = array(
+            "status" => "draft",
+            "cancelled_at" => NULL,
+            "cancelled_by" => NULL
+        );
+
+        if($this->Purchase_orders_model->save($data, $id)){
+            echo json_encode(array('success' => true, 'message' => lang("success")));
+        }
+        else{
+            echo json_encode(array('success' => false, 'message' => lang('error_occurred')));
+        }
     }
 }

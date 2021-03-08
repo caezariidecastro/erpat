@@ -26,7 +26,7 @@
                         <?php } ?>
 
                         <?php if ($purchase_order_info->status == "cancelled") { ?>
-                            <li role="presentation"><?php echo js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_announcement'), "class" => "delete", "data-id" => $purchase_order_info->id, "data-action-url" => get_uri("announcements/delete"), "data-action" => "delete")); ?> </li>
+                            <li role="presentation"><?php echo modal_anchor(get_uri("purchase_orders/draft_form"), "<i class='fa fa-file'></i> " . lang('mark_as_draft'), array("title" => lang('mark_as_draft'), "data-post-id" => $purchase_order_info->id)); ?> </li>
                         <?php } ?>
 
                         <?php if ($purchase_order_info->status !== "cancelled") { ?>
