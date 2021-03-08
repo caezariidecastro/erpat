@@ -276,32 +276,34 @@ class Expenses extends MY_Controller {
     private function _make_row($data, $custom_fields) {
 
         $description = $data->description;
+        $title = $data->title;
         if ($data->linked_client_name) {
             if ($description) {
                 $description .= "<br />";
             }
-            $description .= lang("client") . ": " . $data->linked_client_name;
+            $description .= lang("client") . ": " . get_client_contact_profile_link($data->client_id, $data->linked_client_name);
         }
 
         if ($data->project_title) {
             if ($description) {
                 $description .= "<br /> ";
             }
-            $description .= lang("project") . ": " . $data->project_title;
+            $description .= lang("project") . ": " . anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title);
         }
 
         if ($data->linked_user_name) {
             if ($description) {
                 $description .= "<br /> ";
             }
-            $description .= lang("team_member") . ": " . $data->linked_user_name;
+            $description .= lang("team_member") . ": " . get_team_member_profile_link($data->user_id, $data->linked_user_name);
         }
 
         if ($data->vendor_name) {
             if ($description) {
                 $description .= "<br /> ";
             }
-            $description .= lang("supplier") . ": " . $data->vendor_name;
+            $description .= lang("supplier") . ": " . get_supplier_contact_link($data->vendor_id, $data->vendor_name);
+            $title = $title ? anchor(get_uri("pid/purchases/view/" . $data->title), get_purchase_order_id($data->title)) : "";
         }
 
         if ($data->recurring) {
@@ -364,7 +366,7 @@ class Expenses extends MY_Controller {
             $data->expense_date,
             modal_anchor(get_uri("expenses/expense_details"), format_to_date($data->expense_date, false), array("title" => lang("expense_details"), "data-post-id" => $data->id)),
             $data->category_title,
-            $data->title,
+            $title,
             $description,
             $files_link,
             to_currency($data->amount),

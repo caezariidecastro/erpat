@@ -120,7 +120,7 @@ class Purchase_orders extends MY_Controller {
         $status = get_purchase_order_status_label($data->status);
 
         return array(
-            '<a href="'.base_url("pid/purchases/view/".$data->id).'">'.lang("purchase").' #'.$data->id.'</a>',
+            anchor(get_uri("pid/purchases/view/" . $data->id), get_purchase_order_id($data->id)),
             $data->account_name,
             get_supplier_contact_link($data->vendor_id, $data->vendor_name),
             number_with_decimal($data->amount),
@@ -412,7 +412,7 @@ class Purchase_orders extends MY_Controller {
         }
     }
 
-    private function save_expense($account_id, $amount, $vendor_id){
+    private function save_expense($account_id, $amount, $vendor_id, $purchase_id){
         $expense_category_info = $this->Expense_categories_model->get_details_by_title("Purchase")->row();
 
         $expense_data = array(
@@ -420,7 +420,8 @@ class Purchase_orders extends MY_Controller {
             "category_id" => $expense_category_info->id,
             "amount" => $amount,
             "vendor_id" => $vendor_id,
-            "expense_date" => get_my_local_time("Y-m-d")
+            "expense_date" => get_my_local_time("Y-m-d"),
+            "title" => $purchase_id
         );
 
         return $this->Expenses_model->save($expense_data);
@@ -641,7 +642,7 @@ class Purchase_orders extends MY_Controller {
             $total_budget = $this->Purchase_order_budgets_model->get_purchase_total_budget($purchase_id);
 
             // Save expense_id on purchase
-            $purchase_data["expense_id"] = $this->save_expense($purchase_info->account_id, $total_budget, $purchase_info->vendor_id);
+            $purchase_data["expense_id"] = $this->save_expense($purchase_info->account_id, $total_budget, $purchase_info->vendor_id, $purchase_id);
 
             $this->_activate_all_budget($purchase_id);
         }
