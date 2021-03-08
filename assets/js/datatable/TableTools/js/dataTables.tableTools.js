@@ -2274,7 +2274,7 @@ TableTools.prototype = {
 				if ( aColumnsInc[i] && dt.aoColumns[i].nTf !== null )
 				{
                                     
-                                        //Edited by: fairsketch
+                                        //Edited by: bytescrafter
                                         //remember to update this befor upgrading
                                         //since the datatable does't support multiple row export
                                         //find the grand total if exists

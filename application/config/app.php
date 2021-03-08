@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['app_version'] = '2.5';
 
-$config['app_update_url'] = 'https://releases.fairsketch.com/rise/';
+$config['app_update_url'] = 'https://businext.app/latest/';
 
 $config['updates_path'] = './updates/';
 

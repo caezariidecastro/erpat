@@ -104,17 +104,17 @@ define ('PDF_CREATOR', 'TCPDF');
 /**
  * Document author.
  */
-define ('PDF_AUTHOR', 'fairsketch');
+define ('PDF_AUTHOR', 'bytescrafter');
 
 /**
  * Header title.
  */
-define ('PDF_HEADER_TITLE', 'fairsketch');
+define ('PDF_HEADER_TITLE', 'bytescrafter');
 
 /**
  * Header description string.
  */
-define ('PDF_HEADER_STRING', "by fairsketch - farisketch.com\nwww.fairsketch.com");
+define ('PDF_HEADER_STRING', "by BytesCrafter - bytescrafter.net");
 
 /**
  * Document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch].

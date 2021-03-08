@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=Edge" >
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
-        <meta name="author" content="fairsketch">
+        <meta name="author" content="bytescrafter">
         <link rel="icon" href="../assets/images/favicon.png" />
         <title>BusiNext - Multi-Business Management</title>
         <link rel='stylesheet' type='text/css' href='../assets/bootstrap/css/bootstrap.min.css' />
