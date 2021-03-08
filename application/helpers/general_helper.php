@@ -929,6 +929,47 @@ if (!function_exists('prepare_purchase_pdf')) {
 
 }
 
+if (!function_exists('prepare_return_pdf')) {
+
+    function prepare_return_pdf($purchase_return_data, $mode = "download") {
+        $ci = get_instance();
+        $ci->load->library('pdf');
+        $ci->pdf->setPrintHeader(false);
+        $ci->pdf->setPrintFooter(false);
+        $ci->pdf->SetCellPadding(1.5);
+        $ci->pdf->setImageScale(1.42);
+        $ci->pdf->AddPage();
+        $ci->pdf->SetFontSize(10);
+
+        if ($purchase_return_data) {
+
+            $purchase_return_data["mode"] = $mode;
+
+            $html = $ci->load->view("purchase_order_returns/return_pdf", $purchase_return_data, true);
+
+            if ($mode != "html") {
+                $ci->pdf->writeHTML($html, true, false, true, false, '');
+            }
+
+            $purchase_return_info = get_array_value($purchase_return_data, "purchase_return_info");
+            $pdf_file_name = lang("return") . "-" . $purchase_return_info->id . ".pdf";
+
+            if ($mode === "download") {
+                $ci->pdf->Output($pdf_file_name, "D");
+            } else if ($mode === "send_email") {
+                $temp_download_path = getcwd() . "/" . get_setting("temp_file_path") . $pdf_file_name;
+                $ci->pdf->Output($temp_download_path, "F");
+                return $temp_download_path;
+            } else if ($mode === "view") {
+                $ci->pdf->Output($pdf_file_name, "I");
+            } else if ($mode === "html") {
+                return $html;
+            }
+        }
+    }
+
+}
+
 /**
  * get all data to make an estimate
  * 
@@ -994,6 +1035,14 @@ if (!function_exists('get_purchase_order_id')) {
 
     function get_purchase_order_id($purchase_order_id) {
         return lang("purchase")." #" . $purchase_order_id;
+    }
+
+}
+
+if (!function_exists('get_purchase_return_id')) {
+
+    function get_purchase_return_id($purchase_return_id) {
+        return strtoupper(lang("return"))." #" . $purchase_return_id;
     }
 
 }
@@ -1727,6 +1776,26 @@ if (!function_exists('get_purchase_order_status_label')) {
 
 }
 
+if (!function_exists('get_purchase_return_status_label')) {
+
+    function get_purchase_return_status_label($status) {
+        if($status == "draft"){
+            $status = '<span class="mt0 label label-default large">Draft</span>';
+        }
+
+        if($status == "cancelled"){
+            $status = '<span class="mt0 label label-danger large">Cancelled</span>';
+        }
+
+        if($status == "completed"){
+            $status = '<span class="mt0 label label-success large">Completed</span>';
+        }
+
+        return $status;
+    }
+
+}
+
 if (!function_exists('get_purchase_order_making_data')) {
 
     function get_purchase_order_making_data($purchase_order_id) {
@@ -1742,6 +1811,27 @@ if (!function_exists('get_purchase_order_making_data')) {
             $data['purchase_order_status_label'] = get_purchase_order_status_label($purchase_order_info->status);
             $data["purchase_order_info"]->total = $ci->Purchase_order_materials_model->get_purchase_total_material($purchase_order_id);
             $data['purchase_order_materials'] = $ci->Purchase_order_materials_model->get_details(array("purchase_id" => $purchase_order_id))->result();
+            return $data;
+        }
+    }
+
+}
+
+if (!function_exists('get_purchase_return_making_data')) {
+
+    function get_purchase_return_making_data($purchase_return_id) {
+        $ci = get_instance();
+        $ci->load->database();
+        $ci->load->model("Purchase_order_returns_model");
+        $ci->load->model("Vendors_model");
+        $purchase_return_info = $ci->Purchase_order_returns_model->get_details(array("id" => $purchase_return_id))->row();
+
+        if ($purchase_return_info) {
+            $data['purchase_return_info'] = $purchase_return_info;
+            $data['vendor_info'] = $ci->Vendors_model->get_one($purchase_return_info->vendor_id);
+            $data['purchase_return_status_label'] = get_purchase_return_status_label($purchase_return_info->status);
+            $data["purchase_return_info"]->total = $ci->Purchase_order_return_materials_model->get_return_total_material($purchase_return_id);
+            $data['purchase_return_materials'] = $ci->Purchase_order_returns_model->get_purchase_return_materials($purchase_return_id)->result();
             return $data;
         }
     }

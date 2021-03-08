@@ -22,13 +22,14 @@
             ],
             order: [[0, 'desc']],
             columns: [
+                {title: "<?php echo lang('return_id') ?> "},
                 {title: "<?php echo lang('purchase_id') ?> "},
                 {title: "<?php echo lang('supplier') ?>"},
                 {title: "<?php echo lang('amount') ?>"},
                 {title: "<?php echo lang('remarks') ?>"},
                 {title: "<?php echo lang('created_on') ?>"},
                 {title: "<?php echo lang('created_by') ?>"},
-                {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}
+                {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5],
             xlsColumns: [0, 1, 2, 3, 4, 5]

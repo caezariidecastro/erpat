@@ -386,15 +386,32 @@ $lang["purchase"] = "PURCHASE";
 $lang["purchase_small_caps"] = "Purchase";
 $lang["send_purchase_request"] = "Send purchase request";
 $lang["purchase_sent_message"] = "The purchase request has been sent!";
+$lang["mark_purchase_as_cancelled"] = "Mark purchase as cancelled";
+$lang["cancel_confirmation"] = "Are you sure you want to cancel this?";
+$lang["draft_confirmation"] = "Mark this as draft?";
+$lang["mark_as_draft"] = "Mark as draft";
 
 // Production & Inventory > Returns
 $lang["returns"] = "Returns";
+$lang["return"] = "Return";
+$lang["return_id"] = "Return ID";
 $lang["add_return"] = "Add return";
+$lang["edit_return"] = "Edit return";
 $lang["has_return_error"] = "has a return already!";
 $lang["material_has_return_error"] = "Material is already at the table!";
 $lang["purchased"] = "Purchased";
 $lang["add_return_completed_purchase_info"] = 'Note: Only purchases with "Completed" status will appear in "Purchase ID" dropdown list';
 $lang["add_view_material"] = "Add/view material";
+$lang["send_return_request"] = "Send return request";
+$lang["return_sent_message"] = "The return request has been sent!";
+$lang["mark_as_cancelled"] = "Mark as cancelled";
+$lang["mark_as_completed"] = "Mark as completed";
+$lang["return_preview"] = "Return preview";
+$lang["print_return"] = "Print return";
+$lang["email_returns_to_vendor"] = "Email returns to supplier";
+$lang["edit_return_material"] = "Edit return material";
+$lang["completed_confirmation"] = "Mark this as completed?";
+$lang["return_sent_message"] = "The return request has been sent!";
 
 // Roles
 $lang["set_module_permissions"] = "Set module permission";
@@ -414,3 +431,6 @@ $lang["leave_credit_info"] = "Leave Credit Reference";
 $lang["total_credits_balance"] = "Total Leave Credit";
 $lang["leave_credits_insufficient"] = "You do not have sufficient leave credits.";
 $lang["leave_credits_insufficient_admin"] = "The employee do not have sufficient leave credits.";
+
+// Expense Categories
+$lang["record_cannot_be_edited"] = "Record cannot be edited.";

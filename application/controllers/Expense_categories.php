@@ -37,11 +37,19 @@ class Expense_categories extends MY_Controller {
         $data = array(
             "title" => $this->input->post('title')
         );
-        $save_id = $this->Expense_categories_model->save($data, $id);
-        if ($save_id) {
-            echo json_encode(array("success" => true, "data" => $this->_row_data($save_id), 'id' => $save_id, 'message' => lang('record_saved')));
-        } else {
-            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+
+        $expense_category = $this->Expense_categories_model->get_one($id);
+
+        if($expense_category->is_editable){
+            $save_id = $this->Expense_categories_model->save($data, $id);
+            if ($save_id) {
+                echo json_encode(array("success" => true, "data" => $this->_row_data($save_id), 'id' => $save_id, 'message' => lang('record_saved')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            }
+        }
+        else{
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_edited')));
         }
     }
 
@@ -52,18 +60,26 @@ class Expense_categories extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
-        if ($this->input->post('undo')) {
-            if ($this->Expense_categories_model->delete($id, true)) {
-                echo json_encode(array("success" => true, "data" => $this->_row_data($id), "message" => lang('record_undone')));
+
+        $expense_category = $this->Expense_categories_model->get_one($id);
+
+        if($expense_category->is_editable){
+            if ($this->input->post('undo')) {
+                if ($this->Expense_categories_model->delete($id, true)) {
+                    echo json_encode(array("success" => true, "data" => $this->_row_data($id), "message" => lang('record_undone')));
+                } else {
+                    echo json_encode(array("success" => false, lang('error_occurred')));
+                }
             } else {
-                echo json_encode(array("success" => false, lang('error_occurred')));
+                if ($this->Expense_categories_model->delete($id)) {
+                    echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+                } else {
+                    echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+                }
             }
-        } else {
-            if ($this->Expense_categories_model->delete($id)) {
-                echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
-            } else {
-                echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
-            }
+        }
+        else{
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
     }
 
@@ -86,9 +102,12 @@ class Expense_categories extends MY_Controller {
 
     //prepare an expense category list row
     private function _make_row($data) {
-        return array($data->title,
-            modal_anchor(get_uri("expense_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expenses_category'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expenses_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("expense_categories/delete"), "data-action" => "delete"))
+        $actions = $data->is_editable ? modal_anchor(get_uri("expense_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expenses_category'), "data-post-id" => $data->id))
+        . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expenses_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("expense_categories/delete"), "data-action" => "delete")) : "";
+
+        return array(
+            $data->title,
+            $actions
         );
     }
 

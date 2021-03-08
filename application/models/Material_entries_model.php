@@ -62,8 +62,10 @@ class Material_entries_model extends Crud_model {
             SELECT SUM(purchase_order_return_materials.quantity)
             FROM purchase_order_return_materials
             LEFT JOIN purchase_order_materials ON purchase_order_materials.id = purchase_order_return_materials.purchase_order_material_id
+            LEFT JOIN purchase_order_returns ON purchase_order_returns.id = purchase_order_return_materials.purchase_order_return_id
             WHERE purchase_order_materials.material_id = $materials_table.id
             AND purchase_order_return_materials.deleted = 0
+            AND purchase_order_returns.status = 'completed'
         ), 0) AS returned
         FROM $materials_table
         LEFT JOIN users creator ON creator.id = $materials_table.created_by

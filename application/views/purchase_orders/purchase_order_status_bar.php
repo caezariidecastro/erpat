@@ -3,7 +3,7 @@
 
     <span class="ml15"><?php
         echo lang("supplier") . ": ";
-        echo $purchase_order_info->vendor_name;
+        echo get_supplier_contact_link($purchase_order_info->vendor_id, $purchase_order_info->vendor_name);
         ?>
     </span> 
 
