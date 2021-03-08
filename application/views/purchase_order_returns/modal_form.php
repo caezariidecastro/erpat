@@ -6,7 +6,7 @@
     </div>
     <div class="form-group">
         <label for="purchase_id" class="col-md-3"><?php echo lang('purchase_id'); ?></label>
-        <div class="col-md-9">
+        <div class="col-md-9" id="purchase_id_dropdown_wrapper">
             <?php
             echo form_dropdown("purchase_id", $purchases_dropdown, $model_info ? $model_info->purchase_id : "", "class='select2 validate-hidden' id='purchase_id' data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
@@ -38,13 +38,27 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        let return_id = "<?php echo $model_info->id?>";
+        let reload_on_success = "<?php echo $reload?>";
+
         $("#purchase-order-returns-form").appForm({
             onSuccess: function (result) {
                 $("#purchase-order-returns-table").appTable({newData: result.data, dataId: result.id});
+                if(reload_on_success){
+                    window.location.reload();
+                }
             }
         });
 
-        $('#purchase_id').select2();
+        $('#purchase_id').select2().change(function(){
+            if(return_id && return_id != $(this).val()){
+               $("#purchase_id_dropdown_wrapper").append(`<p id="changing-purchase-id-warning" class="text-warning mt10">Note: Changing "Purchase ID" to "<?php echo lang("purchase")?> #${$(this).val()}" will lose your current return changes in "<?php echo lang("purchase")?> #${return_id}"</p>`);
+            }
+
+            if(return_id && return_id == $(this).val()){
+               $("#changing-purchase-id-warning").remove();
+            }
+        });
     });
     
 </script>

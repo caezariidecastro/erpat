@@ -33,6 +33,9 @@ class Email_templates extends MY_Controller {
             "purchase_small_caps" => array(
                 "send_purchase_request" => array("P_ID", "CONTACT_FIRST_NAME", "SIGNATURE", "PURCHASE_URL", "LOGO_URL"),
             ),
+            "returns" => array(
+                "send_return_request" => array("R_ID", "CONTACT_FIRST_NAME", "SIGNATURE", "RETURN_URL", "LOGO_URL"),
+            ),
             "estimate" => array(
                 "estimate_sent" => array("ESTIMATE_ID", "CONTACT_FIRST_NAME", "CONTACT_LAST_NAME", "SIGNATURE", "ESTIMATE_URL", "LOGO_URL"),
                 "estimate_accepted" => array("ESTIMATE_ID", "SIGNATURE", "ESTIMATE_URL", "LOGO_URL"),
