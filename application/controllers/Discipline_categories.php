@@ -41,7 +41,7 @@ class Discipline_categories extends MY_Controller {
             $data->action,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
-            modal_anchor(get_uri("Discipline_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_category'), "data-post-id" => $data->id))
+            modal_anchor(get_uri("discipline_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_category'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_contribution'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("Discipline_categories/delete"), "data-action" => "delete-confirmation"))
         );
     }
@@ -81,7 +81,7 @@ class Discipline_categories extends MY_Controller {
 
         $view_data['model_info'] = $this->Discipline_categories_model->get_one($this->input->post('id'));
 
-        $this->load->view('Discipline_categories/modal_form', $view_data);
+        $this->load->view('discipline_categories/modal_form', $view_data);
     }
 
     function delete() {
