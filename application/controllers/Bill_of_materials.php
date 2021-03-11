@@ -144,8 +144,10 @@ class Bill_of_materials extends MY_Controller {
     }
 
     private function _material_make_row($data){
+        $material_name = "<div class='item-row strong mb5'>$data->material_name</div><span>" . $data->warehouse_name . "</span>";
+
         return array(
-            $data->material_name,
+            $material_name,
             $data->quantity,
             $data->unit_name,
             js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("bill_of_materials/delete_material"), "data-action" => "delete-confirmation"))

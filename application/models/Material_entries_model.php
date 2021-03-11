@@ -42,7 +42,7 @@ class Material_entries_model extends Crud_model {
             AND material_inventory.deleted = 0
         ), 0) AS stocks_override,
         COALESCE((
-            SELECT SUM(bill_of_materials_materials.quantity)
+            SELECT SUM(bill_of_materials_materials.quantity * productions.quantity + (productions.quantity * ROUND(productions.buffer / 100, 2)))
             FROM bill_of_materials_materials
             LEFT JOIN material_inventory ON material_inventory.id = bill_of_materials_materials.material_inventory_id
             LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials_materials.bill_of_material_id

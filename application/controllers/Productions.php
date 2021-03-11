@@ -69,15 +69,28 @@ class Productions extends MY_Controller {
             $status = '<span class="mt0 label label-danger large">Cancelled</span>';
         }
 
+        $edit = "<li role='presentation'>" . modal_anchor(get_uri("productions/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit_production'), array("class" => "edit", "title" => lang('edit_production'), "data-post-id" => $data->id)) . "</li>";
+        $details = "<li role='presentation'>" . modal_anchor(get_uri("productions/modal_details/$data->id"), "<i class='fa fa-search'></i> " . lang('view_details'), array("title" => lang('view_details'))) . "</li>";
+        $print = "<li role='presentation'>" . anchor(get_uri("productions/print/".$data->id), "<i class='fa fa-print'></i> " . lang('print_details'), array("title" => lang('print_details'), "target" => "_blank")) . "</li>";
+
+        $action = '<span class="dropdown inline-block">
+                <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                    <i class="fa fa-cogs"></i>&nbsp;
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">' . $details . $print . $edit . '</ul>
+            </span>';
+
         return array(
             $data->bill_of_material_title,
-            $data->item_name,
+            $data->item_name . " (" . $data->bill_of_material_quantity . " " . $data->abbreviation . ")",
             $data->warehouse_name,
             $data->quantity,
-            $status,
+            $data->buffer . "%",
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
-            modal_anchor(get_uri("productions/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_production'), "data-post-id" => $data->id))
+            $status,
+            $action
         );
     }
 
@@ -91,7 +104,9 @@ class Productions extends MY_Controller {
 
         $production_data = array(
             "bill_of_material_id" => $this->input->post('bill_of_material_id'),
-            "inventory_id" => $this->input->post('inventory_id')
+            "inventory_id" => $this->input->post('inventory_id'),
+            "quantity" => $this->input->post("quantity"),
+            "buffer" => $this->input->post("buffer")
         );
 
         if(!$id){
@@ -136,6 +151,27 @@ class Productions extends MY_Controller {
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+        }
+    }
+
+    function modal_details($id = 0) {
+        if ($id) {
+            $view_data["production_info"] = $this->Productions_model->get_details(array("id" => $id))->row();
+            $view_data['bill_of_material_materials'] = $this->Bill_of_materials_model->get_materials(array("id" => $view_data["production_info"]->bill_of_material_id))->result();
+
+            $this->load->view("productions/modal_details", $view_data);
+        } else {
+            echo json_encode(array("success" => false, lang('error_occurred')));
+        }
+    }
+
+    function print($id = 0) {
+        if ($id) {
+            $view_data["production_info"] = $this->Productions_model->get_details(array("id" => $id))->row();
+            $view_data['bill_of_material_materials'] = $this->Bill_of_materials_model->get_materials(array("id" => $view_data["production_info"]->bill_of_material_id))->result();
+            $view_data["details"] = $this->load->view("productions/details", $view_data, true); 
+
+            $this->template->rander("productions/print", $view_data);
         }
     }
 }

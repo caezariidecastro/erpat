@@ -316,12 +316,15 @@ $lang["has_existing_bill_of_material_error"] = "Product has existing bill of mat
 $lang["add_bill_of_material_info"] = 'Note: Only warehouses that has an output of selected bill of material will be displayed in "Warehouse" dropdown list';
 $lang["bom"] = "BOM";
 $lang["add_view_materials"] = "Add/view materials";
-$lang["material_already_added_error"] = "Materials has been added already!";
+$lang["material_already_added_error"] = "Material has been added already!";
 
 // Production & Inventory > Productions
 $lang["productions"] = "Manufacturing Order";
 $lang["add_production"] = "Add production";
 $lang["edit_production"] = "Edit production";
+$lang["buffer"] = "Buffer";
+$lang["view_details"] = "View details";
+$lang["print_details"] = "Print details";
 
 // Production & Inventory > Customers
 $lang["customers"] = "Customers";

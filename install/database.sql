@@ -2004,3 +2004,7 @@ ALTER TABLE `purchase_order_returns` MODIFY IF EXISTS `cancelled_at` DATETIME NU
 -- 2021-03-08 17:58
 ALTER TABLE `purchase_order_return_materials` ADD COLUMN IF NOT EXISTS `total` DECIMAL(10, 2) NOT NULL AFTER `remarks`;
 ALTER TABLE `purchase_order_return_materials` MODIFY IF EXISTS `total` DECIMAL(10, 2) NOT NULL AFTER `remarks`;
+
+-- 2021-03-11 21:31
+ALTER TABLE `productions` ADD COLUMN IF NOT EXISTS `quantity` INT(10) NOT NULL AFTER `status`, ADD COLUMN IF NOT EXISTS `buffer` INT(10) NOT NULL AFTER `quantity`;
+ALTER TABLE `productions` MODIFY IF EXISTS `quantity` INT(10) NOT NULL AFTER `status`, MODIFY IF EXISTS `buffer` INT(10) NOT NULL AFTER `quantity`;

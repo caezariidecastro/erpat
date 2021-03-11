@@ -1,3 +1,24 @@
+<style>
+    @media print {
+        #print-section{
+            background-color: white;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            margin: 0;
+            font-size: 14px;
+            line-height: 18px;
+            display: block;
+        }
+    }
+
+    #print-section{
+        display: none;
+    }
+</style>
+
 <div id="page-content" class="p20 clearfix">
     <div class="panel panel-default">
         <div class="page-title clearfix">
@@ -13,6 +34,8 @@
     </div>
 </div>
 
+<div id="print-section"></div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $("#production-table").appTable({
@@ -27,13 +50,14 @@
                 {title: "<?php echo lang('output') ?>"},
                 {title: "<?php echo lang('warehouse') ?>"},
                 {title: "<?php echo lang('quantity') ?>"},
-                {title: "<?php echo lang('status') ?>"},
-                {title: "<?php echo lang('created_by') ?>",},
+                {title: "<?php echo lang('buffer') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},
-                {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
+                {title: "<?php echo lang('created_by') ?>",},
+                {title: "<?php echo lang('status') ?>", "class": "text-center w100"},
+                {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4, 5],
-            xlsColumns: [0, 1, 2, 3, 4, 5]
+            printColumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7],
         });
     });
 </script>
