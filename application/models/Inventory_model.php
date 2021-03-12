@@ -32,6 +32,7 @@ class Inventory_model extends Crud_model {
         if ($warehouse_id) {
             $where .= " AND $inventory_table.warehouse=$warehouse_id";
             $delivered_query .= " AND i.warehouse=$warehouse_id";
+            $item_query = "AND i.item_id = $inventory_table.item_id";
         }
 
         $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, units.abbreviation AS unit_abbreviation, 

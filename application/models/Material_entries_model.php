@@ -77,7 +77,6 @@ class Material_entries_model extends Crud_model {
             WHERE material_inventory_transfers.deleted = 0
             AND material_inventory_transfer_items.deleted = 0
             AND material_inventory.material_id = $materials_table.id
-            AND material_inventory_transfers.transferee = material_inventory.warehouse
             AND material_inventory_transfers.status = 'completed'
         ), 0) AS transferred,
         COALESCE((
@@ -88,7 +87,6 @@ class Material_entries_model extends Crud_model {
             WHERE material_inventory_transfers.deleted = 0
             AND material_inventory_transfer_items.deleted = 0
             AND material_inventory.material_id = $materials_table.id
-            AND material_inventory_transfers.receiver = material_inventory.warehouse
             AND material_inventory_transfers.status = 'completed'
         ), 0) AS received
         FROM $materials_table

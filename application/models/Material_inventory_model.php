@@ -23,11 +23,12 @@ class Material_inventory_model extends Crud_model {
 
         if ($material_id) {
             $where .= " AND $material_inventory_table.material_id=$material_id";
-            $material_query = "AND material_inventory.material_id = $material_id";
+            $material_query = "AND mi.material_id = $material_id";
         }
 
         if ($warehouse_id) {
             $where .= " AND $material_inventory_table.warehouse=$warehouse_id";
+            $material_query = "AND mi.material_id = $material_inventory_table.material_id";
         }
 
         $sql = "SELECT $material_inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $material_inventory_table.name AS material_name, units.abbreviation AS unit_abbreviation, 
@@ -66,7 +67,7 @@ class Material_inventory_model extends Crud_model {
             SELECT SUM(material_inventory_transfer_items.quantity)
             FROM material_inventory_transfer_items
             LEFT JOIN material_inventory_transfers ON material_inventory_transfers.reference_number = material_inventory_transfer_items.reference_number
-            LEFT JOIN material_inventory ON material_inventory.id = material_inventory_transfer_items.material_inventory_id
+            LEFT JOIN material_inventory mi ON mi.id = material_inventory_transfer_items.material_inventory_id
             WHERE material_inventory_transfers.deleted = 0
             AND material_inventory_transfer_items.deleted = 0
             $material_query
@@ -77,7 +78,7 @@ class Material_inventory_model extends Crud_model {
             SELECT SUM(material_inventory_transfer_items.quantity)
             FROM material_inventory_transfer_items
             LEFT JOIN material_inventory_transfers ON material_inventory_transfers.reference_number = material_inventory_transfer_items.reference_number
-            LEFT JOIN material_inventory ON material_inventory.id = material_inventory_transfer_items.material_inventory_id
+            LEFT JOIN material_inventory mi ON mi.id = material_inventory_transfer_items.material_inventory_id
             WHERE material_inventory_transfers.deleted = 0
             AND material_inventory_transfer_items.deleted = 0
             $material_query

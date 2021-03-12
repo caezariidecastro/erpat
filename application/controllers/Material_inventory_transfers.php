@@ -205,7 +205,7 @@ class Material_inventory_transfers extends MY_Controller {
             $result = array();
             foreach ($list_data as $data) {
                 $result[] = array(
-                    $data->inventory_id,
+                    $data->material_inventory_id,
                     $data->item_name,
                     $data->quantity,
                     $data->unit_abbreviation,
