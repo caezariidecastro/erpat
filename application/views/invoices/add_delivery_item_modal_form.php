@@ -119,7 +119,7 @@
                         dataType: "json",
                         success: function (response) {
                             if (response && response.success) {
-                                $("#invoice_unit_type").val(response.inventory_info.unit_name);
+                                $("#invoice_unit_type").val(response.inventory_info.unit_abbreviation);
                                 $("#invoice_item_rate").val(response.inventory_info.selling_price);
                             }
                         }

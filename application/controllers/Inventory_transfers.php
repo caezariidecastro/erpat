@@ -73,7 +73,7 @@ class Inventory_transfers extends MY_Controller {
         $inventory_items_select2 = array(array("id" => "", "text" => "-"));
 
         foreach ($inventory_items as $inventory_item) {
-            $inventory_items_select2[] = array("id" => $inventory_item->id, "text" => $inventory_item->name . " (".$inventory_item->warehouse_name.": " . get_current_item_warehouse_count($inventory_item) . " ) ", "unit_type" => $inventory_item->unit_name, "");
+            $inventory_items_select2[] = array("id" => $inventory_item->id, "text" => $inventory_item->name . " (".$inventory_item->warehouse_name.": " . get_current_item_warehouse_count($inventory_item) . " ) ", "unit_type" => $inventory_item->unit_abbreviation, "");
         }
 
         if($type == "json"){
@@ -209,7 +209,7 @@ class Inventory_transfers extends MY_Controller {
                     $data->inventory_id,
                     $data->item_name,
                     $data->quantity,
-                    $data->unit_name,
+                    $data->unit_abbreviation,
                     '<a href="#" title="Delete" class="delete"><i class="fa fa-times fa-fw"></i></a>'
                 );
             }

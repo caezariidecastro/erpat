@@ -134,7 +134,7 @@
                         dataType: "json",
                         success: function (response) {
                             if (response && response.success) {
-                                $("#estimate_unit_type").val(response.inventory_info.unit_name);
+                                $("#estimate_unit_type").val(response.inventory_info.unit_abbreviation);
                                 $("#estimate_item_rate").val(response.inventory_info.selling_price);
                             }
                         }

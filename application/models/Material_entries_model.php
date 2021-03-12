@@ -28,7 +28,7 @@ class Material_entries_model extends Crud_model {
             $where .= " AND $materials_table.vendor = $vendor";
         }
 
-        $sql = "SELECT $materials_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, un.title AS unit_name, v.name AS vendor_name, COALESCE((
+        $sql = "SELECT $materials_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, un.abbreviation AS unit_abbreviation, v.name AS vendor_name, COALESCE((
             SELECT SUM(material_inventory.stock)
             FROM material_inventory
             WHERE material_id = $materials_table.id

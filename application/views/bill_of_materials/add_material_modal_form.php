@@ -110,7 +110,7 @@
                 dataType: "json",
                 success: function(response){
                     if(response.success){
-                        $("#unit_type").val(response.material_inventory_info.unit_name);
+                        $("#unit_type").val(response.material_inventory_info.unit_abbreviation);
                     }
                 }
             })

@@ -28,7 +28,7 @@ class Material_inventory_model extends Crud_model {
             $where .= " AND $material_inventory_table.warehouse=$warehouse_id";
         }
 
-        $sql = "SELECT $material_inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $material_inventory_table.name AS material_name, $material_inventory_table.stock, units.title AS unit_name, 
+        $sql = "SELECT $material_inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $material_inventory_table.name AS material_name, $material_inventory_table.stock, units.abbreviation AS unit_abbreviation, 
         COALESCE((
             SELECT SUM(material_inventory_stock_override.stock)
             FROM material_inventory_stock_override

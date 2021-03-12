@@ -56,7 +56,7 @@ class Inventory_transfers_model extends Crud_model {
     }
 
     function get_transferred_items($reference_number){
-        $sql = "SELECT inventory_transfer_items.*, i.name AS item_name, i.id AS inventory_id, units.title AS unit_name
+        $sql = "SELECT inventory_transfer_items.*, i.name AS item_name, i.id AS inventory_id, units.abbreviation AS unit_abbreviation
         FROM inventory_transfer_items
         LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
         LEFT JOIN units ON units.id = i.unit

@@ -34,7 +34,7 @@ class Inventory_model extends Crud_model {
             $delivered_query .= " AND i.warehouse=$warehouse_id";
         }
 
-        $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, $inventory_table.stock, units.title AS unit_name, COALESCE((
+        $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, $inventory_table.stock, units.abbreviation AS unit_abbreviation, COALESCE((
             SELECT SUM(inventory_transfer_items.quantity)
             FROM inventory_transfer_items
             LEFT JOIN inventory_transfers ON inventory_transfers.reference_number = inventory_transfer_items.reference_number

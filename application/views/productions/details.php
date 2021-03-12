@@ -36,7 +36,7 @@
             ?>
             <tr style="background-color: #f4f4f4; ">
                 <td style="width: 45%; border: 1px solid #eee; padding: 10px;"><?php echo $material_name; ?></td>
-                <td style="text-align: center; width: 15%; border: 1px solid #eee; padding: 10px;"> <?php echo $material->unit_name ?></td>
+                <td style="text-align: center; width: 15%; border: 1px solid #eee; padding: 10px;"> <?php echo $material->unit_abbreviation ?></td>
                 <td style="text-align: center; width: 20%; border: 1px solid #eee; padding: 10px;"> <?php echo $quantity?></td>
                 <td style="text-align: center; width: 20%; border: 1px solid #eee; padding: 10px;"> <?php echo $buffer ?></td>
                 <td style="text-align: center; width: 20%; border: 1px solid #eee; padding: 10px;"> <?php echo $total; ?></td>
