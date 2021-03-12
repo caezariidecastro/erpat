@@ -2011,3 +2011,29 @@ ALTER TABLE `productions` MODIFY IF EXISTS `quantity` INT(10) NOT NULL AFTER `st
 
 -- 2021-03-12 16:57
 ALTER TABLE `vehicles` CHANGE `image` `files` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+
+-- 2021-03-12 18:52
+CREATE TABLE IF NOT EXISTS `material_inventory_transfers` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `transferee` bigint(10) NOT NULL,
+  `receiver` bigint(10) NOT NULL,
+  `dispatcher` bigint(10) NOT NULL,
+  `driver` bigint(10) NOT NULL,
+  `vehicle_id` bigint(10) NOT NULL,
+  `remarks` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `status` enum('draft','ongoing','completed','cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'draft',
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `material_inventory_transfer_items` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `material_inventory_id` bigint(10) NOT NULL,
+  `reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `quantity` float NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

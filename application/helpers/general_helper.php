@@ -1841,15 +1841,16 @@ if (!function_exists('get_purchase_return_making_data')) {
 if (!function_exists('get_current_item_inventory_count')) {
 
     function get_current_item_inventory_count($data) {
-        return $data->stocks + $data->produced + $data->stocks_override - $data->delivered - $data->invoiced;
+        return $data->stock + $data->stock_override + $data->produced - $data->delivered - $data->invoiced - $data->transferred + $data->received;
     }
 
 }
 
-if (!function_exists('get_current_item_warehouse_count')) {
 
-    function get_current_item_warehouse_count($data) {
-        return $data->stock + $data->stock_override + $data->produced - $data->transferred + $data->received - $data->delivered - $data->invoiced;
+if (!function_exists('get_current_material_inventory_count')) {
+
+    function get_current_material_inventory_count($data) {
+        return $data->stock + $data->stock_override + $data->production_quantity + $data->purchased + $data->returned - $data->transferred + $data->received;
     }
 }
 

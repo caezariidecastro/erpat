@@ -15,9 +15,11 @@ class Material_entries_model extends Crud_model {
         $id = get_array_value($options, "id");
         $category = get_array_value($options, "category");
         $vendor = get_array_value($options, "vendor");
+        $item_query = "";
 
         if ($id) {
             $where .= " AND $materials_table.id=$id";
+            $item_query .= " ";
         }
 
         if($category){
@@ -33,14 +35,14 @@ class Material_entries_model extends Crud_model {
             FROM material_inventory
             WHERE material_id = $materials_table.id
             AND material_inventory.deleted = 0
-        ), 0) AS stocks,
+        ), 0) AS stock,
         COALESCE((
             SELECT SUM(material_inventory_stock_override.stock)
             FROM material_inventory
             LEFT JOIN material_inventory_stock_override ON material_inventory_stock_override.material_inventory_id = material_inventory.id
             WHERE material_id = $materials_table.id 
             AND material_inventory.deleted = 0
-        ), 0) AS stocks_override,
+        ), 0) AS stock_override,
         COALESCE((
             SELECT SUM(bill_of_materials_materials.quantity * productions.quantity + (productions.quantity * ROUND(productions.buffer / 100, 2)))
             FROM bill_of_materials_materials
@@ -66,7 +68,29 @@ class Material_entries_model extends Crud_model {
             WHERE purchase_order_materials.material_id = $materials_table.id
             AND purchase_order_return_materials.deleted = 0
             AND purchase_order_returns.status = 'completed'
-        ), 0) AS returned
+        ), 0) AS returned,
+        COALESCE((
+            SELECT SUM(material_inventory_transfer_items.quantity)
+            FROM material_inventory_transfer_items
+            LEFT JOIN material_inventory_transfers ON material_inventory_transfers.reference_number = material_inventory_transfer_items.reference_number
+            LEFT JOIN material_inventory ON material_inventory.id = material_inventory_transfer_items.material_inventory_id
+            WHERE material_inventory_transfers.deleted = 0
+            AND material_inventory_transfer_items.deleted = 0
+            AND material_inventory.material_id = $materials_table.id
+            AND material_inventory_transfers.transferee = material_inventory.warehouse
+            AND material_inventory_transfers.status = 'completed'
+        ), 0) AS transferred,
+        COALESCE((
+            SELECT SUM(material_inventory_transfer_items.quantity)
+            FROM material_inventory_transfer_items
+            LEFT JOIN material_inventory_transfers ON material_inventory_transfers.reference_number = material_inventory_transfer_items.reference_number
+            LEFT JOIN material_inventory ON material_inventory.id = material_inventory_transfer_items.material_inventory_id
+            WHERE material_inventory_transfers.deleted = 0
+            AND material_inventory_transfer_items.deleted = 0
+            AND material_inventory.material_id = $materials_table.id
+            AND material_inventory_transfers.receiver = material_inventory.warehouse
+            AND material_inventory_transfers.status = 'completed'
+        ), 0) AS received
         FROM $materials_table
         LEFT JOIN users creator ON creator.id = $materials_table.created_by
         LEFT JOIN material_categories cat ON cat.id = $materials_table.category

@@ -3,14 +3,13 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Inventory_transfers extends MY_Controller {
+class Material_inventory_transfers extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model("Inventory_transfers_model");
-        $this->load->model("Inventory_model");
+        $this->load->model("Material_inventory_transfers_model");
+        $this->load->model("Material_inventory_model");
         $this->load->model("Warehouse_model");
-        $this->load->model("Inventory_item_entries_model");
         $this->load->model("Vehicles_model");
     }
 
@@ -35,11 +34,11 @@ class Inventory_transfers extends MY_Controller {
     }
 
     function index(){
-        $this->template->rander("inventory_transfers/index");
+        $this->template->rander("material_inventory_transfers/index");
     }
 
     function list_data(){
-        $list_data = $this->Inventory_transfers_model->get_details()->result();
+        $list_data = $this->Material_inventory_transfers_model->get_details()->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -62,18 +61,18 @@ class Inventory_transfers extends MY_Controller {
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             $this->_get_status_label($data->status),
-            modal_anchor(get_uri("inventory_transfers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_transfer'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory_transfers/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("material_inventory_transfers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_transfer'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("material_inventory_transfers/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
     function get_inventory_items_select2_data($warehouse_id = null, $type = "object") {
-        $inventory_items = $this->Inventory_model->get_details(array('warehouse_id' => $warehouse_id))->result();
+        $inventory_items = $this->Material_inventory_model->get_details(array('warehouse_id' => $warehouse_id))->result();
 
         $inventory_items_select2 = array(array("id" => "", "text" => "-"));
 
         foreach ($inventory_items as $inventory_item) {
-            $inventory_items_select2[] = array("id" => $inventory_item->id, "text" => $inventory_item->name . " (".$inventory_item->warehouse_name.": " . get_current_item_inventory_count($inventory_item) . " ) ", "unit_type" => $inventory_item->unit_abbreviation, "");
+            $inventory_items_select2[] = array("id" => $inventory_item->id, "text" => $inventory_item->name . " (".$inventory_item->warehouse_name.": " . get_current_material_inventory_count($inventory_item) . " ) ", "unit_type" => $inventory_item->unit_abbreviation, "");
         }
 
         if($type == "json"){
@@ -112,7 +111,7 @@ class Inventory_transfers extends MY_Controller {
 
         if($id){
             // If edit mode, Delete previous inventory_items
-            $this->Inventory_transfers_model->delete_transfer_item($reference_number);
+            $this->Material_inventory_transfers_model->delete_transfer_item($reference_number);
             $transfer_data["status"] = $this->input->post("status");
         }
 
@@ -130,23 +129,23 @@ class Inventory_transfers extends MY_Controller {
                     $this->validate_items_warehouse($inventory_item->id, $receiver);
                 }
 
-                $transfer_id = $this->Inventory_transfers_model->save($transfer_data, $id);
+                $transfer_id = $this->Material_inventory_transfers_model->save($transfer_data, $id);
     
                 for($i = 0; $i < count($inventory_items); $i++){
                     $inventory_item = json_decode($inventory_items[$i]);
     
                     $data = array(
-                        'inventory_id' => $inventory_item->id,
+                        'material_inventory_id' => $inventory_item->id,
                         'reference_number' => $reference_number,
                         'quantity' => $inventory_item->value
                     );
                     
-                    $this->Inventory_transfers_model->insert_transfer_item($data);
+                    $this->Material_inventory_transfers_model->insert_transfer_item($data);
                 }
     
                 if ($transfer_id) {
                     $options = array("id" => $transfer_id);
-                    $transfer_info = $this->Inventory_transfers_model->get_details($options)->row();
+                    $transfer_info = $this->Material_inventory_transfers_model->get_details($options)->row();
                     echo json_encode(array("success" => true, "id" => $transfer_info->id, "data" => $this->_make_row($transfer_info), 'message' => lang('record_saved')));
                 } else {
                     echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
@@ -156,8 +155,8 @@ class Inventory_transfers extends MY_Controller {
     }
 
     private function validate_items_warehouse($item_id, $warehouse_id){
-        if(!$this->Inventory_model->item_on_warehouse_check($item_id, $warehouse_id)){
-            $item = $this->Inventory_model->get_one($item_id);
+        if(!$this->Material_inventory_model->material_on_warehouse_check($item_id, $warehouse_id)){
+            $item = $this->Material_inventory_model->get_one($item_id);
             $warehouse = $this->Warehouse_model->get_one($warehouse_id);
 
             echo json_encode(array("success" => false, 'message' => "Item $item->name doesn't exist on warehouse $warehouse->name"));
@@ -170,7 +169,7 @@ class Inventory_transfers extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $model_info = $this->Inventory_transfers_model->get_one($this->input->post('id'));
+        $model_info = $this->Material_inventory_transfers_model->get_one($this->input->post('id'));
 
         $view_data['model_info'] = $model_info;
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
@@ -180,7 +179,7 @@ class Inventory_transfers extends MY_Controller {
         $view_data['warehouse_item_select2'] = $model_info->transferee ? $this->get_inventory_items_select2_data($model_info->transferee) : array('id' => '', 'text' => '');
         $view_data["status_dropdown"] = $this->_get_statuses();
 
-        $this->load->view('inventory_transfers/modal_form', $view_data);
+        $this->load->view('material_inventory_transfers/modal_form', $view_data);
     }
 
     function delete() {
@@ -190,7 +189,7 @@ class Inventory_transfers extends MY_Controller {
 
         $id = $this->input->post('id');
 
-        if ($this->Inventory_transfers_model->delete($id)) {
+        if ($this->Material_inventory_transfers_model->delete($id)) {
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -202,7 +201,7 @@ class Inventory_transfers extends MY_Controller {
             echo json_encode(array('data' => []));
         }
         else{
-            $list_data = $this->Inventory_transfers_model->get_transferred_items($reference_number)->result();
+            $list_data = $this->Material_inventory_transfers_model->get_transferred_items($reference_number)->result();
             $result = array();
             foreach ($list_data as $data) {
                 $result[] = array(

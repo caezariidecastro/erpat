@@ -36,6 +36,7 @@ $lang["submenu_pid_supplier"] = "Supplier";
 $lang["submenu_pid_products"] = "Products";
 $lang["submenu_pid_inventory"] = "Inventory";
 $lang["submenu_pid_materials"] = "Materials";
+$lang["submenu_pid_transfers"] = "Transfers";
 
 $lang["submenu_fas_summary"] = "Summary";
 $lang["submenu_fas_payments"] = "Payments";

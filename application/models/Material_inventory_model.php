@@ -15,6 +15,7 @@ class Material_inventory_model extends Crud_model {
         $id = get_array_value($options, "id");
         $material_id = get_array_value($options, "material_id");
         $warehouse_id = get_array_value($options, "warehouse_id");
+        $material_query = "";
 
         if ($id) {
             $where .= " AND $material_inventory_table.id=$id";
@@ -22,13 +23,14 @@ class Material_inventory_model extends Crud_model {
 
         if ($material_id) {
             $where .= " AND $material_inventory_table.material_id=$material_id";
+            $material_query = "AND material_inventory.material_id = $material_id";
         }
 
         if ($warehouse_id) {
             $where .= " AND $material_inventory_table.warehouse=$warehouse_id";
         }
 
-        $sql = "SELECT $material_inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $material_inventory_table.name AS material_name, $material_inventory_table.stock, units.abbreviation AS unit_abbreviation, 
+        $sql = "SELECT $material_inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $material_inventory_table.name AS material_name, units.abbreviation AS unit_abbreviation, 
         COALESCE((
             SELECT SUM(material_inventory_stock_override.stock)
             FROM material_inventory_stock_override
@@ -59,7 +61,29 @@ class Material_inventory_model extends Crud_model {
             WHERE purchase_order_materials.material_inventory_id = $material_inventory_table.id
             AND purchase_order_return_materials.deleted = 0
             AND purchase_order_returns.status = 'completed'
-        ), 0) AS returned
+        ), 0) AS returned,
+        COALESCE((
+            SELECT SUM(material_inventory_transfer_items.quantity)
+            FROM material_inventory_transfer_items
+            LEFT JOIN material_inventory_transfers ON material_inventory_transfers.reference_number = material_inventory_transfer_items.reference_number
+            LEFT JOIN material_inventory ON material_inventory.id = material_inventory_transfer_items.material_inventory_id
+            WHERE material_inventory_transfers.deleted = 0
+            AND material_inventory_transfer_items.deleted = 0
+            $material_query
+            AND material_inventory_transfers.transferee = $material_inventory_table.warehouse
+            AND material_inventory_transfers.status = 'completed'
+        ), 0) AS transferred,
+        COALESCE((
+            SELECT SUM(material_inventory_transfer_items.quantity)
+            FROM material_inventory_transfer_items
+            LEFT JOIN material_inventory_transfers ON material_inventory_transfers.reference_number = material_inventory_transfer_items.reference_number
+            LEFT JOIN material_inventory ON material_inventory.id = material_inventory_transfer_items.material_inventory_id
+            WHERE material_inventory_transfers.deleted = 0
+            AND material_inventory_transfer_items.deleted = 0
+            $material_query
+            AND material_inventory_transfers.receiver = $material_inventory_table.warehouse
+            AND material_inventory_transfers.status = 'completed'
+        ), 0) AS received
         FROM $material_inventory_table
         LEFT JOIN users ON users.id = $material_inventory_table.created_by
         LEFT JOIN warehouses w ON w.id = $material_inventory_table.warehouse
