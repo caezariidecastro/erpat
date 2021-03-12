@@ -290,9 +290,11 @@
             }
         }
         else{
+            let text = item_data.text.substr(0, item_data.text.indexOf("("));
+
             itemsTable.row.add([
                 item_data.id,
-                item_data.text,
+                text,
                 quantity,
                 item_data.unit_type,
                 '<a href="#" title="Delete" class="delete"><i class="fa fa-times fa-fw"></i></a>'
