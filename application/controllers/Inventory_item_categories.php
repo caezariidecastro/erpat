@@ -32,6 +32,7 @@ class Inventory_item_categories extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_pid");
         $view_data['category_select2'] = $this->_get_category_select2_data();
         $view_data['vendor_select2'] = $this->_get_vendor_select2_data();
         $this->template->rander("inventory_item_categories/index", $view_data);

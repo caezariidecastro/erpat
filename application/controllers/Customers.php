@@ -11,6 +11,7 @@ class Customers extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_sms");
         $this->template->rander("customers/index");
     }
 

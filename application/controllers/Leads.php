@@ -15,6 +15,7 @@ class Leads extends MY_Controller {
     /* load leads list view */
 
     function index() {
+        $this->validate_user_sub_module_permission("module_mcm");
         $this->access_only_allowed_members();
         $this->check_module_availability("module_lead");
 

@@ -34,6 +34,7 @@ class Bill_of_materials extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_pid");
         $this->template->rander("bill_of_materials/index");
     }
 

@@ -25,6 +25,7 @@ class Asset_categories extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_ams");
         $this->template->rander("asset_categories/index");
     }
 

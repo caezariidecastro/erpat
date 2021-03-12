@@ -17,6 +17,7 @@ class Expenses extends MY_Controller {
 
     //load the expenses list view
     function index() {
+        $this->validate_user_sub_module_permission("module_fas");
         $this->check_module_availability("module_expense");
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("expenses", $this->login_user->is_admin, $this->login_user->user_type);
@@ -448,6 +449,7 @@ class Expenses extends MY_Controller {
     }
 
     function income_vs_expenses() {
+        $this->validate_user_sub_module_permission("module_fas");
         $view_data["projects_dropdown"] = $this->_get_projects_dropdown_for_income_and_epxenses();
         $this->template->rander("expenses/income_vs_expenses_chart", $view_data);
     }

@@ -35,6 +35,7 @@ class Inventory_transfers extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_lms");
         $this->template->rander("inventory_transfers/index");
     }
 

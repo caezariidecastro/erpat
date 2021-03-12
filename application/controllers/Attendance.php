@@ -44,6 +44,7 @@ class Attendance extends MY_Controller {
     //show attendance list view
     function index() {
         $this->check_module_availability("module_attendance");
+        $this->validate_user_sub_module_permission("module_hrm");
 
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
         $this->template->rander("attendance/index", $view_data);

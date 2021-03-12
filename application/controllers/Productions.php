@@ -37,6 +37,7 @@ class Productions extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_pid");
         $view_data["warehouse_select2"] = $this->_get_warehouse_select2_data();
         $this->template->rander("productions/index", $view_data);
     }

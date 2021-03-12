@@ -34,6 +34,7 @@ class Estimates extends MY_Controller {
     /* load estimate list view */
 
     function index() {
+        $this->validate_user_sub_module_permission("module_sms");
         $this->check_module_availability("module_estimate");
         
         //prepare assign to filter list

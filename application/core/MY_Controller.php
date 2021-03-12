@@ -37,6 +37,12 @@ class MY_Controller extends CI_Controller {
         }
     }
 
+    protected function validate_user_sub_module_permission($module) {
+        if(!is_user_has_module_permission($module)){
+            redirect("forbidden");
+        }
+    }
+
     //initialize the login user's permissions with readable format
     protected function init_permission_checker($module) {
         $info = $this->get_access_info($module);

@@ -15,6 +15,7 @@ class Clients extends MY_Controller {
     /* load clients list view */
 
     function index($tab = "") {
+        $this->validate_user_sub_module_permission("module_pms");
         $this->access_only_allowed_members();
 
         $access_info = $this->get_access_info("invoice");

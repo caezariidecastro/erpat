@@ -298,6 +298,7 @@ class Projects extends MY_Controller {
     }
 
     function all_projects() {
+        $this->validate_user_sub_module_permission("module_pms");
         $view_data['project_labels_dropdown'] = json_encode($this->make_labels_dropdown("project", "", true));
 
         $view_data["can_create_projects"] = $this->can_create_projects();
@@ -1954,6 +1955,7 @@ class Projects extends MY_Controller {
     /* load all time sheets view  */
 
     function all_timesheets() {
+        $this->validate_user_sub_module_permission("module_pms");
         $this->access_only_team_members();
         $members = $this->_get_members_to_manage_timesheet();
 
@@ -2268,6 +2270,7 @@ class Projects extends MY_Controller {
     }
 
     function all_tasks() {
+        $this->validate_user_sub_module_permission("module_pms");
         $this->access_only_team_members();
         $view_data['project_id'] = 0;
         $projects = $this->Tasks_model->get_my_projects_dropdown_list($this->login_user->id)->result();
@@ -4474,6 +4477,7 @@ class Projects extends MY_Controller {
 
     //load global gantt view
     function all_gantt() {
+        $this->validate_user_sub_module_permission("module_pms");
         $this->access_only_team_members();
 
         //only admin/ the user has permission to manage all projects, can see all projects, other team mebers can see only their own projects.

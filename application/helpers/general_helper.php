@@ -262,10 +262,13 @@ if (!function_exists('active_menu')) {
 
         if (!is_null($found_url_active_key)) {
             $sidebar_menu[$found_url_active_key]["is_active_menu"] = 1;
+            $sidebar_menu["active_module"] = $found_url_active_key;
         } else if (!is_null($found_special_active_key)) {
             $sidebar_menu[$found_special_active_key]["is_active_menu"] = 1;
+            $sidebar_menu["active_module"] = $found_special_active_key;
         } else if (!is_null($found_controller_active_key)) {
             $sidebar_menu[$found_controller_active_key]["is_active_menu"] = 1;
+            $sidebar_menu["active_module"] = $found_controller_active_key;
         }
 
         return $sidebar_menu;
@@ -1860,5 +1863,19 @@ if (!function_exists('get_total_leave_credit_balance')) {
         $ci = get_instance();
         $options = array("user_id" => $user_id ? $user_id : $ci->login_user->id);
         return $ci->Leave_credits_model->get_balance($options)['balance'];
+    }
+}
+
+if (!function_exists('is_user_has_module_permission')) {
+
+    function is_user_has_module_permission($module) {
+        $ci = get_instance();
+        $permissions = $ci->login_user->permissions;
+
+        if(get_setting($module) == "1" && ($ci->login_user->is_admin || get_array_value($permissions, $module))){
+            return true;
+        }
+
+        return false;
     }
 }

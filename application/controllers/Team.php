@@ -11,10 +11,12 @@ class Team extends MY_Controller {
     }
 
     function index() {
+        $this->validate_user_sub_module_permission("module_hrm");
         $this->template->rander("team/index");
     }
 
     function department(){
+        $this->validate_user_sub_module_permission("module_hrm");
         $this->template->rander("team/department");
     }
 
