@@ -2008,3 +2008,6 @@ ALTER TABLE `purchase_order_return_materials` MODIFY IF EXISTS `total` DECIMAL(1
 -- 2021-03-11 21:31
 ALTER TABLE `productions` ADD COLUMN IF NOT EXISTS `quantity` INT(10) NOT NULL AFTER `status`, ADD COLUMN IF NOT EXISTS `buffer` INT(10) NOT NULL AFTER `quantity`;
 ALTER TABLE `productions` MODIFY IF EXISTS `quantity` INT(10) NOT NULL AFTER `status`, MODIFY IF EXISTS `buffer` INT(10) NOT NULL AFTER `quantity`;
+
+-- 2021-03-12 16:57
+ALTER TABLE `vehicles` CHANGE `image` `files` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
