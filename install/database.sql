@@ -2037,3 +2037,10 @@ CREATE TABLE IF NOT EXISTS `material_inventory_transfer_items` (
   `deleted` tinyint(4) NOT NULL DEFAULT 0, 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- 2021-03-13 16:17
+ALTER TABLE `users` CHANGE `user_type` `user_type` ENUM('staff','client','lead','customer','driver','supplier','vendor') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client';
+ALTER TABLE `users` MODIFY IF EXISTS `user_type` ENUM('staff','client','lead','customer','driver','supplier','vendor') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client';
+
+-- 2021-03-13 16:47
+UPDATE `users` SET `user_type` = 'customer' WHERE `user_type` = '';
