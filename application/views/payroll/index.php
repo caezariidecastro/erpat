@@ -27,8 +27,8 @@
                 {title: "<?php echo lang('name') ?>"},
                 {title: "<?php echo lang('account') ?>"},
                 {title: "<?php echo lang('payment_method') ?>"},
-                {title: "<?php echo lang('amount') ?>"},
-                {title: "<?php echo lang('status') ?>"},
+                {title: "<?php echo lang('amount') ?>", "class": "text-right"},
+                {title: "<?php echo lang('status') ?>", "class": "text-center"},
                 {title: "<?php echo lang('note') ?>"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
@@ -36,6 +36,7 @@
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6, 7],
             xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            summation: [{column: 3, dataType: 'number'}]
         });
     });
 </script>
