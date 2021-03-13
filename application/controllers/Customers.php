@@ -72,7 +72,7 @@ class Customers extends MY_Controller {
             "first_name" => $first_name,
             "last_name" => $last_name,
             "email" => $email,
-            "user_type" => 'consumer',
+            "user_type" => 'customer',
             "phone" => $this->input->post('phone'),
             "street" => $this->input->post('street'),
             "city" => $this->input->post('city'),
