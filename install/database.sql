@@ -2052,3 +2052,7 @@ ALTER TABLE `users` MODIFY IF EXISTS `company` MEDIUMTEXT NOT NULL AFTER `licens
 -- 2021-03-13 17:29
 ALTER TABLE `payroll` CHANGE `status` `status` ENUM('paid','not paid','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'not paid';
 ALTER TABLE `payroll` MODIFY IF EXISTS `status` `status` ENUM('paid','not paid','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'not paid';
+
+-- 2021-03-13 20:58
+ALTER TABLE `contribution_entries` ADD COLUMN IF NOT EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;
+ALTER TABLE `contribution_entries` MODIFY IF EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;

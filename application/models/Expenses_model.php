@@ -84,6 +84,11 @@ class Expenses_model extends Crud_model {
             SELECT payroll.expense_id
             FROM payroll
             WHERE payroll.deleted = 1 OR payroll.status IN ('not paid', 'cancelled')
+        )
+        AND $expenses_table.id NOT IN (
+            SELECT contribution_entries.expense_id
+            FROM contribution_entries
+            WHERE contribution_entries.deleted = 1 OR contribution_entries.status IN ('not paid', 'cancelled')
         )";
         return $this->db->query($sql);
     }
