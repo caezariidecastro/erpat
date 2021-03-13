@@ -89,6 +89,11 @@ class Expenses_model extends Crud_model {
             SELECT contribution_entries.expense_id
             FROM contribution_entries
             WHERE contribution_entries.deleted = 1 OR contribution_entries.status IN ('not paid', 'cancelled')
+        )
+        AND $expenses_table.id NOT IN (
+            SELECT incentive_entries.expense_id
+            FROM incentive_entries
+            WHERE incentive_entries.deleted = 1 OR incentive_entries.status IN ('not paid', 'cancelled')
         )";
         return $this->db->query($sql);
     }

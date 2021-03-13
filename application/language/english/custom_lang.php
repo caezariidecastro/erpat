@@ -134,6 +134,7 @@ $lang["witness"] = "Witness";
 
 // Human Resource > Incentives
 $lang["incentives"] = "Incentives";
+$lang["incentive"] = "Incentive";
 $lang["signed_by"] = "Signed by";
 $lang["remarks"] = "Remarks";
 

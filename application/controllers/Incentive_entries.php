@@ -43,7 +43,55 @@ class Incentive_entries extends MY_Controller {
         echo json_encode(array("data" => $result));
     }
 
+    private function get_labeled_status($status){
+        $labeled_status = "";
+
+        if($status == "not paid"){
+            $labeled_status = "<span class='label label-default'>".(ucwords($status))."</span>";
+        }
+
+        if($status == "paid"){
+            $labeled_status = "<span class='label label-success'>".(ucwords($status))."</span>";
+        }
+
+        if($status == "cancelled"){
+            $labeled_status = "<span class='label label-danger'>".(ucwords($status))."</span>";
+        }
+
+        return $labeled_status;
+    }
+
     private function _make_row($data) {
+        $status = $this->get_labeled_status($data->status);
+
+        $edit = '<li role="presentation">' . modal_anchor(get_uri("incentive_entries/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("class" => "edit", "title" => lang('edit'), "data-post-id" => $data->id)) . '</li>';
+        $delete = "";
+        $pay = "";
+        $cancel = "";
+        $pdf = "";
+
+        if($data->status == "not paid"){
+            $pay = '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("incentive_entries/pay/$data->id"), "data-action" => "update")) .'</li>';
+            $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i> " . lang('delete'), array('title' => lang('delete_entry'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("incentive_entries/delete"), "data-action" => "delete-confirmation")) . '</li>';
+        }
+
+        if($data->status == "paid"){
+            $pdf = "<li role='presentation'>" . anchor(get_uri("incentive_entries/pdf/".$data->id), "<i class='fa fa-file-pdf-o'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
+            $cancel = '<li role="presentation">'. js_anchor("<i class='fa fa-remove'></i> " . lang('mark_as_cancelled'), array('title' => lang('update'), "data-action-url" => get_uri("incentive_entries/cancel/$data->id"), "data-action" => "update"));
+        }
+
+        if($data->status == "cancelled"){
+            $pay = '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("incentive_entries/pay/$data->id"), "data-action" => "update")) .'</li>';
+        }
+
+        $actions = '<span class="dropdown inline-block">
+                        <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                            <i class="fa fa-cogs"></i>&nbsp;
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $pay . $pdf . $edit . $cancel . $delete . '</ul>
+                    </span>';
+
         return array(
             $data->category_name,
             $data->account_name,
@@ -51,10 +99,10 @@ class Incentive_entries extends MY_Controller {
             get_team_member_profile_link($data->created_by, $data->signed_by_name, array("target" => "_blank")),
             number_with_decimal($data->amount),
             nl2br($data->remarks),
+            $status,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
-            modal_anchor(get_uri("incentive_entries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_entry'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_entry'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("incentive_entries/delete"), "data-action" => "delete-confirmation"))
+            $actions 
         );
     }
 
@@ -163,6 +211,66 @@ class Incentive_entries extends MY_Controller {
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+        }
+    }
+
+
+    private function _row_data($id) {
+        $options = array("id" => $id);
+        $incentive_info = $this->Incentive_entries_model->get_details($options)->row();
+        return $this->_make_row($incentive_info);
+    }
+
+    function pay($incentive_id = 0) {
+        if ($incentive_id) {
+            $incentive_data["status"] = "paid";
+
+            $save_id = $this->Incentive_entries_model->save($incentive_data, $incentive_id);
+
+            $options = array("id" => $incentive_id);
+            $incentive_info = $this->Incentive_entries_model->get_details($options)->row();
+
+            $transaction_data = array(
+                'deleted' => '0'
+            );
+
+            $this->Account_transactions_model->update_incentive($incentive_info->expense_id, $transaction_data);
+            if ($save_id) {
+                echo json_encode(array("success" => true, "data" => $this->_row_data($incentive_id), "id" => $incentive_id, "message" => lang("record_saved")));
+            } else {
+                echo json_encode(array("success" => false, lang('error_occurred')));
+            }
+        }
+    }
+
+    function cancel($incentive_id = 0) {
+        if ($incentive_id) {
+            $incentive_data["status"] = "cancelled";
+
+            $save_id = $this->Incentive_entries_model->save($incentive_data, $incentive_id);
+
+            $options = array("id" => $incentive_id);
+            $incentive_info = $this->Incentive_entries_model->get_details($options)->row();
+
+            $transaction_data = array(
+                'deleted' => '1'
+            );
+
+            $this->Account_transactions_model->update_incentive($incentive_info->expense_id, $transaction_data);
+            if ($save_id) {
+                echo json_encode(array("success" => true, "data" => $this->_row_data($incentive_id), "id" => $incentive_id, "message" => lang("record_saved")));
+            } else {
+                echo json_encode(array("success" => false, lang('error_occurred')));
+            }
+        }
+    }
+
+    function pdf($id = 0) {
+        if ($id) {
+            $view_data["incentive_info"] = $this->Incentive_entries_model->get_details(array("id" => $id))->row();
+            prepare_incentive_pdf($view_data);
+        } else {
+            show_404();
         }
     }
 }

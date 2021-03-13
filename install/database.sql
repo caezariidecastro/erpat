@@ -2056,3 +2056,7 @@ ALTER TABLE `payroll` MODIFY IF EXISTS `status` `status` ENUM('paid','not paid',
 -- 2021-03-13 20:58
 ALTER TABLE `contribution_entries` ADD COLUMN IF NOT EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;
 ALTER TABLE `contribution_entries` MODIFY IF EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;
+
+-- 2021-03-13 21:44
+ALTER TABLE `incentive_entries` ADD COLUMN IF NOT EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;
+ALTER TABLE `incentive_entries` MODIFY IF EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;
