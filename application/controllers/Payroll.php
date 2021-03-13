@@ -59,16 +59,32 @@ class Payroll extends MY_Controller {
     private function _make_row($data) {
         $status = "<span class='label label-".($data->status == "paid" ? "success" : "danger")."'>".(ucwords($data->status))."</span>";
 
-        $pay = $data->status == "paid" ? "" : '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("payroll/pay/$data->id"), "data-action" => "update")) .'</li>';
         $edit = '<li role="presentation">' . modal_anchor(get_uri("payroll/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
-        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("payroll/delete"), "data-action" => "delete-confirmation")) . '</li>';
+        $delete = "";
+        $pay = "";
+        $cancel = "";
+        $pdf = "";
+
+        if($data->status == "not_paid"){
+            $pay = '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("payroll/pay/$data->id"), "data-action" => "update")) .'</li>';
+            $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("payroll/delete"), "data-action" => "delete-confirmation")) . '</li>';
+        }
+
+        if($data->status == "paid"){
+            $pdf = "<li role='presentation'>" . anchor(get_uri("payroll/pdf/".$data->id), "<i class='fa fa-file-pdf-o'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
+            $cancel = '<li role="presentation">'. js_anchor("<i class='fa fa-remove'></i> " . lang('mark_as_cancelled'), array('title' => lang('update'), "data-action-url" => get_uri("payroll/cancel/$data->id"), "data-action" => "update"));
+        }
+
+        if($data->status == "cancelled"){
+            $pay = '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("payroll/pay/$data->id"), "data-action" => "update")) .'</li>';
+        }
 
         $actions = '<span class="dropdown inline-block">
                         <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
                             <i class="fa fa-cogs"></i>&nbsp;
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu pull-right" role="menu">' . $pay . $edit . $delete . '</ul>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $pay . $pdf . $edit . $cancel . $delete . '</ul>
                     </span>';
 
         return array(
@@ -216,6 +232,37 @@ class Payroll extends MY_Controller {
             } else {
                 echo json_encode(array("success" => false, lang('error_occurred')));
             }
+        }
+    }
+
+    function cancel($payroll_id = 0) {
+        if ($payroll_id) {
+            $payroll_data["status"] = "cancelled";
+
+            $save_id = $this->Payroll_model->save($payroll_data, $payroll_id);
+
+            $options = array("id" => $payroll_id);
+            $payroll_info = $this->Payroll_model->get_details($options)->row();
+
+            $transaction_data = array(
+                'deleted' => '1'
+            );
+
+            $this->Account_transactions_model->update_payroll($payroll_info->expense_id, $transaction_data);
+            if ($save_id) {
+                echo json_encode(array("success" => true, "data" => $this->_row_data($payroll_id), "id" => $payroll_id, "message" => lang("record_saved")));
+            } else {
+                echo json_encode(array("success" => false, lang('error_occurred')));
+            }
+        }
+    }
+
+    function pdf($id = 0) {
+        if ($id) {
+            $view_data["payroll_info"] = $this->Payroll_model->get_details(array("id" => $id))->row();
+            prepare_payroll_pdf($view_data);
+        } else {
+            show_404();
         }
     }
 }

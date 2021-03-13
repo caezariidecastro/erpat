@@ -973,6 +973,32 @@ if (!function_exists('prepare_return_pdf')) {
 
 }
 
+if (!function_exists('prepare_payroll_pdf')) {
+
+    function prepare_payroll_pdf($payroll_data) {
+        $ci = get_instance();
+        $ci->load->library('pdf');
+        $ci->pdf->setPrintHeader(false);
+        $ci->pdf->setPrintFooter(false);
+        $ci->pdf->SetCellPadding(1.5);
+        $ci->pdf->setImageScale(1.42);
+        $ci->pdf->AddPage();
+        $ci->pdf->SetFontSize(10);
+
+        if ($payroll_data) {
+
+            $html = $ci->load->view("payroll/pdf", $payroll_data, true);
+            $ci->pdf->writeHTML($html, true, false, true, false, '');
+
+            $payroll_info = get_array_value($payroll_data, "payroll_info");
+            $pdf_file_name =  str_replace(" ", "-", $payroll_info->employee_name) . "-" .lang("payroll") . "-" . $payroll_info->created_on . ".pdf";
+
+            $ci->pdf->Output($pdf_file_name, "I");
+        }
+    }
+
+}
+
 /**
  * get all data to make an estimate
  * 
@@ -1046,6 +1072,14 @@ if (!function_exists('get_purchase_return_id')) {
 
     function get_purchase_return_id($purchase_return_id) {
         return strtoupper(lang("return"))." #" . $purchase_return_id;
+    }
+
+}
+
+if (!function_exists('get_payroll_id')) {
+
+    function get_payroll_id($id) {
+        return strtoupper(lang("payroll"))." #" . $id;
     }
 
 }
