@@ -36,8 +36,8 @@ class Asset_entries extends MY_Controller {
         return $category_dropdown;
     }
 
-    protected function _get_brand_dropdown_data() {
-        $brands = $this->Asset_brands_model->get_all()->result();
+    protected function _get_brand_dropdown_data($status = "") {
+        $brands = $this->Asset_brands_model->get_details(array("active" => $status ? $status : ""))->result();
         $brand_dropdown = array('' => '-');
 
         foreach ($brands as $brand) {
@@ -152,7 +152,7 @@ class Asset_entries extends MY_Controller {
         $id = $this->input->post('id');
 
         $view_data['model_info'] = $this->Asset_entries_model->get_one($id);
-        $view_data["brand_dropdown"] = $this->_get_brand_dropdown_data();
+        $view_data["brand_dropdown"] = $this->_get_brand_dropdown_data($id ? "" : "1");
         $view_data["category_dropdown"] = $this->_get_category_dropdown_data();
         $view_data["location_dropdown"] = $this->_get_location_dropdown_data();
         $view_data["vendor_dropdown"] = $this->_get_vendor_dropdown_data($id ? "" : "active");
