@@ -2044,3 +2044,7 @@ ALTER TABLE `users` MODIFY IF EXISTS `user_type` ENUM('staff','client','lead','c
 
 -- 2021-03-13 16:47
 UPDATE `users` SET `user_type` = 'customer' WHERE `user_type` = '';
+
+-- 2021-03-13 17:03
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `company` MEDIUMTEXT NOT NULL AFTER `license_image`;
+ALTER TABLE `users` ADD MODIFY IF EXISTS `company` MEDIUMTEXT NOT NULL AFTER `license_image`;

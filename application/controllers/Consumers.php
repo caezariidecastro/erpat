@@ -25,6 +25,13 @@ class Consumers extends MY_Controller {
     }
 
     private function _make_row($data) {
+        $company_name = "";
+
+        if($data->company){
+            $company = @unserialize($data->company);
+            $company_name = $company["company_name"];
+        }
+
         return array(
             $data->first_name,
             $data->last_name,
@@ -35,6 +42,7 @@ class Consumers extends MY_Controller {
             $data->state,
             $data->zip,
             $data->country,
+            $company_name,
             $data->created_at,
             $data->created_by ? get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")) : "",
             modal_anchor(get_uri("consumers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_consumer'), "data-post-id" => $data->id))
@@ -67,6 +75,11 @@ class Consumers extends MY_Controller {
         $last_name = $this->input->post('last_name');
         $email = $this->input->post('email');
         $password = make_random_string(8);
+        $company_name = $this->input->post("company_name");
+        $company_address = $this->input->post("company_address");
+        $company_position = $this->input->post("company_position");
+        $company_email = $this->input->post("company_email");
+        $company_phone = $this->input->post("company_phone");
 
         $consumer_data = array(
             "first_name" => $first_name,
@@ -80,6 +93,21 @@ class Consumers extends MY_Controller {
             "zip" => $this->input->post('zip'),
             "country" => $this->input->post('country')
         );
+
+        if(!$company_name && ($company_address || $company_email || $company_phone)){
+            validate_submitted_data(array(
+                "company_name" => "required"
+            ));
+        }
+        else{
+            $consumer_data["company"] = serialize(array(
+                "company_name" => $company_name,
+                "company_address" => $company_address,
+                "company_position" => $company_position,
+                "company_email" => $company_email,
+                "company_phone" => $company_phone
+            ));
+        }
 
         if(!$id){
             if ($this->Users_model->is_email_exists($email)) {
@@ -109,8 +137,24 @@ class Consumers extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
+        
+        $model_info = $this->Consumers_model->get_one($this->input->post('id'));
+        $model_info->company_name = "";
+        $model_info->company_address = "";
+        $model_info->company_position = "";
+        $model_info->company_email = "";
+        $model_info->company_phone = "";
 
-        $view_data['model_info'] = $this->Consumers_model->get_one($this->input->post('id'));
+        if($model_info->company){
+            $company = @unserialize($model_info->company);
+            $model_info->company_name = $company["company_name"];
+            $model_info->company_address = $company["company_address"];
+            $model_info->company_position = $company["company_position"];
+            $model_info->company_email = $company["company_email"];
+            $model_info->company_phone = $company["company_phone"];
+        }
+
+        $view_data['model_info'] = $model_info;
 
         $this->load->view('consumers/modal_form', $view_data);
     }

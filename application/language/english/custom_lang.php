@@ -294,6 +294,11 @@ $lang["first_name"] = "First name";
 $lang["last_name"] = "Last name";
 $lang["zip"] = "Zip";
 $lang["street"] = "Street";
+$lang["company_name"] = "Company name";
+$lang["company_address"] = "Company address";
+$lang["company_position"] = "Company position";
+$lang["company_email"] = "Company email";
+$lang["company_phone"] = "Company phone";
 
 // Sales and Invoicing > Sales Matrix
 $lang["sales_matrix"] = "Sales Matrix";
