@@ -56,8 +56,26 @@ class Payroll extends MY_Controller {
         echo json_encode(array("data" => $result));
     }
 
+    private function get_labeled_status($status){
+        $labeled_status = "";
+
+        if($status == "not paid"){
+            $labeled_status = "<span class='label label-default'>".(ucwords($status))."</span>";
+        }
+
+        if($status == "paid"){
+            $labeled_status = "<span class='label label-success'>".(ucwords($status))."</span>";
+        }
+
+        if($status == "cancelled"){
+            $labeled_status = "<span class='label label-danger'>".(ucwords($status))."</span>";
+        }
+
+        return $labeled_status;
+    }
+
     private function _make_row($data) {
-        $status = "<span class='label label-".($data->status == "paid" ? "success" : "danger")."'>".(ucwords($data->status))."</span>";
+        $status = $this->get_labeled_status($data->status);
 
         $edit = '<li role="presentation">' . modal_anchor(get_uri("payroll/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
         $delete = "";
