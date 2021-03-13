@@ -2047,7 +2047,7 @@ UPDATE `users` SET `user_type` = 'customer' WHERE `user_type` = '';
 
 -- 2021-03-13 17:03
 ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `company` MEDIUMTEXT NOT NULL AFTER `license_image`;
-ALTER TABLE `users` ADD MODIFY IF EXISTS `company` MEDIUMTEXT NOT NULL AFTER `license_image`;
+ALTER TABLE `users` MODIFY IF EXISTS `company` MEDIUMTEXT NOT NULL AFTER `license_image`;
 
 -- 2021-03-13 17:29
 ALTER TABLE `payroll` CHANGE `status` `status` ENUM('paid','not paid','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'not paid';
