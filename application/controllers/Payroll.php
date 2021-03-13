@@ -83,7 +83,7 @@ class Payroll extends MY_Controller {
         $cancel = "";
         $pdf = "";
 
-        if($data->status == "not_paid"){
+        if($data->status == "not paid"){
             $pay = '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("payroll/pay/$data->id"), "data-action" => "update")) .'</li>';
             $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("payroll/delete"), "data-action" => "delete-confirmation")) . '</li>';
         }
