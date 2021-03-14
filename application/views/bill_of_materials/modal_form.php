@@ -82,7 +82,7 @@
             echo form_input(array(
                 "id" => "unit_type",
                 "name" => "unit_type",
-                "value" => $unit_name,
+                "value" => $unit_abbreviation,
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('unit_type'),
                 "autofocus" => true,
@@ -120,7 +120,7 @@
                 dataType: "json",
                 success: function(response){
                     if(response.success){
-                        $("#unit_type").val(response.data.unit_name);
+                        $("#unit_type").val(response.data.unit_abbreviation);
                     }
                 }
             })

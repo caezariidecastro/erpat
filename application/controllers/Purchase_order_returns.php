@@ -47,6 +47,7 @@ class Purchase_order_returns extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_pid");
         $view_data["vendor_select2"] = $this->_get_vendor_select2_data();
         $this->template->rander("purchase_order_returns/index", $view_data);
     }

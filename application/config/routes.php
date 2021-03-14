@@ -218,5 +218,8 @@ $route["pid/returns/view/(:any)"] = "purchase_order_returns/view/$1";
 $route["pid/returns/preview/(:any)/(:any)"] = "purchase_order_returns/preview/$1/$2";
 $route["pid/returns/preview/(:any)"] = "purchase_order_returns/preview/$1";
 
+// Production & Inventory > Transfer
+$route['pid/transfers'] = 'material_inventory_transfers/index';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

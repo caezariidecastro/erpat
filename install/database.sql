@@ -2004,3 +2004,59 @@ ALTER TABLE `purchase_order_returns` MODIFY IF EXISTS `cancelled_at` DATETIME NU
 -- 2021-03-08 17:58
 ALTER TABLE `purchase_order_return_materials` ADD COLUMN IF NOT EXISTS `total` DECIMAL(10, 2) NOT NULL AFTER `remarks`;
 ALTER TABLE `purchase_order_return_materials` MODIFY IF EXISTS `total` DECIMAL(10, 2) NOT NULL AFTER `remarks`;
+
+-- 2021-03-11 21:31
+ALTER TABLE `productions` ADD COLUMN IF NOT EXISTS `quantity` INT(10) NOT NULL AFTER `status`, ADD COLUMN IF NOT EXISTS `buffer` INT(10) NOT NULL AFTER `quantity`;
+ALTER TABLE `productions` MODIFY IF EXISTS `quantity` INT(10) NOT NULL AFTER `status`, MODIFY IF EXISTS `buffer` INT(10) NOT NULL AFTER `quantity`;
+
+-- 2021-03-12 16:57
+ALTER TABLE `vehicles` CHANGE `image` `files` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+
+-- 2021-03-12 18:52
+CREATE TABLE IF NOT EXISTS `material_inventory_transfers` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `transferee` bigint(10) NOT NULL,
+  `receiver` bigint(10) NOT NULL,
+  `dispatcher` bigint(10) NOT NULL,
+  `driver` bigint(10) NOT NULL,
+  `vehicle_id` bigint(10) NOT NULL,
+  `remarks` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `status` enum('draft','ongoing','completed','cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'draft',
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `material_inventory_transfer_items` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT ,
+  `material_inventory_id` bigint(10) NOT NULL,
+  `reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `quantity` float NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- 2021-03-13 16:17
+ALTER TABLE `users` CHANGE `user_type` `user_type` ENUM('staff','client','lead','customer','driver','supplier','vendor') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client';
+ALTER TABLE `users` MODIFY IF EXISTS `user_type` ENUM('staff','client','lead','customer','driver','supplier','vendor') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client';
+
+-- 2021-03-13 16:47
+UPDATE `users` SET `user_type` = 'customer' WHERE `user_type` = '';
+
+-- 2021-03-13 17:03
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `company` MEDIUMTEXT NOT NULL AFTER `license_image`;
+ALTER TABLE `users` MODIFY IF EXISTS `company` MEDIUMTEXT NOT NULL AFTER `license_image`;
+
+-- 2021-03-13 17:29
+ALTER TABLE `payroll` CHANGE `status` `status` ENUM('paid','not paid','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'not paid';
+ALTER TABLE `payroll` MODIFY IF EXISTS `status` `status` ENUM('paid','not paid','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'not paid';
+
+-- 2021-03-13 20:58
+ALTER TABLE `contribution_entries` ADD COLUMN IF NOT EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;
+ALTER TABLE `contribution_entries` MODIFY IF EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;
+
+-- 2021-03-13 21:44
+ALTER TABLE `incentive_entries` ADD COLUMN IF NOT EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;
+ALTER TABLE `incentive_entries` MODIFY IF EXISTS `status` ENUM('not paid','paid','cancelled') NOT NULL AFTER `category`;

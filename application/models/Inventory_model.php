@@ -32,30 +32,24 @@ class Inventory_model extends Crud_model {
         if ($warehouse_id) {
             $where .= " AND $inventory_table.warehouse=$warehouse_id";
             $delivered_query .= " AND i.warehouse=$warehouse_id";
+            $item_query = "AND i.item_id = $inventory_table.item_id";
         }
 
-        $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, $inventory_table.stock, units.title AS unit_name, COALESCE((
-            SELECT SUM(inventory_transfer_items.quantity)
-            FROM inventory_transfer_items
-            LEFT JOIN inventory_transfers ON inventory_transfers.reference_number = inventory_transfer_items.reference_number
-            LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
-            WHERE inventory_transfers.deleted = 0
-            AND inventory_transfer_items.deleted = 0
-            $item_query
-            AND inventory_transfers.transferee = $inventory_table.warehouse
-            AND inventory_transfers.status = 'completed'
-        ), 0) AS transferred,
+        $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, units.abbreviation AS unit_abbreviation, 
         COALESCE((
-            SELECT SUM(inventory_transfer_items.quantity)
-            FROM inventory_transfer_items
-            LEFT JOIN inventory_transfers ON inventory_transfers.reference_number = inventory_transfer_items.reference_number
-            LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
-            WHERE inventory_transfers.deleted = 0
-            AND inventory_transfer_items.deleted = 0
-            $item_query
-            AND inventory_transfers.receiver = $inventory_table.warehouse
-            AND inventory_transfers.status = 'completed'
-        ), 0) AS received,
+            SELECT SUM(inventory_stock_override.stock)
+            FROM inventory_stock_override
+            WHERE inventory_stock_override.deleted = 0
+            AND inventory_stock_override.inventory_id = $inventory_table.id
+        ), 0) AS stock_override,
+        COALESCE((
+            SELECT SUM(bill_of_materials.quantity)
+            FROM bill_of_materials
+            LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials.id
+            WHERE bill_of_materials.deleted = 0
+            AND productions.status = 'completed'
+            AND productions.inventory_id = $inventory_table.id
+        ), 0) AS produced,
         COALESCE((
             SELECT SUM(invoice_items.quantity)
             FROM invoice_items
@@ -90,20 +84,6 @@ class Inventory_model extends Crud_model {
             AND i.id = $inventory_table.id
         ), 0) AS delivered,
         COALESCE((
-            SELECT SUM(inventory_stock_override.stock)
-            FROM inventory_stock_override
-            WHERE inventory_stock_override.deleted = 0
-            AND inventory_stock_override.inventory_id = $inventory_table.id
-        ), 0) AS stock_override,
-        COALESCE((
-            SELECT SUM(bill_of_materials.quantity)
-            FROM bill_of_materials
-            LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials.id
-            WHERE bill_of_materials.deleted = 0
-            AND productions.status = 'completed'
-            AND productions.inventory_id = $inventory_table.id
-        ), 0) AS produced,
-        COALESCE((
             SELECT SUM(invoice_items.quantity)
             FROM invoice_items
             LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
@@ -132,7 +112,29 @@ class Inventory_model extends Crud_model {
                 )
             )
             AND i.id = $inventory_table.id
-        ), 0) AS invoiced
+        ), 0) AS invoiced,
+        COALESCE((
+            SELECT SUM(inventory_transfer_items.quantity)
+            FROM inventory_transfer_items
+            LEFT JOIN inventory_transfers ON inventory_transfers.reference_number = inventory_transfer_items.reference_number
+            LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
+            WHERE inventory_transfers.deleted = 0
+            AND inventory_transfer_items.deleted = 0
+            $item_query
+            AND inventory_transfers.transferee = $inventory_table.warehouse
+            AND inventory_transfers.status = 'completed'
+        ), 0) AS transferred,
+        COALESCE((
+            SELECT SUM(inventory_transfer_items.quantity)
+            FROM inventory_transfer_items
+            LEFT JOIN inventory_transfers ON inventory_transfers.reference_number = inventory_transfer_items.reference_number
+            LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
+            WHERE inventory_transfers.deleted = 0
+            AND inventory_transfer_items.deleted = 0
+            $item_query
+            AND inventory_transfers.receiver = $inventory_table.warehouse
+            AND inventory_transfers.status = 'completed'
+        ), 0) AS received
         FROM $inventory_table
         LEFT JOIN users ON users.id = $inventory_table.created_by
         LEFT JOIN warehouses w ON w.id = $inventory_table.warehouse

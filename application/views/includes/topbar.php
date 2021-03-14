@@ -48,6 +48,8 @@
             if (!in_array("dashboard_customization", $hidden_topbar_menus) && (get_setting("disable_new_dashboard_icon") != 1)) {
                 $this->load->view("dashboards/list/topbar_icon");
             }
+
+            $this->load->view("includes/time");
             ?>
 
             <?php

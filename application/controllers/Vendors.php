@@ -21,6 +21,7 @@ class Vendors extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_pid");
         $view_data["status_select2"] = $this->_get_status_select2_data();
         $this->template->rander("vendors/index", $view_data);
     }

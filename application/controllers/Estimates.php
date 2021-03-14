@@ -11,7 +11,7 @@ class Estimates extends MY_Controller {
     }
 
     private function _get_consumer_select2_data() {
-        $consumers = $this->Users_model->get_details(array("user_type" => "consumer"))->result();
+        $consumers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
         $consumer_list = array(array("id" => "", "text" => "-"));
         foreach ($consumers as $value) {
             $consumer_list[] = array("id" => $value->id, "text" => trim($value->first_name . " " . $value->last_name));
@@ -34,6 +34,7 @@ class Estimates extends MY_Controller {
     /* load estimate list view */
 
     function index() {
+        $this->validate_user_sub_module_permission("module_sms");
         $this->check_module_availability("module_estimate");
         
         //prepare assign to filter list

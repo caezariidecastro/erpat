@@ -71,6 +71,8 @@ class Team_members extends MY_Controller {
             redirect("forbidden");
         }
 
+        $this->validate_user_sub_module_permission("module_hrm");
+
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
@@ -355,7 +357,7 @@ class Team_members extends MY_Controller {
 
 
             //we have an id. view the team_member's profie
-            $viewable_user_types = ["staff", "consumer", "customer", "driver", "supplier", "vendor"];
+            $viewable_user_types = ["staff", "customer", "driver", "supplier", "vendor"];
             $options = array("id" => $id);
             $user_info = $this->Users_model->get_details($options)->row();
             if ($user_info && in_array($user_info->user_type, $viewable_user_types)) {

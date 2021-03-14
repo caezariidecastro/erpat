@@ -16,14 +16,14 @@ class Invoices extends MY_Controller {
         $inventory_items = $this->Inventory_model->get_details(array('warehouse_id' => $warehouse_id))->result();
 
         foreach ($inventory_items as $inventory_item) {
-            $inventory_items_select2[] = array("id" => $inventory_item->name, "text" => $inventory_item->name . " (". $inventory_item->warehouse_name . ": " . get_current_item_warehouse_count($inventory_item) . " ) ", "inventory_id" => $inventory_item->id);
+            $inventory_items_select2[] = array("id" => $inventory_item->name, "text" => $inventory_item->name . " (". $inventory_item->warehouse_name . ": " . get_current_item_inventory_count($inventory_item) . " ) ", "inventory_id" => $inventory_item->id);
         }
 
         echo json_encode($inventory_items_select2);
     }
 
     private function _get_consumer_select2_data() {
-        $consumers = $this->Users_model->get_details(array("user_type" => "consumer"))->result();
+        $consumers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
         $consumer_list = array(array("id" => "", "text" => "-"));
         foreach ($consumers as $value) {
             $consumer_list[] = array("id" => $value->id, "text" => trim($value->first_name . " " . $value->last_name));
@@ -56,6 +56,7 @@ class Invoices extends MY_Controller {
     /* load invoice list view */
 
     function index() {
+        $this->validate_user_sub_module_permission("module_sms");
         $this->check_module_availability("module_invoice");
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("invoices", $this->login_user->is_admin, $this->login_user->user_type);

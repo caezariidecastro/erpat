@@ -36,6 +36,7 @@ $lang["submenu_pid_supplier"] = "Supplier";
 $lang["submenu_pid_products"] = "Products";
 $lang["submenu_pid_inventory"] = "Inventory";
 $lang["submenu_pid_materials"] = "Materials";
+$lang["submenu_pid_transfers"] = "Transfers";
 
 $lang["submenu_fas_summary"] = "Summary";
 $lang["submenu_fas_payments"] = "Payments";
@@ -133,6 +134,7 @@ $lang["witness"] = "Witness";
 
 // Human Resource > Incentives
 $lang["incentives"] = "Incentives";
+$lang["incentive"] = "Incentive";
 $lang["signed_by"] = "Signed by";
 $lang["remarks"] = "Remarks";
 
@@ -273,7 +275,7 @@ $lang["transmission"] = "Transmission";
 $lang["no_of_wheels"] = "No. of wheels";
 $lang["plate_number"] = "Plate no.";
 $lang["max_cargo_weight"] = "Max cargo weight (kg)";
-$lang["image"] = "Image";
+$lang["images"] = "Images";
 
 // Settings > Payment methods
 $lang["available_on_payroll"] = "Available on payroll";
@@ -293,6 +295,11 @@ $lang["first_name"] = "First name";
 $lang["last_name"] = "Last name";
 $lang["zip"] = "Zip";
 $lang["street"] = "Street";
+$lang["company_name"] = "Company name";
+$lang["company_address"] = "Company address";
+$lang["company_position"] = "Company position";
+$lang["company_email"] = "Company email";
+$lang["company_phone"] = "Company phone";
 
 // Sales and Invoicing > Sales Matrix
 $lang["sales_matrix"] = "Sales Matrix";
@@ -316,12 +323,15 @@ $lang["has_existing_bill_of_material_error"] = "Product has existing bill of mat
 $lang["add_bill_of_material_info"] = 'Note: Only warehouses that has an output of selected bill of material will be displayed in "Warehouse" dropdown list';
 $lang["bom"] = "BOM";
 $lang["add_view_materials"] = "Add/view materials";
-$lang["material_already_added_error"] = "Materials has been added already!";
+$lang["material_already_added_error"] = "Material has been added already!";
 
 // Production & Inventory > Productions
 $lang["productions"] = "Manufacturing Order";
 $lang["add_production"] = "Add production";
 $lang["edit_production"] = "Edit production";
+$lang["buffer"] = "Buffer";
+$lang["view_details"] = "View details";
+$lang["print_details"] = "Print details";
 
 // Production & Inventory > Customers
 $lang["customers"] = "Customers";

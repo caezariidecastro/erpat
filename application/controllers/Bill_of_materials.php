@@ -34,6 +34,7 @@ class Bill_of_materials extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_pid");
         $this->template->rander("bill_of_materials/index");
     }
 
@@ -117,7 +118,7 @@ class Bill_of_materials extends MY_Controller {
         $view_data['model_info'] = $model_info;
         $view_data["product_dropdown"] = $this->_get_product_dropdown_data();
         $view_data["item_id"] = $this->input->post("item_id");
-        $view_data["unit_name"] = $model_info->item_id ? $this->Inventory_item_entries_model->get_details(array("id" => $model_info->item_id))->row()->unit_name : "";
+        $view_data["unit_abbreviation"] = $model_info->item_id ? $this->Inventory_item_entries_model->get_details(array("id" => $model_info->item_id))->row()->unit_abbreviation : "";
 
         $this->load->view('bill_of_materials/modal_form', $view_data);
     }
@@ -144,10 +145,12 @@ class Bill_of_materials extends MY_Controller {
     }
 
     private function _material_make_row($data){
+        $material_name = "<div class='item-row strong mb5'>$data->material_name</div><span>" . $data->warehouse_name . "</span>";
+
         return array(
-            $data->material_name,
+            $material_name,
             $data->quantity,
-            $data->unit_name,
+            $data->unit_abbreviation,
             js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("bill_of_materials/delete_material"), "data-action" => "delete-confirmation"))
         );
     }

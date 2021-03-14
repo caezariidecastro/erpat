@@ -28,6 +28,7 @@
                 {title: "<?php echo lang('state') ?>"},
                 {title: "<?php echo lang('zip') ?>"},
                 {title: "<?php echo lang('country') ?>"},
+                {title: "<?php echo lang('company') ?>"},
                 {title: "<?php echo lang('created_on') ?>"},
                 {title: "<?php echo lang('created_by') ?>"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}

@@ -128,7 +128,7 @@
                                 appLoader.hide();
 
                                 if (response && response.success) {
-                                    $("#unit_type").val(response.data.unit_name);
+                                    $("#unit_type").val(response.data.unit_abbreviation);
                                     $("#rate").val(response.data.cost_price);
                                     $("#material_title").val(response.data.name);
                                 }

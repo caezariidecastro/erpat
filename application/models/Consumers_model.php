@@ -22,7 +22,7 @@ class Consumers_model extends Crud_model {
         FROM $users_table
         LEFT JOIN users creator ON creator.id = users.created_by
         WHERE $users_table.deleted=0 $where
-        AND $users_table.user_type = 'consumer'";
+        AND $users_table.user_type = 'customer'";
         return $this->db->query($sql);
     }
 

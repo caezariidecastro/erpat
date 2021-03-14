@@ -90,7 +90,7 @@ class Inventory extends MY_Controller {
                             </div>
                             <div class="col-md-4">
                                 <div class="text-off pull-right text-right">
-                                    Available stocks: '.(get_current_item_warehouse_count($data)).'
+                                    Available stocks: '.(get_current_item_inventory_count($data)).'
                                 </div>
                             </div>
                         </div>

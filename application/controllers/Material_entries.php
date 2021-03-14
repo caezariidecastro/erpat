@@ -63,7 +63,7 @@ class Material_entries extends MY_Controller {
         return array(
             $data->name,
             $data->sku,
-            $data->unit_name,
+            $data->unit_abbreviation,
             $data->category_name,
             number_with_decimal($data->cost_price),
             get_supplier_contact_link($data->vendor, $data->vendor_name),

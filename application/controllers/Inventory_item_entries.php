@@ -87,7 +87,7 @@ class Inventory_item_entries extends MY_Controller {
         return array(
             $data->name,
             $data->sku,
-            $data->unit_name,
+            $data->unit_abbreviation,
             $data->category_name,
             number_with_decimal($data->cost_price),
             number_with_decimal($data->selling_price),

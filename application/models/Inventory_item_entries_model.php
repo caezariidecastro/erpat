@@ -28,19 +28,28 @@ class Inventory_item_entries_model extends Crud_model {
             $where .= " AND $inventory_items_table.vendor = $vendor";
         }
 
-        $sql = "SELECT $inventory_items_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, un.title AS unit_name, v.name AS vendor_name, COALESCE((
+        $sql = "SELECT $inventory_items_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, un.title AS unit_abbreviation, v.name AS vendor_name, COALESCE((
             SELECT SUM(inventory.stock)
             FROM inventory
             WHERE item_id = $inventory_items_table.id
             AND inventory.deleted = 0
-        ), 0) AS stocks,
+        ), 0) AS stock,
         COALESCE((
             SELECT SUM(inventory_stock_override.stock)
             FROM inventory
             LEFT JOIN inventory_stock_override ON inventory_stock_override.inventory_id = inventory.id
             WHERE item_id = $inventory_items_table.id
             AND inventory.deleted = 0
-        ), 0) AS stocks_override,
+        ), 0) AS stock_override,
+        COALESCE((
+            SELECT SUM(bill_of_materials.quantity)
+            FROM bill_of_materials
+            LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials.id
+            LEFT JOIN inventory ON inventory.id = productions.inventory_id
+            WHERE bill_of_materials.deleted = 0
+            AND productions.status = 'completed'
+            AND inventory.item_id = $inventory_items_table.id
+        ), 0) AS produced,
         COALESCE((
             SELECT SUM(invoice_items.quantity)
             FROM invoice_items
@@ -74,15 +83,6 @@ class Inventory_item_entries_model extends Crud_model {
             AND deliveries.status = 'completed'
         ), 0) AS delivered,
         COALESCE((
-            SELECT SUM(bill_of_materials.quantity)
-            FROM bill_of_materials
-            LEFT JOIN productions ON productions.bill_of_material_id = bill_of_materials.id
-            LEFT JOIN inventory ON inventory.id = productions.inventory_id
-            WHERE bill_of_materials.deleted = 0
-            AND productions.status = 'completed'
-            AND inventory.item_id = $inventory_items_table.id
-        ), 0) AS produced,
-        COALESCE((
             SELECT SUM(invoice_items.quantity)
             FROM invoice_items
             LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
@@ -112,6 +112,28 @@ class Inventory_item_entries_model extends Crud_model {
             )
             AND i.item_id = $inventory_items_table.id
         ), 0) AS invoiced,
+        COALESCE((
+            SELECT SUM(inventory_transfer_items.quantity)
+            FROM inventory_transfer_items
+            LEFT JOIN inventory_transfers ON inventory_transfers.reference_number = inventory_transfer_items.reference_number
+            LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
+            WHERE inventory_transfers.deleted = 0
+            AND inventory_transfer_items.deleted = 0
+            AND i.item_id = $inventory_items_table.id
+            AND inventory_transfers.transferee = i.id
+            AND inventory_transfers.status = 'completed'
+        ), 0) AS transferred,
+        COALESCE((
+            SELECT SUM(inventory_transfer_items.quantity)
+            FROM inventory_transfer_items
+            LEFT JOIN inventory_transfers ON inventory_transfers.reference_number = inventory_transfer_items.reference_number
+            LEFT JOIN inventory i ON i.id = inventory_transfer_items.inventory_id
+            WHERE inventory_transfers.deleted = 0
+            AND inventory_transfer_items.deleted = 0
+            AND i.item_id = $inventory_items_table.id
+            AND inventory_transfers.receiver = i.id
+            AND inventory_transfers.status = 'completed'
+        ), 0) AS received,
         COALESCE((
             SELECT bill_of_materials.id
             FROM bill_of_materials

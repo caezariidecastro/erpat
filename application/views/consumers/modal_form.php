@@ -155,6 +155,77 @@
             ?>
         </div>
     </div>
+    <hr>
+    <div class="form-group">
+        <label for="company_name" class=" col-md-3"><?php echo lang('company_name'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "company_name",
+                "name" => "company_name",
+                "value" => $model_info ? $model_info->company_name : "",
+                "class" => "form-control",
+                "placeholder" => lang('company_name'),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="company_address" class=" col-md-3"><?php echo lang('company_address'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_textarea(array(
+                "id" => "company_address",
+                "name" => "company_address",
+                "value" => $model_info ? $model_info->company_address : "",
+                "class" => "form-control",
+                "placeholder" => lang('company_address'),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="company_position" class=" col-md-3"><?php echo lang('company_position'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "company_position",
+                "name" => "company_position",
+                "value" => $model_info ? $model_info->company_position : "",
+                "class" => "form-control",
+                "placeholder" => lang('company_position'),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="company_email" class=" col-md-3"><?php echo lang('company_email'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "company_email",
+                "name" => "company_email",
+                "value" => $model_info ? $model_info->company_email : "",
+                "class" => "form-control",
+                "placeholder" => lang('company_email'),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="company_phone" class=" col-md-3"><?php echo lang('company_phone'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "company_phone",
+                "name" => "company_phone",
+                "value" => $model_info ? $model_info->company_phone : "",
+                "class" => "form-control",
+                "placeholder" => lang('company_phone'),
+            ));
+            ?>
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">

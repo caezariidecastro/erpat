@@ -46,6 +46,7 @@ class Deliveries extends MY_Controller {
     }
 
     function index(){
+        $this->validate_user_sub_module_permission("module_lms");
         $this->template->rander("deliveries/index");
     }
 
@@ -183,7 +184,7 @@ class Deliveries extends MY_Controller {
         $view_data['model_info'] = $model_info;
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
         $view_data['driver_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "driver"));
-        $view_data['consumer_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "consumer"));
+        $view_data['consumer_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "customer"));
         $view_data['vehicle_dropdown'] = $this->_get_vehicle_dropdown_data();
         $view_data["status_dropdown"] = $this->_get_statuses();
 

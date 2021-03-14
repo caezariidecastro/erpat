@@ -21,10 +21,11 @@
                 {title: "<?php echo lang('amount') ?>", "class": "text-right"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
-                {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
+                {title: "<?php echo lang('status') ?>", "class": "text-center"},
+                {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4],
-            xlsColumns: [0, 1, 2, 3, 4],
+            printColumns: [0, 1, 2, 3, 4, 5, 6],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6],
             summation: [{column: 3, dataType: 'number'}]
         });
     });

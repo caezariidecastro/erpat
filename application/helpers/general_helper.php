@@ -262,10 +262,13 @@ if (!function_exists('active_menu')) {
 
         if (!is_null($found_url_active_key)) {
             $sidebar_menu[$found_url_active_key]["is_active_menu"] = 1;
+            $sidebar_menu["active_module"] = $found_url_active_key;
         } else if (!is_null($found_special_active_key)) {
             $sidebar_menu[$found_special_active_key]["is_active_menu"] = 1;
+            $sidebar_menu["active_module"] = $found_special_active_key;
         } else if (!is_null($found_controller_active_key)) {
             $sidebar_menu[$found_controller_active_key]["is_active_menu"] = 1;
+            $sidebar_menu["active_module"] = $found_controller_active_key;
         }
 
         return $sidebar_menu;
@@ -970,6 +973,84 @@ if (!function_exists('prepare_return_pdf')) {
 
 }
 
+if (!function_exists('prepare_payroll_pdf')) {
+
+    function prepare_payroll_pdf($payroll_data) {
+        $ci = get_instance();
+        $ci->load->library('pdf');
+        $ci->pdf->setPrintHeader(false);
+        $ci->pdf->setPrintFooter(false);
+        $ci->pdf->SetCellPadding(1.5);
+        $ci->pdf->setImageScale(1.42);
+        $ci->pdf->AddPage();
+        $ci->pdf->SetFontSize(10);
+
+        if ($payroll_data) {
+
+            $html = $ci->load->view("payroll/pdf", $payroll_data, true);
+            $ci->pdf->writeHTML($html, true, false, true, false, '');
+
+            $payroll_info = get_array_value($payroll_data, "payroll_info");
+            $pdf_file_name =  str_replace(" ", "-", $payroll_info->employee_name) . "-" .lang("payroll") . "-" . $payroll_info->created_on . ".pdf";
+
+            $ci->pdf->Output($pdf_file_name, "I");
+        }
+    }
+
+}
+
+if (!function_exists('prepare_contribution_pdf')) {
+
+    function prepare_contribution_pdf($contribution_data) {
+        $ci = get_instance();
+        $ci->load->library('pdf');
+        $ci->pdf->setPrintHeader(false);
+        $ci->pdf->setPrintFooter(false);
+        $ci->pdf->SetCellPadding(1.5);
+        $ci->pdf->setImageScale(1.42);
+        $ci->pdf->AddPage();
+        $ci->pdf->SetFontSize(10);
+
+        if ($contribution_data) {
+
+            $html = $ci->load->view("contribution_entries/pdf", $contribution_data, true);
+            $ci->pdf->writeHTML($html, true, false, true, false, '');
+
+            $contribution_info = get_array_value($contribution_data, "contribution_info");
+            $pdf_file_name =  str_replace(" ", "-", $contribution_info->employee_name) . "-" .lang("contribution") . "-" . $contribution_info->created_on . ".pdf";
+
+            $ci->pdf->Output($pdf_file_name, "I");
+        }
+    }
+
+}
+
+if (!function_exists('prepare_incentive_pdf')) {
+
+    function prepare_incentive_pdf($incentive_data) {
+        $ci = get_instance();
+        $ci->load->library('pdf');
+        $ci->pdf->setPrintHeader(false);
+        $ci->pdf->setPrintFooter(false);
+        $ci->pdf->SetCellPadding(1.5);
+        $ci->pdf->setImageScale(1.42);
+        $ci->pdf->AddPage();
+        $ci->pdf->SetFontSize(10);
+
+        if ($incentive_data) {
+
+            $html = $ci->load->view("incentive_entries/pdf", $incentive_data, true);
+            $ci->pdf->writeHTML($html, true, false, true, false, '');
+
+            $incentive_info = get_array_value($incentive_data, "incentive_info");
+            $pdf_file_name =  str_replace(" ", "-", $incentive_info->employee_name) . "-" .lang("incentive") . "-" . $incentive_info->created_on . ".pdf";
+
+            $ci->pdf->Output($pdf_file_name, "I");
+        }
+    }
+
+}
+
 /**
  * get all data to make an estimate
  * 
@@ -1043,6 +1124,22 @@ if (!function_exists('get_purchase_return_id')) {
 
     function get_purchase_return_id($purchase_return_id) {
         return strtoupper(lang("return"))." #" . $purchase_return_id;
+    }
+
+}
+
+if (!function_exists('get_payroll_id')) {
+
+    function get_payroll_id($id) {
+        return strtoupper(lang("payroll"))." #" . $id;
+    }
+
+}
+
+if (!function_exists('get_incentive_id')) {
+
+    function get_incentive_id($id) {
+        return strtoupper(lang("incentive"))." #" . $id;
     }
 
 }
@@ -1841,15 +1938,16 @@ if (!function_exists('get_purchase_return_making_data')) {
 if (!function_exists('get_current_item_inventory_count')) {
 
     function get_current_item_inventory_count($data) {
-        return $data->stocks + $data->produced + $data->stocks_override - $data->delivered - $data->invoiced;
+        return $data->stock + $data->stock_override + $data->produced - $data->delivered - $data->invoiced - $data->transferred + $data->received;
     }
 
 }
 
-if (!function_exists('get_current_item_warehouse_count')) {
 
-    function get_current_item_warehouse_count($data) {
-        return $data->stock + $data->stock_override + $data->produced - $data->transferred + $data->received - $data->delivered - $data->invoiced;
+if (!function_exists('get_current_material_inventory_count')) {
+
+    function get_current_material_inventory_count($data) {
+        return $data->stock + $data->stock_override + $data->production_quantity + $data->purchased + $data->returned - $data->transferred + $data->received;
     }
 }
 
@@ -1859,5 +1957,19 @@ if (!function_exists('get_total_leave_credit_balance')) {
         $ci = get_instance();
         $options = array("user_id" => $user_id ? $user_id : $ci->login_user->id);
         return $ci->Leave_credits_model->get_balance($options)['balance'];
+    }
+}
+
+if (!function_exists('is_user_has_module_permission')) {
+
+    function is_user_has_module_permission($module) {
+        $ci = get_instance();
+        $permissions = $ci->login_user->permissions;
+
+        if(get_setting($module) == "1" && ($ci->login_user->is_admin || get_array_value($permissions, $module))){
+            return true;
+        }
+
+        return false;
     }
 }
