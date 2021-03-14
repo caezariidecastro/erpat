@@ -1,6 +1,31 @@
 # BusiNext - Business Management Solution
 
-BusiNext was originally develop for the used of Bytes Crafter client ticketing and project management solution.
+BusiNext was forked from ERPat project of Bytes Crafter. The goal of this project is to create a system that has a modularized feature. Meaning, any data management that needs a system can be integrated to this project by modules. Let's make a system that intelegently adopt to whatever the system administrator want it to be. 
+
+## Setup & Migration
+
+### Migration from CI3 to CI4, setting up and synching.
+
+- For initial setup: Execute the following command to download the necessary composer vendors.
+```
+composer update
+```
+
+- For database migration: First, you need to copy env to .env and you need to configure your database configuration. Now, you can execute the following command to migrate database.
+```
+php spark migrate
+```
+
+- To create or edit new migration table, you need to execute the command. to create that migrate and edit it to your table structure.
+```
+php spark migrate:create tablename
+``` 
+
+- To create or insert demo data to your tables, you can use the following commands.
+```
+php spark make:seeder Accounts //create file
+php spark db:seed Accounts //insert
+```
 
 ## Contributing
 
