@@ -731,17 +731,19 @@ if (!function_exists('get_team_member_profile_link')) {
 }
 
 if (!function_exists('get_supplier_contact_link')) {
-
     function get_supplier_contact_link($id = 0, $name = "", $attributes = array()) {
-        return anchor("pid/supplier/" . $id . "/contacts", $name, $attributes);
+        if($id == 0) {
+            return "Internal";
+        } else {
+            return anchor("mes/suppliers/contacts/" . $id, $name, $attributes);
+        }
     }
-
 }
 
 if (!function_exists('get_vendor_contact_link')) {
 
     function get_vendor_contact_link($id = 0, $name = "", $attributes = array()) {
-        return anchor("pid/vendor/" . $id . "/contacts", $name, $attributes);
+        return anchor("mes/vendor/" . $id . "/contacts", $name, $attributes);
     }
 
 }
@@ -948,7 +950,7 @@ if (!function_exists('prepare_return_pdf')) {
 
             $purchase_return_data["mode"] = $mode;
 
-            $html = $ci->load->view("purchase_order_returns/return_pdf", $purchase_return_data, true);
+            $html = $ci->load->view("purchase_returns/return_pdf", $purchase_return_data, true);
 
             if ($mode != "html") {
                 $ci->pdf->writeHTML($html, true, false, true, false, '');

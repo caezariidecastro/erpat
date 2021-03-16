@@ -139,51 +139,14 @@ $route['pms/clients/view/(:any)'] = 'clients/view/$1';
 // Services
 $route['pms/services'] = 'item_categories/index';
 
-// Products
-$route['pid/products'] = 'inventory_item_categories/index';
-
 // Tickets
 $route['help/tickets'] = 'tickets/index';
 
 // Sales Matrix
 $route["sms/sales-matrix"] = "sales_matrix/index";
 
-// Materials
-$route["pid/materials"] = "material_categories/index";
-
-// Bill of Materials
-$route["pid/bill-of-materials"] = "bill_of_materials/index";
-
-// Productions
-$route["pid/productions"] = "productions/index";
-
 // Customers
 $route['sms/customers'] = 'customers/index';
-
-// Suppliers
-$route['pid/supplier'] = 'vendors/index';
-
-// Supplier > Contacts
-$route["pid/supplier/(:any)/contacts"] = "vendors/contacts/$1";
-
-// Purchases 
-$route["pid/purchases"] = "purchase_orders/index";
-
-// Purchases > View
-$route["pid/purchases/view/(:any)"] = "purchase_orders/view/$1";
-$route["pid/purchases/preview/(:any)/(:any)"] = "purchase_orders/preview/$1/$2";
-$route["pid/purchases/preview/(:any)"] = "purchase_orders/preview/$1";
-
-// Returns 
-$route["pid/returns"] = "purchase_order_returns/index";
-
-// Returns > View
-$route["pid/returns/view/(:any)"] = "purchase_order_returns/view/$1";
-$route["pid/returns/preview/(:any)/(:any)"] = "purchase_order_returns/preview/$1/$2";
-$route["pid/returns/preview/(:any)"] = "purchase_order_returns/preview/$1";
-
-// Production & Inventory > Transfer
-$route['pid/transfers'] = 'material_inventory_transfers/index';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

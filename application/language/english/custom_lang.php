@@ -4,7 +4,7 @@ $lang["example"] = "Example";
 
 $lang["module_hrm"] = "Human Resource";
 $lang["module_fas"] = "Finance & Accounting";
-$lang["module_pid"] = "Production & Inventory";
+$lang["module_mes"] = "Production & Inventory";
 $lang["module_mcm"] = "Marketing & Campaigns";
 $lang["module_lms"] = "Logistic & Distribution";
 $lang["module_sms"] = "Sales & Invoicing";
@@ -34,8 +34,9 @@ $lang["submenu_pid_purchases"] = "Purchases";
 $lang["submenu_pid_returns"] = "Returns";
 $lang["submenu_pid_supplier"] = "Supplier";
 $lang["submenu_pid_products"] = "Products";
+$lang["submenu_pid_process"] = "In Progress - Soon!";
 $lang["submenu_pid_inventory"] = "Inventory";
-$lang["submenu_pid_materials"] = "Materials";
+$lang["submenu_pid_materials"] = "Raw Materials";
 $lang["submenu_pid_transfers"] = "Transfers";
 
 $lang["submenu_fas_summary"] = "Summary";
@@ -307,6 +308,8 @@ $lang["total_sales"] = "Total sales";
 
 // Production & Inventory > Materials
 $lang["materials"] = "Materials";
+$lang["delete_material"] = "Delete Materials";
+$lang["raw_materials"] = "Raw Materials";
 $lang["inventory"] = "Inventory";
 $lang["add_material_inventory"] = "Add material";
 $lang["select_a_material"] = "Select a material to view";
@@ -381,6 +384,8 @@ $lang["cost"] = "Cost";
 
 // Production & Inventory > Purchases
 $lang["purchases"] = "Purchases";
+$lang["purchase_orders"] = "Purchase Orders";
+$lang["purchase_returns"] = "Purchase Returns";
 $lang["add_purchase"] = "Add purchase";
 $lang["edit_purchase"] = "Edit purchase";
 $lang["purchase_id"] = "Purchase ID";

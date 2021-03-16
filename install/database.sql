@@ -709,7 +709,7 @@ INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
 ('module_gantt', '1', 0),
 ('module_hrm', '1', 0),
 ('module_fas', '1', 0),
-('module_pid', '1', 0),
+('module_mes', '1', 0),
 ('module_mcm', '1', 0),
 ('module_lms', '1', 0),
 ('module_sms', '1', 0),

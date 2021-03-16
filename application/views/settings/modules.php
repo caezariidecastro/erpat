@@ -186,10 +186,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="module_pid" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_pid'); ?></label>
+                        <label for="module_mes" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_mes'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_pid", "1", get_setting("module_pid") ? true : false, "id='module_pid' class='ml15'");
+                            echo form_checkbox("module_mes", "1", get_setting("module_mes") ? true : false, "id='module_mes' class='ml15'");
                             ?>                       
                         </div>
                     </div>

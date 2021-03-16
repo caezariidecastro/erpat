@@ -304,7 +304,7 @@ class Expenses extends MY_Controller {
                 $description .= "<br /> ";
             }
             $description .= lang("supplier") . ": " . get_supplier_contact_link($data->vendor_id, $data->vendor_name);
-            $title = $title ? anchor(get_uri("pid/purchases/view/" . $data->title), get_purchase_order_id($data->title)) : "";
+            $title = $title ? anchor(get_uri("mes/purchases/view/" . $data->title), get_purchase_order_id($data->title)) : "";
         }
 
         if ($data->recurring) {

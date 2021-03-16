@@ -314,18 +314,18 @@ class Left_menu {
                 ));
             }
 
-            if (is_user_has_module_permission("module_pid")) {
-                $sidebar_menu["menu_pid"] = array("name" => "menu_pid", "url" => "hrm", "class" => "fa-industry", "devider" => true,
+            if (is_user_has_module_permission("module_mes")) {
+                $sidebar_menu["menu_pid"] = array("name" => "menu_pid", "url" => "mes", "class" => "fa-industry", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_pid_productions", "url" => "pid/productions"),
-                    array("name" => "submenu_pid_billofmaterials", "url" => "pid/bill-of-materials"),
-                    array("name" => "submenu_pid_materials", "url" => "pid/materials"),
-                    // array("name" => "submenu_pid_inventory", "url" => "pid/inventory"),
-                    array("name" => "submenu_pid_products", "url" => "pid/products"),
-                    array("name" => "submenu_pid_purchases", "url" => "pid/purchases"),
-                    array("name" => "submenu_pid_returns", "url" => "pid/returns"),
-                    array("name" => "submenu_pid_supplier", "url" => "pid/supplier"),
-                    array("name" => "submenu_pid_transfers", "url" => "pid/transfers"),
+                    array("name" => "submenu_pid_productions", "url" => "mes/manufacturing-orders"),
+                    array("name" => "submenu_pid_billofmaterials", "url" => "mes/bill-of-materials"),
+                    array("name" => "submenu_pid_materials", "url" => "mes/raw-materials"),
+                    array("name" => "submenu_pid_process", "url" => "mes/work-in-process"),
+                    array("name" => "submenu_pid_products", "url" => "mes/products"),
+                    array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders"),
+                    array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns"),
+                    array("name" => "submenu_pid_supplier", "url" => "mes/suppliers"),
+                    array("name" => "submenu_pid_transfers", "url" => "mes/transfers"),
                 ));
             }
 
@@ -337,7 +337,7 @@ class Left_menu {
             }
 
             if (is_user_has_module_permission("module_lms")) {
-                $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "hrm", "class" => "fa-truck", "devider" => true,
+                $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "lms", "class" => "fa-truck", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_lms_delivery", "url" => "lms/deliveries"),
                     array("name" => "submenu_lms_warehouse", "url" => "lms/warehouses"),

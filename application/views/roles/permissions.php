@@ -25,9 +25,9 @@
                     </div>
                     <div>
                         <?php
-                        echo form_checkbox("module_pid", "1", $module_pid ? true : false, "id='module_pid'");
+                        echo form_checkbox("module_mes", "1", $module_mes ? true : false, "id='module_mes'");
                         ?>
-                        <label for="module_pid"><?php echo lang("module_pid"); ?></label>
+                        <label for="module_mes"><?php echo lang("module_mes"); ?></label>
                     </div>
                     <div>
                         <?php
