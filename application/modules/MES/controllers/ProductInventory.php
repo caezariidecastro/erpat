@@ -9,7 +9,7 @@ class ProductInventory extends MY_Controller {
         parent::__construct();
         $this->load->model("Inventory_model");
         $this->load->model("Inventory_item_entries_model");
-        $this->load->model("lms/Warehouse_model");
+        $this->load->model("Warehouse_model");
         $this->load->model("Inventory_override_model");
     }
 

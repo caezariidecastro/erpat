@@ -45,8 +45,8 @@ class Consumers extends MY_Controller {
             $company_name,
             $data->created_at,
             $data->created_by ? get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")) : "",
-            modal_anchor(get_uri("consumers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_consumer'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("consumers/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("lms/Consumers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_consumer'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lms/Consumers/delete"), "data-action" => "delete-confirmation"))
         );
     }
 

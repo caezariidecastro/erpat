@@ -9,8 +9,8 @@ class RawMaterialTransfers extends MY_Controller {
         parent::__construct();
         $this->load->model("Material_inventory_transfers_model");
         $this->load->model("Material_inventory_model");
-        $this->load->model("lms/Warehouse_model");
-        $this->load->model("lms/Vehicles_model");
+        $this->load->model("Warehouse_model");
+        $this->load->model("Vehicles_model");
     }
 
     protected function _get_warehouse_dropdown_data() {
