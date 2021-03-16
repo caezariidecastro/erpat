@@ -91,7 +91,10 @@ class Deliveries extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $address = (trim($data->street) ? trim($data->street) . ", " : "") . (trim($data->state)  ? trim($data->state)  . ", " : "") . (trim($data->city)  ? trim($data->street)  . ", " : "") . (trim($data->zip)  ? trim($data->zip)  . ", " : "") . trim($data->country);
+        $address = (trim($data->street) ? trim($data->street) . ", " : "") 
+            . (trim($data->city)  ? trim($data->city)  . ", " : "") 
+            . (trim($data->state)  ? trim($data->state)  . ", " : "") 
+            . trim($data->country) ." ". trim($data->zip);
 
         $invoice_url = "";
         if ($this->login_user->user_type == "staff") {
@@ -112,8 +115,8 @@ class Deliveries extends MY_Controller {
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             $this->_get_status_label($data->status),
-            modal_anchor(get_uri("deliveries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_delivery'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("deliveries/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("lms/deliveries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_delivery'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lms/deliveries/delete"), "data-action" => "delete-confirmation"))
         );
     }
 

@@ -7,7 +7,7 @@
     }
 </style>
 
-<?php echo form_open(get_uri("inventory_transfers/save"), array("id" => "inventory-transfers-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("lms/transfers/save"), array("id" => "inventory-transfers-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <?php if($model_info->id){?>
@@ -165,7 +165,7 @@
 
     $(document).ready(function () {
         $("#inventory-transfers-items-table").appTable({
-            source: '<?php echo_uri("inventory_transfers/get_transferred_items/".($model_info ? $model_info->reference_number : "")) ?>',
+            source: '<?php echo_uri("lms/transfers/get_transferred_items/".($model_info ? $model_info->reference_number : "")) ?>',
             order: [[0, 'desc']],
             columns: [
                 {visible: false},
@@ -231,7 +231,7 @@
                 appLoader.show({container: "#item-selection-section"});
 
                 $.ajax({
-                    url: "<?php echo get_uri("inventory_transfers/get_inventory_items_select2_data") ?>" + `/${warehouse_id}/json`,
+                    url: "<?php echo get_uri("lms/transfers/get_inventory_items_select2_data") ?>" + `/${warehouse_id}/json`,
                     dataType: "json",
                     success: function (result) {
                         $("#item").show().val("");

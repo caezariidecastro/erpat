@@ -30,12 +30,12 @@ class Drivers extends MY_Controller {
         return array(
             get_team_member_profile_link($data->id, $data->full_name, array("target" => "_blank")),
             $data->license_number,
-            $data->license_image ? modal_anchor(get_uri("drivers/view_license?file_path=".$file_path), "<img src='".$file_path."' style='width: 100px; height: auto;'/>", array( "title" => lang('license_image'), "data-post-id" => $data->id)) : "",
+            $data->license_image ? modal_anchor(get_uri("lms/drivers/view_license?file_path=".$file_path), "<img src='".$file_path."' style='width: 100px; height: auto;'/>", array( "title" => lang('license_image'), "data-post-id" => $data->id)) : "",
             $data->total_deliveries,
             $data->created_at,
             $data->created_by ? get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")) : "",
-            modal_anchor(get_uri("drivers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_driver'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("drivers/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("lms/drivers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_driver'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lms/drivers/delete"), "data-action" => "delete-confirmation"))
         );
     }
 

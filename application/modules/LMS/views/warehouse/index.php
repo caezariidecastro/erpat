@@ -3,7 +3,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo lang('warehouse'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("warehouse/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_warehouse'), array("class" => "btn btn-default", "title" => lang('add_warehouse'))); ?>
+                <?php echo modal_anchor(get_uri("lms/warehouses/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_warehouse'), array("class" => "btn btn-default", "title" => lang('add_warehouse'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -16,7 +16,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#warehouse-table").appTable({
-            source: '<?php echo_uri("warehouse/list_data") ?>',
+            source: '<?php echo_uri("lms/warehouses/list_data") ?>',
             // dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [

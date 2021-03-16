@@ -3,7 +3,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo lang('delivery'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("deliveries/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_delivery'), array("class" => "btn btn-default", "title" => lang('add_delivery'))); ?>
+                <?php echo modal_anchor(get_uri("lms/deliveries/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_delivery'), array("class" => "btn btn-default", "title" => lang('add_delivery'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -16,7 +16,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#deliveries-table").appTable({
-            source: '<?php echo_uri("deliveries/list_data") ?>',
+            source: '<?php echo_uri("lms/deliveries/list_data") ?>',
             order: [[8, 'desc']],
             columns: [
                 {title: "<?php echo lang('reference_number') ?> ", "class": "w8p"},

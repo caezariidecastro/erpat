@@ -145,21 +145,6 @@ $route['pid/products'] = 'inventory_item_categories/index';
 // Tickets
 $route['help/tickets'] = 'tickets/index';
 
-// Transfer
-$route['lms/transfer'] = 'inventory_transfers/index';
-
-// Inventory
-$route['pid/inventory'] = 'inventory/index';
-
-// Delivery
-$route['lms/delivery'] = 'deliveries/index';
-
-// Vehicles
-$route['lms/vehicles'] = 'vehicles/index';
-
-// Consumers
-$route['lms/consumers'] = 'consumers/index';
-
 // Sales Matrix
 $route["sms/sales-matrix"] = "sales_matrix/index";
 
@@ -174,9 +159,6 @@ $route["pid/productions"] = "productions/index";
 
 // Customers
 $route['sms/customers'] = 'customers/index';
-
-// Drivers
-$route['lms/drivers'] = 'drivers/index';
 
 // Suppliers
 $route['pid/supplier'] = 'vendors/index';

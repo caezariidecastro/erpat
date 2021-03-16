@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("vehicles/save"), array("id" => "vehicle-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("lms/vehicles/save"), array("id" => "vehicle-form", "class" => "general-form", "role" => "form")); ?>
 <div id="vehicles-dropzone" class="post-dropzone">
     <div class="modal-body clearfix">
         <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
@@ -152,8 +152,8 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        let uploadUrl = "<?php echo get_uri("vehicles/upload_file"); ?>";
-        let validationUri = "<?php echo get_uri("vehicles/validate_vehicles_file"); ?>";
+        let uploadUrl = "<?php echo get_uri("lms/vehicles/upload_file"); ?>";
+        let validationUri = "<?php echo get_uri("lms/vehicles/validate_vehicles_file"); ?>";
 
         let dropzone = attachDropzoneWithForm("#vehicles-dropzone", uploadUrl, validationUri);
 

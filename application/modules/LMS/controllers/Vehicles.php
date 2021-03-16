@@ -33,9 +33,16 @@ class Vehicles extends MY_Controller {
             $files = unserialize($data->files);
             if (count($files)) {
                 foreach ($files as $key => $value) {
+
+
                     $file_name = get_array_value($value, "file_name");
                     $file_path = base_url() . get_setting("timeline_file_path") . $file_name;
-                    $images .= modal_anchor(get_uri("vehicles/view_image?file_path=". $file_path), "<img src='". $file_path."' style='width: 90px; height: auto; margin-right: 5px;'/>", array( "title" => remove_file_prefix($file_name), "data-post-id" => $data->id));
+
+                    $images .= modal_anchor(
+                        get_uri("lms/vehicles/view_image?file_path=". $file_path), 
+                        '<i class="pull-left font-22 mr10  fa fa-file-image-o"></i>',
+                        array( "title" => remove_file_prefix($file_name), "data-post-id" => $data->id)
+                    );
                 }
             }
         }
@@ -52,8 +59,8 @@ class Vehicles extends MY_Controller {
             $images,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
-            modal_anchor(get_uri("vehicles/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_vehicle'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("vehicles/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("lms/vehicles/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_vehicle'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lms/vehicles/delete"), "data-action" => "delete-confirmation"))
         );
     }
 

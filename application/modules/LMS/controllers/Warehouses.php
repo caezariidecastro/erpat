@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Warehouse extends MY_Controller {
+class Warehouses extends MY_Controller {
 
     function __construct() {
         parent::__construct();
@@ -36,8 +36,8 @@ class Warehouse extends MY_Controller {
             get_team_member_profile_link($data->head, $data->head_name, array("target" => "_blank")),
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             $data->created_on,
-            modal_anchor(get_uri("warehouse/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_warehouse'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("warehouse/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("lms/warehouses/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_warehouse'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lms/warehouses/delete"), "data-action" => "delete-confirmation"))
         );
     }
 

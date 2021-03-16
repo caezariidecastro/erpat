@@ -4,7 +4,7 @@
     }
 </style>
 
-<?php echo form_open(get_uri("deliveries/save"), array("id" => "deliveries-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("lms/deliveries/save"), array("id" => "deliveries-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <input type="hidden" name="invoice_id" value="<?php echo $model_info ? $model_info->invoice_id : "" ?>" />

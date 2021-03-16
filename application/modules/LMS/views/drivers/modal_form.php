@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("drivers/save"), array("id" => "driver-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("lms/drivers/save"), array("id" => "driver-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
 
@@ -47,6 +47,7 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('email'),
                 "autofocus" => true,
+                "disabled" => true,
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
             ));

@@ -339,9 +339,9 @@ class Left_menu {
             if (is_user_has_module_permission("module_lms")) {
                 $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "hrm", "class" => "fa-truck", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_lms_delivery", "url" => "lms/delivery"),
-                    array("name" => "submenu_lms_warehouse", "url" => "lms/warehouse"),
-                    array("name" => "submenu_lms_transfers", "url" => "lms/transfer"),
+                    array("name" => "submenu_lms_delivery", "url" => "lms/deliveries"),
+                    array("name" => "submenu_lms_warehouse", "url" => "lms/warehouses"),
+                    array("name" => "submenu_lms_transfers", "url" => "lms/transfers"),
                     array("name" => "submenu_lms_vehicles", "url" => "lms/vehicles"),
                     array("name" => "submenu_lms_drivers", "url" => "lms/drivers"),
                     array("name" => "submenu_lms_consumers", "url" => "lms/consumers"),

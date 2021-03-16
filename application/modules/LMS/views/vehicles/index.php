@@ -3,7 +3,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo lang('vehicles'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("vehicles/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_vehicle'), array("class" => "btn btn-default", "title" => lang('add_vehicle'))); ?>
+                <?php echo modal_anchor(get_uri("lms/vehicles/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_vehicle'), array("class" => "btn btn-default", "title" => lang('add_vehicle'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -16,7 +16,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#vehicle-table").appTable({
-            source: '<?php echo_uri("vehicles/list_data") ?>',
+            source: '<?php echo_uri("lms/vehicles/list_data") ?>',
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('brand') ?> "},
