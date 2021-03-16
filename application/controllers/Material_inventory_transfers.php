@@ -9,7 +9,7 @@ class Material_inventory_transfers extends MY_Controller {
         parent::__construct();
         $this->load->model("Material_inventory_transfers_model");
         $this->load->model("Material_inventory_model");
-        $this->load->model("Warehouse_model");
+        $this->load->model("lms/Warehouse_model");
         $this->load->model("Vehicles_model");
     }
 

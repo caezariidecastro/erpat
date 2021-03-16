@@ -9,7 +9,7 @@ class Productions extends MY_Controller {
         parent::__construct();
         $this->load->model("Productions_model");
         $this->load->model("Bill_of_materials_model");
-        $this->load->model("Warehouse_model");
+        $this->load->model("lms/Warehouse_model");
     }
 
     protected function _get_bill_of_material_dropdown_data() {

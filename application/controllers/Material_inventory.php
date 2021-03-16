@@ -9,7 +9,7 @@ class Material_inventory extends MY_Controller {
         parent::__construct();
         $this->load->model("Material_inventory_model");
         $this->load->model("Material_entries_model");
-        $this->load->model("Warehouse_model");
+        $this->load->model("lms/Warehouse_model");
         $this->load->model("Material_inventory_override_model");
     }
 
