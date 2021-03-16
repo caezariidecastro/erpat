@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("asset_vendors/save_contact"), array("id" => "asset-vendor-contacts-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("ams/vendors/save_contact"), array("id" => "asset-vendor-contacts-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <input type="hidden" name="asset_vendor_id" value="<?php echo $asset_vendor_id?>" />
@@ -159,6 +159,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+
         $("#asset-vendor-contacts-form").appForm({
             onSuccess: function (result) {
                 $("#asset-vendor-contacts-table").appTable({newData: result.data, dataId: result.id});

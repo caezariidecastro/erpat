@@ -231,6 +231,7 @@ class Left_menu {
     }
 
     private function _get_sidebar_menu_items($type = "") {
+
         $dashboard_menu = array("name" => "dashboard", "url" => "dashboard", "class" => "fa-desktop dashboard-menu");
 
         $selected_dashboard_id = get_setting("user_" . $this->ci->login_user->id . "_dashboard");
@@ -363,11 +364,11 @@ class Left_menu {
             if (is_user_has_module_permission("module_ams")) {
                 $sidebar_menu["menu_ams"] = array("name" => "menu_ams", "url" => "ams", "class" => "fa-archive", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_ams_assets", "url" => "ams/assets"),
-                    array("name" => "submenu_ams_category", "url" => "ams/category"),
-                    array("name" => "submenu_ams_location", "url" => "ams/location"),
-                    array("name" => "submenu_ams_vendors", "url" => "ams/vendor"),
-                    array("name" => "submenu_ams_maker", "url" => "ams/maker"),
+                    array("name" => "submenu_ams_assets", "url" => "ams/entries"),
+                    array("name" => "submenu_ams_category", "url" => "ams/categories"),
+                    array("name" => "submenu_ams_location", "url" => "ams/locations"),
+                    array("name" => "submenu_ams_vendors", "url" => "ams/vendors"),
+                    array("name" => "submenu_ams_maker", "url" => "ams/brands"),
                 ));
             }
 

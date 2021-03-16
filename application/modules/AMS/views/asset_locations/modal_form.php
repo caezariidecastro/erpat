@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("asset_locations/save"), array("id" => "location-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("ams/locations/save"), array("id" => "location-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
 

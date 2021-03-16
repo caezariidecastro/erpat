@@ -3,7 +3,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo lang('vendors'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("asset_vendors/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_vendor'), array("class" => "btn btn-default", "title" => lang('add_vendor'), "id" => "add_vendor_button")); ?>
+                <?php echo modal_anchor(get_uri("ams/vendors/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_vendor'), array("class" => "btn btn-default", "title" => lang('add_vendor'), "id" => "add_vendor_button")); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -16,7 +16,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#asset-vendors-table").appTable({
-            source: '<?php echo_uri("asset_vendors/list_data") ?>',
+            source: '<?php echo_uri("ams/vendors/list_data") ?>',
             filterDropdown: [
                 {id: "status_select2_filter", name: "status_select2_filter", class: "w200", options: <?php echo json_encode($status_select2); ?>},
             ],

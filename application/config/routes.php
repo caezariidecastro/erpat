@@ -181,26 +181,8 @@ $route['lms/drivers'] = 'drivers/index';
 // Suppliers
 $route['pid/supplier'] = 'vendors/index';
 
-// Vendors
-$route["ams/vendor"] = "asset_vendors/index";
-
-// Brands
-$route["ams/maker"] = "asset_brands/index";
-
-// Location
-$route["ams/location"] = "asset_locations/index";
-
-// Category
-$route["ams/category"] = "asset_categories/index";
-
-// Assets
-$route["ams/assets"] = "asset_entries/index";
-
 // Supplier > Contacts
 $route["pid/supplier/(:any)/contacts"] = "vendors/contacts/$1";
-
-// Vendors > Contacts
-$route["pid/vendor/(:any)/contacts"] = "asset_vendors/contacts/$1";
 
 // Purchases 
 $route["pid/purchases"] = "purchase_orders/index";

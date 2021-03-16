@@ -3,7 +3,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo $name . " - " . lang('contacts'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("asset_vendors/add_contact_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_contact'), array("class" => "btn btn-default", "title" => lang('add_contact'), "id" => "add_contact_button", "data-post-asset_vendor_id" => $asset_vendor_id)); ?>
+                <?php echo modal_anchor(get_uri("ams/vendors/add_contact_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_contact'), array("class" => "btn btn-default", "title" => lang('add_contact'), "id" => "add_contact_button", "data-post-asset_vendor_id" => $asset_vendor_id)); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -16,7 +16,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#asset-vendor-contacts-table").appTable({
-            source: '<?php echo_uri("asset_vendors/contact_list_data?asset_vendor_id=".$asset_vendor_id) ?>',
+            source: '<?php echo_uri("ams/vendors/contact_list_data/".$asset_vendor_id) ?>',
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('name') ?> ", "class": "w20p"},

@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Asset_vendors extends MY_Controller {
+class Vendors extends MY_Controller {
 
     function __construct() {
         parent::__construct();
@@ -37,9 +37,9 @@ class Asset_vendors extends MY_Controller {
         echo json_encode(array("data" => $result));
     }
 
-    function contact_list_data(){
+    function contact_list_data($vendor_id){
         $list_data = $this->Asset_vendors_model->get_contacts(array(
-            "asset_vendor_id" => $this->input->get("asset_vendor_id")
+            "asset_vendor_id" => $vendor_id
         ))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -57,7 +57,7 @@ class Asset_vendors extends MY_Controller {
         $primary_contact = $primary_contact ? get_team_member_profile_link($primary_contact->id, $primary_contact->full_name, array("target" => "_blank")) : "";
 
         return array(
-            '<a href="'.base_url("pid/vendor/".$data->id."/contacts").'">'.$data->name.'</a>',
+            '<a href="'.base_url("ams/vendors/contacts/".$data->id."").'">'.$data->name.'</a>',
             $primary_contact,
             nl2br($data->address),
             $data->city,
@@ -68,8 +68,8 @@ class Asset_vendors extends MY_Controller {
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             $data->contacts,
             $data->status == "active" ? '<small class="label label-success">Active</small>' : '<small class="label label-danger">Inactive</small>',
-            modal_anchor(get_uri("asset_vendors/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_vendor'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("asset_vendors/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("ams/vendors/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_vendor'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("ams/vendors/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
@@ -81,8 +81,8 @@ class Asset_vendors extends MY_Controller {
             $data->phone,
             $data->created_at,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
-            modal_anchor(get_uri("asset_vendors/add_contact_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_contact'), "data-post-id" => $data->id, "data-post-asset_vendor_id" => $data->asset_vendor_id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("asset_vendors/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("ams/vendors/add_contact_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_contact'), "data-post-id" => $data->id, "data-post-asset_vendor_id" => $data->asset_vendor_id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("ams/vendors/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
@@ -144,9 +144,9 @@ class Asset_vendors extends MY_Controller {
         }
     }
 
-    function contacts($id){
-        $view_data['name'] = $this->Asset_vendors_model->get_one($id)->name;
-        $view_data["asset_vendor_id"] = $id;
+    function contacts($vendor_id){
+        $view_data['name'] = $this->Asset_vendors_model->get_one($vendor_id)->name;
+        $view_data["asset_vendor_id"] = $vendor_id;
         $this->template->rander("asset_vendors/contact_list", $view_data);
     }
 

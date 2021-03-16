@@ -4,7 +4,7 @@
             <h1> <?php echo lang('assets'); ?></h1>
             <div class="title-button-group">
                 <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "asset_entry")); ?>
-                <?php echo modal_anchor(get_uri("asset_entries/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_entry'), array("class" => "btn btn-default", "title" => lang('add_entry'))); ?>
+                <?php echo modal_anchor(get_uri("ams/entries/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_entry'), array("class" => "btn btn-default", "title" => lang('add_entry'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -17,7 +17,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#asset-entry-table").appTable({
-            source: "<?php echo_uri("asset_entries/list_data") ?>",
+            source: "<?php echo_uri("ams/entries/list_data") ?>",
             order: [[0, "desc"]],
             columns: [
                 {title: "<?php echo lang("title") ?> ", "class": "w15p"},

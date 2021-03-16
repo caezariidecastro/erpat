@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Asset_locations extends MY_Controller {
+class Locations extends MY_Controller {
 
     function __construct() {
         parent::__construct();
@@ -45,8 +45,8 @@ class Asset_locations extends MY_Controller {
             $data->parent_name,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
-            modal_anchor(get_uri("asset_locations/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_location'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("asset_locations/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("ams/locations/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_location'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("ams/locations/delete"), "data-action" => "delete-confirmation"))
         );
     }
 

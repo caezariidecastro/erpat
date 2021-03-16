@@ -3,7 +3,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo lang('location'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("asset_locations/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_location'), array("class" => "btn btn-default", "title" => lang('add_location'))); ?>
+                <?php echo modal_anchor(get_uri("ams/locations/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_location'), array("class" => "btn btn-default", "title" => lang('add_location'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -16,7 +16,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#asset-location-table").appTable({
-            source: "<?php echo_uri("asset_locations/list_data") ?>",
+            source: "<?php echo_uri("ams/locations/list_data") ?>",
             order: [[0, "desc"]],
             columns: [
                 {title: "<?php echo lang("title") ?> ", "class": "w20p"},

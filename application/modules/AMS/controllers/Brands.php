@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Asset_brands extends MY_Controller {
+class Brands extends MY_Controller {
 
     function __construct() {
         parent::__construct();
@@ -42,8 +42,8 @@ class Asset_brands extends MY_Controller {
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             $data->active ? '<small class="label label-success">Active</small>' : '<small class="label label-danger">Inactive</small>',
-            modal_anchor(get_uri("asset_brands/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_brand'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("asset_brands/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("ams/brands/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_brand'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("ams/brands/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
