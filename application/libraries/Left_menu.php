@@ -308,8 +308,8 @@ class Left_menu {
                     array("name" => "submenu_fas_contributions", "url" => "fas/contributions"),
                     array("name" => "submenu_fas_incentives", "url" => "fas/incentives"),
                     array("name" => "submenu_fas_payroll", "url" => "fas/payroll"),
-                    array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
                     array("name" => "submenu_fas_transfers", "url" => "fas/transfers"),
+                    array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
                 ));
             }
 

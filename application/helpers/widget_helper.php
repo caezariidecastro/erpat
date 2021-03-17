@@ -265,7 +265,7 @@ if (!function_exists('income_vs_expenses_widget')) {
         $view_data["income"] = $info->income ? $info->income : 0;
         $view_data["expenses"] = $info->expneses ? $info->expneses : 0;
         $view_data["custom_class"] = $custom_class;
-        return $ci->load->view("expenses/income_expenses_widget", $view_data, $return_as_data);
+        return $ci->load->view("fas/expenses/income_expenses_widget", $view_data, $return_as_data);
     }
 
 }

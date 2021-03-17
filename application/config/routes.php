@@ -74,14 +74,8 @@ $route['hrm/department'] = 'team/department';
 // Holidays
 $route['hrm/holidays'] = 'holidays/index';
 
-// Contributions
-$route['fas/contributions'] = 'contribution_categories/index';
-
 // Disciplinary
 $route['hrm/disciplinary'] = 'discipline_categories/index';
-
-// Incentives
-$route['fas/incentives'] = 'incentive_categories/index';
 
 // Leads
 $route['mcm/leads'] = 'leads/index';
@@ -92,32 +86,17 @@ $route['sms/estimates'] = 'estimates/index';
 $route['sms/estimates/view/(:any)'] = 'estimates/view/$1';
 $route['sms/invoices/view/(:any)'] = 'invoices/view/$1';
 
-// Invoices
-$route['sms/invoices'] = 'invoices/index';
-
 // Payments
 $route['fas/payments'] = 'invoice_payments/index';
 
-// Expenses
-$route['fas/expenses'] = 'expenses/index';
+// Invoices
+$route['sms/invoices'] = 'invoices/index';
 
-// Income vs Expenses
-$route['fas/summary'] = 'expenses/income_vs_expenses';
+// Sales Matrix
+$route["sms/sales-matrix"] = "sales_matrix/index";
 
-// Accounts
-$route['fas/accounts'] = 'accounts/index';
-
-// Transfers
-$route['fas/transfers'] = 'account_transfers/index';
-
-// Balance Sheet
-$route['fas/balancesheet'] = 'balance_sheet/index';
-
-// Payroll
-$route['fas/payroll'] = 'payroll/index';
-
-// Warehouse
-$route['lms/warehouse'] = 'warehouse/index';
+// Customers
+$route['sms/customers'] = 'customers/index';
 
 // All Projects
 $route['pms/all_projects'] = 'projects/all_projects';
@@ -142,11 +121,7 @@ $route['pms/services'] = 'item_categories/index';
 // Tickets
 $route['help/tickets'] = 'tickets/index';
 
-// Sales Matrix
-$route["sms/sales-matrix"] = "sales_matrix/index";
 
-// Customers
-$route['sms/customers'] = 'customers/index';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
