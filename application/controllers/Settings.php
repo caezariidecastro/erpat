@@ -499,7 +499,7 @@ class Settings extends MY_Controller {
             "module_lms_delivery", "module_lms_warehouse", "module_lms_transfer", "module_lms_vehicles", "module_lms_driver", "module_lms_consumer",
         "module_sms", 
             "module_sms_pos", "module_sms_giftcard", "module_sms_coupons", "module_sms_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_sms_customers",
-        "module_ams",
+        "module_ats",
             "module_assets", "module_ams_category", "module_ams_location", "module_vendors", "module_brands", 
         "module_pms", 
             "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 

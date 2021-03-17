@@ -8,7 +8,7 @@ $lang["module_mes"] = "Production & Inventory";
 $lang["module_mcm"] = "Marketing & Campaigns";
 $lang["module_lms"] = "Logistic & Distribution";
 $lang["module_sms"] = "Sales & Invoicing";
-$lang["module_ams"] = "Assets Management";
+$lang["module_ats"] = "Assets Management";
 $lang["module_pms"] = "Project Planning";
 $lang["module_hts"] = "Help & Support";
 

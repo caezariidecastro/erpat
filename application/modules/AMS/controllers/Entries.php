@@ -68,7 +68,7 @@ class Entries extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_ams");
+        $this->validate_user_sub_module_permission("module_ats");
         $this->template->rander("asset_entries/index");
     }
 

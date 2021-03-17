@@ -359,7 +359,7 @@ class Left_menu {
                 ));
             }
 
-            if (is_user_has_module_permission("module_ams")) {
+            if (is_user_has_module_permission("module_ats")) {
                 $sidebar_menu["menu_ams"] = array("name" => "menu_ams", "url" => "ams", "class" => "fa-archive", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_ams_assets", "url" => "ams/entries"),

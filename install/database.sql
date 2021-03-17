@@ -714,6 +714,7 @@ INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
 ('module_lms', '1', 0),
 ('module_sms', '1', 0),
 ('module_pms', '1', 0),
+('module_ats', '1', 0),
 ('module_hts', '1', 0),
 ('signin_page_background', 'sigin-background-image.jpg', 0),
 ('show_theme_color_changer', 'yes', 0),
