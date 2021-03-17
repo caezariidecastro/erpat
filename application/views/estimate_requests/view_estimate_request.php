@@ -43,7 +43,7 @@
 
                 <?php if ($model_info->is_lead) { ?>
                     <span class="text-off ml15"><?php echo lang("lead") . ": "; ?></span>
-                    <?php echo (anchor(get_uri("mcm/leads/view/" . $model_info->client_id), $model_info->company_name)); ?>
+                    <?php echo (anchor(get_uri("mcs/leads/view/" . $model_info->client_id), $model_info->company_name)); ?>
                 <?php } else { ?>
                     <span class="text-off ml15"><?php echo lang("client") . ": "; ?></span>
                     <?php echo (anchor(get_uri("pms/clients/view/" . $model_info->client_id), $model_info->company_name)); ?>

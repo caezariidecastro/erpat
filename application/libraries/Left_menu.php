@@ -327,10 +327,10 @@ class Left_menu {
                 ));
             }
 
-            if (is_user_has_module_permission("module_mcm")) {
-                $sidebar_menu["menu_mcm"] = array("name" => "menu_mcm", "url" => "hrm", "class" => "fa-users", "devider" => true,
+            if (is_user_has_module_permission("module_mcs")) {
+                $sidebar_menu["menu_mcs"] = array("name" => "menu_mcs", "url" => "mcs", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_mcm_leads", "url" => "mcm/leads")
+                    array("name" => "submenu_mcs_leads", "url" => "mcs/leads")
                 ));
             }
 
@@ -347,7 +347,7 @@ class Left_menu {
             }
 
             if (is_user_has_module_permission("module_sms")) {
-                $sidebar_menu["menu_sms"] = array("name" => "menu_sms", "url" => "hrm", "class" => "fa-tags", "devider" => true,
+                $sidebar_menu["menu_sms"] = array("name" => "menu_sms", "url" => "sms", "class" => "fa-tags", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_sms_pointofsale", "url" => "sms/point-of-sale"),
                     array("name" => "submenu_sms_giftcard", "url" => "sms/giftcard"),

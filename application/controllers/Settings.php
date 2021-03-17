@@ -493,7 +493,7 @@ class Settings extends MY_Controller {
             "module_fas_summary", "module_fas_payments", "module_expense", "module_fas_contributions", "module_fas_incentives", "module_fas_payroll", "module_fas_accounts", "module_fas_transfer", "module_fas_balancesheet",
         "module_mes", 
             "module_pid_productions", "module_pid_billofmaterials", "module_pid_rawmaterials", "module_pid_inventory", "module_pid_products", "module_pid_purchases", "module_pid_returns", "module_pid_supplier",
-        "module_mcm", 
+        "module_mcs", 
             "module_lead",
         "module_lds", 
             "module_lms_delivery", "module_lms_warehouse", "module_lms_transfer", "module_lms_vehicles", "module_lms_driver", "module_lms_consumer",

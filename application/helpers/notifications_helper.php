@@ -168,7 +168,7 @@ if (!function_exists('get_notification_config')) {
         $lead_link = function($options) {
             $url = "";
             if (isset($options->lead_id)) {
-                $url = get_uri("mcm/leads/view/" . $options->lead_id);
+                $url = get_uri("mcs/leads/view/" . $options->lead_id);
             }
 
             return array("url" => $url);

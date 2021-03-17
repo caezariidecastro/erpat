@@ -15,7 +15,7 @@ class Leads extends MY_Controller {
     /* load leads list view */
 
     function index() {
-        $this->validate_user_sub_module_permission("module_mcm");
+        $this->validate_user_sub_module_permission("module_mcs");
         $this->access_only_allowed_members();
         $this->check_module_availability("module_lead");
 
@@ -200,7 +200,7 @@ class Leads extends MY_Controller {
         }
 
         $row_data = array(
-            anchor(get_uri("mcm/leads/view/" . $data->id), $data->company_name),
+            anchor(get_uri("mcs/leads/view/" . $data->id), $data->company_name),
             $data->primary_contact ? $primary_contact : "",
             $owner
         );

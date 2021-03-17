@@ -245,10 +245,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="module_mcm" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_mcm'); ?></label>
+                        <label for="module_mcs" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_mcs'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_mcm", "1", get_setting("module_mcm") ? true : false, "id='module_mcm' class='ml15'");
+                            echo form_checkbox("module_mcs", "1", get_setting("module_mcs") ? true : false, "id='module_mcs' class='ml15'");
                             ?>                       
                         </div>
                     </div>

@@ -5,7 +5,7 @@ $lang["example"] = "Example";
 $lang["module_hrs"] = "Human Resource";
 $lang["module_fas"] = "Finance & Accounting";
 $lang["module_mes"] = "Production & Inventory";
-$lang["module_mcm"] = "Marketing & Campaigns";
+$lang["module_mcs"] = "Marketing & Campaigns";
 $lang["module_lds"] = "Logistic & Distribution";
 $lang["module_sms"] = "Sales & Invoicing";
 $lang["module_ats"] = "Assets Management";
@@ -15,7 +15,7 @@ $lang["module_hts"] = "Help & Support";
 $lang["menu_hrs"] = "Human Resource";
 $lang["menu_fas"] = "Finance & Accounting";
 $lang["menu_mes"] = "Production & Inventory";
-$lang["menu_mcm"] = "Marketing & Campaigns";
+$lang["menu_mcs"] = "Marketing & Campaigns";
 $lang["menu_lms"] = "Logistic & Distribution";
 $lang["menu_sms"] = "Sales & Invoicing";
 $lang["menu_ams"] = "Assets Management";
@@ -79,7 +79,7 @@ $lang["submenu_lms_drivers"] = "Drivers";
 $lang["submenu_lms_consumers"] = "Consumers";
 $lang["passengers"] = "Passengers";
 
-$lang["submenu_mcm_leads"] = "Leads";
+$lang["submenu_mcs_leads"] = "Leads";
 
 // Human Resource > Users
 $lang["user"] = "User";
@@ -451,3 +451,5 @@ $lang["leave_credits_insufficient_admin"] = "The employee do not have sufficient
 
 // Expense Categories
 $lang["record_cannot_be_edited"] = "Record cannot be edited.";
+
+$lang["groups"] = "Groups";

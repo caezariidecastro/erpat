@@ -104,7 +104,7 @@ class roles extends MY_Controller {
             $view_data["module_hrs"] = get_array_value($permissions, "module_hrs");
             $view_data["module_fas"] = get_array_value($permissions, "module_fas");
             $view_data["module_mes"] = get_array_value($permissions, "module_mes");
-            $view_data["module_mcm"] = get_array_value($permissions, "module_mcm");
+            $view_data["module_mcs"] = get_array_value($permissions, "module_mcs");
             $view_data["module_lds"] = get_array_value($permissions, "module_lds");
             $view_data["module_sms"] = get_array_value($permissions, "module_sms");
             $view_data["module_ats"] = get_array_value($permissions, "module_ats");
@@ -265,7 +265,7 @@ class roles extends MY_Controller {
             "module_hrs" => $this->input->post('module_hrs'),
             "module_fas" => $this->input->post('module_fas'),
             "module_mes" => $this->input->post('module_mes'),
-            "module_mcm" => $this->input->post('module_mcm'),
+            "module_mcs" => $this->input->post('module_mcs'),
             "module_lds" => $this->input->post('module_lds'),
             "module_sms" => $this->input->post('module_sms'),
             "module_ats" => $this->input->post('module_ats'),
