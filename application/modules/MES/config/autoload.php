@@ -146,8 +146,8 @@ $autoload['model'] = array(
   'Purchase_order_returns_model',
   'Purchase_orders_model',
   'Vendors_model',
-  'lms/Warehouse_model',
-  'lms/Vehicles_model',
+  'lds/Warehouse_model',
+  'lds/Vehicles_model',
   'fas/Expenses_model',
 );
 

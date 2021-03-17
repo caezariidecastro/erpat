@@ -495,7 +495,7 @@ class Settings extends MY_Controller {
             "module_pid_productions", "module_pid_billofmaterials", "module_pid_rawmaterials", "module_pid_inventory", "module_pid_products", "module_pid_purchases", "module_pid_returns", "module_pid_supplier",
         "module_mcm", 
             "module_lead",
-        "module_lms", 
+        "module_lds", 
             "module_lms_delivery", "module_lms_warehouse", "module_lms_transfer", "module_lms_vehicles", "module_lms_driver", "module_lms_consumer",
         "module_sms", 
             "module_sms_pos", "module_sms_giftcard", "module_sms_coupons", "module_sms_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_sms_customers",

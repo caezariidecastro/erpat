@@ -9,7 +9,7 @@ class Invoices extends MY_Controller {
         parent::__construct();
         $this->init_permission_checker("invoice");
         $this->load->model("mes/Inventory_model");
-        $this->load->model("lms/Deliveries_model");
+        $this->load->model("lds/Deliveries_model");
     }
 
     function get_inventory_items_select2_data($warehouse_id = null) {

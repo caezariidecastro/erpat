@@ -334,15 +334,15 @@ class Left_menu {
                 ));
             }
 
-            if (is_user_has_module_permission("module_lms")) {
-                $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "lms", "class" => "fa-truck", "devider" => true,
+            if (is_user_has_module_permission("module_lds")) {
+                $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "lds", "class" => "fa-truck", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_lms_delivery", "url" => "lms/deliveries"),
-                    array("name" => "submenu_lms_warehouse", "url" => "lms/warehouses"),
-                    array("name" => "submenu_lms_transfers", "url" => "lms/transfers"),
-                    array("name" => "submenu_lms_vehicles", "url" => "lms/vehicles"),
-                    array("name" => "submenu_lms_drivers", "url" => "lms/drivers"),
-                    array("name" => "submenu_lms_consumers", "url" => "lms/consumers"),
+                    array("name" => "submenu_lms_delivery", "url" => "lds/deliveries"),
+                    array("name" => "submenu_lms_warehouse", "url" => "lds/warehouses"),
+                    array("name" => "submenu_lms_transfers", "url" => "lds/transfers"),
+                    array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles"),
+                    array("name" => "submenu_lms_drivers", "url" => "lds/drivers"),
+                    array("name" => "submenu_lms_consumers", "url" => "lds/consumers"),
                 ));
             }
 

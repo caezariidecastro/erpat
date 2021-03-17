@@ -711,7 +711,7 @@ INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
 ('module_fas', '1', 0),
 ('module_mes', '1', 0),
 ('module_mcm', '1', 0),
-('module_lms', '1', 0),
+('module_lds', '1', 0),
 ('module_sms', '1', 0),
 ('module_pms', '1', 0),
 ('module_ats', '1', 0),
