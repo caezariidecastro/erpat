@@ -74,10 +74,10 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="module_hrm" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_hrm'); ?></label>
+                        <label for="module_hrs" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_hrs'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_hrm", "1", get_setting("module_hrm") ? true : false, "id='module_hrm' class='ml15'");
+                            echo form_checkbox("module_hrs", "1", get_setting("module_hrs") ? true : false, "id='module_hrs' class='ml15'");
                             ?>                       
                         </div>
                     </div>

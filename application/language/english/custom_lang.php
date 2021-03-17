@@ -2,7 +2,7 @@
 
 $lang["example"] = "Example";
 
-$lang["module_hrm"] = "Human Resource";
+$lang["module_hrs"] = "Human Resource";
 $lang["module_fas"] = "Finance & Accounting";
 $lang["module_mes"] = "Production & Inventory";
 $lang["module_mcm"] = "Marketing & Campaigns";

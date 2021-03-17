@@ -21,7 +21,7 @@ class Discipline_categories extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_hrm");
+        $this->validate_user_sub_module_permission("module_hrs");
         $view_data['category_select2'] = $this->_get_category_select2_data();
         $this->template->rander("discipline_categories/index", $view_data);
     }

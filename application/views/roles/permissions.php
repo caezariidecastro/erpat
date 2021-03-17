@@ -13,9 +13,9 @@
                     <h5><?php echo lang("set_module_permissions"); ?>:</h5>
                     <div>
                         <?php
-                        echo form_checkbox("module_hrm", "1", $module_hrm ? true : false, "id='module_hrm'");
+                        echo form_checkbox("module_hrs", "1", $module_hrs ? true : false, "id='module_hrs'");
                         ?>
-                        <label for="module_hrm"><?php echo lang("module_hrm"); ?></label>
+                        <label for="module_hrs"><?php echo lang("module_hrs"); ?></label>
                     </div>
                     <div>
                         <?php

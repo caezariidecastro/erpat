@@ -287,7 +287,7 @@ class Left_menu {
             }
 
             // Start: Module permissions workaround
-            if (is_user_has_module_permission("module_hrm")) {
+            if (is_user_has_module_permission("module_hrs")) {
                 $sidebar_menu["menu_hrm"] = array("name" => "menu_hrm", "url" => "hrm", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_hrm_department", "url" => "hrm/department"),

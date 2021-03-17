@@ -101,7 +101,7 @@ class roles extends MY_Controller {
             $view_data['message_permission_specific'] = get_array_value($permissions, "message_permission_specific");
 
             // Start: Module permissions workaround
-            $view_data["module_hrm"] = get_array_value($permissions, "module_hrm");
+            $view_data["module_hrs"] = get_array_value($permissions, "module_hrs");
             $view_data["module_fas"] = get_array_value($permissions, "module_fas");
             $view_data["module_mes"] = get_array_value($permissions, "module_mes");
             $view_data["module_mcm"] = get_array_value($permissions, "module_mcm");
@@ -262,7 +262,7 @@ class roles extends MY_Controller {
             "can_delete_leave_application" => $can_delete_leave_application,
             "message_permission" => $message_permission,
             "message_permission_specific" => $message_permission_specific,
-            "module_hrm" => $this->input->post('module_hrm'),
+            "module_hrs" => $this->input->post('module_hrs'),
             "module_fas" => $this->input->post('module_fas'),
             "module_mes" => $this->input->post('module_mes'),
             "module_mcm" => $this->input->post('module_mcm'),

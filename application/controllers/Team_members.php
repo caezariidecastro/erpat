@@ -71,7 +71,7 @@ class Team_members extends MY_Controller {
             redirect("forbidden");
         }
 
-        $this->validate_user_sub_module_permission("module_hrm");
+        $this->validate_user_sub_module_permission("module_hrs");
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 

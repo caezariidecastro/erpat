@@ -707,7 +707,7 @@ INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
 ('module_knowledge_base', '1', 0),
 ('module_todo', '1', 0),
 ('module_gantt', '1', 0),
-('module_hrm', '1', 0),
+('module_hrs', '1', 0),
 ('module_fas', '1', 0),
 ('module_mes', '1', 0),
 ('module_mcm', '1', 0),

@@ -487,7 +487,7 @@ class Settings extends MY_Controller {
 
         $settings = array(
             "module_timeline", "module_event", "module_todo", "module_note", "module_message", "module_chat", "module_announcement", 
-        "module_hrm", 
+        "module_hrs", 
             "module_hrm_department", "module_hrm_employee", "module_attendance", "module_hrm_disciplinary", "module_leave", "module_hrm_holidays",
         "module_fas", 
             "module_fas_summary", "module_fas_payments", "module_expense", "module_fas_contributions", "module_fas_incentives", "module_fas_payroll", "module_fas_accounts", "module_fas_transfer", "module_fas_balancesheet",
