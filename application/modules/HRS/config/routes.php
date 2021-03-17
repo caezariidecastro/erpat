@@ -49,57 +49,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'dashboard';
 
-//custom routing for custom pages
-//this route will move 'about/any-text' to 'domain.com/about/index/any-text'
-$route['about/(:any)'] = 'about/index/$1';
+// Default Controller 
+$route["hrs"] = "Team_members/index";
 
-// Leads
-$route['mcm/leads'] = 'leads/index';
-$route['mcm/leads/view/(:any)'] = 'leads/view/$1';
+// Employee
+$route["hrs/employee"] = "Team_members/index";
+$route['hrs/employee/view/(:any)'] = 'Team_members/view/$1';
+$route['hrs/employee/view/(:any)/general'] = 'Team_members/view/$1/general';
+$route['hrs/employee/view/(:any)/account'] = 'Team_members/view/$1/account';
+$route['hrs/employee/view/(:any)/my_preferences'] = 'Team_members/view/$1/my_preferences';
 
-// Estimates
-$route['sms/estimates'] = 'estimates/index';
-$route['sms/estimates/view/(:any)'] = 'estimates/view/$1';
-$route['sms/invoices/view/(:any)'] = 'invoices/view/$1';
+// Department
+$route['hrs/department'] = 'team/department';
 
-// Payments
-$route['fas/payments'] = 'invoice_payments/index';
+// Attendance
+$route['hrs/attendance'] = 'attendance/index';
 
-// Invoices
-$route['sms/invoices'] = 'invoices/index';
+// Leaves
+$route['hrs/leaves'] = 'leaves/index';
 
-// Sales Matrix
-$route["sms/sales-matrix"] = "sales_matrix/index";
+// Holidays
+$route['hrs/holidays'] = 'holidays/index';
 
-// Customers
-$route['sms/customers'] = 'customers/index';
-
-// All Projects
-$route['pms/all_projects'] = 'projects/all_projects';
-$route['pms/projects/view/(:any)'] = 'projects/view/$1';
-
-// My Tasks
-$route['pms/my_tasks'] = 'projects/all_tasks';
-
-// View Gantts
-$route['pms/view_gantts'] = 'projects/all_gantt';
-
-// Timesheets
-$route['pms/timesheets'] = 'projects/all_timesheets';
-
-// Clients
-$route['pms/clients'] = 'clients/index';
-$route['pms/clients/view/(:any)'] = 'clients/view/$1';
-
-// Services
-$route['pms/services'] = 'item_categories/index';
-
-// Tickets
-$route['help/tickets'] = 'tickets/index';
-
-
-
-$route['404_override'] = '';
-$route['translate_uri_dashes'] = FALSE;
+// Disciplinary
+$route['hrs/disciplinary'] = 'discipline_categories/index';

@@ -722,7 +722,7 @@ if (!function_exists('get_team_member_profile_link')) {
     function get_team_member_profile_link($id = 0, $name = "", $attributes = array()) {
         $ci = get_instance();
         if ($ci->login_user->user_type === "staff") {
-            return anchor("hrm/user/view/" . $id, $name, $attributes);
+            return anchor("hrs/employee/view/" . $id, $name, $attributes);
         } else {
             return js_anchor($name, $attributes);
         }

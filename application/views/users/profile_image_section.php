@@ -1,7 +1,7 @@
 <div class="box" id="profile-image-section">
     <div class="box-content w200 text-center profile-image">
         <?php
-        $url = "team_members";
+        $url = "hrs/team_members";
 
         //set url
         if ($user_info->user_type === "client") {

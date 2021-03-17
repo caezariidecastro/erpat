@@ -12,7 +12,7 @@ $lang["module_ats"] = "Assets Management";
 $lang["module_pms"] = "Project Planning";
 $lang["module_hts"] = "Help & Support";
 
-$lang["menu_hrm"] = "Human Resource";
+$lang["menu_hrs"] = "Human Resource";
 $lang["menu_fas"] = "Finance & Accounting";
 $lang["menu_mes"] = "Production & Inventory";
 $lang["menu_mcm"] = "Marketing & Campaigns";
@@ -22,6 +22,7 @@ $lang["menu_ams"] = "Assets Management";
 $lang["menu_pms"] = "Project Planning";
 $lang["menu_hts"] = "Help & Support";
 
+$lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_department"] = "Department";
 $lang["submenu_hrm_attendance"] = "Attendance";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary";

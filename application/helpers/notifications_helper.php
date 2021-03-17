@@ -85,7 +85,7 @@ if (!function_exists('get_notification_config')) {
 
             if (isset($options->leave_id)) {
                 $url = get_uri("dashboard");
-                $ajax_url = get_uri("leaves/application_details");
+                $ajax_url = get_uri("hrs/leaves/application_details");
                 $id = $options->leave_id;
             }
 

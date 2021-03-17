@@ -245,8 +245,8 @@
     $(document).ready(function () {
 
 
-        var uploadUrl = "<?php echo get_uri("expenses/upload_file"); ?>";
-        var validationUrl = "<?php echo get_uri("expenses/validate_expense_file"); ?>";
+        var uploadUrl = "<?php echo get_uri("fas/expenses/upload_file"); ?>";
+        var validationUrl = "<?php echo get_uri("fas/expenses/validate_expense_file"); ?>";
 
         var dropzone = attachDropzoneWithForm("#expense-dropzone", uploadUrl, validationUrl);
 

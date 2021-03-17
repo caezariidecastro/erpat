@@ -288,14 +288,14 @@ class Left_menu {
 
             // Start: Module permissions workaround
             if (is_user_has_module_permission("module_hrs")) {
-                $sidebar_menu["menu_hrm"] = array("name" => "menu_hrm", "url" => "hrm", "class" => "fa-users", "devider" => true,
+                $sidebar_menu["menu_hrs"] = array("name" => "menu_hrs", "url" => "hrs", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_hrm_department", "url" => "hrm/department"),
-                    array("name" => "employee", "url" => "hrm/user"),
-                    array("name" => "submenu_hrm_attendance", "url" => "hrm/attendance"),
-                    array("name" => "submenu_hrm_disciplinary", "url" => "hrm/disciplinary"),
-                    array("name" => "submenu_hrm_leaves", "url" => "hrm/leaves"),
-                    array("name" => "submenu_hrm_holidays", "url" => "hrm/holidays")
+                    array("name" => "submenu_hrm_employee", "url" => "hrs/employee"),
+                    array("name" => "submenu_hrm_department", "url" => "hrs/department"),
+                    array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance"),
+                    array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary"),
+                    array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves"),
+                    array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays")
                 ));
             }
 
