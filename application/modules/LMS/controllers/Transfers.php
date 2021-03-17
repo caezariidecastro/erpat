@@ -181,7 +181,7 @@ class Transfers extends MY_Controller {
         $view_data['warehouse_item_select2'] = $model_info->transferee ? $this->get_inventory_items_select2_data($model_info->transferee) : array('id' => '', 'text' => '');
         $view_data["status_dropdown"] = $this->_get_statuses();
 
-        $this->load->view('lms/transfers/modal_form', $view_data);
+        $this->load->view('lms/transfers/products/modal_form', $view_data);
     }
 
     function delete() {

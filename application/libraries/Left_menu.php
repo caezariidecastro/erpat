@@ -310,12 +310,11 @@ class Left_menu {
                     array("name" => "submenu_fas_payroll", "url" => "fas/payroll"),
                     array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
                     array("name" => "submenu_fas_transfers", "url" => "fas/transfers"),
-                    // array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet"),
                 ));
             }
 
             if (is_user_has_module_permission("module_mes")) {
-                $sidebar_menu["menu_pid"] = array("name" => "menu_pid", "url" => "mes", "class" => "fa-industry", "devider" => true,
+                $sidebar_menu["menu_mes"] = array("name" => "menu_mes", "url" => "mes", "class" => "fa-industry", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_pid_productions", "url" => "mes/manufacturing-orders"),
                     array("name" => "submenu_pid_billofmaterials", "url" => "mes/bill-of-materials"),
@@ -325,7 +324,6 @@ class Left_menu {
                     array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders"),
                     array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns"),
                     array("name" => "submenu_pid_supplier", "url" => "mes/suppliers"),
-                    array("name" => "submenu_pid_transfers", "url" => "mes/transfers"),
                 ));
             }
 

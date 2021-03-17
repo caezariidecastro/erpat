@@ -135,6 +135,8 @@ $autoload['model'] = array(
     'Vehicles_model',
     'Warehouse_model',
     'mes/Inventory_model',
-    'mes/Inventory_item_entries_model'
+    'mes/Inventory_item_entries_model',
+    'mes/Material_inventory_transfers_model',
+    'mes/Material_inventory_model'
 );
 

@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class RawMaterialTransfers extends MY_Controller {
+class TransferRawMaterials extends MY_Controller {
 
     function __construct() {
         parent::__construct();
@@ -35,7 +35,7 @@ class RawMaterialTransfers extends MY_Controller {
 
     function index(){
         $this->validate_user_sub_module_permission("module_mes");
-        $this->template->rander("material_inventory_transfers/index");
+        $this->template->rander("transfers/index");
     }
 
     function list_data(){
@@ -62,8 +62,8 @@ class RawMaterialTransfers extends MY_Controller {
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             $this->_get_status_label($data->status),
-            modal_anchor(get_uri("mes/RawMaterialTransfers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_transfer'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("mes/RawMaterialTransfers/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("lms/TransferRawMaterials/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_transfer'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lms/TransferRawMaterials/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
@@ -180,7 +180,7 @@ class RawMaterialTransfers extends MY_Controller {
         $view_data['warehouse_item_select2'] = $model_info->transferee ? $this->get_inventory_items_select2_data($model_info->transferee) : array('id' => '', 'text' => '');
         $view_data["status_dropdown"] = $this->_get_statuses();
 
-        $this->load->view('material_inventory_transfers/modal_form', $view_data);
+        $this->load->view('transfers/raw-materials/modal_form', $view_data);
     }
 
     function delete() {

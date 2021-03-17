@@ -1,39 +1,18 @@
-<div id="page-content" class="p20 clearfix">
-    <div class="panel panel-default">
-        <div class="page-title clearfix">
-            <h1> <?php echo lang('transfers'); ?></h1>
-            <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("lms/transfers/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_transfer'), array("class" => "btn btn-default", "title" => lang('add_transfer'))); ?>
+<div id="page-content" class="clearfix p20">
+    <div id="product-panel" class="panel clearfix">
+        <ul id="products-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
+            <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("transfers"); ?></h4></li>
+            <li><a role="presentation" href="<?php echo_uri("products"); ?>" data-target="#item-products"><?php echo lang('products'); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("raw_materials"); ?>" data-target="#item-raw_materials"><?php echo lang('raw_materials'); ?></a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade" id="item-products">
+                <?php $this->load->view('products/index')?>
             </div>
-        </div>
-        <div class="table-responsive">
-            <table id="inventory-transfers-table" class="display" cellspacing="0" width="100%">            
-            </table>
+            <div role="tabpanel" class="tab-pane fade" id="item-raw_materials">
+                <?php $this->load->view('raw-materials/index')?>
+            </div>
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#inventory-transfers-table").appTable({
-            source: '<?php echo_uri("lms/transfers/list_data") ?>',
-            order: [[7, 'desc']],
-            columns: [
-                {title: "<?php echo lang('reference_number') ?> ", "class": "w10p"},
-                {title: "<?php echo lang('from') ?> ", "class": "w10p"},
-                {title: "<?php echo lang('to') ?>", "class": "w10p"},
-                {title: "<?php echo lang('dispatcher') ?>"},
-                {title: "<?php echo lang('driver') ?>"},
-                {title: "<?php echo lang('vehicle') ?>"},
-                {title: "<?php echo lang('items') ?>"},
-                {title: "<?php echo lang('remarks') ?>", "class": "w15p"},
-                {title: "<?php echo lang('created_on') ?>",},
-                {title: "<?php echo lang('created_by') ?>",},
-                {title: "<?php echo lang('status') ?>", "class": "text-center"},
-                {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
-            ],
-            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        });
-    });
-</script>

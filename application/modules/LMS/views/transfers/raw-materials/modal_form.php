@@ -7,7 +7,7 @@
     }
 </style>
 
-<?php echo form_open(get_uri("mes/RawMaterialTransfers/save"), array("id" => "inventory-transfers-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("lms/TransferRawMaterials/save"), array("id" => "inventory-transfers-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <?php if($model_info->id){?>
@@ -165,7 +165,7 @@
 
     $(document).ready(function () {
         $("#inventory-transfers-items-table").appTable({
-            source: '<?php echo_uri("mes/RawMaterialTransfers/get_transferred_items/".($model_info ? $model_info->reference_number : "")) ?>',
+            source: '<?php echo_uri("lms/TransferRawMaterials/get_transferred_items/".($model_info ? $model_info->reference_number : "")) ?>',
             order: [[0, 'desc']],
             columns: [
                 {visible: false},
@@ -183,7 +183,8 @@
 
         $("#inventory-transfers-form").appForm({
             onSuccess: function (result) {
-                $("#inventory-transfers-table").appTable({newData: result.data, dataId: result.id});
+                $("#material-inventory-transfers-table").appTable({newData: result.data, dataId: result.id});
+                //$("#inventory-transfers-table").appTable({newData: result.data, dataId: result.id});
             },
             onSubmit: function (data, self, options) {
                 $('#reference_number').removeAttr('disabled');
@@ -231,7 +232,7 @@
                 appLoader.show({container: "#item-selection-section"});
 
                 $.ajax({
-                    url: "<?php echo get_uri("mes/RawMaterialTransfers/get_inventory_items_select2_data") ?>" + `/${warehouse_id}/json`,
+                    url: "<?php echo get_uri("lms/TransferRawMaterials/get_inventory_items_select2_data") ?>" + `/${warehouse_id}/json`,
                     dataType: "json",
                     success: function (result) {
                         $("#item").show().val("");

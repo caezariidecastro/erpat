@@ -14,7 +14,7 @@ $lang["module_hts"] = "Help & Support";
 
 $lang["menu_hrm"] = "Human Resource";
 $lang["menu_fas"] = "Finance & Accounting";
-$lang["menu_pid"] = "Production & Inventory";
+$lang["menu_mes"] = "Production & Inventory";
 $lang["menu_mcm"] = "Marketing & Campaigns";
 $lang["menu_lms"] = "Logistic & Distribution";
 $lang["menu_sms"] = "Sales & Invoicing";
@@ -213,6 +213,7 @@ $lang["add_product"] = "Add product";
 
 // Logistics and Distribution > Transfer
 $lang["transfers"] = "Transfers";
+$lang["transactions"] = "Transactions";
 $lang["add_transfer"] = "Add transfer";
 $lang["edit_transfer"] = "Edit transfer";
 $lang["reference_number"] = "Reference No.";

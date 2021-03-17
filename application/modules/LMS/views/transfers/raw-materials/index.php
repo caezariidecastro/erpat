@@ -1,9 +1,9 @@
 <div id="page-content" class="p20 clearfix">
     <div class="panel panel-default">
         <div class="page-title clearfix">
-            <h1> <?php echo lang('transfers'); ?></h1>
+            <h1> <?php echo lang('transactions'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("mes/RawMaterialTransfers/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_transfer'), array("class" => "btn btn-default", "title" => lang('add_transfer'))); ?>
+                <?php echo modal_anchor(get_uri("lms/TransferRawMaterials/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_transfer'), array("class" => "btn btn-default", "title" => lang('add_transfer'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -16,7 +16,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#material-inventory-transfers-table").appTable({
-            source: '<?php echo_uri("mes/RawMaterialTransfers/list_data") ?>',
+            source: '<?php echo_uri("lms/TransferRawMaterials/list_data") ?>',
             order: [[7, 'desc']],
             columns: [
                 {title: "<?php echo lang('reference_number') ?> ", "class": "w10p"},
