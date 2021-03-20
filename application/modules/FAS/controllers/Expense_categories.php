@@ -12,7 +12,8 @@ class Expense_categories extends MY_Controller {
 
     //load expense categories list view
     function index() {
-        $this->template->rander("expense_categories/index");
+        $this->load->view("expense_categories/index");
+        //$this->template->rander("expense_categories/index");
     }
 
     //load expense category add/edit modal form
@@ -40,15 +41,14 @@ class Expense_categories extends MY_Controller {
 
         $expense_category = $this->Expense_categories_model->get_one($id);
 
-        if($expense_category->is_editable){
+        if(!$id || $expense_category->is_editable) {
             $save_id = $this->Expense_categories_model->save($data, $id);
             if ($save_id) {
                 echo json_encode(array("success" => true, "data" => $this->_row_data($save_id), 'id' => $save_id, 'message' => lang('record_saved')));
             } else {
                 echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
             }
-        }
-        else{
+        } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_edited')));
         }
     }
@@ -102,8 +102,8 @@ class Expense_categories extends MY_Controller {
 
     //prepare an expense category list row
     private function _make_row($data) {
-        $actions = $data->is_editable ? modal_anchor(get_uri("expense_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expenses_category'), "data-post-id" => $data->id))
-        . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expenses_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("expense_categories/delete"), "data-action" => "delete")) : "";
+        $actions = $data->is_editable ? modal_anchor(get_uri("fas/expense_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expenses_category'), "data-post-id" => $data->id))
+        . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expenses_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/expense_categories/delete"), "data-action" => "delete")) : "Default";
 
         return array(
             $data->title,

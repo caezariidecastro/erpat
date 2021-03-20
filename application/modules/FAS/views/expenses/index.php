@@ -7,7 +7,11 @@
             <li><a role="presentation" href="<?php echo_uri("fas/expenses/custom/"); ?>" data-target="#custom-expenses"><?php echo lang('custom'); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("fas/expenses/recurring/"); ?>" data-target="#recurring-expenses"><?php echo lang('recurring'); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("fas/expenses/yearly_chart/"); ?>" data-target="#yearly-chart"><?php echo lang('chart'); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("fas/expense_categories/"); ?>" data-target="#expense-categories"><?php echo lang('categories'); ?></a></li>
             <div class="tab-title clearfix no-border">
+                <div class="title-button-group">
+                    <?php echo modal_anchor(get_uri("fas/expense_categories/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'))); ?>
+                </div>
                 <div class="title-button-group">
                     <?php echo modal_anchor(get_uri("fas/expenses/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_expense'), array("class" => "btn btn-default mb0", "title" => lang('add_expense'))); ?>
                 </div>
@@ -25,6 +29,7 @@
             <div role="tabpanel" class="tab-pane fade" id="custom-expenses"></div>
             <div role="tabpanel" class="tab-pane fade" id="recurring-expenses"></div>
             <div role="tabpanel" class="tab-pane fade" id="yearly-chart"></div>
+            <div role="tabpanel" class="tab-pane fade" id="expense-categories"></div>
         </div>
     </div>
 </div>
