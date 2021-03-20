@@ -1641,7 +1641,7 @@ if (!function_exists("get_update_task_info_anchor_data")) {
 if (!function_exists('get_lead_contact_profile_link')) {
         
     function get_lead_contact_profile_link($id = 0, $name = "", $attributes = array()) {
-        return anchor("leads/contact_profile/" . $id, $name, $attributes);
+        return anchor("mcs/leads/contact_profile/" . $id, $name, $attributes);
     }
 
 }

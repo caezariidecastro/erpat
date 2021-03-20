@@ -48,7 +48,7 @@
                 {title: "<?php echo lang("estimate_date") ?>", "iDataSort": 2, "class": "w20p"},
                 {title: "<?php echo lang("amount") ?>", "class": "text-right w20p"},
                 {title: "<?php echo lang("status") ?>", "class": "text-center"}
-<?php echo $custom_field_headers; ?>,
+                <?php echo $custom_field_headers; ?>,
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: combineCustomFieldsColumns([0, 1, 3, 4, 5], '<?php echo $custom_field_headers; ?>'),

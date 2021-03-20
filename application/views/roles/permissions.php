@@ -31,9 +31,9 @@
                     </div>
                     <div>
                         <?php
-                        echo form_checkbox("module_mcm", "1", $module_mcm ? true : false, "id='module_mcm'");
+                        echo form_checkbox("module_mcs", "1", $module_mcs ? true : false, "id='module_mcs'");
                         ?>
-                        <label for="module_mcm"><?php echo lang("module_mcm"); ?></label>
+                        <label for="module_mcs"><?php echo lang("module_mcs"); ?></label>
                     </div>
                     <div>
                         <?php

@@ -36,13 +36,13 @@ class Invoice_items_model extends Crud_model {
     function get_item_suggestion($keyword = "") {
         $items_table = $this->db->dbprefix('items');
         
-
+        $limits = $this->config->item("max_services_dropdown_count");
         $sql = "SELECT $items_table.title
-        FROM $items_table
-        WHERE $items_table.deleted=0
-        AND $items_table.active=1  
-        AND $items_table.title LIKE '%$keyword%'
-        LIMIT 10 
+            FROM $items_table
+            WHERE $items_table.deleted=0
+                AND $items_table.active=1  
+                AND $items_table.title LIKE '%$keyword%'
+            LIMIT $limits 
         ";
         return $this->db->query($sql)->result();
     }
