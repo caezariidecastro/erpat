@@ -42,10 +42,6 @@ if (get_setting("module_ticket") == "1") {
     $settings_menu["components"][] = array("name" => "tickets", "url" => "ticket_types");
 }
 
-if (get_setting("module_expense") == "1") {
-    $settings_menu["components"][] = array("name" => "expense_categories", "url" => "expense_categories");
-}
-
 if (get_setting("module_invoice") == "1") {
     $settings_menu["components"][] = array("name" => "invoices", "url" => "settings/invoices");
 }
