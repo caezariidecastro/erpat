@@ -14,7 +14,6 @@ $settings_menu = array(
     ),
     "access_permission" => array(
         array("name" => "roles", "url" => "roles"),
-        array("name" => "team", "url" => "team"),
     ),
     "client" => array(
         array("name" => "client_permissions", "url" => "settings/client_permissions"),
