@@ -7,7 +7,7 @@ $settings_menu = array(
         array("name" => "email_templates", "url" => "email_templates"),
         array("name" => "modules", "url" => "settings/modules"),
         array("name" => "notifications", "url" => "settings/notifications"),
-        array("name" => "updates", "url" => "Updates"),
+        //array("name" => "updates", "url" => "Updates"),
     ),
     "components" => array(
         array("name" => "tasks", "url" => "task_status")
