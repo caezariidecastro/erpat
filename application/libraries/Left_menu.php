@@ -330,7 +330,9 @@ class Left_menu {
             if (is_user_has_module_permission("module_mcs")) {
                 $sidebar_menu["menu_mcs"] = array("name" => "menu_mcs", "url" => "mcs", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_mcs_leads", "url" => "mcs/leads")
+                    array("name" => "submenu_mcs_leads", "url" => "mcs/leads"),
+                    array("name" => "submenu_mcs_status", "url" => "mcs/lead_status"),
+                    array("name" => "submenu_mcs_source", "url" => "mcs/lead_source"),
                 ));
             }
 

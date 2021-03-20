@@ -80,6 +80,8 @@ $lang["submenu_lms_consumers"] = "Consumers";
 $lang["passengers"] = "Passengers";
 
 $lang["submenu_mcs_leads"] = "Leads";
+$lang["submenu_mcs_status"] = "Status";
+$lang["submenu_mcs_source"] = "Sources";
 
 // Human Resource > Users
 $lang["user"] = "User";

@@ -11,7 +11,7 @@ class Lead_source extends MY_Controller {
     }
 
     function index() {
-        $this->load->view("lead_source/index");
+        $this->template->rander("lead_source/index");
     }
 
     function modal_form() {
@@ -107,9 +107,9 @@ class Lead_source extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $edit = modal_anchor(get_uri("lead_source/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_lead_source'), "data-post-id" => $data->id));
+        $edit = modal_anchor(get_uri("mcs/lead_source/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_lead_source'), "data-post-id" => $data->id));
 
-        $delete = js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_lead_source'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lead_source/delete"), "data-action" => "delete-confirmation"));
+        $delete = js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_lead_source'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("mcs/lead_source/delete"), "data-action" => "delete-confirmation"));
 
         return array(
             $data->sort,

@@ -55,14 +55,8 @@ if (get_setting("module_estimate") == "1") {
 }
 
 $settings_menu["components"][] = array("name" => "units", "url" => "units");
-
 $settings_menu["components"][] = array("name" => "payment_methods", "url" => "payment_methods");
 $settings_menu["components"][] = array("name" => "taxes", "url" => "taxes");
-
-if (get_setting("module_lead") == "1") {
-    $settings_menu["components"][] = array("name" => "leads", "url" => "lead_status");
-}
-
 $settings_menu["components"][] = array("name" => "projects", "url" => "settings/projects");
 
 if (get_setting("module_project_timesheet") == "1") {

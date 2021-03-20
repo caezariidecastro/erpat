@@ -11,7 +11,7 @@ class Lead_status extends MY_Controller {
     }
 
     function index() {
-        $this->template->rander("lead_status/index");
+        $this->template->rander("lead_source/index");
     }
 
     function modal_form() {
@@ -112,9 +112,9 @@ class Lead_status extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $edit = modal_anchor(get_uri("lead_status/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_lead_status'), "data-post-id" => $data->id));
+        $edit = modal_anchor(get_uri("mcs/lead_status/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_lead_status'), "data-post-id" => $data->id));
 
-        $delete_attributes = array('title' => lang('delete_lead_status'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lead_status/delete"), "data-action" => "delete-confirmation");
+        $delete_attributes = array('title' => lang('delete_lead_status'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("mcs/lead_status/delete"), "data-action" => "delete-confirmation");
         if ($data->total_leads) {
             //the status shouldn't be deleted if there is any leads
             $delete_attributes = array('title' => lang('there_has_leads_with_this_status'), "class" => "delete not-clickable text-off",);

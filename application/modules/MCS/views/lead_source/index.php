@@ -1,6 +1,25 @@
-<div class="table-responsive">
-    <table id="lead-source-table" class="display no-thead b-t b-b-only no-hover" cellspacing="0" width="100%">         
-    </table>
+
+<div id="page-content" class="p20 clearfix">
+    <ul data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
+        <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("lead_source"); ?></h4></li>    
+        <li><a  role="presentation" class="active" href="javascript:;" data-target="#lead-source-tab"></a></li>
+        <div class="tab-title clearfix no-border">
+            <div class="title-button-group">
+                <?php echo modal_anchor(get_uri("mcs/lead_source/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_lead_source'), array("class" => "btn btn-default", "title" => lang('add_lead_source'), "id" => "lead-status-source-add-btn")); ?>
+            </div>
+        </div>
+    </ul>
+
+    <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane fade" id="lead-source-tab">
+            <div class="table-responsive">
+                <table id="lead-source-table" class="display no-thead b-t b-b-only no-hover" cellspacing="0" width="100%">         
+                </table>
+            </div>
+        </div>
+        
+    </div>
 </div>
 
 

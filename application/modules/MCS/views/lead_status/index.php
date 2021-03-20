@@ -1,40 +1,23 @@
 <div id="page-content" class="p20 clearfix">
-    <div class="row">
-        <div class="col-sm-3 col-lg-2">
-            <?php
-            $tab_view['active_tab'] = "leads";
-            $this->load->view("settings/tabs", $tab_view);
-            ?>
-        </div>
-
-        <div class="col-sm-9 col-lg-10">
-            <div class="panel panel-default">
-
-                <ul data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
-                    <li><a  role="presentation" class="active" href="javascript:;" data-target="#lead-status-tab"> <?php echo lang('lead_status'); ?></a></li>
-                    <li><a role="presentation" href="<?php echo_uri("mcs/lead_source"); ?>" data-target="#lead-source-tab"><?php echo lang('lead_source'); ?></a></li>
-                    <div class="tab-title clearfix no-border">
-                        <div class="title-button-group">
-                            <?php echo modal_anchor(get_uri("mcs/lead_status/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_lead_status'), array("class" => "btn btn-default", "title" => lang('add_lead_status'), "id" => "lead-status-source-add-btn")); ?>
-                        </div>
-                    </div>
-                </ul>
-
-                <div class="tab-content">
-
-                    <div role="tabpanel" class="tab-pane fade" id="lead-status-tab">
-                        <div class="table-responsive">
-                            <table id="lead-status-table" class="display no-thead b-t b-b-only no-hover" cellspacing="0" width="100%">         
-                            </table>
-                        </div>
-                    </div>
-
-                    <div role="tabpanel" class="tab-pane fade" id="lead-source-tab"></div>
-                </div>
-
+    <ul data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
+        <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("lead_status"); ?></h4></li>    
+        <li><a  role="presentation" class="active" href="javascript:;" data-target="#lead-status-tab"></a></li>
+        <div class="tab-title clearfix no-border">
+            <div class="title-button-group">
+                <?php echo modal_anchor(get_uri("mcs/lead_status/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_lead_status'), array("class" => "btn btn-default", "title" => lang('add_lead_status'), "id" => "lead-status-source-add-btn")); ?>
             </div>
         </div>
+    </ul>
 
+    <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane fade" id="lead-status-tab">
+            <div class="table-responsive">
+                <table id="lead-status-table" class="display no-thead b-t b-b-only no-hover" cellspacing="0" width="100%">         
+                </table>
+            </div>
+        </div>
+        
     </div>
 </div>
 
@@ -98,13 +81,13 @@
             if (activeField === "#lead-status-tab") {
                 addButton.attr("title", "<?php echo lang("add_lead_status"); ?>");
                 addButton.attr("data-title", "<?php echo lang("add_lead_status"); ?>");
-                addButton.attr("data-action-url", "<?php echo get_uri("lead_status/modal_form"); ?>");
+                addButton.attr("data-action-url", "<?php echo get_uri("mcs/status/modal_form"); ?>");
 
                 addButton.html("<?php echo "<i class='fa fa-plus-circle'></i> " . lang('add_lead_status'); ?>");
             } else if (activeField === "#lead-source-tab") {
                 addButton.attr("title", "<?php echo lang("add_lead_source"); ?>");
                 addButton.attr("data-title", "<?php echo lang("add_lead_source"); ?>");
-                addButton.attr("data-action-url", "<?php echo get_uri("lead_source/modal_form"); ?>");
+                addButton.attr("data-action-url", "<?php echo get_uri("mcs/source/modal_form"); ?>");
 
                 addButton.html("<?php echo "<i class='fa fa-plus-circle'></i> " . lang('add_lead_source'); ?>");
             }
