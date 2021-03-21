@@ -1,1 +1,0 @@
-ALTER TABLE `users` ADD `asset_vendor_id` BIGINT(10) NULL AFTER `vendor_id`;

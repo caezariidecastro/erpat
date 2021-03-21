@@ -1,1 +1,0 @@
-ALTER TABLE `bill_of_materials` CHANGE `inventory_id` `item_id` BIGINT(10) NOT NULL;

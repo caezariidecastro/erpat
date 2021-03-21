@@ -1,1 +1,0 @@
-ALTER TABLE `account_transactions` CHANGE `transaction` `transaction` ENUM('initial','expense','payment','transfer','payroll','contribution','incentive','purchase_order') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
