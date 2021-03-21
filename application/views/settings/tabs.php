@@ -48,7 +48,6 @@ if (get_setting("module_estimate") == "1") {
 $settings_menu["components"][] = array("name" => "email_title_smtp", "url" => "settings/email");
 $settings_menu["components"][] = array("name" => "imap_settings", "url" => "settings/imap_settings");
 
-$settings_menu["components"][] = array("name" => "units", "url" => "units");
 $settings_menu["components"][] = array("name" => "payment_methods", "url" => "payment_methods");
 $settings_menu["components"][] = array("name" => "taxes", "url" => "taxes");
 $settings_menu["components"][] = array("name" => "projects", "url" => "settings/projects");

@@ -324,6 +324,7 @@ class Left_menu {
                     array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders"),
                     array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns"),
                     array("name" => "submenu_pid_supplier", "url" => "mes/suppliers"),
+                    array("name" => "submenu_pid_units", "url" => "mes/units"),
                 ));
             }
 
