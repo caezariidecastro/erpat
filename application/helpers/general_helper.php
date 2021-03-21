@@ -1940,7 +1940,8 @@ if (!function_exists('get_purchase_return_making_data')) {
 if (!function_exists('get_current_item_inventory_count')) {
 
     function get_current_item_inventory_count($data) {
-        return $data->stock + $data->stock_override + $data->produced - $data->delivered - $data->invoiced - $data->transferred + $data->received;
+        $result = $data->stock + $data->stock_override + $data->produced - $data->delivered - $data->invoiced - $data->transferred + $data->received;
+        return number_format($result, 2, '.', '');
     }
 
 }
@@ -1949,7 +1950,8 @@ if (!function_exists('get_current_item_inventory_count')) {
 if (!function_exists('get_current_material_inventory_count')) {
 
     function get_current_material_inventory_count($data) {
-        return $data->stock + $data->stock_override + $data->production_quantity + $data->purchased + $data->returned - $data->transferred + $data->received;
+        $result = $data->stock + $data->stock_override - $data->production_quantity + $data->purchased - $data->returned - $data->transferred + $data->received;
+        return number_format($result, 2, '.', '');
     }
 }
 

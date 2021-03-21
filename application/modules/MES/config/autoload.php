@@ -149,6 +149,7 @@ $autoload['model'] = array(
   'lds/Warehouse_model',
   'lds/Vehicles_model',
   'fas/Expenses_model',
-  'mes/Units_model'
+  'mes/Units_model',
+  'fas/Expense_categories_model'
 );
 

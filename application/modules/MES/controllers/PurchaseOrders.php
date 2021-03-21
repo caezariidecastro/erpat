@@ -17,6 +17,7 @@ class PurchaseOrders extends MY_Controller {
         $this->load->model("Material_inventory_model");
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
+        $this->load->model("Expense_categories_model");
         $this->load->model("Expenses_model");
     }
 

@@ -38,9 +38,9 @@
             <tr style="background-color: #f4f4f4; ">
                 <td style="width: 30%; border: 1px solid #eee; padding: 10px;"><?php echo $material_name; ?></td>
                 <td style="text-align: center; width: 15%; border: 1px solid #eee; padding: 10px;"> <?php echo $material->unit_name ?></td>
-                <td style="text-align: center; width: 15%; border: 1px solid #eee; padding: 10px;"> <?php echo round($quantity, 2) ." ". $material->unit_abbreviation ?></td>
-                <td style="text-align: center; width: 15%; border: 1px solid #eee; padding: 10px;"> <?php echo round($buffer, 2) ." ". $material->unit_abbreviation ?></td>
-                <td style="text-align: center; width: 20%; border: 1px solid #eee; padding: 10px;"> <?php echo round($total, 2) ." ". $material->unit_abbreviation; ?></td>
+                <td style="text-align: center; width: 15%; border: 1px solid #eee; padding: 10px;"> <?php echo number_format($buffer, 2, '.', '') ." ". $material->unit_abbreviation ?></td>
+                <td style="text-align: center; width: 15%; border: 1px solid #eee; padding: 10px;"> <?php echo number_format($buffer, 2, '.', '')  ." ". $material->unit_abbreviation ?></td>
+                <td style="text-align: center; width: 20%; border: 1px solid #eee; padding: 10px;"> <?php echo number_format($total, 3, '.', '') ." ". $material->unit_abbreviation; ?></td>
             </tr>
         <?php } ?>
     </table>

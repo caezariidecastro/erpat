@@ -67,6 +67,7 @@ $route["mes/in-progress"] = "InProgress/index";
 
 // Products
 $route["mes/products"] = "ProductEntries/index";
+$route["mes/products/inventory"] = "ProductEntries/get_item";
 
 // Purchase Orders
 $route["mes/purchase-orders"] = "PurchaseOrders/index";
