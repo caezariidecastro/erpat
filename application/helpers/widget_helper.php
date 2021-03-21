@@ -10,7 +10,7 @@ if (!function_exists('clock_widget')) {
     function clock_widget($return_as_data = false) {
         $ci = get_instance();
         $view_data["clock_status"] = $ci->Attendance_model->current_clock_in_record($ci->login_user->id);
-        return $ci->load->view("attendance/clock_widget", $view_data, $return_as_data);
+        return $ci->load->view("hrs/attendance/clock_widget", $view_data, $return_as_data);
     }
 
 }
@@ -265,7 +265,7 @@ if (!function_exists('income_vs_expenses_widget')) {
         $view_data["income"] = $info->income ? $info->income : 0;
         $view_data["expenses"] = $info->expneses ? $info->expneses : 0;
         $view_data["custom_class"] = $custom_class;
-        return $ci->load->view("expenses/income_expenses_widget", $view_data, $return_as_data);
+        return $ci->load->view("fas/expenses/income_expenses_widget", $view_data, $return_as_data);
     }
 
 }
@@ -506,7 +506,7 @@ if (!function_exists('count_clock_status_widget')) {
         $info = $ci->Attendance_model->count_clock_status();
         $view_data["members_clocked_in"] = $info->members_clocked_in ? $info->members_clocked_in : 0;
         $view_data["members_clocked_out"] = $info->members_clocked_out ? $info->members_clocked_out : 0;
-        return $ci->load->view("attendance/count_clock_status_widget", $view_data, $return_as_data);
+        return $ci->load->view("hrs/attendance/count_clock_status_widget", $view_data, $return_as_data);
     }
 
 }

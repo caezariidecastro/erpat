@@ -81,7 +81,7 @@ class Left_menus extends MY_Controller {
     }
 
     private function _prepare_user_custom_redirect_to_url() {
-        $redirect_to = "team_members/view/" . $this->login_user->id . "/left_menu";
+        $redirect_to = "hrs/employee/view/" . $this->login_user->id . "/left_menu";
         if ($this->login_user->user_type == "client") {
             $redirect_to = "clients/contact_profile/" . $this->login_user->id . "/left_menu";
         }

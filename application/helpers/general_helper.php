@@ -722,7 +722,7 @@ if (!function_exists('get_team_member_profile_link')) {
     function get_team_member_profile_link($id = 0, $name = "", $attributes = array()) {
         $ci = get_instance();
         if ($ci->login_user->user_type === "staff") {
-            return anchor("hrm/user/view/" . $id, $name, $attributes);
+            return anchor("hrs/employee/view/" . $id, $name, $attributes);
         } else {
             return js_anchor($name, $attributes);
         }
@@ -731,17 +731,19 @@ if (!function_exists('get_team_member_profile_link')) {
 }
 
 if (!function_exists('get_supplier_contact_link')) {
-
     function get_supplier_contact_link($id = 0, $name = "", $attributes = array()) {
-        return anchor("pid/supplier/" . $id . "/contacts", $name, $attributes);
+        if($id == 0) {
+            return "Internal";
+        } else {
+            return anchor("mes/suppliers/contacts/" . $id, $name, $attributes);
+        }
     }
-
 }
 
 if (!function_exists('get_vendor_contact_link')) {
 
     function get_vendor_contact_link($id = 0, $name = "", $attributes = array()) {
-        return anchor("pid/vendor/" . $id . "/contacts", $name, $attributes);
+        return anchor("mes/vendor/" . $id . "/contacts", $name, $attributes);
     }
 
 }
@@ -948,7 +950,7 @@ if (!function_exists('prepare_return_pdf')) {
 
             $purchase_return_data["mode"] = $mode;
 
-            $html = $ci->load->view("purchase_order_returns/return_pdf", $purchase_return_data, true);
+            $html = $ci->load->view("purchase_returns/return_pdf", $purchase_return_data, true);
 
             if ($mode != "html") {
                 $ci->pdf->writeHTML($html, true, false, true, false, '');
@@ -1639,7 +1641,7 @@ if (!function_exists("get_update_task_info_anchor_data")) {
 if (!function_exists('get_lead_contact_profile_link')) {
         
     function get_lead_contact_profile_link($id = 0, $name = "", $attributes = array()) {
-        return anchor("leads/contact_profile/" . $id, $name, $attributes);
+        return anchor("mcs/leads/contact_profile/" . $id, $name, $attributes);
     }
 
 }

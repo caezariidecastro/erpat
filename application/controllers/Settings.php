@@ -487,23 +487,23 @@ class Settings extends MY_Controller {
 
         $settings = array(
             "module_timeline", "module_event", "module_todo", "module_note", "module_message", "module_chat", "module_announcement", 
-        "module_hrm", 
+        "module_hrs", 
             "module_hrm_department", "module_hrm_employee", "module_attendance", "module_hrm_disciplinary", "module_leave", "module_hrm_holidays",
         "module_fas", 
             "module_fas_summary", "module_fas_payments", "module_expense", "module_fas_contributions", "module_fas_incentives", "module_fas_payroll", "module_fas_accounts", "module_fas_transfer", "module_fas_balancesheet",
-        "module_pid", 
+        "module_mes", 
             "module_pid_productions", "module_pid_billofmaterials", "module_pid_rawmaterials", "module_pid_inventory", "module_pid_products", "module_pid_purchases", "module_pid_returns", "module_pid_supplier",
-        "module_mcm", 
+        "module_mcs", 
             "module_lead",
-        "module_lms", 
+        "module_lds", 
             "module_lms_delivery", "module_lms_warehouse", "module_lms_transfer", "module_lms_vehicles", "module_lms_driver", "module_lms_consumer",
         "module_sms", 
             "module_sms_pos", "module_sms_giftcard", "module_sms_coupons", "module_sms_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_sms_customers",
-        "module_ams",
+        "module_ats",
             "module_assets", "module_ams_category", "module_ams_location", "module_vendors", "module_brands", 
         "module_pms", 
             "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 
-        "module_hts",  
+        "module_css",  
             "module_ticket", "module_help", "module_knowledge_base",
     
     );
@@ -621,7 +621,7 @@ class Settings extends MY_Controller {
     /* show imap settings tab */
 
     function imap_settings() {
-        $this->load->view("settings/tickets/imap_settings");
+        $this->template->rander("settings/tickets/imap_settings");
     }
 
     /* push notification integration settings tab */

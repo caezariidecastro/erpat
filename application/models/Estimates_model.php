@@ -23,7 +23,7 @@ class Estimates_model extends Crud_model {
         }
         $client_id = get_array_value($options, "client_id");
         if ($client_id) {
-            $where .= " AND $estimates_table.client_id=$client_id";
+            $where .= " AND ($estimates_table.client_id=$client_id OR $estimates_table.consumer_id=$client_id)";
         }
 
         $start_date = get_array_value($options, "start_date");

@@ -74,10 +74,10 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="module_hrm" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_hrm'); ?></label>
+                        <label for="module_hrs" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_hrs'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_hrm", "1", get_setting("module_hrm") ? true : false, "id='module_hrm' class='ml15'");
+                            echo form_checkbox("module_hrs", "1", get_setting("module_hrs") ? true : false, "id='module_hrs' class='ml15'");
                             ?>                       
                         </div>
                     </div>
@@ -186,10 +186,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="module_pid" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_pid'); ?></label>
+                        <label for="module_mes" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_mes'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_pid", "1", get_setting("module_pid") ? true : false, "id='module_pid' class='ml15'");
+                            echo form_checkbox("module_mes", "1", get_setting("module_mes") ? true : false, "id='module_mes' class='ml15'");
                             ?>                       
                         </div>
                     </div>
@@ -245,10 +245,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="module_mcm" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_mcm'); ?></label>
+                        <label for="module_mcs" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_mcs'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_mcm", "1", get_setting("module_mcm") ? true : false, "id='module_mcm' class='ml15'");
+                            echo form_checkbox("module_mcs", "1", get_setting("module_mcs") ? true : false, "id='module_mcs' class='ml15'");
                             ?>                       
                         </div>
                     </div>
@@ -262,10 +262,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="module_lms" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_lms'); ?></label>
+                        <label for="module_lds" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_lds'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_lms", "1", get_setting("module_lms") ? true : false, "id='module_lms' class='ml15'");
+                            echo form_checkbox("module_lds", "1", get_setting("module_lds") ? true : false, "id='module_lds' class='ml15'");
                             ?>                       
                         </div>
                     </div>
@@ -368,10 +368,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="module_ams" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_ams'); ?></label>
+                        <label for="module_ats" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_ats'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_ams", "1", get_setting("module_ams") ? true : false, "id='module_ams' class='ml15'");
+                            echo form_checkbox("module_ats", "1", get_setting("module_ats") ? true : false, "id='module_ats' class='ml15'");
                             ?>                       
                         </div>
                     </div>
@@ -456,10 +456,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="module_hts" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_hts'); ?></label>
+                        <label for="module_css" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_css'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_hts", "1", get_setting("module_hts") ? true : false, "id='module_hts' class='ml15'");
+                            echo form_checkbox("module_css", "1", get_setting("module_css") ? true : false, "id='module_css' class='ml15'");
                             ?>                       
                         </div>
                     </div>

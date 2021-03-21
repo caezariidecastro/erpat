@@ -1,6 +1,6 @@
 <div class="tab-content">
     <?php
-    $url = "team_members";
+    $url = "hrs/team_members";
     if ($user_info->user_type === "client") {
         $url = "clients";
     }

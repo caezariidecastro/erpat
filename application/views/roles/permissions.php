@@ -13,9 +13,9 @@
                     <h5><?php echo lang("set_module_permissions"); ?>:</h5>
                     <div>
                         <?php
-                        echo form_checkbox("module_hrm", "1", $module_hrm ? true : false, "id='module_hrm'");
+                        echo form_checkbox("module_hrs", "1", $module_hrs ? true : false, "id='module_hrs'");
                         ?>
-                        <label for="module_hrm"><?php echo lang("module_hrm"); ?></label>
+                        <label for="module_hrs"><?php echo lang("module_hrs"); ?></label>
                     </div>
                     <div>
                         <?php
@@ -25,21 +25,21 @@
                     </div>
                     <div>
                         <?php
-                        echo form_checkbox("module_pid", "1", $module_pid ? true : false, "id='module_pid'");
+                        echo form_checkbox("module_mes", "1", $module_mes ? true : false, "id='module_mes'");
                         ?>
-                        <label for="module_pid"><?php echo lang("module_pid"); ?></label>
+                        <label for="module_mes"><?php echo lang("module_mes"); ?></label>
                     </div>
                     <div>
                         <?php
-                        echo form_checkbox("module_mcm", "1", $module_mcm ? true : false, "id='module_mcm'");
+                        echo form_checkbox("module_mcs", "1", $module_mcs ? true : false, "id='module_mcs'");
                         ?>
-                        <label for="module_mcm"><?php echo lang("module_mcm"); ?></label>
+                        <label for="module_mcs"><?php echo lang("module_mcs"); ?></label>
                     </div>
                     <div>
                         <?php
-                        echo form_checkbox("module_lms", "1", $module_lms ? true : false, "id='module_lms'");
+                        echo form_checkbox("module_lds", "1", $module_lds ? true : false, "id='module_lds'");
                         ?>
-                        <label for="module_lms"><?php echo lang("module_lms"); ?></label>
+                        <label for="module_lds"><?php echo lang("module_lds"); ?></label>
                     </div>
                     <div>
                         <?php
@@ -49,9 +49,9 @@
                     </div>
                     <div>
                         <?php
-                        echo form_checkbox("module_ams", "1", $module_ams ? true : false, "id='module_ams'");
+                        echo form_checkbox("module_ats", "1", $module_ats ? true : false, "id='module_ats'");
                         ?>
-                        <label for="module_ams"><?php echo lang("module_ams"); ?></label>
+                        <label for="module_ats"><?php echo lang("module_ats"); ?></label>
                     </div>
                     <div>
                         <?php
@@ -61,9 +61,9 @@
                     </div>
                     <div>
                         <?php
-                        echo form_checkbox("module_hts", "1", $module_hts ? true : false, "id='module_hts'");
+                        echo form_checkbox("module_css", "1", $module_css ? true : false, "id='module_css'");
                         ?>
-                        <label for="module_hts"><?php echo lang("module_hts"); ?></label>
+                        <label for="module_css"><?php echo lang("module_css"); ?></label>
                     </div>
                     <!-- End: Module permissions workaround -->
                 </li>

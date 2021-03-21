@@ -403,7 +403,7 @@
             appLoader.show({container: "#invoice_client_selection_wrapper", css:"left: 7%; bottom: -30px;"});
 
             $.ajax({
-                url: "<?php echo get_uri("consumers/get_consumer_select2_data") ?>",
+                url: "<?php echo get_uri("lds/consumers/get_consumer_select2_data") ?>",
                 dataType: "json",
                 success: function (result) {
                     $("#invoice_client_id").show().val("");

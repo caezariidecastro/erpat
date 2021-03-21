@@ -3,18 +3,16 @@ $settings_menu = array(
     "app_settings" => array(
         array("name" => "general", "url" => "settings/general"),
         array("name" => "company", "url" => "settings/company"),
-        array("name" => "email", "url" => "settings/email"),
         array("name" => "email_templates", "url" => "email_templates"),
         array("name" => "modules", "url" => "settings/modules"),
         array("name" => "notifications", "url" => "settings/notifications"),
-        array("name" => "updates", "url" => "Updates"),
+        //array("name" => "updates", "url" => "Updates"),
     ),
     "components" => array(
         array("name" => "tasks", "url" => "task_status")
     ),
     "access_permission" => array(
         array("name" => "roles", "url" => "roles"),
-        array("name" => "team", "url" => "team"),
     ),
     "client" => array(
         array("name" => "client_permissions", "url" => "settings/client_permissions"),
@@ -39,14 +37,6 @@ if (get_setting("module_event") == "1") {
     $settings_menu["components"][] = array("name" => "events", "url" => "settings/events");
 }
 
-if (get_setting("module_ticket") == "1") {
-    $settings_menu["components"][] = array("name" => "tickets", "url" => "ticket_types");
-}
-
-if (get_setting("module_expense") == "1") {
-    $settings_menu["components"][] = array("name" => "expense_categories", "url" => "expense_categories");
-}
-
 if (get_setting("module_invoice") == "1") {
     $settings_menu["components"][] = array("name" => "invoices", "url" => "settings/invoices");
 }
@@ -55,15 +45,11 @@ if (get_setting("module_estimate") == "1") {
     $settings_menu["components"][] = array("name" => "estimates", "url" => "settings/estimates");
 }
 
-$settings_menu["components"][] = array("name" => "units", "url" => "units");
+$settings_menu["components"][] = array("name" => "email_title_smtp", "url" => "settings/email");
+$settings_menu["components"][] = array("name" => "imap_settings", "url" => "settings/imap_settings");
 
 $settings_menu["components"][] = array("name" => "payment_methods", "url" => "payment_methods");
 $settings_menu["components"][] = array("name" => "taxes", "url" => "taxes");
-
-if (get_setting("module_lead") == "1") {
-    $settings_menu["components"][] = array("name" => "leads", "url" => "lead_status");
-}
-
 $settings_menu["components"][] = array("name" => "projects", "url" => "settings/projects");
 
 if (get_setting("module_project_timesheet") == "1") {

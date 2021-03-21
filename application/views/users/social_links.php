@@ -1,7 +1,7 @@
 <div class="tab-content">
     <?php
-    $reload_url = get_uri("team_members/view/" . $user_id . "/social");
-    $save_url = get_uri("team_members/save_social_links/" . $user_id);
+    $reload_url = get_uri("hrs/employee/view/" . $user_id . "/social");
+    $save_url = get_uri("hrs/team_members/save_social_links/" . $user_id);
 
     if (isset($user_type)) {
         if ($user_type === "client") {
@@ -9,7 +9,7 @@
             $save_url = get_uri("clients/save_contact_social_links/" . $user_id);
         } else if ($user_type === "lead") {
             $reload_url = "";
-            $save_url = get_uri("leads/save_contact_social_links/" . $user_id);
+            $save_url = get_uri("mcs/leads/save_contact_social_links/" . $user_id);
         }
     }
 

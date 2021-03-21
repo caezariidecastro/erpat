@@ -231,6 +231,7 @@ class Left_menu {
     }
 
     private function _get_sidebar_menu_items($type = "") {
+
         $dashboard_menu = array("name" => "dashboard", "url" => "dashboard", "class" => "fa-desktop dashboard-menu");
 
         $selected_dashboard_id = get_setting("user_" . $this->ci->login_user->id . "_dashboard");
@@ -286,15 +287,15 @@ class Left_menu {
             }
 
             // Start: Module permissions workaround
-            if (is_user_has_module_permission("module_hrm")) {
-                $sidebar_menu["menu_hrm"] = array("name" => "menu_hrm", "url" => "hrm", "class" => "fa-users", "devider" => true,
+            if (is_user_has_module_permission("module_hrs")) {
+                $sidebar_menu["menu_hrs"] = array("name" => "menu_hrs", "url" => "hrs", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_hrm_department", "url" => "hrm/department"),
-                    array("name" => "employee", "url" => "hrm/user"),
-                    array("name" => "submenu_hrm_attendance", "url" => "hrm/attendance"),
-                    array("name" => "submenu_hrm_disciplinary", "url" => "hrm/disciplinary"),
-                    array("name" => "submenu_hrm_leaves", "url" => "hrm/leaves"),
-                    array("name" => "submenu_hrm_holidays", "url" => "hrm/holidays")
+                    array("name" => "submenu_hrm_employee", "url" => "hrs/employee"),
+                    array("name" => "submenu_hrm_department", "url" => "hrs/department"),
+                    array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance"),
+                    array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary"),
+                    array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves"),
+                    array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays")
                 ));
             }
 
@@ -307,48 +308,49 @@ class Left_menu {
                     array("name" => "submenu_fas_contributions", "url" => "fas/contributions"),
                     array("name" => "submenu_fas_incentives", "url" => "fas/incentives"),
                     array("name" => "submenu_fas_payroll", "url" => "fas/payroll"),
-                    array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
                     array("name" => "submenu_fas_transfers", "url" => "fas/transfers"),
-                    // array("name" => "submenu_fas_balancesheet", "url" => "fas/balancesheet"),
+                    array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
                 ));
             }
 
-            if (is_user_has_module_permission("module_pid")) {
-                $sidebar_menu["menu_pid"] = array("name" => "menu_pid", "url" => "hrm", "class" => "fa-industry", "devider" => true,
+            if (is_user_has_module_permission("module_mes")) {
+                $sidebar_menu["menu_mes"] = array("name" => "menu_mes", "url" => "mes", "class" => "fa-industry", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_pid_productions", "url" => "pid/productions"),
-                    array("name" => "submenu_pid_billofmaterials", "url" => "pid/bill-of-materials"),
-                    array("name" => "submenu_pid_materials", "url" => "pid/materials"),
-                    // array("name" => "submenu_pid_inventory", "url" => "pid/inventory"),
-                    array("name" => "submenu_pid_products", "url" => "pid/products"),
-                    array("name" => "submenu_pid_purchases", "url" => "pid/purchases"),
-                    array("name" => "submenu_pid_returns", "url" => "pid/returns"),
-                    array("name" => "submenu_pid_supplier", "url" => "pid/supplier"),
-                    array("name" => "submenu_pid_transfers", "url" => "pid/transfers"),
+                    array("name" => "submenu_pid_productions", "url" => "mes/manufacturing-orders"),
+                    array("name" => "submenu_pid_billofmaterials", "url" => "mes/bill-of-materials"),
+                    array("name" => "submenu_pid_materials", "url" => "mes/raw-materials"),
+                    array("name" => "submenu_pid_process", "url" => "mes/work-in-process"),
+                    array("name" => "submenu_pid_products", "url" => "mes/products"),
+                    array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders"),
+                    array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns"),
+                    array("name" => "submenu_pid_supplier", "url" => "mes/suppliers"),
+                    array("name" => "submenu_pid_units", "url" => "mes/units"),
                 ));
             }
 
-            if (is_user_has_module_permission("module_mcm")) {
-                $sidebar_menu["menu_mcm"] = array("name" => "menu_mcm", "url" => "hrm", "class" => "fa-users", "devider" => true,
+            if (is_user_has_module_permission("module_mcs")) {
+                $sidebar_menu["menu_mcs"] = array("name" => "menu_mcs", "url" => "mcs", "class" => "fa-users", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_mcm_leads", "url" => "mcm/leads")
+                    array("name" => "submenu_mcs_leads", "url" => "mcs/leads"),
+                    array("name" => "submenu_mcs_status", "url" => "mcs/lead_status"),
+                    array("name" => "submenu_mcs_source", "url" => "mcs/lead_source"),
                 ));
             }
 
-            if (is_user_has_module_permission("module_lms")) {
-                $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "hrm", "class" => "fa-truck", "devider" => true,
+            if (is_user_has_module_permission("module_lds")) {
+                $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "lds", "class" => "fa-truck", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_lms_delivery", "url" => "lms/delivery"),
-                    array("name" => "submenu_lms_warehouse", "url" => "lms/warehouse"),
-                    array("name" => "submenu_lms_transfers", "url" => "lms/transfer"),
-                    array("name" => "submenu_lms_vehicles", "url" => "lms/vehicles"),
-                    array("name" => "submenu_lms_drivers", "url" => "lms/drivers"),
-                    array("name" => "submenu_lms_consumers", "url" => "lms/consumers"),
+                    array("name" => "submenu_lms_delivery", "url" => "lds/deliveries"),
+                    array("name" => "submenu_lms_warehouse", "url" => "lds/warehouses"),
+                    array("name" => "submenu_lms_transfers", "url" => "lds/transfers"),
+                    array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles"),
+                    array("name" => "submenu_lms_drivers", "url" => "lds/drivers"),
+                    array("name" => "submenu_lms_consumers", "url" => "lds/consumers"),
                 ));
             }
 
             if (is_user_has_module_permission("module_sms")) {
-                $sidebar_menu["menu_sms"] = array("name" => "menu_sms", "url" => "hrm", "class" => "fa-tags", "devider" => true,
+                $sidebar_menu["menu_sms"] = array("name" => "menu_sms", "url" => "sms", "class" => "fa-tags", "devider" => true,
                 "submenu" => array(
                     array("name" => "submenu_sms_pointofsale", "url" => "sms/point-of-sale"),
                     array("name" => "submenu_sms_giftcard", "url" => "sms/giftcard"),
@@ -360,14 +362,14 @@ class Left_menu {
                 ));
             }
 
-            if (is_user_has_module_permission("module_ams")) {
+            if (is_user_has_module_permission("module_ats")) {
                 $sidebar_menu["menu_ams"] = array("name" => "menu_ams", "url" => "ams", "class" => "fa-archive", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_ams_assets", "url" => "ams/assets"),
-                    array("name" => "submenu_ams_category", "url" => "ams/category"),
-                    array("name" => "submenu_ams_location", "url" => "ams/location"),
-                    array("name" => "submenu_ams_vendors", "url" => "ams/vendor"),
-                    array("name" => "submenu_ams_maker", "url" => "ams/maker"),
+                    array("name" => "submenu_ams_assets", "url" => "ams/entries"),
+                    array("name" => "submenu_ams_category", "url" => "ams/categories"),
+                    array("name" => "submenu_ams_location", "url" => "ams/locations"),
+                    array("name" => "submenu_ams_vendors", "url" => "ams/vendors"),
+                    array("name" => "submenu_ams_maker", "url" => "ams/brands"),
                 ));
             }
 
@@ -490,7 +492,7 @@ class Left_menu {
             // }
 
             //prepere the help and suppor menues
-            if (get_setting("module_hts") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_hts"))) {
+            if (get_setting("module_css") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_css"))) {
 
                 $module_help = get_setting("module_help") == "1" ? true : false;
                 $module_knowledge_base = get_setting("module_knowledge_base") == "1" ? true : false;
@@ -508,27 +510,28 @@ class Left_menu {
                         $ticket_badge = count_new_tickets($specific_ticket_permission);
                     }
     
-                    $help_knowledge_base_menues[]= array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+                    $help_knowledge_base_menues[]= array("name" => "tickets", "url" => "css/tickets", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+                    $help_knowledge_base_menues[]= array("name" => "ticket_type", "url" => "css/ticket_types", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
                 }    
 
                 if ($module_help) {
-                    $help_knowledge_base_menues[] = array("name" => "help", "url" => $main_url, "class" => "fa-question-circle");
+                    $help_knowledge_base_menues[] = array("name" => "help", "url" => "css/".$main_url, "class" => "fa-question-circle");
                 }
 
                 //push the help manage menu if user has access
                 if ($manage_help_and_knowledge_base && $module_help) {
-                    $help_knowledge_base_menues[] = array("name" => "articles", "url" => "help/help_articles", "class" => "fa-question-circle");
-                    $help_knowledge_base_menues[] = array("name" => "categories", "url" => "help/help_categories", "class" => "fa-question-circle");
+                    $help_knowledge_base_menues[] = array("name" => "articles", "url" => "css/help/help_articles", "class" => "fa-question-circle");
+                    $help_knowledge_base_menues[] = array("name" => "categories", "url" => "css/help/help_categories", "class" => "fa-question-circle");
                 }
 
                 if ($module_knowledge_base) {
-                    $help_knowledge_base_menues[] = array("name" => "knowledge_base", "url" => "knowledge_base", "class" => "fa-question-circle-o");
+                    $help_knowledge_base_menues[] = array("name" => "knowledge_base", "url" => "css/knowledge_base", "class" => "fa-question-circle-o");
                 }
 
                 //push the knowledge_base manage menu if user has access
                 if ($manage_help_and_knowledge_base && $module_knowledge_base) {
-                    $help_knowledge_base_menues[] = array("name" => "articles", "category" => "help", "url" => "help/knowledge_base_articles", "class" => "fa-question-circle-o");
-                    $help_knowledge_base_menues[] = array("name" => "categories", "category" => "help", "url" => "help/knowledge_base_categories", "class" => "fa-question-circle-o");
+                    $help_knowledge_base_menues[] = array("name" => "articles", "category" => "help", "url" => "css/help/knowledge_base_articles", "class" => "fa-question-circle-o");
+                    $help_knowledge_base_menues[] = array("name" => "categories", "category" => "help", "url" => "css/help/knowledge_base_categories", "class" => "fa-question-circle-o");
                 }
 
 
@@ -536,7 +539,7 @@ class Left_menu {
                     $main_url = "knowledge_base";
                 }
 
-                $sidebar_menu["help_and_support"] = array("name" => "help_and_support", "url" => $main_url, "class" => "fa-question-circle",
+                $sidebar_menu["help_and_support"] = array("name" => "help_and_support", "url" => "css/".$main_url, "class" => "fa-question-circle",
                     "submenu" => $help_knowledge_base_menues
                 );
             }
@@ -580,7 +583,7 @@ class Left_menu {
             }
 
             if (get_setting("module_ticket") == "1" && !in_array("tickets", $hidden_menu)) {
-                $sidebar_menu[] = array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring");
+                $sidebar_menu[] = array("name" => "tickets", "url" => "css/tickets", "class" => "fa-life-ring");
             }
 
             if (get_setting("module_announcement") == "1" && !in_array("announcements", $hidden_menu)) {

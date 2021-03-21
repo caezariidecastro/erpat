@@ -1176,7 +1176,7 @@ $lang["fixed_amount"] = "Fixed Amount";
 $lang["before_tax"] = "Before Tax";
 $lang["after_tax"] = "After Tax";
 
-$lang["access_permission"] = "Permissions";
+$lang["access_permission"] = "Security";
 $lang["setup"] = "Setup";
 $lang["client_permissions"] = "Permissions";
 

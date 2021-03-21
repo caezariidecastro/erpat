@@ -101,15 +101,15 @@ class roles extends MY_Controller {
             $view_data['message_permission_specific'] = get_array_value($permissions, "message_permission_specific");
 
             // Start: Module permissions workaround
-            $view_data["module_hrm"] = get_array_value($permissions, "module_hrm");
+            $view_data["module_hrs"] = get_array_value($permissions, "module_hrs");
             $view_data["module_fas"] = get_array_value($permissions, "module_fas");
-            $view_data["module_pid"] = get_array_value($permissions, "module_pid");
-            $view_data["module_mcm"] = get_array_value($permissions, "module_mcm");
-            $view_data["module_lms"] = get_array_value($permissions, "module_lms");
+            $view_data["module_mes"] = get_array_value($permissions, "module_mes");
+            $view_data["module_mcs"] = get_array_value($permissions, "module_mcs");
+            $view_data["module_lds"] = get_array_value($permissions, "module_lds");
             $view_data["module_sms"] = get_array_value($permissions, "module_sms");
-            $view_data["module_ams"] = get_array_value($permissions, "module_ams");
+            $view_data["module_ats"] = get_array_value($permissions, "module_ats");
             $view_data["module_pms"] = get_array_value($permissions, "module_pms");
-            $view_data["module_hts"] = get_array_value($permissions, "module_hts");
+            $view_data["module_css"] = get_array_value($permissions, "module_css");
             // End: Module permissions workaround
 
             $this->load->view("roles/permissions", $view_data);
@@ -262,15 +262,15 @@ class roles extends MY_Controller {
             "can_delete_leave_application" => $can_delete_leave_application,
             "message_permission" => $message_permission,
             "message_permission_specific" => $message_permission_specific,
-            "module_hrm" => $this->input->post('module_hrm'),
+            "module_hrs" => $this->input->post('module_hrs'),
             "module_fas" => $this->input->post('module_fas'),
-            "module_pid" => $this->input->post('module_pid'),
-            "module_mcm" => $this->input->post('module_mcm'),
-            "module_lms" => $this->input->post('module_lms'),
+            "module_mes" => $this->input->post('module_mes'),
+            "module_mcs" => $this->input->post('module_mcs'),
+            "module_lds" => $this->input->post('module_lds'),
             "module_sms" => $this->input->post('module_sms'),
-            "module_ams" => $this->input->post('module_ams'),
+            "module_ats" => $this->input->post('module_ats'),
             "module_pms" => $this->input->post('module_pms'),
-            "module_hts" => $this->input->post('module_hts'),
+            "module_css" => $this->input->post('module_css'),
         );
 
         $data = array(

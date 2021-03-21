@@ -108,8 +108,6 @@
     </div>
 </div>
 
-
-
 <script type="text/javascript">
     //RELOAD_VIEW_AFTER_UPDATE = true;
     $(document).ready(function () {
