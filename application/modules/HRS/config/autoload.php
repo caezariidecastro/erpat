@@ -135,5 +135,6 @@ $autoload['model'] = array(
   'Leave_credits_model',
   'Leave_types_model',
   'Team_model',
+  'Holidays_model'
 );
 

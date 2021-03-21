@@ -7,6 +7,7 @@ class Leave_credits extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->load->model("Leave_credits_model");
     }
 
     //load leave type list view
