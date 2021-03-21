@@ -456,10 +456,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="module_hts" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_hts'); ?></label>
+                        <label for="module_css" class="col-md-2 col-xs-8 col-sm-4"><?php echo lang('module_css'); ?></label>
                         <div class="col-md-10 col-xs-4 col-sm-8">
                             <?php
-                            echo form_checkbox("module_hts", "1", get_setting("module_hts") ? true : false, "id='module_hts' class='ml15'");
+                            echo form_checkbox("module_css", "1", get_setting("module_css") ? true : false, "id='module_css' class='ml15'");
                             ?>                       
                         </div>
                     </div>

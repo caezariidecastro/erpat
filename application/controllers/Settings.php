@@ -503,7 +503,7 @@ class Settings extends MY_Controller {
             "module_assets", "module_ams_category", "module_ams_location", "module_vendors", "module_brands", 
         "module_pms", 
             "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 
-        "module_hts",  
+        "module_css",  
             "module_ticket", "module_help", "module_knowledge_base",
     
     );
@@ -621,7 +621,7 @@ class Settings extends MY_Controller {
     /* show imap settings tab */
 
     function imap_settings() {
-        $this->load->view("settings/tickets/imap_settings");
+        $this->template->rander("settings/tickets/imap_settings");
     }
 
     /* push notification integration settings tab */

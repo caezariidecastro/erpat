@@ -10,7 +10,7 @@ $lang["module_lds"] = "Logistic & Distribution";
 $lang["module_sms"] = "Sales & Invoicing";
 $lang["module_ats"] = "Assets Management";
 $lang["module_pms"] = "Project Planning";
-$lang["module_hts"] = "Help & Support";
+$lang["module_css"] = "Help & Support";
 
 $lang["menu_hrs"] = "Human Resource";
 $lang["menu_fas"] = "Finance & Accounting";
@@ -20,7 +20,7 @@ $lang["menu_lms"] = "Logistic & Distribution";
 $lang["menu_sms"] = "Sales & Invoicing";
 $lang["menu_ams"] = "Assets Management";
 $lang["menu_pms"] = "Project Planning";
-$lang["menu_hts"] = "Help & Support";
+$lang["menu_css"] = "Help & Support";
 
 $lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_department"] = "Department";
@@ -455,3 +455,6 @@ $lang["leave_credits_insufficient_admin"] = "The employee do not have sufficient
 $lang["record_cannot_be_edited"] = "Record cannot be edited.";
 
 $lang["groups"] = "Groups";
+
+
+$lang["email_title_smtp"] = "Setup SMTP";

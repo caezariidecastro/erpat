@@ -491,7 +491,7 @@ class Left_menu {
             // }
 
             //prepere the help and suppor menues
-            if (get_setting("module_hts") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_hts"))) {
+            if (get_setting("module_css") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_css"))) {
 
                 $module_help = get_setting("module_help") == "1" ? true : false;
                 $module_knowledge_base = get_setting("module_knowledge_base") == "1" ? true : false;
@@ -509,27 +509,28 @@ class Left_menu {
                         $ticket_badge = count_new_tickets($specific_ticket_permission);
                     }
     
-                    $help_knowledge_base_menues[]= array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+                    $help_knowledge_base_menues[]= array("name" => "tickets", "url" => "css/tickets", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+                    $help_knowledge_base_menues[]= array("name" => "ticket_type", "url" => "css/ticket_types", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
                 }    
 
                 if ($module_help) {
-                    $help_knowledge_base_menues[] = array("name" => "help", "url" => $main_url, "class" => "fa-question-circle");
+                    $help_knowledge_base_menues[] = array("name" => "help", "url" => "css/".$main_url, "class" => "fa-question-circle");
                 }
 
                 //push the help manage menu if user has access
                 if ($manage_help_and_knowledge_base && $module_help) {
-                    $help_knowledge_base_menues[] = array("name" => "articles", "url" => "help/help_articles", "class" => "fa-question-circle");
-                    $help_knowledge_base_menues[] = array("name" => "categories", "url" => "help/help_categories", "class" => "fa-question-circle");
+                    $help_knowledge_base_menues[] = array("name" => "articles", "url" => "css/help/help_articles", "class" => "fa-question-circle");
+                    $help_knowledge_base_menues[] = array("name" => "categories", "url" => "css/help/help_categories", "class" => "fa-question-circle");
                 }
 
                 if ($module_knowledge_base) {
-                    $help_knowledge_base_menues[] = array("name" => "knowledge_base", "url" => "knowledge_base", "class" => "fa-question-circle-o");
+                    $help_knowledge_base_menues[] = array("name" => "knowledge_base", "url" => "css/knowledge_base", "class" => "fa-question-circle-o");
                 }
 
                 //push the knowledge_base manage menu if user has access
                 if ($manage_help_and_knowledge_base && $module_knowledge_base) {
-                    $help_knowledge_base_menues[] = array("name" => "articles", "category" => "help", "url" => "help/knowledge_base_articles", "class" => "fa-question-circle-o");
-                    $help_knowledge_base_menues[] = array("name" => "categories", "category" => "help", "url" => "help/knowledge_base_categories", "class" => "fa-question-circle-o");
+                    $help_knowledge_base_menues[] = array("name" => "articles", "category" => "help", "url" => "css/help/knowledge_base_articles", "class" => "fa-question-circle-o");
+                    $help_knowledge_base_menues[] = array("name" => "categories", "category" => "help", "url" => "css/help/knowledge_base_categories", "class" => "fa-question-circle-o");
                 }
 
 
@@ -537,7 +538,7 @@ class Left_menu {
                     $main_url = "knowledge_base";
                 }
 
-                $sidebar_menu["help_and_support"] = array("name" => "help_and_support", "url" => $main_url, "class" => "fa-question-circle",
+                $sidebar_menu["help_and_support"] = array("name" => "help_and_support", "url" => "css/".$main_url, "class" => "fa-question-circle",
                     "submenu" => $help_knowledge_base_menues
                 );
             }
@@ -581,7 +582,7 @@ class Left_menu {
             }
 
             if (get_setting("module_ticket") == "1" && !in_array("tickets", $hidden_menu)) {
-                $sidebar_menu[] = array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring");
+                $sidebar_menu[] = array("name" => "tickets", "url" => "css/tickets", "class" => "fa-life-ring");
             }
 
             if (get_setting("module_announcement") == "1" && !in_array("announcements", $hidden_menu)) {

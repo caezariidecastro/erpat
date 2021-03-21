@@ -61,9 +61,9 @@
                     </div>
                     <div>
                         <?php
-                        echo form_checkbox("module_hts", "1", $module_hts ? true : false, "id='module_hts'");
+                        echo form_checkbox("module_css", "1", $module_css ? true : false, "id='module_css'");
                         ?>
-                        <label for="module_hts"><?php echo lang("module_hts"); ?></label>
+                        <label for="module_css"><?php echo lang("module_css"); ?></label>
                     </div>
                     <!-- End: Module permissions workaround -->
                 </li>

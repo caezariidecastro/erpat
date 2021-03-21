@@ -3,7 +3,6 @@ $settings_menu = array(
     "app_settings" => array(
         array("name" => "general", "url" => "settings/general"),
         array("name" => "company", "url" => "settings/company"),
-        array("name" => "email", "url" => "settings/email"),
         array("name" => "email_templates", "url" => "email_templates"),
         array("name" => "modules", "url" => "settings/modules"),
         array("name" => "notifications", "url" => "settings/notifications"),
@@ -38,10 +37,6 @@ if (get_setting("module_event") == "1") {
     $settings_menu["components"][] = array("name" => "events", "url" => "settings/events");
 }
 
-if (get_setting("module_ticket") == "1") {
-    $settings_menu["components"][] = array("name" => "tickets", "url" => "ticket_types");
-}
-
 if (get_setting("module_invoice") == "1") {
     $settings_menu["components"][] = array("name" => "invoices", "url" => "settings/invoices");
 }
@@ -49,6 +44,9 @@ if (get_setting("module_invoice") == "1") {
 if (get_setting("module_estimate") == "1") {
     $settings_menu["components"][] = array("name" => "estimates", "url" => "settings/estimates");
 }
+
+$settings_menu["components"][] = array("name" => "email_title_smtp", "url" => "settings/email");
+$settings_menu["components"][] = array("name" => "imap_settings", "url" => "settings/imap_settings");
 
 $settings_menu["components"][] = array("name" => "units", "url" => "units");
 $settings_menu["components"][] = array("name" => "payment_methods", "url" => "payment_methods");
