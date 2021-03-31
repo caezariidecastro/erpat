@@ -157,7 +157,7 @@ class BillOfMaterials extends MY_Controller {
 
     function material_list_data(){
         $options = array('bill_of_material_id' => $this->input->get('id'));
-        $list_data = $this->Bill_of_materials_model->get_materials($options)->result();
+        $list_data = $this->Bill_of_materials_model->get_materials($options);
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_material_make_row($data);

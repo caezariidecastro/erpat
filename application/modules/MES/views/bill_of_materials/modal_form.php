@@ -111,7 +111,7 @@
 
         $("#item_id").select2().change(function(){
             $.ajax({
-                url: "<?php echo base_url()?>inventory_item_entries/get_item",
+                url: "<?php echo base_url()?>mes/products/inventory",
                 method: "POST",
                 data: {
                     id: $(this).val(),

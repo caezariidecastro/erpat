@@ -295,7 +295,7 @@ if (!function_exists('ticket_status_widget')) {
             }
         }
 
-        return $ci->load->view("tickets/ticket_status_widget", $view_data, $return_as_data);
+        return $ci->load->view("css/tickets/ticket_status_widget", $view_data, $return_as_data);
     }
 
 }
@@ -874,7 +874,7 @@ if (!function_exists('ticket_status_widget_small')) {
         $view_data["total_tickets"] = $ci->Tickets_model->count_tickets($options);
         $view_data["status"] = $status;
 
-        return $ci->load->view("tickets/ticket_status_widget_small", $view_data, $return_as_data);
+        return $ci->load->view("css/tickets/ticket_status_widget_small", $view_data, $return_as_data);
     }
 
 }
