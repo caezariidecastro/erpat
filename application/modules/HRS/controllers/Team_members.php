@@ -83,7 +83,9 @@ class Team_members extends MY_Controller {
     /* open new member modal */
 
     function modal_form() {
-        $this->access_only_admin();
+        if(!get_array_value($this->login_user->permissions, "team_member_update_permission")) {
+			redirect("forbidden");
+		}
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -106,7 +108,9 @@ class Team_members extends MY_Controller {
     /* save new member */
 
     function add_team_member() {
-        $this->access_only_admin();
+        if(!get_array_value($this->login_user->permissions, "team_member_update_permission")) {
+			redirect("forbidden");
+		}
 
         //check duplicate email address, if found then show an error message
         if ($this->Users_model->is_email_exists($this->input->post('email'))) {
@@ -207,13 +211,17 @@ class Team_members extends MY_Controller {
     /* open invitation modal */
 
     function invitation_modal() {
-        $this->access_only_admin();
+        if(!get_array_value($this->login_user->permissions, "team_member_update_permission")) {
+			redirect("forbidden");
+		}
         $this->load->view('team_members/invitation_modal');
     }
 
     //send a team member invitation to an email address
     function send_invitation() {
-        $this->access_only_admin();
+        if(!get_array_value($this->login_user->permissions, "team_member_update_permission")) {
+			redirect("forbidden");
+		}
 
         validate_submitted_data(array(
             "email[]" => "required|valid_email"
@@ -334,7 +342,9 @@ class Team_members extends MY_Controller {
 
     //delete a team member
     function delete() {
-        $this->access_only_admin();
+        if(!get_array_value($this->login_user->permissions, "team_member_update_permission")) {
+			redirect("forbidden");
+		}
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -463,7 +473,9 @@ class Team_members extends MY_Controller {
 
     //show the job information of a team member
     function job_info($user_id) {
-        $this->only_admin_or_own($user_id);
+        if(!get_array_value($this->login_user->permissions, "team_member_update_permission") || !$this->login_user->id === $user_id) {
+			redirect("forbidden");
+		}
 
         $options = array("id" => $user_id);
         $user_info = $this->Users_model->get_details($options)->row();
@@ -476,7 +488,9 @@ class Team_members extends MY_Controller {
 
     //save job information of a team member
     function save_job_info() {
-        $this->access_only_admin();
+        if(!get_array_value($this->login_user->permissions, "team_member_update_permission")) {
+			redirect("forbidden");
+		}
 
         validate_submitted_data(array(
             "user_id" => "required|numeric"

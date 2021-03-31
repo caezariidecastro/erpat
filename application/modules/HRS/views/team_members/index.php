@@ -8,7 +8,7 @@
                     <?php echo anchor(get_uri("hrs/team_members/view"), "<i class='fa fa-th-large'></i>", array("class" => "btn btn-default btn-sm")); ?>
                 </div> 
                 <?php
-                if ($this->login_user->is_admin) {
+                if (get_array_value($this->login_user->permissions, "team_member_update_permission")) {
                     echo modal_anchor(get_uri("hrs/team_members/invitation_modal"), "<i class='fa fa-envelope-o'></i> " . lang('send_invitation'), array("class" => "btn btn-default", "title" => lang('send_invitation')));
                     echo modal_anchor(get_uri("hrs/team_members/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_employee'), array("class" => "btn btn-default", "title" => lang('add_team_member')));
                 }
