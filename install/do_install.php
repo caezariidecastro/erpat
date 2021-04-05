@@ -42,7 +42,7 @@ if (isset($_POST)) {
     }
 
     //check if the env production is installed.
-    if (!is_file('.env.production')) {
+    if (is_file('.env.production')) {
         echo json_encode(array("success" => false, "message" => "Found environment configuration, app seems installed!"));
         exit();
     }
