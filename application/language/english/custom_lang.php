@@ -457,5 +457,6 @@ $lang["record_cannot_be_edited"] = "Record cannot be edited.";
 
 $lang["groups"] = "Groups";
 
-
 $lang["email_title_smtp"] = "Setup SMTP";
+
+$lang["tickets_settings"] = "Ticket Settings";
