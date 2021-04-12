@@ -74,7 +74,7 @@ class Team extends MY_Controller {
         );
 
         if(!$id){
-            $data["created_on"] = date('Y-m-d H:i:s');
+            $data["date_created"] = date('Y-m-d H:i:s');
             $data["created_by"] = $this->login_user->id;
         }
 
@@ -140,7 +140,7 @@ class Team extends MY_Controller {
             $data->description,
             modal_anchor(get_uri("hrs/team/heads_list"), $total_heads, array("title" => lang('department_heads'), "data-post-heads" => $data->heads)),
             modal_anchor(get_uri("hrs/team/members_list"), $total_members, array("title" => lang('employee'), "data-post-members" => $data->members)),
-            $data->created_on,
+            $data->date_created,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             modal_anchor(get_uri("hrs/team/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_department'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_department'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/team/delete"), "data-action" => "delete-confirmation"))
