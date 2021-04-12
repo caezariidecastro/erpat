@@ -10,11 +10,10 @@
         <div class="col-md-6 text-center cover-widget">
             <div class="row p20">
                 <?php
-                if ($show_projects_count) {
-                    count_project_status_widget($user_info->id);
-                }
-
-                count_total_time_widget($user_info->id);
+                    //if ($show_projects_count && $show_total_hours_worked && $show_total_project_hours) {
+                        count_project_status_widget($user_info->id);
+                        count_total_time_widget($user_info->id);
+                    //}                
                 ?> 
             </div>
         </div>
@@ -46,9 +45,9 @@
         <?php if ($this->login_user->id == $user_info->id) { ?>
             <li><a role="presentation" href="<?php echo_uri("hrs/team_members/my_preferences/" . $user_info->id); ?>" data-target="#tab-my-preferences"> <?php echo lang('my_preferences'); ?></a></li>
         <?php } ?>
-        <?php if ($this->login_user->id == $user_info->id) { ?>
+        <?php /* if ($this->login_user->id == $user_info->id) { ?>
             <li><a role="presentation" href="<?php echo_uri("left_menus/index/user"); ?>" data-target="#tab-user-left-menu"> <?php echo lang('left_menu'); ?></a></li>
-        <?php } ?>
+        <?php } */ ?>
 
         <?php if ($show_general_info) { ?>
             <li><a  role="presentation" href="<?php echo_uri("hrs/team_members/files/" . $user_info->id); ?>" data-target="#tab-files"> <?php echo lang('files'); ?></a></li>

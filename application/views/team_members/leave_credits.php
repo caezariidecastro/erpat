@@ -9,7 +9,7 @@
             source: '<?php echo_uri("hrs/leave_credits/list_data") ?>',
             filterParams: {user_id: "<?php echo $applicant_id; ?>"},
             radioButtons: [{text: '<?php echo lang("debit") ?>', name: "action", value: "debit", isChecked: false}, {text: '<?php echo lang("credit") ?>', name: "action", value: "credit", isChecked: false}],
-            rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}}],
+            //rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}}],
             columns: [
                 {title: '<?php echo lang("employee"); ?>'},
                 {title: '<?php echo lang("action"); ?>'},
@@ -25,7 +25,7 @@
             ],
             printColumns: [0, 1, 2, 3],
             xlsColumns: [0, 1, 2, 3],
-            summation: [{column: 2, dataType: 'number'}]
+            //summation: [{column: 2, dataType: 'number'}]
         });
     });
 </script>

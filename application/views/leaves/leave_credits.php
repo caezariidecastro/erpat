@@ -10,14 +10,13 @@
     </table>
 </div>
 
-
 <script type="text/javascript">
     $(document).ready(function () {
         $("#leave-credit-table").appTable({
             source: '<?php echo_uri("hrs/leave_credits/list_data") ?>',
             radioButtons: [{text: '<?php echo lang("debit") ?>', name: "action", value: "debit", isChecked: false}, {text: '<?php echo lang("credit") ?>', name: "action", value: "credit", isChecked: false}],
             filterDropdown: [{name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?> }],
-            rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}}],
+            //rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}}],
             columns: [
                 {title: '<?php echo lang("employee"); ?>'},
                 {title: '<?php echo lang("action"); ?>'},
