@@ -658,7 +658,7 @@ class Estimates extends MY_Controller {
             to_decimal_format($data->quantity) . " " . $type,
             to_currency($data->rate, $data->currency_symbol),
             to_currency($data->total, $data->currency_symbol),
-            modal_anchor(get_uri("estimates/item_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_estimate'), "data-post-id" => $data->id))
+            modal_anchor(get_uri("sms/estimates/item_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_estimate'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("estimates/delete_item"), "data-action" => "delete"))
         );
     }

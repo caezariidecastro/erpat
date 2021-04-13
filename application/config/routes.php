@@ -57,8 +57,12 @@ $route['about/(:any)'] = 'about/index/$1';
 
 // Estimates
 $route['sms/estimates'] = 'estimates/index';
-$route['sms/estimates/view/(:any)'] = 'estimates/view/$1';
+$route['sms/estimates/(:any)'] = 'estimates/$1';
+$route['sms/estimates/(:any)/(:any)'] = 'estimates/$1/$2';
 $route['sms/invoices/view/(:any)'] = 'invoices/view/$1';
+
+$route['estimates/(:any)'] = 'estimates/$1';
+$route['estimates/(:any)/(:any)'] = 'estimates/$1/$2';
 
 // Payments
 // $route['fas/payments'] = 'invoice_payments/index';
