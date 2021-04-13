@@ -22,6 +22,8 @@ $lang["menu_ams"] = "Assets Management";
 $lang["menu_pms"] = "Project Planning";
 $lang["menu_css"] = "Help & Support";
 
+$lang["module_enable"] = "Enable this Module";
+
 $lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_department"] = "Department";
 $lang["submenu_hrm_attendance"] = "Attendance";
