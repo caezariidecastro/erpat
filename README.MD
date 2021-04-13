@@ -7,11 +7,10 @@ BusiNext was originally develop for the used of Bytes Crafter client ticketing a
 Please add this command on git automatic deployment.
 
 ```
-#rm -R install #Uncomment after install
+rm -R install
 rm -R documentation
-mv -n .env.backup .env.production
-rm -R .env.backup
-chmod 600 .env.production
+rm -R .env.backup.php
+chmod 600 .env.production.php
 ```
 
 ## Contributing
