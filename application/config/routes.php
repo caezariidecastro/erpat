@@ -266,6 +266,7 @@ $route["mes/ProductEntries/(:any)"] = "ProductEntries/$1";
 $route["mes/ProductCategories/(:any)"] = "ProductCategories/$1";
 $route["mes/ProductInventory/(:any)"] = "ProductInventory/$1";
 $route["mes/ProductInventory/(:any)/(:any)"] = "ProductInventory/$1/$2";
+$route["mes/ProductInventory/(:any)/(:any)/(:any)"] = "ProductInventory/$1/$2/$3";
 
 $route["purchase_orders/(:any)"] = "PurchaseOrders/$1";
 $route["mes/purchase-orders"] = "PurchaseOrders/index";
