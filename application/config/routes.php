@@ -212,10 +212,14 @@ $route["lds/warehouses"] = "Warehouses/index";
 $route["lds/warehouses/(:any)"] = "Warehouses/$1";
 
 $route["lds/transfers"] = "Transfers/index";
-$route["lds/Transfers/(:any)"] = "Transfers/$1";
+$route["lds/transfers/(:any)"] = "Transfers/$1";
+$route["lds/transfers/(:any)/(:any)"] = "Transfers/$1/$2";
+$route["lds/transfers/(:any)/(:any)/(:any)"] = "Transfers/$1/$2/$3";
 
 $route["lds/TransferRawMaterials"] = "TransferRawMaterials/index";
 $route["lds/TransferRawMaterials/(:any)"] = "TransferRawMaterials/$1";
+$route["lds/TransferRawMaterials/(:any)/(:any)"] = "TransferRawMaterials/$1/$2";
+$route["lds/TransferRawMaterials/(:any)/(:any)/(:any)"] = "TransferRawMaterials/$1/$2/$3";
 
 $route["lds/vehicles"] = "Vehicles/index";
 $route["lds/vehicles/(:any)"] = "Vehicles/$1";
@@ -226,7 +230,6 @@ $route["lds/drivers/(:any)"] = "Drivers/$1";
 $route["lds/consumers"] = "Consumers/index";
 $route["lds/consumers/(:any)"] = "Consumers/$1";
 $route["lds/Consumers/(:any)"] = "Consumers/$1";
-
 
 // MCS Controller 
 $route["mcs"] = "leads/index";

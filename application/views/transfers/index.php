@@ -8,10 +8,10 @@
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade" id="item-products">
-                <?php $this->load->view('products/index')?>
+                <?php $this->load->view('transfers/products/index')?>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="item-raw_materials">
-                <?php $this->load->view('raw-materials/index')?>
+                <?php $this->load->view('transfers/raw-materials/index')?>
             </div>
         </div>
     </div>
