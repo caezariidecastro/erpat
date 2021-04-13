@@ -76,11 +76,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn' => '',
-    // 'hostname' => 'localhost',
-    // 'username' => 'admin',
-    // 'password' => 'admin',
-    // 'database' => 'erpat',
-    // 'dbdriver' => 'mysqli',
+    'hostname' => DB_HOST,
+    'username' => DB_USERNAME,
+    'password' => DB_PASSWORD,
+    'database' => DB_DATABASE,
+    'dbdriver' => DB_CONNECTION,
     'dbprefix' => '',
     'pconnect' => FALSE, //set it FALSE if your site has a huge trafic and/or you are saving session data in database
     'db_debug' => (ENVIRONMENT !== 'production'),
@@ -96,8 +96,3 @@ $db['default'] = array(
     'save_queries' => TRUE
 );
 
-$db['default']['hostname'] = getenv('DB_HOST');
-$db['default']['username'] = getenv('DB_USERNAME');
-$db['default']['password'] = getenv('DB_PASSWORD');
-$db['default']['database'] = getenv('DB_DATABASE');
-$db['default']['dbdriver'] = getenv('DB_CONNECTION');

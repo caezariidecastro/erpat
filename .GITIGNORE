@@ -38,4 +38,5 @@ files/*
 #application/config/config.php
 #application/config/database.php
 #index.php
-.env.production
+.env.production.php
+.env.development.php

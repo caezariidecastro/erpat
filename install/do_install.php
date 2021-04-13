@@ -72,9 +72,8 @@ if (isset($_POST)) {
     // database created
 
     // set the database config file
-
-    $db_file_path = "../.env.backup";
-    $prod_file_path = "../.env.production";
+    $db_file_path = "../.env.backup.php";
+    $prod_file_path = "../.env.production.php";
     $db_file = file_get_contents($db_file_path);
 
     $db_file = str_replace('enter_hostname', $host, $db_file);
@@ -82,27 +81,12 @@ if (isset($_POST)) {
     $db_file = str_replace('enter_db_password', $dbpassword, $db_file);
     $db_file = str_replace('enter_database_name', $dbname, $db_file);
 
-    file_put_contents($prod_file_path, $db_file);
-    unlink("../.env.backup");
-
-    // set random enter_encryption_key
-
-    $config_file_path = "../.env.production";
     $encryption_key = substr(md5(rand()), 0, 15);
-    $config_file = file_get_contents($config_file_path);
-    $config_file = str_replace('enter_encryption_key', $encryption_key, $config_file);
+    $db_file = str_replace('enter_encryption_key', $encryption_key, $db_file);
+    $db_file = str_replace('deployment', 'production', $db_file);
 
-    file_put_contents($config_file_path, $config_file);
-
-    // TODO: set the environment = production
-
-    // $index_file_path = "../index.php";
-
-    // $index_file = file_get_contents($index_file_path);
-    // $index_file = preg_replace('/pre_installation/', 'production', $index_file, 1); //replace the first occurence of 'pre_installation'
-
-    // file_put_contents($index_file_path, $index_file);
-
+    file_put_contents($prod_file_path, $db_file);
+    unlink("../.env.backup.php");
     unlink("database.sql");    
 
     echo json_encode(array("success" => true, "message" => "Installation successfull."));
