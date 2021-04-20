@@ -253,7 +253,7 @@ PRIMARY KEY (`id`)
 CREATE TABLE IF NOT EXISTS `invoices` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `client_id` int(11) NOT NULL,
-  `consumer_id` int(11) NOT NULL DEFAULT '0',
+  `consumer_id` int(11) NULL DEFAULT NULL;
   `project_id` int(11) NOT NULL DEFAULT '0',
   `bill_date` date NOT NULL,
   `due_date` date NOT NULL,
@@ -278,6 +278,7 @@ CREATE TABLE IF NOT EXISTS `invoices` (
   `discount_type` enum('before_tax','after_tax') COLLATE utf8_unicode_ci NOT NULL,
   `cancelled_at` datetime DEFAULT NULL,
   `cancelled_by` int(11) NOT NULL,
+  `type` text COLLATE utf8_unicode_ci NOT NULL,
   `files` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
