@@ -10,6 +10,6 @@ class AMS extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_ats");
+        $this->validate_user_sub_module_permission("module_ams");
     }
 }

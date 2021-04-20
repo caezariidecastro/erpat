@@ -8,7 +8,7 @@ $lang["module_mes"] = "Production & Inventory";
 $lang["module_mcs"] = "Marketing & Campaigns";
 $lang["module_lds"] = "Logistic & Distribution";
 $lang["module_sms"] = "Sales & Invoicing";
-$lang["module_ats"] = "Assets Management";
+$lang["module_ams"] = "Assets Management";
 $lang["module_pms"] = "Project Planning";
 $lang["module_css"] = "Help & Support";
 
@@ -462,3 +462,5 @@ $lang["groups"] = "Groups";
 $lang["email_title_smtp"] = "Setup SMTP";
 
 $lang["tickets_settings"] = "Ticket Settings";
+
+$lang["general_settings"] = "General Settings";

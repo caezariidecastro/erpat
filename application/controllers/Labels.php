@@ -24,7 +24,7 @@ class Labels extends MY_Controller {
         } else if ($context == "invoice") {
             $this->init_permission_checker("invoice");
             return $this->access_only_allowed_members();
-        } else if ($context == "asset_entry" && get_setting("module_ats") == "1" && ($this->login_user->is_admin || get_array_value($permissions, "module_ats"))) {
+        } else if ($context == "asset_entry" && get_setting("module_ams") == "1" && ($this->login_user->is_admin || get_array_value($permissions, "module_ams"))) {
             return true;
         } else if ($context == "event" || $context == "note" || $context == "to_do") {
             if ($label_id) {

@@ -574,7 +574,7 @@ $lang["can_access_invoices"] = "Can access invoices?";
 $lang["can_access_expenses"] = "Can access expenses?";
 $lang["can_access_clients_information"] = "Can access client's information?";
 $lang["can_access_tickets"] = "Can access tickets?";
-$lang["can_manage_announcements"] = "Can manage announcements?";
+$lang["can_manage_announcements"] = "Manage announcements?";
 
 /* timeline */
 $lang["post_placeholder_text"] = "Share an idea or documents...";
