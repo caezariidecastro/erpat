@@ -3,7 +3,7 @@
         <h1><?php echo lang('employee'); ?></h1>
         <div class="title-button-group">
             <?php
-            echo anchor(get_uri("hrs/team_members"), "<i class='fa fa-bars'></i>", array("class" => "btn btn-default btn-sm mr-1", "title" => lang('list_view')));
+            echo anchor(get_uri("hrs/employee"), "<i class='fa fa-bars'></i>", array("class" => "btn btn-default btn-sm mr-1", "title" => lang('list_view')));
             echo js_anchor("<i class='fa fa-th-large'></i>", array("class" => "btn btn-default btn-sm active ml-1"));
 
             if ($this->login_user->is_admin) {
