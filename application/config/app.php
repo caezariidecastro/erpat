@@ -4,7 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //don't change or add new config in this file
 
-$config['app_version'] = '1.0.6';
+$config['app_version'] = '1.0.8';
+
+define("DB_MIGRATION_VER", 002);
 
 $config['app_update_url'] = 'https://businext.app/latest/';
 
