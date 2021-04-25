@@ -49,7 +49,6 @@
             //     $this->load->view("dashboards/list/topbar_icon");
             // }
 
-            $this->load->view("includes/time");
             ?>
 
             <?php
@@ -136,6 +135,10 @@
                     </div>
                 </li>
             <?php } ?>
+
+            <li>
+                <?php $this->load->view("includes/time"); ?>
+            </li>
 
             <li class="dropdown pr15 dropdown-user">
                 <a id="user-dropdown-icon" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
