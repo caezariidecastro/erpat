@@ -1977,3 +1977,17 @@ if (!function_exists('is_user_has_module_permission')) {
         return false;
     }
 }
+
+if (!function_exists('user_role_has_permission')) {
+
+    function user_role_has_permission($cur_permission) {
+        $ci = get_instance();
+        $permission_list = $ci->login_user->permissions;
+
+        if( $ci->login_user->is_admin || get_array_value($permission_list, $cur_permission) ){
+            return true;
+        }
+
+        return false;
+    }
+}

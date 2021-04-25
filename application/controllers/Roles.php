@@ -102,6 +102,13 @@ class roles extends MY_Controller {
 
             // Start: Module permissions workaround
             $view_data["module_hrs"] = get_array_value($permissions, "module_hrs");
+
+                //Employee
+                $view_data["hrs_employee_view"] = get_array_value($permissions, "hrs_employee_view");
+                $view_data["hrs_employee_add"] = get_array_value($permissions, "hrs_employee_add");
+                $view_data["hrs_employee_edit"] = get_array_value($permissions, "hrs_employee_edit");
+                $view_data["hrs_employee_delete"] = get_array_value($permissions, "hrs_employee_delete");
+
             $view_data["module_fas"] = get_array_value($permissions, "module_fas");
             $view_data["module_mes"] = get_array_value($permissions, "module_mes");
             $view_data["module_mcs"] = get_array_value($permissions, "module_mcs");
@@ -263,6 +270,11 @@ class roles extends MY_Controller {
             "message_permission" => $message_permission,
             "message_permission_specific" => $message_permission_specific,
             "module_hrs" => $this->input->post('module_hrs'),
+                //Employee
+                "hrs_employee_view" => $this->input->post('hrs_employee_view'),
+                "hrs_employee_add" => $this->input->post('hrs_employee_add'),
+                "hrs_employee_edit" => $this->input->post('hrs_employee_edit'),
+                "hrs_employee_delete" => $this->input->post('hrs_employee_delete'),
             "module_fas" => $this->input->post('module_fas'),
             "module_mes" => $this->input->post('module_mes'),
             "module_mcs" => $this->input->post('module_mcs'),

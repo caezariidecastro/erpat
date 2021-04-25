@@ -37,8 +37,14 @@ class MY_Controller extends CI_Controller {
         }
     }
 
-    protected function validate_user_sub_module_permission($module) {
+    protected function validate_user_module_permission($module) {
         if(!is_user_has_module_permission($module)){
+            redirect("forbidden");
+        }
+    }
+
+    protected function validate_user_role_permission($permission) {
+        if(!user_role_has_permission($permission)){
             redirect("forbidden");
         }
     }

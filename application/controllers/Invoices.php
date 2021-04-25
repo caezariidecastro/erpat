@@ -56,7 +56,7 @@ class Invoices extends MY_Controller {
     /* load invoice list view */
 
     function index() {
-        $this->validate_user_sub_module_permission("module_sms");
+        $this->validate_user_module_permission("module_sms");
         $this->check_module_availability("module_invoice");
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("invoices", $this->login_user->is_admin, $this->login_user->user_type);

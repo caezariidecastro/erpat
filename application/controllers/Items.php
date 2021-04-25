@@ -42,7 +42,7 @@ class Items extends MY_Controller {
 
     //load note list view
     function index() {
-        $this->validate_user_sub_module_permission("module_pms");
+        $this->validate_user_module_permission("module_pms");
         $this->validate_access_to_items();
 
         $this->template->rander("items/index");

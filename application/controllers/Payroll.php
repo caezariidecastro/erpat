@@ -36,7 +36,7 @@ class Payroll extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_fas");
+        $this->validate_user_module_permission("module_fas");
         $view_data['account_select2'] = $this->_get_account_select2_data();
         $view_data['user_select2'] = $this->_get_users_select2_data();
         $this->template->rander("payroll/index", $view_data);

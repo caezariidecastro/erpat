@@ -21,5 +21,3 @@ $config['app_csrf_exclude_uris'] = array(
 );
 
 $config['max_services_dropdown_count'] = 10;
-
-$config['db_migration_version'] = 002;
