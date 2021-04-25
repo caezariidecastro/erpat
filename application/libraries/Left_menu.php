@@ -288,15 +288,17 @@ class Left_menu {
 
             // Start: Module permissions workaround
             if (is_user_has_module_permission("module_hrs")) {
-                $sidebar_menu["menu_hrs"] = array("name" => "menu_hrs", "url" => "hrs", "class" => "fa-users", "devider" => true,
-                "submenu" => array(
-                    array("name" => "submenu_hrm_employee", "url" => "hrs/employee"),
-                    array("name" => "submenu_hrm_department", "url" => "hrs/department"),
-                    array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance"),
-                    array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary"),
-                    array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves"),
-                    array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays")
-                ));
+                $hrs_sub_module = array();
+                if($this->ci->login_user->is_admin || get_array_value($this->ci->login_user->permissions, "hrs_employee_view")) {
+                    array_push($hrs_sub_module, array("name" => "submenu_hrm_employee", "url" => "hrs/employee"));
+                }
+                array_push($hrs_sub_module, array("name" => "submenu_hrm_department", "url" => "hrs/department"));
+                array_push($hrs_sub_module, array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance"));
+                array_push($hrs_sub_module, array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary"));
+                array_push($hrs_sub_module, array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves"));
+                array_push($hrs_sub_module, array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays"));
+
+                $sidebar_menu["menu_hrs"] = array("name" => "menu_hrs", "url" => "hrs", "class" => "fa-users", "devider" => true, "submenu" => $hrs_sub_module);
             }
 
             if (is_user_has_module_permission("module_fas")) {

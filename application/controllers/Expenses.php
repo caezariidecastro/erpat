@@ -87,6 +87,10 @@ class Expenses extends MY_Controller {
 
         $model_info = $this->Expenses_model->get_one($this->input->post('id'));
         $view_data['categories_dropdown'] = $this->Expense_categories_model->get_dropdown_list(array("title"));
+        //echo "<script> console.log(JSON.parse('".json_encode($view_data['categories_dropdown'])."')); </script>";
+        unset($view_data['categories_dropdown']['1']);
+        unset($view_data['categories_dropdown']['2']);
+        unset($view_data['categories_dropdown']['3']);
 
         $team_members = $this->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"))->result();
         $members_dropdown = array();

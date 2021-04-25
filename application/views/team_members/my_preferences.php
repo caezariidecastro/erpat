@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <?php if (count($language_dropdown) && !get_setting("disable_language_selector_for_team_members")) { ?>
+            <?php /* if (count($language_dropdown) && !get_setting("disable_language_selector_for_team_members")) { ?>
                 <div class="form-group">
                     <label for="personal_language" class=" col-md-2"><?php echo lang('language'); ?></label>
                     <div class="col-md-10">
@@ -86,8 +86,9 @@
                         ?>
                     </div>
                 </div>
-            <?php } ?>
+            <?php } */ ?>
 
+            <?php /* ?>
             <div class="form-group">
                 <label for="hidden_topbar_menus" class=" col-md-2"><?php echo lang('hide_menus_from_topbar'); ?></label>
                 <div class=" col-md-10">
@@ -102,6 +103,7 @@
                     ?>
                 </div>
             </div>
+            <?php */ ?>
 
             <div class="form-group">
                 <label for="disable_keyboard_shortcuts" class=" col-md-2"><?php echo lang('disable_keyboard_shortcuts'); ?></label>

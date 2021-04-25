@@ -8,8 +8,10 @@
                     <?php echo anchor(get_uri("hrs/employee/view"), "<i class='fa fa-th-large'></i>", array("class" => "btn btn-default btn-sm")); ?>
                 </div> 
                 <?php
-                if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "team_member_update_permission")) {
+                if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_invite")) {
                     echo modal_anchor(get_uri("hrs/team_members/invitation_modal"), "<i class='fa fa-envelope-o'></i> " . lang('send_invitation'), array("class" => "btn btn-default", "title" => lang('send_invitation')));
+                }
+                if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_add")) {
                     echo modal_anchor(get_uri("hrs/team_members/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_employee'), array("class" => "btn btn-default", "title" => lang('add_team_member')));
                 }
                 ?>
@@ -35,9 +37,13 @@
         }
 
         $("#team_member-table").appTable({
-            source: '<?php echo_uri("hrs/team_members/list_data/") ?>',
+            source: '<?php echo_uri("hrs/team_members/list_data/staff") ?>',
             order: [[1, "asc"]],
-            radioButtons: [{text: '<?php echo lang("active_employees") ?>', name: "status", value: "active", isChecked: true}, {text: '<?php echo lang("inactive_employees") ?>', name: "status", value: "inactive", isChecked: false}],
+            radioButtons: [
+                {text: '<?php echo lang("active_employees") ?>', name: "status", value: "active", isChecked: true}, 
+                {text: '<?php echo lang("inactive_employees") ?>', name: "status", value: "inactive", isChecked: false},
+                {text: '<?php echo lang("deleted_employees") ?>', name: "status", value: "deleted", isChecked: false}
+            ],
             columns: [
                 {title: '', "class": "w50 text-center"},
                 {title: "<?php echo lang("name") ?>"},

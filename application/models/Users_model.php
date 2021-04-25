@@ -76,35 +76,48 @@ class Users_model extends Crud_model {
         $exclude_user_id = get_array_value($options, "exclude_user_id");
 
         if ($id) {
-            $where .= " AND $users_table.id=$id";
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.id=$id";
         }
         if ($status === "active") {
-            $where .= " AND $users_table.status='active'";
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.status='active'";
         } else if ($status === "inactive") {
-            $where .= " AND $users_table.status='inactive'";
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.status='inactive'";
+        }
+        
+        $where .= empty($where) ? " " : " AND";
+        if ($status === "deleted") {
+            $where .= " $users_table.deleted='1'";
+        } else {
+            $where .= " $users_table.deleted='0'";
         }
 
         if ($user_type) {
-            $where .= " AND $users_table.user_type='$user_type'";
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.user_type='$user_type'";
         }
 
         if ($user_type == 'client') {
-            $where .= " AND $clients_table.deleted=0";
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $clients_table.deleted=0";
         }
 
-
         if ($client_id) {
-            $where .= " AND $users_table.client_id=$client_id";
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.client_id=$client_id";
         }
 
         if ($vendor_id) {
-            $where .= " AND $users_table.vendor_id=$vendor_id";
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.vendor_id=$vendor_id";
         }
 
         if ($exclude_user_id) {
-            $where .= " AND $users_table.id!=$exclude_user_id";
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.id!=$exclude_user_id";
         }
-
 
         $custom_field_type = "team_members";
         if ($user_type === "client") {
@@ -127,7 +140,7 @@ class Users_model extends Crud_model {
         LEFT JOIN $team_member_job_info_table ON $team_member_job_info_table.user_id=$users_table.id
         LEFT JOIN $clients_table ON $clients_table.id=$users_table.client_id
         $join_custom_fieds    
-        WHERE $users_table.deleted=0 $where
+        WHERE $where
         ORDER BY $users_table.first_name";
         return $this->db->query($sql);
     }

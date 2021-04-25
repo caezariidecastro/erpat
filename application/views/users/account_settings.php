@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <?php if ($user_info->user_type === "staff" && $this->login_user->is_admin) { ?>
+            <?php if ($user_info->id !== $this->login_user->id && $user_info->user_type === "staff" ) { ?>
                 <div class="form-group">
                     <label for="role" class=" col-md-2"><?php echo lang('role'); ?></label>
                     <div class=" col-md-10">
@@ -81,9 +81,7 @@
                         ?>
                     </div>
                 </div>
-            <?php } ?>
-
-            <?php if ($this->login_user->is_admin && $user_info->id !== $this->login_user->id) { ?>
+            
                 <div class="form-group">
                     <label for="disable_login" class="col-md-2"><?php echo lang('disable_login'); ?></label>
                     <div class="col-md-10">
@@ -94,18 +92,15 @@
                     </div>
                 </div>
 
-                <?php if ($user_info->user_type === "staff") { ?>
-                    <div class="form-group">
-                        <label for="user_status" class="col-md-2"><?php echo lang('mark_as_inactive'); ?></label>
-                        <div class="col-md-10">
-                            <?php
-                            echo form_checkbox("status", "inactive", $user_info->status === "inactive" ? true : false, "id='user_status' class='ml15'");
-                            ?>
-                            <span id="user-status-help-block" class="ml10 <?php echo $user_info->status === "inactive" ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("mark_as_inactive_help_message"); ?></span>
-                        </div>
+                <div class="form-group">
+                    <label for="user_status" class="col-md-2"><?php echo lang('mark_as_inactive'); ?></label>
+                    <div class="col-md-10">
+                        <?php
+                        echo form_checkbox("status", "inactive", $user_info->status === "inactive" ? true : false, "id='user_status' class='ml15'");
+                        ?>
+                        <span id="user-status-help-block" class="ml10 <?php echo $user_info->status === "inactive" ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("mark_as_inactive_help_message"); ?></span>
                     </div>
-                <?php } ?>
-
+                </div>
             <?php } ?>
 
             <?php if ($user_info->user_type === "client" && $this->login_user->is_admin) { ?>

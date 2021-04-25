@@ -7,7 +7,7 @@ class Team extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->access_only_admin();
+        $this->access_only_team_members();
     }
 
     function index() {

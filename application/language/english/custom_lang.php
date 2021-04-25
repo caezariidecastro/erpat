@@ -251,11 +251,11 @@ $lang["all_team_members"] = "All users";
 $lang["create_an_account_as_a_team_member"] = "Create an account as a user.";
 $lang["team_member_invitation"] = "user invitation";
 $lang["can_manage_team_members_leave"] = "Can manage user's leaves?";
-$lang["can_manage_team_members_timecards"] = "Can manage user's time cards?";
+$lang["can_manage_team_members_timecards"] = "Can manage employee's attendance?";
 $lang["set_team_members_permission"] = "Set users permissions";
-$lang["can_view_team_members_contact_info"] = "Can view user's contact info?";
+$lang["can_view_team_members_contact_info"] = "Can view employee's contact info?";
 $lang["can_view_team_members_social_links"] = "Can view user's social links?";
-$lang["can_update_team_members_general_info_and_social_links"] = "Can update user's general info and social links?";
+$lang["can_update_team_members_general_info_and_social_links"] = "Can update user's general info, social links, files, and account?";
 $lang["can_manage_team_members_project_timesheet"] = "Can manage user's project timesheet?";
 $lang["hide_team_members_list"] = "Hide users list?";
 $lang["clocked_in_team_members"] = "Clocked in users";
@@ -464,3 +464,13 @@ $lang["email_title_smtp"] = "Setup SMTP";
 $lang["tickets_settings"] = "Ticket Settings";
 
 $lang["general_settings"] = "General Settings";
+
+$lang["invite"] = "Invite";
+
+$lang["deleted_employees"] = "Deleted";
+
+$lang["restore_team_member"] = "Restore employee";
+$lang["record_cannot_be_restored"] = "The record is in use, you can't restore the record!";
+$lang["record_restored"] = "The record has been restored.";
+
+$lang["edit_employee"] = "Edit";

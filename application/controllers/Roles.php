@@ -105,6 +105,7 @@ class roles extends MY_Controller {
 
                 //Employee
                 $view_data["hrs_employee_view"] = get_array_value($permissions, "hrs_employee_view");
+                $view_data["hrs_employee_invite"] = get_array_value($permissions, "hrs_employee_invite");
                 $view_data["hrs_employee_add"] = get_array_value($permissions, "hrs_employee_add");
                 $view_data["hrs_employee_edit"] = get_array_value($permissions, "hrs_employee_edit");
                 $view_data["hrs_employee_delete"] = get_array_value($permissions, "hrs_employee_delete");
@@ -272,6 +273,7 @@ class roles extends MY_Controller {
             "module_hrs" => $this->input->post('module_hrs'),
                 //Employee
                 "hrs_employee_view" => $this->input->post('hrs_employee_view'),
+                "hrs_employee_invite" => $this->input->post('hrs_employee_invite'),
                 "hrs_employee_add" => $this->input->post('hrs_employee_add'),
                 "hrs_employee_edit" => $this->input->post('hrs_employee_edit'),
                 "hrs_employee_delete" => $this->input->post('hrs_employee_delete'),

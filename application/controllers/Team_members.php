@@ -58,8 +58,8 @@ class Team_members extends MY_Controller {
 
     //only admin can change other user's info
     //none admin users can only change his/her own info
-    private function only_admin_or_own($user_id) {
-        if ($user_id && ($this->login_user->is_admin || $this->login_user->id === $user_id)) {
+    private function only_admin_or_own_or_permission($user_id) {
+        if ($user_id && ($this->login_user->id === $user_id || $this->validate_user_role_permission('team_member_update_permission_all', true))) {
             return true;
         } else {
             redirect("forbidden");
@@ -72,6 +72,7 @@ class Team_members extends MY_Controller {
         }
 
         $this->validate_user_module_permission("module_hrs");
+        $this->validate_user_role_permission("hrs_employee_view");
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -83,9 +84,7 @@ class Team_members extends MY_Controller {
     /* open new member modal */
 
     function modal_form() {
-        if(!$this->login_user->is_admin || (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission")) ) {
-			redirect("forbidden");
-		}
+        $this->validate_user_role_permission("hrs_employee_add");
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -208,20 +207,85 @@ class Team_members extends MY_Controller {
         }
     }
 
+    /* edit employee */
+
+    function edit_modal_form() {
+        $this->validate_user_role_permission("hrs_employee_edit");
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $view_data['role_dropdown'] = $this->_get_roles_dropdown();
+
+        $id = $this->input->post('id');
+        $options = array(
+            "id" => $id,
+        );
+
+        $view_data['model_info'] = $this->Users_model->get_details($options)->row();
+        if ($view_data['model_info']->is_admin) {
+            $view_data['model_info']->role_id = "admin";
+        }
+
+        $this->load->view('team_members/edit_modal_form', $view_data);
+    }
+
+    function update_user_form($user_id) {
+        $this->validate_user_role_permission("hrs_employee_edit");
+
+        validate_submitted_data(array(
+            "first_name" => "required",
+            "last_name" => "required",
+            "job_title" => "required",
+            "role" => "required",
+            "login" => "required",
+            "status" => "required",
+        ));
+
+        $user_data = array(
+            "first_name" => $this->input->post('first_name'),
+            "last_name" => $this->input->post('last_name'),
+            "job_title" => $this->input->post('job_title'),
+            "disable_login" => $this->input->post('login'),
+            "status" => $this->input->post('status'),
+        );
+        if( $this->input->post('role') == "admin") {
+            $user_data["is_admin"] = "1";
+            $user_data["role_id"] = "0";
+        } else {
+            $user_data["is_admin"] = "0";
+            $user_data["role_id"] = $this->input->post('role');
+        }
+        //log_message('error', json_encode($user_data));
+
+        $user_data = clean_data($user_data);
+
+        $user_info_updated = $this->Users_model->save($user_data, $user_id);
+
+        //save_custom_fields("team_members", $user_id, $this->login_user->is_admin, $this->login_user->user_type);
+        $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
+        $data = $this->Users_model->get_details(array("id" => $user_id, "custom_fields" => $custom_fields))->row();
+        $data = $this->_make_row($data, $custom_fields);
+
+        if ($user_info_updated) {
+            echo json_encode(array("success" => true, "id" => $user_id, "data" => $data, 'message' => lang('record_updated')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     /* open invitation modal */
 
     function invitation_modal() {
-        if(!$this->login_user->is_admin || (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission")) ) {
-			redirect("forbidden");
-		}
+        $this->validate_user_role_permission("hrs_employee_invite");
+
         $this->load->view('team_members/invitation_modal');
     }
 
     //send a team member invitation to an email address
     function send_invitation() {
-        if(!$this->login_user->is_admin || (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission")) ) {
-			redirect("forbidden");
-		}
+        $this->validate_user_role_permission("hrs_employee_invite");
 
         validate_submitted_data(array(
             "email[]" => "required|valid_email"
@@ -274,7 +338,7 @@ class Team_members extends MY_Controller {
     }
 
     //prepere the data for members list
-    function list_data() {
+    function list_data($type_of_user = NULL) {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
@@ -282,7 +346,7 @@ class Team_members extends MY_Controller {
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
         $options = array(
             "status" => $this->input->post("status"),
-            "user_type" => $this->input->post("staff"),
+            "user_type" => $type_of_user != NULL ? $type_of_user : $this->input->post("staff"),
             "custom_fields" => $custom_fields
         );
 
@@ -290,7 +354,7 @@ class Team_members extends MY_Controller {
         $list_data = $this->Users_model->get_details($options)->result();
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = $this->_make_row($data, $custom_fields);
+            $result[] = $this->_make_row($data, $custom_fields, $options);
         }
         echo json_encode(array("data" => $result));
     }
@@ -308,11 +372,10 @@ class Team_members extends MY_Controller {
     }
 
     //prepare team member list row
-    private function _make_row($data, $custom_fields) {
+    private function _make_row($data, $custom_fields, $options = NULL) {
         $image_url = get_avatar($data->image);
         $user_avatar = "<span class='avatar avatar-xs'><img src='$image_url' alt='...'></span>";
         $full_name = $data->first_name . " " . $data->last_name . " ";
-
 
         //check contact info view permissions
         $show_cotact_info = $this->can_view_team_members_contact_info();
@@ -330,19 +393,44 @@ class Team_members extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $delete_link = "";
-        if ($this->login_user->is_admin && $this->login_user->id != $data->id) {
-            $delete_link = js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_team_member'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/team_members/delete"), "data-action" => "delete-confirmation"));
+        $action_btn = "";
+        if (($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_edit")) && $this->login_user->id != $data->id && get_array_value($options, "status") != "deleted") {
+            $action_btn = modal_anchor(get_uri("hrs/team_members/edit_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_employee'), "data-post-id" => $data->id));
         }
 
-        $row_data[] = $delete_link;
+        if (($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_delete")) && $this->login_user->id != $data->id) {
+            if(get_array_value($options, "status") != "deleted") {
+                $action_btn .= js_anchor("<i class='fa fa-times fa-fw'></i>", 
+                    array(
+                        'title' => lang('delete_team_member'), 
+                        "class" => "delete user-status-confirm", 
+                        "data-id" => $data->id, 
+                        "data-action-url" => get_uri("hrs/team_members/delete"), 
+                        "data-action" => "delete-confirmation"));
+            } else {
+                $action_btn .= js_anchor("<i class='fa fa-refresh fa-fw'></i>", 
+                    array(
+                        'title' => lang('restore_team_member'), 
+                        "class" => "restore success user-status-confirm", 
+                        "data-reason" => "restore",
+                        "data-id" => $data->id, 
+                        "data-action-url" => get_uri("hrs/team_members/restore"), 
+                        "data-action" => "delete-confirmation"));
+            }
+        }
+
+        if($this->login_user->is_admin || (!$this->login_user->is_admin && !$data->is_admin)) {
+            $row_data[] = $action_btn;
+        } else {
+            $row_data[] = "";
+        }
 
         return $row_data;
     }
 
     //delete a team member
     function delete() {
-        if(!$this->login_user->is_admin || (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission")) ) {
+        if (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "hrs_employee_delete")) {
 			redirect("forbidden");
 		}
 
@@ -359,6 +447,24 @@ class Team_members extends MY_Controller {
         }
     }
 
+    function restore() {
+        if (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "hrs_employee_delete")) {
+			redirect("forbidden");
+		}
+
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+
+        if ($id != $this->login_user->id && $this->Users_model->delete($id, true)) {
+            echo json_encode(array("success" => true, 'message' => lang('record_restored')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_restored')));
+        }
+    }
+
     //show team member's details view
     function view($id = 0, $tab = "") {
         if ($id * 1) {
@@ -368,13 +474,10 @@ class Team_members extends MY_Controller {
                 redirect("forbidden");
             }
 
-
-
             //we have an id. view the team_member's profie
-            $viewable_user_types = ["staff", "customer", "driver", "supplier", "vendor"];
             $options = array("id" => $id);
             $user_info = $this->Users_model->get_details($options)->row();
-            if ($user_info && in_array($user_info->user_type, $viewable_user_types)) {
+            if ($user_info) {
 
                 //check which tabs are viewable for current logged in user
                 $view_data['show_timeline'] = get_setting("module_timeline") ? true : false;
@@ -389,13 +492,12 @@ class Team_members extends MY_Controller {
                 $show_attendance = false;
                 $show_leave = false;
 
-                $expense_access_info = $this->get_access_info("expense");
-                $view_data["show_expense_info"] = (get_setting("module_expense") == "1" && $expense_access_info->access_type == "all") ? true : false;
+                $view_data["show_expense_info"] = (get_setting("module_expense") == "1" && $this->validate_user_role_permission('expense', true));
 
                 //admin can access all members attendance and leave
                 //none admin users can only access to his/her own information 
 
-                if ($this->login_user->is_admin || $user_info->id === $this->login_user->id) {
+                if ($this->login_user->is_admin || $user_info->id === $this->login_user->id || $can_update_team_members_info) {
                     $show_attendance = true;
                     $show_leave = true;
                     $view_data['show_job_info'] = true;
@@ -435,7 +537,7 @@ class Team_members extends MY_Controller {
 
                 //show projects tab to admin
                 $view_data['show_projects'] = false;
-                if ($this->login_user->is_admin) {
+                if ($this->can_manage_all_projects()) {
                     $view_data['show_projects'] = true;
                 }
 
@@ -617,7 +719,7 @@ class Team_members extends MY_Controller {
 
     //show account settings of a team member
     function account_settings($user_id) {
-        $this->only_admin_or_own($user_id);
+        $this->only_admin_or_own_or_permission($user_id);
 
         $view_data['user_info'] = $this->Users_model->get_one($user_id);
         if ($view_data['user_info']->is_admin) {
@@ -688,8 +790,11 @@ class Team_members extends MY_Controller {
     private function _get_roles_dropdown() {
         $role_dropdown = array(
             "" => '-',
-            "admin" => lang('admin') //static role
         );
+        if($this->login_user->is_admin) {
+            $role_dropdown['admin'] = lang('admin');
+        }
+
         $roles = $this->Roles_model->get_all()->result();
         foreach ($roles as $role) {
             $role_dropdown[$role->id] = $role->title;
@@ -699,7 +804,7 @@ class Team_members extends MY_Controller {
 
     //save account settings of a team member
     function save_account_settings($user_id) {
-        $this->only_admin_or_own($user_id);
+        $this->only_admin_or_own_or_permission($user_id);
 
         if ($this->Users_model->is_email_exists($this->input->post('email'), $user_id)) {
             echo json_encode(array("success" => false, 'message' => lang('duplicate_email')));
@@ -709,7 +814,7 @@ class Team_members extends MY_Controller {
             "email" => $this->input->post('email')
         );
 
-        if ($this->login_user->is_admin && $this->login_user->id != $user_id) {
+        if ($this->login_user->id != $user_id && $this->validate_user_role_permission('team_member_update_permission_all', true)) {
             //only admin user has permission to update team member's role
             //but admin user can't update his/her own role 
             $role = $this->input->post('role');

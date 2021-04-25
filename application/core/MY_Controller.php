@@ -32,24 +32,47 @@ class MY_Controller extends CI_Controller {
         if ($this->login_user->permissions) {
             $permissions = unserialize($this->login_user->permissions);
             $this->login_user->permissions = is_array($permissions) ? $permissions : array();
+            //echo "<script> console.log(JSON.parse('".json_encode($this->login_user->permissions)."')); </script>";
         } else {
             $this->login_user->permissions = array();
         }
     }
 
+    /**
+     * Validate a module if currently enabled for this user.
+     */
     protected function validate_user_module_permission($module) {
-        if(!is_user_has_module_permission($module)){
-            redirect("forbidden");
+        if(!is_user_has_module_permission($module, $asbool = false)){
+            if(!$asbool) {
+                redirect("forbidden");
+            }
+        } else {
+            if($asbool) {
+                return true;
+            }
         }
+        return false;
     }
 
-    protected function validate_user_role_permission($permission) {
+    /**
+     * Validate user permission if enabled for this sub module.
+     */
+    protected function validate_user_role_permission($permission, $asbool = false) {
         if(!user_role_has_permission($permission)){
-            redirect("forbidden");
+            if(!$asbool) {
+                redirect("forbidden");
+            }
+        } else {
+            if($asbool) {
+                return true;
+            }
         }
+        return false;
     }
 
-    //initialize the login user's permissions with readable format
+    /**
+     * Initialize the login user's permissions with readable format
+     */
     protected function init_permission_checker($module) {
         $info = $this->get_access_info($module);
         $this->access_type = $info->access_type;

@@ -74,11 +74,24 @@
                         </div>
                         <div id="roles-tab-module_hrs" class="collapse ">
                             <ul class="list-group help-catagory">
-                            <div>
+                            <div class="form-group">
                                 <?php
                                 echo form_checkbox("module_hrs", "1", $module_hrs ? true : false, "id='module_hrs'");
                                 ?>
                                 <label for="module_hrs"><?php echo lang("module_enable"); ?></label>
+                            </div>
+                            <div class="form-group">
+                                <h5>Employee</h5>
+                                <?php echo form_checkbox("hrs_employee_view", "1", $hrs_employee_view ? true : false, "id='hrs_employee_view'"); ?>
+                                <label for="hrs_employee_view">	&nbsp;<?php echo lang("view"); ?></label>
+                                <?php echo form_checkbox("hrs_employee_add", "1", $hrs_employee_add ? true : false, "id='hrs_employee_add'"); ?>
+                                <label for="hrs_employee_add"> &nbsp;<?php echo lang("add"); ?></label>
+                                <?php echo form_checkbox("hrs_employee_edit", "1", $hrs_employee_edit ? true : false, "id='hrs_employee_edit'"); ?>
+                                <label for="hrs_employee_edit">	&nbsp;<?php echo lang("edit"); ?></label>
+                                <?php echo form_checkbox("hrs_employee_delete", "1", $hrs_employee_delete ? true : false, "id='hrs_employee_delete'"); ?>
+                                <label for="hrs_employee_delete"> &nbsp;<?php echo lang("delete"); ?></label>
+                                <?php echo form_checkbox("hrs_employee_invite", "1", $hrs_employee_invite ? true : false, "id='hrs_employee_invite'"); ?>
+                                <label for="hrs_employee_invite"> &nbsp;<?php echo lang("invite"); ?></label>
                             </div>
 
                             <div>
@@ -89,7 +102,7 @@
                             </div>
                             
                             <strong class="perm-head"><?php echo lang("can_manage_team_members_timecards"); ?>
-                                <span class="help" data-toggle="tooltip" title="Add, edit and delete time cards"><i class="fa fa-question-circle"></i></span>
+                                <span class="help" data-toggle="tooltip" title="Add, edit and delete attendance"><i class="fa fa-question-circle"></i></span>
                             </strong>
                             <div>
                                 <?php
@@ -194,7 +207,9 @@
                             </div>
 
                             <div>
-                                <label for="can_update_team_members_general_info_and_social_links"><?php echo lang("can_update_team_members_general_info_and_social_links"); ?></label>
+                                <label for="can_update_team_members_general_info_and_social_links">
+                                    <?php echo lang("can_update_team_members_general_info_and_social_links"); ?>
+                                </label>
                                 <div class="ml15">
                                     <div>
                                         <?php
