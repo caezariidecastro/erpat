@@ -1,0 +1,81 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Users extends MY_Controller {
+    
+    function __construct() {
+        parent::__construct(false);
+        $this->load->library('session');
+        $this->load->helper('url');
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization,Basic");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method == "OPTIONS") {
+            die();
+        }
+    }
+
+    function index(){
+        echo json_encode(array("success"=>true, "message"=>"Action not defined!"));
+    }
+
+    function token() {
+        //TODO: Verify dynamic encryption key.
+        $secret_key  = $this->input->get_request_header('Basic');
+
+        if(isset($secret_key) && $secret_key == ENCRYPTION) {
+            $name = $this->security->get_csrf_token_name();
+            $value = $this->security->get_csrf_hash();
+            echo json_encode( array("success"=>true, "data"=>[array("name"=>$name,"value"=>$value)] ));
+            exit();
+        }
+        
+        echo json_encode( array("success"=>false, "message"=>"Invalid secret or encryption key provided." ) );
+    }
+
+    function signin() {
+        $email = $this->input->post('email');
+        $pword = $this->input->post('pword');
+
+        $user_id = $this->Users_model->authenticate($email, $pword, true);
+        if (!$user_id && !is_integer($user_id)) {
+            echo json_encode(array("success"=>false, "message"=>"Email or Password is incorrect!"));
+            exit();
+        }
+
+        $now = strtotime(get_my_local_time());
+        $span = TOKEN_EXPIRY;
+        $expiry = (int)$now + (int)$span;
+
+        $user = array(
+            "id" => $user_id,
+            "email" => $email,
+            "expired" => $expiry //SHOULD BE INT.
+        );
+        $token = JWT::encode($user, ENCRYPTION);
+
+        echo json_encode(array("success"=>true, "data"=> array("token"=>$token)));
+    }
+
+    function verify() {
+        $token  = $this->input->get_request_header('JWT');
+        echo json_encode(self::validate($token));
+    }
+
+    public static function validate($token) {
+        if(empty($token )) {
+            return array("success"=>false, "message"=> "You're token is invalid!");
+        }
+        
+        $decoded = JWT::decode($token, ENCRYPTION);
+        if($decoded) {
+            return array("success"=>true, "data"=> array("token"=>(array)$decoded));
+        } else {
+            return array("success"=>false, "message"=> "You're token is tampered!");
+        }
+    }
+}

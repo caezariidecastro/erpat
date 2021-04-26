@@ -9,7 +9,7 @@ class Users_model extends Crud_model {
         parent::__construct($this->table);
     }
 
-    function authenticate($email, $password) {
+    function authenticate($email, $password, $return_id = false) {
 
         $email = $this->db->escape_str($email);
 
@@ -27,8 +27,12 @@ class Users_model extends Crud_model {
         if ((strlen($user_info->password) === 60 && password_verify($password, $user_info->password)) || $user_info->password === md5($password)) {
 
             if ($this->_client_can_login($user_info) !== false) {
-                $this->session->set_userdata('user_id', $user_info->id);
-                return true;
+                if($return_id) {
+                    return $user_info->id;
+                } else {
+                    $this->session->set_userdata('user_id', $user_info->id);
+                    return true;
+                }
             }
         }
     }

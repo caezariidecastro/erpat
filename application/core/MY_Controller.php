@@ -10,31 +10,33 @@ class MY_Controller extends CI_Controller {
     protected $is_user_a_project_member = false;
     protected $is_clients_project = false; //check if loged in user's client's project
 
-    function __construct() {
+    function __construct($initialize = true) {
         parent::__construct();
 
-        //check user's login status, if not logged in redirect to signin page
-        $login_user_id = $this->Users_model->login_user_id();
-        if (!$login_user_id) {
-            $uri_string = uri_string();
+        if($initialize) {
+            //check user's login status, if not logged in redirect to signin page
+            $login_user_id = $this->Users_model->login_user_id();
+            if (!$login_user_id) {
+                $uri_string = uri_string();
 
-            if (!$uri_string || $uri_string === "signin") {
-                redirect('signin');
-            } else {
-                redirect('signin?redirect=' . get_uri($uri_string));
+                if (!$uri_string || $uri_string === "signin") {
+                    redirect('signin');
+                } else {
+                    redirect('signin?redirect=' . get_uri($uri_string));
+                }
             }
-        }
 
-        //initialize login users required information
-        $this->login_user = $this->Users_model->get_access_info($login_user_id);
+            //initialize login users required information
+            $this->login_user = $this->Users_model->get_access_info($login_user_id);
 
-        //initialize login users access permissions
-        if ($this->login_user->permissions) {
-            $permissions = unserialize($this->login_user->permissions);
-            $this->login_user->permissions = is_array($permissions) ? $permissions : array();
-            //echo "<script> console.log(JSON.parse('".json_encode($this->login_user->permissions)."')); </script>";
-        } else {
-            $this->login_user->permissions = array();
+            //initialize login users access permissions
+            if ($this->login_user->permissions) {
+                $permissions = unserialize($this->login_user->permissions);
+                $this->login_user->permissions = is_array($permissions) ? $permissions : array();
+                //echo "<script> console.log(JSON.parse('".json_encode($this->login_user->permissions)."')); </script>";
+            } else {
+                $this->login_user->permissions = array();
+            }
         }
     }
 

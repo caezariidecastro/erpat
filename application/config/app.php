@@ -4,9 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //don't change or add new config in this file
 
-$config['app_version'] = '1.1.2';
+$config['app_version'] = '1.1.5';
 
 define("DB_MIGRATION_VER", 003);
+
+$config['max_services_dropdown_count'] = 10;
+
+define("TOKEN_EXPIRY", 43200); //12hrs
 
 $config['app_update_url'] = 'https://businext.app/latest/';
 
@@ -21,5 +25,3 @@ $config['app_csrf_exclude_uris'] = array(
     "webhooks_listener.*+",
     "cron"
 );
-
-$config['max_services_dropdown_count'] = 10;
