@@ -1991,3 +1991,11 @@ if (!function_exists('user_role_has_permission')) {
         return false;
     }
 }
+
+
+if (!function_exists('sanitize_with_special_char')) {
+
+    function sanitize_with_special_char($cur_string) {
+        return trim(preg_replace('/\s\s+/', ' ',$cur_string));
+    }
+}
