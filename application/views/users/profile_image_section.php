@@ -18,6 +18,7 @@
         <?php } ?>
         <span class="avatar avatar-lg"><img id="profile-image-preview" src="<?php echo get_avatar($user_info->image); ?>" alt="..."></span> 
         <h4 class=""><?php echo $user_info->first_name . " " . $user_info->last_name; ?></h4>
+        <a href="<?= base_url("hrs/employee/qrcode/".$user_info->id); ?>" target="_blank"><strong style="color: white;">GET QRCODE</strong></a>
         <?php echo form_close(); ?>
     </div> 
 

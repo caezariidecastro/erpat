@@ -8,6 +8,7 @@ class Team_members extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_team_members();
+        $this->load->library('Phpqr');
     }
 
     private function can_view_team_members_contact_info() {
@@ -571,6 +572,16 @@ class Team_members extends MY_Controller {
             $view_data['team_members'] = $this->Users_model->get_details(array("user_type" => "staff", "status" => "active"))->result();
             $this->template->rander("team_members/profile_card", $view_data);
         }
+    }
+
+    function qrcode($id) {
+        $user_info = $this->Users_model->get_details(array("id" => $id))->row();
+        $qrdata = array(
+            "id" => $user_info->id,
+            "email" => $user_info->email
+        );
+        //print_r ($qrdata);
+        echo Phpqr::generate($qrdata, false);
     }
 
     //show the job information of a team member

@@ -6,7 +6,6 @@
                 <?php $this->load->view("users/profile_image_section"); ?>
             </div>
         </div>
-
         <div class="col-md-6 text-center cover-widget">
             <div class="row p20">
                 <?php
