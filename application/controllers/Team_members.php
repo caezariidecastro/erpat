@@ -577,10 +577,8 @@ class Team_members extends MY_Controller {
     function qrcode($id) {
         $user_info = $this->Users_model->get_details(array("id" => $id))->row();
         $qrdata = array(
-            "id" => $user_info->id,
-            "email" => $user_info->email
+            "id" => $user_info->id
         );
-        //print_r ($qrdata);
         echo Phpqr::generate($qrdata, false);
     }
 

@@ -7,8 +7,6 @@ class Users extends MY_Controller {
     
     function __construct() {
         parent::__construct(false);
-        $this->load->library('session');
-        $this->load->helper('url');
         header('Content-Type: application/json');
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization,Basic");
@@ -58,12 +56,30 @@ class Users extends MY_Controller {
         );
         $token = JWT::encode($user, ENCRYPTION);
 
-        echo json_encode(array("success"=>true, "data"=> array("token"=>$token)));
+        $info = $this->Users_model->get_details(array("id"=>$user_id,"deleted"=>0))->row();
+        $user['avatar'] = $info->image != null ? $info->image : get_avatar();
+        $user['fname'] = $info->first_name;
+        $user['lname'] = $info->last_name;
+
+        echo json_encode(array("success"=>true, "data"=> array("token"=>$token,"user"=>$user)));
     }
 
     function verify() {
         $token  = $this->input->get_request_header('JWT');
         echo json_encode(self::validate($token));
+    }
+
+    function get($user_id) {
+        $instance = $this->Users_model->get_details(array("id"=>$user_id,"deleted"=>0))->row();
+        $user_data = array(
+            "fname" => $instance->first_name,
+            "lname" => $instance->last_name,
+            "email" => $instance->email,
+            "avatar" => $instance->image != null ? $instance->image : get_avatar(),
+            "status" => $instance->status,
+            "job" => $instance->job_title
+        );
+        echo json_encode($user_data);
     }
 
     public static function validate($token) {

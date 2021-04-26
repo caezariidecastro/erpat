@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //don't change or add new config in this file
 
-$config['app_version'] = '1.1.7';
+$config['app_version'] = '1.1.9';
 
 define("DB_MIGRATION_VER", 003);
 
