@@ -57,7 +57,7 @@ class Users extends MY_Controller {
         $token = JWT::encode($user, ENCRYPTION);
 
         $info = $this->Users_model->get_details(array("id"=>$user_id,"deleted"=>0))->row();
-        $user['avatar'] = $info->image != null ? $info->image : get_avatar();
+        $user['avatar'] = get_avatar($info->image);
         $user['fname'] = $info->first_name;
         $user['lname'] = $info->last_name;
 
@@ -75,11 +75,11 @@ class Users extends MY_Controller {
             "fname" => $instance->first_name,
             "lname" => $instance->last_name,
             "email" => $instance->email,
-            "avatar" => $instance->image != null ? $instance->image : get_avatar(),
+            "avatar" => get_avatar($instance->image),
             "status" => $instance->status,
             "job" => $instance->job_title
         );
-        echo json_encode($user_data);
+        echo json_encode( array("success"=>true,"data"=>$user_data) );
     }
 
     public static function validate($token) {

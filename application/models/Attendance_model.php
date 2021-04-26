@@ -22,26 +22,32 @@ class Attendance_model extends Crud_model {
         }
     }
 
-    function log_time($user_id, $note = "") {
+    function log_time($user_id, $note = "", $returning = false) {
 
         $current_clock_record = $this->current_clock_in_record($user_id);
 
         $now = get_current_utc_time();
+        $data = array();
 
         if ($current_clock_record && $current_clock_record->id) {
             $data = array(
                 "out_time" => $now,
                 "status" => "pending",
                 "note" => $note
-            );
-            return $this->save($data, $current_clock_record->id);
+            );            
         } else {
             $data = array(
                 "in_time" => $now,
                 "status" => "incomplete",
                 "user_id" => $user_id
             );
-            return $this->save($data);
+        }
+
+        if($returning) {
+            $this->save($data, $current_clock_record->id);
+            return is_object($current_clock_record);
+        } else {
+            return $this->save($data, $current_clock_record->id);
         }
     }
 
