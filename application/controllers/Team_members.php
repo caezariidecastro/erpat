@@ -579,7 +579,11 @@ class Team_members extends MY_Controller {
         $qrdata = array(
             "id" => $user_info->id
         );
-        echo Phpqr::generate($qrdata, false);
+        if($user_info == null) {
+            redirect("forbidden");
+        } else {
+            echo Phpqr::generate($qrdata, false);
+        }
     }
 
     //show the job information of a team member

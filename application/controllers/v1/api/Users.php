@@ -61,6 +61,7 @@ class Users extends MY_Controller {
         $user['avatar'] = get_avatar($info->image);
         $user['fname'] = $info->first_name;
         $user['lname'] = $info->last_name;
+        $user['id'] = $info->id;
 
         echo json_encode(array("success"=>true, "data"=> array("token"=>$token,"user"=>$user)));
     }
@@ -70,7 +71,7 @@ class Users extends MY_Controller {
         echo json_encode(self::validate($token));
     }
 
-    function get($user_id) {
+    function get($user_id, $encoded = 'true', $isEcho = true, $generalOnly = true) {
         $instance = $this->Users_model->get_details(array("id"=>$user_id,"deleted"=>0))->row();
         $user_data = array(
             "fname" => $instance->first_name,
@@ -80,7 +81,13 @@ class Users extends MY_Controller {
             "status" => $instance->status,
             "job" => $instance->job_title
         );
-        echo json_encode( array("success"=>true,"data"=>$user_data) );
+
+        if($instance == null) {
+            return get_encode_where( array("success"=>false,"message"=>"User not found!"), $encoded, $isEcho );
+        } else {
+            $reqData = $generalOnly ? $user_data : $instance;
+            return get_encode_where( array("success"=>true,"data"=>$reqData), $encoded, $isEcho );
+        }
     }
 
     public static function validate($token) {

@@ -23,15 +23,21 @@ class Attendance extends Users {
             echo json_encode( array("success"=>false, "message"=>$validation['message'] ) );
             exit();
         }
-        //TODO: Check if this user has credential to clockin/clockout a user.
-        $user = $validation['data']['token'];
+        
+        $user = $this->get($userid, false, false, false);
+        $authId = $this->input->post('id');
+
+        if($user['data']->status === 'inactive' || $user['data']->deleted === '1' || !user_has_permission($authId, 'attendance')) {
+            echo json_encode( array("success"=>false, "message"=>"User is currently inactive/deleted or auth user dont have permission." ) );
+            exit();
+        }
 
         $is_currently_clocked_in = $this->Attendance_model->log_time($userid, "Note sample!", true);  
         echo json_encode( array(
             "success"=>true, 
             "message"=>"Successfully clocked in.",
             "stamp"=>get_my_local_time(),
-            "clocked"=>$is_currently_clocked_in
+            "clocked"=>$is_currently_clocked_in,
         ));      
     }
 }

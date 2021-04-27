@@ -1992,6 +1992,21 @@ if (!function_exists('user_role_has_permission')) {
     }
 }
 
+if (!function_exists('user_has_permission')) {
+
+    function user_has_permission($userid, $permission) {
+        $ci = get_instance();
+        $login_user = $ci->Users_model->get_access_info($userid);
+        $permission_list = unserialize($login_user->permissions);
+
+        if( $login_user->is_admin || get_array_value($permission_list, $permission) ){
+            return true;
+        }
+
+        return false;
+    }
+}
+
 
 if (!function_exists('sanitize_with_special_char')) {
 
@@ -2013,5 +2028,16 @@ if (!function_exists('hash_unique_id')) {
                 )
             ), 0, 48-(192-$width)/4
         );
+    }
+}
+
+if (!function_exists('get_encode_where')) {
+
+    function get_encode_where($object, $encoded = 'true', $isEcho = false) {
+        if($isEcho) {
+            echo (string)$encoded === 'true' ? json_encode($object) : $object;
+        } else {
+            return (string)$encoded === 'true' ? json_encode($object) : $object;
+        }
     }
 }
