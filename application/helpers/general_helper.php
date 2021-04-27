@@ -1999,3 +1999,19 @@ if (!function_exists('sanitize_with_special_char')) {
         return trim(preg_replace('/\s\s+/', ' ',$cur_string));
     }
 }
+
+if (!function_exists('hash_unique_id')) {
+
+    function hash_unique_id($data, $width=192, $rounds=3, $salt="bytescrafter") {
+        return substr(
+            implode(
+                array_map(
+                    function ($h) {
+                        return str_pad(bin2hex(strrev($h)), 16, "0");
+                    },
+                    str_split(hash("tiger192,$rounds", $data, true), 8)
+                )
+            ), 0, 48-(192-$width)/4
+        );
+    }
+}

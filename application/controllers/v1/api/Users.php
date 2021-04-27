@@ -7,6 +7,7 @@ class Users extends MY_Controller {
     
     function __construct() {
         parent::__construct(false);
+        $this->load->library('encryption');
         header('Content-Type: application/json');
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization,Basic");
@@ -65,7 +66,7 @@ class Users extends MY_Controller {
     }
 
     function verify() {
-        $token  = $this->input->get_request_header('JWT');
+        $token  = $this->input->get_request_header('Basic');
         echo json_encode(self::validate($token));
     }
 
