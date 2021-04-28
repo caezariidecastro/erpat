@@ -575,15 +575,19 @@ class Team_members extends MY_Controller {
     }
 
     function qrcode($id) {
+        if(!user_has_permission($this->login_user->id, 'attendance')) {
+            redirect("forbidden");
+        }        
+
         $user_info = $this->Users_model->get_details(array("id" => $id))->row();
+        if($user_info == null) {
+            redirect("forbidden");
+        }
+        
         $qrdata = array(
             "id" => $user_info->id
         );
-        if($user_info == null) {
-            redirect("forbidden");
-        } else {
-            echo Phpqr::generate($qrdata, false);
-        }
+        echo Phpqr::generate($qrdata, false);
     }
 
     //show the job information of a team member

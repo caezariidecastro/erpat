@@ -18,10 +18,11 @@
         <?php } ?>
         <span class="avatar avatar-lg"><img id="profile-image-preview" src="<?php echo get_avatar($user_info->image); ?>" alt="..."></span> 
         <h4 class=""><?php echo $user_info->first_name . " " . $user_info->last_name; ?></h4>
-        <a href="<?= base_url("hrs/employee/qrcode/".$user_info->id); ?>" target="_blank"><strong style="color: white;">GET QRCODE</strong></a>
+        <?php if(user_has_permission($this->login_user->id, 'attendance')) { ?>
+            <a href="<?= base_url("hrs/employee/qrcode/".$user_info->id); ?>" target="_blank"><strong style="color: white;">GET QRCODE</strong></a>
+        <?php } ?>
         <?php echo form_close(); ?>
     </div> 
-
 
     <div class="box-content pl15">
         <p class="p10 m0"><label class="label label-info large"><strong> <?php echo $user_info->job_title; ?> </strong></label></p> 
