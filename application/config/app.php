@@ -4,9 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //don't change or add new config in this file
 
-$config['app_version'] = '1.1.19';
-
-define("DB_MIGRATION_VER", 003);
+$config['app_version'] = '1.1.21';
 
 $config['max_services_dropdown_count'] = 10;
 
