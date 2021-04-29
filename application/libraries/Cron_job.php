@@ -14,8 +14,8 @@ class Cron_job {
         $this->ci = get_instance();
         $this->current_time = strtotime(get_current_utc_time());
 
+        $this->call_minutely_jobs();
         $this->call_hourly_jobs();
-
 
         try {
             $this->run_imap();
@@ -33,6 +33,20 @@ class Cron_job {
             $this->close_inactive_tickets();
         } catch (Exception $e) {
             echo $e;
+        }
+    }
+
+    private function call_minutely_jobs() {
+        //wait 1 minute for each call of following actions
+        if ($this->_is_minutely_job_runnable()) {
+            //Run auto clockout if attendance is greater than 10hrs with note Sytem Logout.
+        }
+    }
+
+    private function _is_minutely_job_runnable() {
+        $last_hourly_job_time = get_setting('last_hourly_job_time');
+        if ($last_hourly_job_time == "" || ($this->current_time > ($last_hourly_job_time * 1 + 60))) {
+            return true;
         }
     }
 
