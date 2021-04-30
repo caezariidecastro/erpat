@@ -83,6 +83,11 @@ class Migration_Add_schedule extends CI_Migration {
                     'default' => NULL,
                     'null' => true
                 ),
+                'deleted' => array(
+                    'type' => 'TINYINT',
+                    'constraint' => 1,
+                    'default' => '0',
+                ),
             );
             $this->dbforge->add_field($fields);
             $this->dbforge->add_key('id', TRUE);

@@ -27,6 +27,7 @@ $lang["module_enable"] = "Enable this Module";
 $lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_department"] = "Department";
 $lang["submenu_hrm_attendance"] = "Attendance";
+$lang["submenu_hrm_schedule"] = "Schedule";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
 $lang["submenu_hrm_holidays"] = "Holidays";
@@ -474,3 +475,10 @@ $lang["record_cannot_be_restored"] = "The record is in use, you can't restore th
 $lang["record_restored"] = "The record has been restored.";
 
 $lang["edit_employee"] = "Edit";
+
+// Schedule
+$lang["add_sched"] = "Add Schedule";
+$lang["schedule"] = "Schedules";
+$lang["enable"] = "Enable";
+$lang["in"] = "IN";
+$lang["out"] = "OUT";
