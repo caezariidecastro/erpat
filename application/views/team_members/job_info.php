@@ -50,6 +50,14 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="sched_id" class=" col-md-2"><?php echo lang('current_schedule'); ?></label>
+                <div class=" col-md-10">
+                    <?php
+                    echo form_dropdown("sched_id", $sched_dropdown, $job_info->sched_id, "class='select2 validate-hidden' id='sched_id' ". "'");
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="hours_per_day" class=" col-md-2"><?php echo lang('hours_per_day'); ?></label>
                 <div class=" col-md-10">
                     <?php
@@ -92,6 +100,12 @@
                     ?>
                 </div>
             </div>
+            
+        </div>
+        <div class="panel-default panel-heading">
+            <h4><?php echo lang('contributions'); ?></h4>
+        </div>
+        <div class="panel-body">
             <div class="form-group">
                 <label for="sss" class=" col-md-2"><?php echo lang('sss'); ?></label>
                 <div class="col-md-10">
@@ -153,7 +167,6 @@
                 </div>
             </div>
         </div>
-
         <?php if ($this->login_user->is_admin) { ?>
             <div class="panel-footer">
                 <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>

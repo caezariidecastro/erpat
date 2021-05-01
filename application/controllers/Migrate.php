@@ -1,5 +1,8 @@
 <?php
 
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
 class Migrate extends MY_Controller
 {
     function __construct() {
@@ -66,7 +69,7 @@ class Migrate extends MY_Controller
         $prev_ver = $this->get_current_version();
         if ($this->migration->current() === FALSE) {
             $this->rollback($prev_ver);
-            echo json_encode( array( "success" => false, "message" => $this->migration->error_string() ) );
+            //echo json_encode( array( "success" => false, "message" => $this->migration->error_string() ) );
             return;
         }
 

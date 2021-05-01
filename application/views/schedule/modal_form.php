@@ -222,7 +222,7 @@
         <div class="col-md-2 col-sm-2 form-group" style="transform: scale(1.2);">
             <div>
                 <?php
-                echo form_checkbox("sat_enable", "1", $model_info->sun_enable, "id='sat_enable' class='ml15'");
+                echo form_checkbox("sat_enable", "1", $model_info->sat_enable, "id='sat_enable' class='ml15'");
                 ?> 
             </div>
         </div>
@@ -300,7 +300,9 @@
     $(document).ready(function () {
         $("#schedule-form").appForm({
             onSuccess: function (result) {
-                $(".dataTable:visible").appTable({newData: result.data, dataId: result.id});
+                $(".dataTable:visible").appTable({reload: true});
+                //TODO: Instead of reloading, remove previous and load the new.
+                //$(".dataTable:visible").appTable({newData: result.data, dataId: result.id});
             }
         });
         setTimePicker("#mon_in, #mon_out, #tue_in, #tue_out, #wed_in, #wed_out, #thu_in, #thu_out, #fri_in, #fri_out, #sat_in, #sat_out, #sun_in, #sun_out");

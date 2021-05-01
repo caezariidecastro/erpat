@@ -479,6 +479,10 @@ $lang["edit_employee"] = "Edit";
 // Schedule
 $lang["add_sched"] = "Add Schedule";
 $lang["schedule"] = "Schedules";
+$lang["current_schedule"] = "Current Schedule";
 $lang["enable"] = "Enable";
 $lang["in"] = "IN";
 $lang["out"] = "OUT";
+
+$lang["sys_msg"] = "System Message";
+$lang["no_sched"] = "This attendance does'nt have schedule.";

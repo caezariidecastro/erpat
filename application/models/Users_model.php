@@ -184,6 +184,16 @@ class Users_model extends Crud_model {
         }
     }
 
+    function update_all_user_sched($data) {
+        $jobinfo = $this->db->dbprefix('team_member_job_info');
+        
+        $latest = get_array_value($data, "sched_id");
+        $previous = get_array_value($data, "prev_sched_id");
+
+        $sql = "UPDATE $jobinfo SET `sched_id`='$latest' WHERE sched_id='$previous'";
+        return $this->db->query($sql);
+    }
+
     function get_team_members($member_ids = "") {
         $users_table = $this->db->dbprefix('users');
         $sql = "SELECT $users_table.*

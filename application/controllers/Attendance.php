@@ -300,6 +300,12 @@ class Attendance extends MY_Controller {
             $note_link = modal_anchor(get_uri("hrs/attendance/note_modal_form"), "<i class='fa fa-comment p10'></i>", array("class" => "edit text-muted", "title" => $note_title, "data-modal-title" => lang("note"), "data-post-id" => $data->id));
         }
 
+        $sched_link = modal_anchor(get_uri("modal/notify"), "<i class='fa fa-circle-o p10'></i>", array("class" => "edit text-muted", "title" => lang("sys_msg"), "data-post-msg" => lang('no_sched') ));
+        if ($data->sched_id) {
+            $sched_link = modal_anchor(get_uri("hrs/schedule/modal_form/display"), "<i class='fa fa-clock-o p10'></i>", array("class" => "edit text-muted", "title" => lang("schedule"), "data-modal-title" => lang("schedule"), "data-post-id" => $data->sched_id));
+        }
+
+        $info_link = $note_link.$sched_link;
 
         return array(
             get_team_member_profile_link($data->user_id, $user),
@@ -310,7 +316,7 @@ class Attendance extends MY_Controller {
             $out_time ? format_to_date($out_time) : "-",
             $out_time ? format_to_time($out_time) : "-",
             convert_seconds_to_time_format(abs($to_time - $from_time)),
-            $note_link,
+            $info_link,
             $option_links
         );
     }

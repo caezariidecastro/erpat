@@ -9,6 +9,7 @@ class Team_members extends MY_Controller {
         parent::__construct();
         $this->access_only_team_members();
         $this->load->library('Phpqr');
+        $this->load->model('Schedule_model');
     }
 
     private function can_view_team_members_contact_info() {
@@ -598,11 +599,25 @@ class Team_members extends MY_Controller {
 
         $options = array("id" => $user_id);
         $user_info = $this->Users_model->get_details($options)->row();
+        $view_data['sched_dropdown'] = $this->_get_schedule_dropdown();
 
         $view_data['user_id'] = $user_id;
         $view_data['job_info'] = $this->Users_model->get_job_info($user_id);
         $view_data['job_info']->job_title = $user_info->job_title;
         $this->load->view("team_members/job_info", $view_data);
+    }
+
+     //prepare the dropdown list of schedule
+     private function _get_schedule_dropdown() {
+        $sched_dropdown = array(
+            "" => '-',
+        );
+
+        $schedule = $this->Schedule_model->get_details()->result();
+        foreach ($schedule as $item) {
+            $sched_dropdown[$item->id] = $item->title;
+        }
+        return $sched_dropdown;
     }
 
     //save job information of a team member
@@ -619,6 +634,7 @@ class Team_members extends MY_Controller {
 
         $job_data = array(
             "user_id" => $user_id,
+            "sched_id" => $this->input->post('sched_id'),
             "salary" => unformat_currency($this->input->post('salary')),
             "salary_term" => $this->input->post('salary_term'),
             "hours_per_day" => $this->input->post('hours_per_day'),

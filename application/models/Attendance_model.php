@@ -22,9 +22,23 @@ class Attendance_model extends Crud_model {
         }
     }
 
+    protected function getUserSchedId($user_id) {
+        $job_info = $this->db->dbprefix('team_member_job_info');
+        $sql = "SELECT sched_id FROM $job_info 
+            WHERE deleted=0 AND user_id='$user_id'";
+        $result = $this->db->query($sql);
+
+        if( $result && count($result->result()) > 0 ) {
+            return $result->result()[0]->sched_id;
+        } else {
+            return 0;
+        }
+    }
+
     function log_time($user_id, $note = "", $returning = false) {
 
         $current_clock_record = $this->current_clock_in_record($user_id);
+        $sched_id = $this->getUserSchedId($user_id);
 
         $now = get_current_utc_time();
         $data = array();
@@ -37,6 +51,7 @@ class Attendance_model extends Crud_model {
             );            
         } else {
             $data = array(
+                "sched_id" => $sched_id,
                 "in_time" => $now,
                 "status" => "incomplete",
                 "user_id" => $user_id

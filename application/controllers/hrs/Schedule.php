@@ -9,6 +9,7 @@ class Schedule extends MY_Controller
     {
         parent::__construct();
         $this->load->model("Schedule_model");
+        $this->load->model('Users_model');
 
         //this module is accessible only to team members 
         $this->access_only_team_members();
@@ -143,7 +144,7 @@ class Schedule extends MY_Controller
                 $data_modal->mon_enable = 1;
                 $data_modal->mon_in = $day['in'];
                 $data_modal->mon_out = $day['out'];
-                print_r($day);
+                $data_modal->mon_text = $day['in']."-".$day['out'];
             }
 
             if($data->tue) {
@@ -151,6 +152,7 @@ class Schedule extends MY_Controller
                 $data_modal->tue_enable = 1;
                 $data_modal->tue_in = $day['in'];
                 $data_modal->tue_out = $day['out'];
+                $data_modal->tue_text = $day['in']."-".$day['out'];
             }
 
             if($data->wed) {
@@ -158,6 +160,7 @@ class Schedule extends MY_Controller
                 $data_modal->wed_enable = 1;
                 $data_modal->wed_in = $day['in'];
                 $data_modal->wed_out = $day['out'];
+                $data_modal->wed_text = $day['in']."-".$day['out'];
             }
 
             if($data->thu) {
@@ -165,6 +168,7 @@ class Schedule extends MY_Controller
                 $data_modal->thu_enable = 1;
                 $data_modal->thu_in = $day['in'];
                 $data_modal->thu_out = $day['out'];
+                $data_modal->thu_text = $day['in']."-".$day['out'];
             }
 
             if($data->fri) {
@@ -172,6 +176,7 @@ class Schedule extends MY_Controller
                 $data_modal->fri_enable = 1;
                 $data_modal->fri_in = $day['in'];
                 $data_modal->fri_out = $day['out'];
+                $data_modal->fri_text = $day['in']."-".$day['out'];
             }
 
             if($data->sat) {
@@ -179,6 +184,7 @@ class Schedule extends MY_Controller
                 $data_modal->sat_enable = 1;
                 $data_modal->sat_in = $day['in'];
                 $data_modal->sat_out = $day['out'];
+                $data_modal->sat_text = $day['in']."-".$day['out'];
             }
 
             if($data->sun) {
@@ -186,6 +192,7 @@ class Schedule extends MY_Controller
                 $data_modal->sun_enable = 1;
                 $data_modal->sun_in = $day['in'];
                 $data_modal->sun_out = $day['out'];
+                $data_modal->sun_text = $day['in']."-".$day['out'];
             }
 
             return $data_modal;
@@ -194,17 +201,25 @@ class Schedule extends MY_Controller
     }
 
     //show add/edit attendance modal
-    function modal_form() {
+    function modal_form($request = null) {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
-        $id = $this->input->post('id');
-
+        
         $view_data['time_format_24_hours'] = get_setting("time_format") == "24_hours" ? true : false;
-        $view_data['model_info'] = $id ? $this->Schedule_model->get_details(array("id" => $id))->row() : NULL;
-        $view_data['model_info'] = $this->processOne($view_data['model_info']);
+        $id = (int)$this->input->post('id');
+        
+        if($id !== 0) {
+            $view_data['model_info'] = $this->Schedule_model->get_details(array("id" => $id))->row();
+            $view_data['model_info'] = $this->processOne($view_data['model_info']);
+        }
 
-        $this->load->view('schedule/modal_form', $view_data);
+        //Show onmly view
+        if($request == 'display') {
+            $this->load->view('schedule/display', $view_data);
+        } else {
+            $this->load->view('schedule/modal_form', $view_data);
+        }
     }
 
     protected function getDaySched($day) {
@@ -228,8 +243,8 @@ class Schedule extends MY_Controller
         validate_submitted_data(array(
             "id" => "numeric"
         ));
-
         $id = $this->input->post('id');
+        
         $title = $this->input->post('title');
         $desc = $this->input->post('desc');
 
@@ -246,14 +261,26 @@ class Schedule extends MY_Controller
         $data["sat"] = $this->getDaySched("sat");
         $data["sun"] = $this->getDaySched("sun");
 
-        if(!$id){
-            $data["date_created"] = get_my_local_time();
-            $data["created_by"] = $this->login_user->id;
-        }
+        $data["date_created"] = get_my_local_time();
+        $data["created_by"] = $this->login_user->id;
 
-        $saved_id = $this->Schedule_model->save($data, $id);
+        $saved_id = $this->Schedule_model->save($data, null);
 
-        if ($saved_id) {
+        if ($saved_id) {            
+            $data = array(
+                "sched_id"=>$saved_id,
+                "prev_sched_id"=>$id
+            );
+            $this->Users_model->update_all_user_sched($data);
+
+            // //if(!$test) {
+            //     echo json_encode(array("success" => false, 'message' => json_encode($test) ));
+            //     exit;
+            // //}
+
+            //Delete previous
+            $this->Schedule_model->delete( $id );
+
             $options = array("id" => $saved_id);
             $current = $this->Schedule_model->get_details($options)->row();
             echo json_encode(array("success" => true, "id" => $saved_id, "data" => $this->_make_row($current), 'message' => lang('record_saved')));
