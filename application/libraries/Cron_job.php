@@ -40,12 +40,15 @@ class Cron_job {
         //wait 1 minute for each call of following actions
         if ($this->_is_minutely_job_runnable()) {
             //Run auto clockout if attendance is greater than 10hrs with note Sytem Logout.
+            $this->ci->Attendance_model->auto_clockout();
+
+            $this->ci->Settings_model->save_setting("last_minutely_job_time", $this->current_time);
         }
     }
 
     private function _is_minutely_job_runnable() {
-        $last_hourly_job_time = get_setting('last_hourly_job_time');
-        if ($last_hourly_job_time == "" || ($this->current_time > ($last_hourly_job_time * 1 + 60))) {
+        $last_minutely_job_time = get_setting('last_minutely_job_time');
+        if ($last_minutely_job_time == "" || ($this->current_time > ($last_minutely_job_time * 1 + 60))) {
             return true;
         }
     }

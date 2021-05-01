@@ -32,7 +32,7 @@ class Attendance extends Users {
             exit();
         }
 
-        $is_currently_clocked_in = $this->Attendance_model->log_time($userid, "Note sample!", true);  
+        $is_currently_clocked_in = $this->Attendance_model->log_time($userid, "System Generated", true);  
         echo json_encode( array(
             "success"=>true, 
             "message"=>"Successfully clocked in.",
