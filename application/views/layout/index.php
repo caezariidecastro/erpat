@@ -47,6 +47,7 @@ if (get_setting("rtl")) {
         <?php $this->load->view('modal/index'); ?>
         <?php $this->load->view('modal/confirmation'); ?>
         <?php $this->load->view("includes/summernote"); ?>
+        <?php $this->load->view("includes/firebase"); ?>
         <div style='display: none;'>
             <script type='text/javascript'>
 <?php

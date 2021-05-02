@@ -486,3 +486,9 @@ $lang["out"] = "OUT";
 
 $lang["sys_msg"] = "System Message";
 $lang["no_sched"] = "This attendance does'nt have schedule.";
+
+$lang['server_key'] = "Server Key";
+$lang['enable_chat_via_firebase'] = "Enable chat via Firebase";
+$lang['test_message_sent'] = "Test message sent!";
+$lang['test_message_fail'] = "Test message failed!";
+

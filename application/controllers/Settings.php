@@ -1068,6 +1068,25 @@ class Settings extends MY_Controller {
         echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
     }
 
+    function firebase() {
+        $this->load->view("settings/integration/firebase");
+    }
+
+    function save_firebase_settings() {
+
+        $settings = array("enable_firebase_integration", "enable_chat_via_firebase", "firebase_server_key");
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if (is_null($value)) {
+                $value = "";
+            }
+
+            $this->Settings_model->save_setting($setting, $value);
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
     function test_slack_notification() {
         $this->load->helper('notifications');
         if (send_slack_notification("test_slack_notification", $this->login_user->id, 0, get_setting("slack_webhook_url"))) {
