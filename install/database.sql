@@ -253,7 +253,7 @@ PRIMARY KEY (`id`)
 CREATE TABLE IF NOT EXISTS `invoices` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `client_id` int(11) NOT NULL,
-  `consumer_id` int(11) NULL DEFAULT NULL;
+  `consumer_id` int(11) NULL DEFAULT NULL,
   `project_id` int(11) NOT NULL DEFAULT '0',
   `bill_date` date NOT NULL,
   `due_date` date NOT NULL,

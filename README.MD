@@ -2,6 +2,13 @@
 
 BusiNext was originally develop for the used of Bytes Crafter client ticketing and project management solution.
 
+## Installation
+
+1. Copy to your target public_html then open it on your browser.
+2. You will be promt with installation page, complete it.
+3. You can now login using your admin account from previous step.
+4. Important! Dont for =get to update database on http://localhost/migrate/update.
+
 ## CI / CD Standards
 
 Please add this command on git automatic deployment.
