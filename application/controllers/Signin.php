@@ -74,6 +74,18 @@ class Signin extends CI_Controller {
         }
     }
 
+    function session() {
+        $email = $this->input->post("email");
+        $password = $this->input->post("password");
+
+        if (!$this->Users_model->authenticate($email, $password)) {
+            echo json_encode(array("success" => false, "message" => lang("authentication_failed") ));
+            return;
+        }
+
+        echo json_encode(array("success" => true, "seid" => $this->session->session_id));
+    }
+
     // check authentication
     function authenticate($email) {
 
@@ -82,7 +94,6 @@ class Signin extends CI_Controller {
             $this->form_validation->set_message('authenticate', "");
             return false;
         }
-
 
         $password = $this->input->post("password");
         if (!$this->Users_model->authenticate($email, $password)) {
