@@ -1095,7 +1095,6 @@ class Settings extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('slack_notification_error_message')));
         }
     }
-
 }
 
 /* End of file general_settings.php */

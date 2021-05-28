@@ -496,3 +496,9 @@ $lang['created_at'] = "Date Created";
 $lang['updated_at'] = "Last Updated";
 
 $lang['uuid'] = "Identification";
+$lang['maintainance'] = "Maintainance";
+$lang['database'] = "Database";
+$lang['update_database'] = "Update Database";
+$lang['current_version'] = "Current Version";
+$lang['target_version'] = "Target Version";
+$lang['latest_version'] = "Latest Version";
