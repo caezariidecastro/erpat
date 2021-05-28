@@ -492,3 +492,9 @@ $lang['enable_chat_via_firebase'] = "Enable chat via Firebase";
 $lang['test_message_sent'] = "Test message sent!";
 $lang['test_message_fail'] = "Test message failed!";
 
+$lang['maintainance'] = "Maintainance";
+$lang['database'] = "Database";
+$lang['update_database'] = "Update Database";
+$lang['current_version'] = "Current Version";
+$lang['target_version'] = "Target Version";
+$lang['latest_version'] = "Latest Version";

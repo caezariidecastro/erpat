@@ -4,21 +4,6 @@ class Migration_Add_schedule extends CI_Migration {
         
         public function up()
         {
-            
-            //     'created_by' => array(
-            //         'name' => 'created_by',
-            //         'type' => 'INT',
-            //         'constraint' => 11,
-            //         'default' => '0'
-            //     ),
-            //     'date_created' => array(
-            //         'name' => 'date_created',
-            //         'type' => 'TIMESPAN',
-            //         'default' => 'current_timestamp()'
-            //     ),
-            // );
-            //$this->dbforge->add_field($fields);
-
             $fields = array(
                 'id' => array(
                         'type' => 'INT',

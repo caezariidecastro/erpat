@@ -20,6 +20,6 @@ class Migration_Alter_jobinfo extends CI_Migration {
 
         public function down()
         {
-                $this->dbforge->drop_column('invoices', 'consumer_id');
+                //$this->dbforge->drop_column('invoices', 'consumer_id');
         }
 }
