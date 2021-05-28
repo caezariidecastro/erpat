@@ -82,7 +82,6 @@ class Migration_Add_schedule extends CI_Migration {
             if(!$result) {
                 throw new Exception("Hello");
             }
-            
         }
 
         public function down()
