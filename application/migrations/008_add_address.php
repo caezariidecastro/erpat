@@ -11,6 +11,10 @@ class Migration_Add_address extends CI_Migration {
                                 'unsigned' => TRUE,
                                 'auto_increment' => TRUE
                         ),
+                        'uuid' => array(
+                                'type' => 'VARCHAR',
+                                'constraint' => 36,
+                        ),
                         'title' => array(
                                 'type' => 'VARCHAR',
                                 'constraint' => 255,
@@ -67,8 +71,9 @@ class Migration_Add_address extends CI_Migration {
                     );
                     $this->dbforge->add_field($fields);
                     $this->dbforge->add_key('id', TRUE);
+                    $this->dbforge->add_key('uuid');
         
-                    $result = $this->dbforge->create_table('address', TRUE); //IF NOT EXIST.
+                    $this->dbforge->create_table('address', TRUE); //IF NOT EXIST.
         }
 
         public function down()
