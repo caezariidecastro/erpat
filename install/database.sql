@@ -225,21 +225,6 @@ INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL,
 INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Purchase', '0');
 INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Miscellaneous', '0');
 
-CREATE TABLE IF NOT EXISTS `items` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` text COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci,
-  `unit_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `rate` double NOT NULL,
-  `active` int(4) NOT NULL DEFAULT '1',
-  `category` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `created_by` int(11) NOT NULL DEFAULT '0',
-  `created_on` DATETIME NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
 CREATE TABLE IF NOT EXISTS `labels` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
 `title` text COLLATE utf8_unicode_ci NOT NULL,
@@ -1426,17 +1411,6 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `item_categories` (
-`id` bigint(10) NOT NULL AUTO_INCREMENT,
-`category` int(11) NOT NULL,
-`title` varchar(255) NOT NULL,
-`description` text NOT NULL,
-`created_on` datetime NOT NULL,
-`created_by` bigint(10) NOT NULL,
-`deleted` tinyint(4) NOT NULL DEFAULT 0,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
 CREATE TABLE IF NOT EXISTS `payroll` ( 
     `id` BIGINT(10) NOT NULL AUTO_INCREMENT,  
     `employee_id` BIGINT(10) NOT NULL,  
@@ -1769,3 +1743,40 @@ CREATE TABLE IF NOT EXISTS `material_inventory_transfer_items` (
   `deleted` tinyint(4) NOT NULL DEFAULT 0, 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/* #region Services */
+
+  CREATE TABLE IF NOT EXISTS `services` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(36) NOT NULL,
+    `category_id` varchar(36) NOT NULL,
+
+    `title` text COLLATE utf8_unicode_ci NOT NULL,
+    `description` text COLLATE utf8_unicode_ci,
+    `unit_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+    `rate` decimal(20,2) NOT NULL DEFAULT '0.00',
+    
+    `created_by` bigint(20) NOT NULL DEFAULT '0',
+    `created_at` datetime NOT NULL DEFAULT current_timestamp,
+    `updated_at` datetime NOT NULL DEFAULT current_timestamp on update current_timestamp,
+    `active` int(4) NOT NULL DEFAULT '1',
+    `deleted` tinyint(1) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`), INDEX (`uuid`)
+  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+
+  CREATE TABLE IF NOT EXISTS `services_categories` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(36) NOT NULL,
+
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  
+  `created_by` bigint(20) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp,
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp on update current_timestamp,
+  `active` int(4) NOT NULL DEFAULT '1',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`), INDEX (`uuid`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+
+/* #endregion Services */

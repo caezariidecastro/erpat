@@ -718,6 +718,7 @@ class Invoices extends MY_Controller {
         $rate = unformat_currency($this->input->post('invoice_item_rate'));
         $quantity = unformat_currency($this->input->post('invoice_item_quantity'));
         $inventory_id = $this->input->post('inventory_id');
+        $delivery_reference_no = $this->input->post('delivery_reference_no');
 
         $invoice_item_data = array(
             "invoice_id" => $invoice_id,
@@ -726,10 +727,15 @@ class Invoices extends MY_Controller {
             "quantity" => $quantity,
             "unit_type" => $this->input->post('invoice_unit_type'),
             "rate" => unformat_currency($this->input->post('invoice_item_rate')),
-            "total" => $rate * $quantity,
-            "delivery_reference_no" => $this->input->post('delivery_reference_no') ? $this->input->post('delivery_reference_no') : NULL,
-            "inventory_id" => $inventory_id
+            "total" => $rate * $quantity
         );
+
+        if($inventory_id) {
+            $inventory_id['inventory_id'] = $inventory_id;
+        }
+        if($delivery_reference_no) {
+            $delivery_reference_no['delivery_reference_no'] = $delivery_reference_no;
+        }
 
         $invoice_item_id = $this->Invoice_items_model->save($invoice_item_data, $id);
         if ($invoice_item_id) {
@@ -738,12 +744,14 @@ class Invoices extends MY_Controller {
             $add_new_item_to_library = $this->input->post('add_new_item_to_library');
             if ($add_new_item_to_library) {
                 $library_item_data = array(
+                    "uuid" => $this->uuid->v4(),
                     "title" => $this->input->post('invoice_item_title'),
                     "description" => $this->input->post('invoice_item_description'),
                     "unit_type" => $this->input->post('invoice_unit_type'),
-                    "rate" => unformat_currency($this->input->post('invoice_item_rate'))
+                    "rate" => unformat_currency($this->input->post('invoice_item_rate')),
+                    "created_by" => $this->login_user->id
                 );
-                $this->Items_model->save($library_item_data);
+                $this->Services_model->save($library_item_data);
             }
 
             $options = array("id" => $invoice_item_id);

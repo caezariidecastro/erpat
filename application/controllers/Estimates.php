@@ -584,12 +584,14 @@ class Estimates extends MY_Controller {
             $add_new_item_to_library = $this->input->post('add_new_item_to_library');
             if ($add_new_item_to_library) {
                 $library_item_data = array(
+                    "uuid" => $this->uuid->v4(),
                     "title" => $this->input->post('estimate_item_title'),
                     "description" => $this->input->post('estimate_item_description'),
                     "unit_type" => $this->input->post('estimate_unit_type'),
-                    "rate" => unformat_currency($this->input->post('estimate_item_rate'))
+                    "rate" => unformat_currency($this->input->post('estimate_item_rate')),
+                    "created_by" => $this->login_user->id
                 );
-                $this->Items_model->save($library_item_data);
+                $this->Services_model->save($library_item_data);
             }
 
 

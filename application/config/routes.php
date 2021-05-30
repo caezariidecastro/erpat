@@ -94,7 +94,12 @@ $route['pms/clients'] = 'clients/index';
 $route['pms/clients/view/(:any)'] = 'clients/view/$1';
 
 // Services
-$route['pms/services'] = 'item_categories/index';
+$route['services'] = 'pms/services';
+$route['services/index'] = 'pms/services';
+$route['pms/services'] = 'services/index';
+$route['services_categories'] = 'pms/services_categories';
+$route['services_categories/index'] = 'pms/services_categories';
+$route['pms/services_categories'] = 'services_categories/index';
 
 // Tickets
 // $route['help/tickets'] = 'tickets/index';
