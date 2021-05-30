@@ -17,6 +17,35 @@
                 <div class="panel-body post-dropzone">
 
                     <div class="form-group">
+                        <label for="galyon_on_maintainance" class=" col-md-2"><?php echo lang('galyon_on_maintainance'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_dropdown(
+                                    "galyon_on_maintainance", array(
+                                        "inactive" => lang("inactive"),
+                                        "active" => lang("active"),
+                                    ), get_setting('galyon_on_maintainance'), "class='select2 mini'"
+                            );
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="galyon_maintainance_message" class=" col-md-2"><?php echo lang('galyon_maintainance_message'); ?></label>
+                        <div class=" col-md-10">
+                            <?php
+                            echo form_textarea(array(
+                                "id" => "galyon_maintainance_message",
+                                "name" => "galyon_maintainance_message",
+                                "value" => get_setting("galyon_maintainance_message"),
+                                "class" => "form-control",
+                                "placeholder" => lang('message'),
+                            ));
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="minimum_order" class=" col-md-2"><?php echo lang('minimum_order'); ?></label>
                         <div class=" col-md-10">
                             <?php

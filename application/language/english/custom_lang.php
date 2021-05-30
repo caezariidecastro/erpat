@@ -514,3 +514,6 @@ $lang['shipping_price'] = "Shipping Price";
 
 $lang['per_kilometer'] = "Per Kilometer";
 $lang['fixed_amount'] = "Fixed Amount";
+
+$lang['galyon_on_maintainance'] = "App on Maintainance";
+$lang['galyon_maintainance_message'] = "Maintainance Message";

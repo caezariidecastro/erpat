@@ -20,6 +20,12 @@ class Settings extends MY_Controller {
     }
 
     function save_galyon_settings() {
+        $galyon_on_maintainance = $this->input->post("galyon_on_maintainance");
+        $this->Settings_model->save_setting("galyon_on_maintainance", $galyon_on_maintainance);
+
+        $galyon_maintainance_message = $this->input->post("galyon_maintainance_message");
+        $this->Settings_model->save_setting("galyon_maintainance_message", $galyon_maintainance_message);
+
         $minimum_order = $this->input->post("minimum_order");
         $this->Settings_model->save_setting("minimum_order", $minimum_order);
 
