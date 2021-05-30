@@ -502,3 +502,15 @@ $lang['update_database'] = "Update Database";
 $lang['current_version'] = "Current Version";
 $lang['target_version'] = "Target Version";
 $lang['latest_version'] = "Latest Version";
+
+$lang['galyon'] = "Galyon";
+$lang['general_settings'] = "Galyon Settings";
+
+$lang['minimum_order'] = "Minimum Order";
+$lang['free_delivery'] = "Free Delivery";
+
+$lang['shipping_charge'] = "Shipping Charge";
+$lang['shipping_price'] = "Shipping Price";
+
+$lang['per_kilometer'] = "Per Kilometer";
+$lang['fixed_amount'] = "Fixed Amount";

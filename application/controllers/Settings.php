@@ -14,6 +14,31 @@ class Settings extends MY_Controller {
         redirect('settings/general');
     }
 
+    function galyon() {
+        $view_data["galyon_setting"] = array();
+        $this->template->rander("settings/galyon", $view_data);
+    }
+
+    function save_galyon_settings() {
+        $minimum_order = $this->input->post("minimum_order");
+        $this->Settings_model->save_setting("minimum_order", $minimum_order);
+
+        $free_delivery = $this->input->post("free_delivery");
+        $this->Settings_model->save_setting("free_delivery", $free_delivery);
+
+        $shipping_charge = $this->input->post("shipping_charge");
+        $this->Settings_model->save_setting("shipping_charge", $shipping_charge);
+
+        $shipping_price = $this->input->post("shipping_price");
+        $this->Settings_model->save_setting("shipping_price", $shipping_price);
+
+        echo json_encode(array(
+            "success" => true, 
+            'message' => lang('settings_updated'), 
+            //'reload_page' => $sigin_page_background
+        ));
+    }
+
     function general() {
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
         $view_data['timezone_dropdown'] = array();

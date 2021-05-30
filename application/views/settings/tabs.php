@@ -8,7 +8,8 @@ $settings_menu = array(
         array("name" => "notifications", "url" => "settings/notifications"),
     ),
     "components" => array(
-        array("name" => "tasks", "url" => "task_status")
+        array("name" => "tasks", "url" => "task_status"),
+        array("name" => "galyon", "url" => "settings/galyon")
     ),
     "maintainance" => array(
         array("name" => "database", "url" => "database")
