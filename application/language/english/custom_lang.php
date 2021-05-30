@@ -84,8 +84,8 @@ $lang["submenu_lms_consumers"] = "Consumers";
 $lang["passengers"] = "Passengers";
 
 $lang["submenu_mcs_leads"] = "Leads";
-$lang["submenu_mcs_status"] = "Status";
 $lang["submenu_mcs_source"] = "Sources";
+$lang["submenu_mcs_offers"] = "Offers";
 
 // Human Resource > Users
 $lang["user"] = "User";
@@ -514,6 +514,17 @@ $lang['shipping_price'] = "Shipping Price";
 
 $lang['per_kilometer'] = "Per Kilometer";
 $lang['fixed_amount'] = "Fixed Amount";
+$lang['percent_amount'] = "Percent Amount";
 
 $lang['galyon_on_maintainance'] = "App on Maintainance";
 $lang['galyon_maintainance_message'] = "Maintainance Message";
+
+$lang['offers'] = "Offers";
+$lang['add_offers'] = "Add Offers";
+$lang['edit_offers'] = "Edit Offers";
+$lang['delete_offers'] = "Delete Offers";
+$lang['offers_details'] = "Offers Mechanics";
+
+$lang['off'] = "Offer Amount";
+$lang['upto'] = "Max Discount";
+$lang['min'] = "Min Purchase";

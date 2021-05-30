@@ -259,6 +259,18 @@
                             ?>                       
                         </div>
                         <label for="module_lead" class="col-md-3"><?php echo lang('lead'); ?></label>
+                        <div class="col-md-1">
+                            <?php
+                            echo form_checkbox("module_lead_source", "1", get_setting("module_lead_source") ? true : false, "id='module_lead_source' class='ml15'");
+                            ?>                       
+                        </div>
+                        <label for="module_lead_source" class="col-md-3"><?php echo lang('source'); ?></label>
+                        <div class="col-md-1">
+                            <?php
+                            echo form_checkbox("module_offers", "1", get_setting("module_offers") ? true : false, "id='module_offers' class='ml15'");
+                            ?>                       
+                        </div>
+                        <label for="module_offers" class="col-md-3"><?php echo lang('submenu_mcs_offers'); ?></label>
                     </div>
 
                     <div class="form-group">

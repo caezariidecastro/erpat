@@ -246,11 +246,12 @@ $route['mcs/leads'] = 'leads/index';
 $route['mcs/leads/(:any)'] = 'leads/$1';
 $route['mcs/leads/(:any)/(:any)'] = 'leads/$1/$2';
 
-$route['mcs/lead_status'] = 'lead_status/index';
-$route['mcs/lead_status/(:any)'] = 'lead_status/$1';
-
 $route['mcs/lead_source'] = 'lead_source/index';
 $route['mcs/lead_source/(:any)'] = 'lead_source/$1';
+
+$route['mcs/offers'] = 'offers/index';
+$route['mcs/offers/(:any)'] = 'offers/$1';
+$route['mcs/offers/(:any)/(:any)'] = 'offers/$1/$2';
 
 
 // MES Controller 

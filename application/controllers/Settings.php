@@ -525,7 +525,7 @@ class Settings extends MY_Controller {
         "module_mes", 
             "module_pid_productions", "module_pid_billofmaterials", "module_pid_rawmaterials", "module_pid_inventory", "module_pid_products", "module_pid_purchases", "module_pid_returns", "module_pid_supplier",
         "module_mcs", 
-            "module_lead",
+            "module_lead", "module_lead_source", "module_offers",
         "module_lds", 
             "module_lms_delivery", "module_lms_warehouse", "module_lms_transfer", "module_lms_vehicles", "module_lms_driver", "module_lms_consumer",
         "module_sms", 
@@ -537,7 +537,7 @@ class Settings extends MY_Controller {
         "module_css",  
             "module_ticket", "module_help", "module_knowledge_base",
     
-    );
+        );
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);

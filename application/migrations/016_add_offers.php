@@ -26,8 +26,8 @@ class Migration_Add_offers extends CI_Migration {
                                 'default' => '',
                                 'null' => true
                         ),
-                        'image' => array(
-                                'type' => 'text',
+                        'files' => array(
+                                'type' => 'mediumtext',
                                 'default' => '',
                                 'null' => true
                         ),
