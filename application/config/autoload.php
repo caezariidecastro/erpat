@@ -147,7 +147,6 @@ $autoload['model'] = array(
     'Ticket_types_model',
     'Tickets_model',
     'Ticket_comments_model',
-    'Items_model',
     'Invoices_model',
     'Invoice_items_model',
     'Invoice_payments_model',
@@ -180,4 +179,6 @@ $autoload['model'] = array(
     'Expenses_model',
     'Accounts_model',
     'Account_transactions_model',
+    
+    'Services_model'
 );

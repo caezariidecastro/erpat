@@ -34,7 +34,7 @@ class Invoice_items_model extends Crud_model {
     }
 
     function get_item_suggestion($keyword = "") {
-        $items_table = $this->db->dbprefix('items');
+        $items_table = $this->db->dbprefix('services');
         
         $limits = $this->config->item("max_services_dropdown_count");
         $sql = "SELECT $items_table.title
@@ -49,7 +49,7 @@ class Invoice_items_model extends Crud_model {
 
     function get_item_info_suggestion($item_name = "") {
 
-        $items_table = $this->db->dbprefix('items');
+        $items_table = $this->db->dbprefix('services');
         
 
         $sql = "SELECT $items_table.*
