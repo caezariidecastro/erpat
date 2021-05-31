@@ -56,9 +56,9 @@ class Migration_Add_address extends CI_Migration {
                                 'null' => true
                         ),
                         'created_by' => array(
-                            'type' => 'INT',
-                            'constraint' => 11,
-                            'default' => '0',
+                            'type' => 'varchar',
+                            'constraint' => 36,
+                            'default' => null,
                             'null' => true
                         ),
                         'created_at datetime default current_timestamp',

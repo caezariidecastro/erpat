@@ -37,15 +37,23 @@ class Crud_model extends CI_Model {
         }
     }
 
+    function get($uuid = ' ') {
+        return $this->get_one_where(array('uuid' => $uuid), true);
+    }
+
     function get_one($id = 0) {
         return $this->get_one_where(array('id' => $id));
     }
 
-    function get_one_where($where = array()) {
+    function get_one_where($where = array(), $nullable = false) {
         $result = $this->db->get_where($this->table, $where, 1);
         if ($result->num_rows()) {
             return $result->row();
         } else {
+            if($nullable) {
+                return null;
+            }
+
             $db_fields = $this->db->list_fields($this->table);
             $fields = new stdClass();
             foreach ($db_fields as $field) {

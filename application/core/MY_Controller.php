@@ -642,10 +642,7 @@ class MY_Controller extends CI_Controller {
         foreach($keys as $key) {
             $val = $this->input->post($key);
             if($val) {
-                $item = array(
-                    $key => $val
-                );
-                array_push($data, $item);
+                $data[$key] = $val;
             }
         }
 
