@@ -63,6 +63,11 @@ class Migration_Add_address extends CI_Migration {
                         ),
                         'created_at datetime default current_timestamp',
                         'updated_at datetime default current_timestamp on update current_timestamp',
+                        'active' => array(
+                                'type' => 'TINYINT',
+                                'constraint' => 1,
+                                'default' => '1',
+                        ),
                         'deleted' => array(
                             'type' => 'TINYINT',
                             'constraint' => 1,
