@@ -14,17 +14,20 @@ class Languages extends MY_Controller {
         redirect('forbidden');       
     }
 
-    function default()
-    {
-        $this->header_application_json();
-
+    public static function default_lang() {
         //Default Temporary
         $file = 'translation.json';
         $json = file_get_contents(APPPATH.'/language/english/'.$file);
+        return json_decode($json);
+    }
+
+    function default()
+    {
+        $this->header_application_json();
         
         echo json_encode(
             array(
-                "data" => json_decode($json)
+                "data" => self::default_lang()
             )
         );
     }
