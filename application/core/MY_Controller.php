@@ -632,4 +632,7 @@ class MY_Controller extends CI_Controller {
         return true;
     }
 
+    protected function header_application_json() {
+        header('Content-Type: application/json');
+    }
 }
