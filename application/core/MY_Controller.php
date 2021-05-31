@@ -635,4 +635,20 @@ class MY_Controller extends CI_Controller {
     protected function header_application_json() {
         header('Content-Type: application/json');
     }
+
+    protected function validate_post_data($keys) {
+        $data = array();
+        
+        foreach($keys as $key) {
+            $val = $this->input->post($key);
+            if($val) {
+                $item = array(
+                    $key => $val
+                );
+                array_push($data, $item);
+            }
+        }
+
+        return $data;
+    }
 }
