@@ -12,6 +12,11 @@ class Database extends MY_Controller
         $this->load->library('migration');
         $this->config->load('migration');
         $this->reinit_migrate_verion($this->get_latest_version());
+
+        // if ($this->migration->current() === FALSE)
+        // {
+        //     show_error($this->migration->error_string());
+        // }
     }
 
     protected function reinit_migrate_verion($version) {
@@ -50,6 +55,8 @@ class Database extends MY_Controller
 
     public function index()
     {
+        $migrations = $this->migration->find_migrations();
+        $view_data['list_of_version'] = $migrations;
         $view_data['current_version'] = $this->get_current_version();
         $view_data['latest_version'] = $this->get_latest_version();
         $this->template->rander("settings/database", $view_data);
@@ -69,7 +76,7 @@ class Database extends MY_Controller
         }
 
         if($target_version == $this->get_current_version()) {
-            echo json_encode( array( "success" => true, "message" => "Database version is still up to date." ) );
+            echo json_encode( array( "success" => true, "message" => "Database version is still up to date.") );
         } else if($target_version > $this->get_current_version()) {
             $this->migrate($target_version);
         } else {
@@ -97,7 +104,7 @@ class Database extends MY_Controller
             return;
         }
 
-        echo json_encode( array( "success" => true, "message" => "Database migration successfull.") );
+        echo json_encode( array( "success" => true, "message" => "Database migration successfull.", "current" => $target ) );
     }
 
     protected function rollback($version) 
@@ -121,6 +128,6 @@ class Database extends MY_Controller
 
         $this->migration->version($target);
         
-        echo json_encode( array( "success" => true, "message" => "Database rollback successfull." ) );
+        echo json_encode( array( "success" => true, "message" => "Database rollback successfull.", "current" => $target ) );
     }
 }

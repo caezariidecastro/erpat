@@ -15,23 +15,26 @@
                 </div>
                 <div class="panel-body">
                     <div class="form-group">
+                        <label for="current_version" class=" col-md-2"><?php echo lang('current_version'); ?>: </label>
+                        <div id="current_version"><?= $current_version ?></div>
+                    </div>
+                    <div class="form-group">
                         <label for="latest_version" class=" col-md-2"><?php echo lang('latest_version'); ?>: </label>
                         <?= $latest_version ?>
                     </div>
                     <div class="form-group">
-                        <label for="target_version" class=" col-md-2"><?php echo lang('target_version'); ?>: </label>
-                        <div class=" col-md-10">
+                        <label for="target_version" class=" col-md-2"><?php echo lang('target_version'); ?></label>
+                        <div class="col-md-10">
                             <?php
-                            echo form_input(array(
-                                "id" => "target_version",
-                                "name" => "target_version",
-                                "type" => "number",
-                                "value" => $current_version,
-                                "class" => "form-control",
-                                "placeholder" => 0,
-                                "data-rule-required" => true,
-                                "data-msg-required" => lang("field_required")
-                            ));
+                                $versions = array_keys($list_of_version);
+                                array_push($versions, "Select Version");
+                                krsort($versions);
+                                foreach($versions as $key => $val) {
+                                    $versions[$val] = $val;
+                                    unset($versions[$key]);
+                                }
+                                
+                                echo form_dropdown( "target_version", $versions, get_setting('target_version'), "class='select2 mini'" );
                             ?>
                         </div>
                     </div>
@@ -47,12 +50,14 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $("#database-maintainance-form .select2").select2();
+
         $("#database-maintainance-form").appForm({
             isModal: false,
             onSuccess: function (result) {
                 appAlert.success(result.message, {duration: 3000});
+                $('#current_version').html(result.current);
             }
         });
-
     });
 </script>

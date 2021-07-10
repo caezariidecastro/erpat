@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //don't change or add new config in this file
 
-$config['app_version'] = '1.3.2';
+$config['app_version'] = '1.4.0';
 
 $config['max_services_dropdown_count'] = 10;
 
