@@ -514,3 +514,27 @@ if (!function_exists('convert_hours_to_humanize_data')) {
     }
 
 }
+
+//Convert time to hour in decimal.
+if (!function_exists('convert_seconds_to_hour_decimal')) {
+
+    function convert_seconds_to_hour_decimal($seconds = 0) {
+        $is_negative = false;
+        if ($seconds < 0) {
+            $seconds = $seconds * -1;
+            $is_negative = true;
+        }
+        $seconds = $seconds * 1;
+        $hours = floor($seconds / 3600);
+        $mins = floor(($seconds - ($hours * 3600)) / 60);
+        $secs = floor($seconds % 60);
+
+        $total = $hours + (($mins+($secs/60))/60);
+        $total = number_format($total, 2, '.', ',');
+        if ($is_negative) {
+            $total = -$total;
+        }
+        return strval($total);
+    }
+
+}

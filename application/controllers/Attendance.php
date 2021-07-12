@@ -232,7 +232,14 @@ class Attendance extends MY_Controller {
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
 
-        $options = array("start_date" => $start_date, "end_date" => $end_date, "login_user_id" => $this->login_user->id, "user_id" => $user_id, "access_type" => $this->access_type, "allowed_members" => $this->allowed_members);
+        $options = array(
+            "start_date" => $start_date, 
+            "end_date" => $end_date, 
+            "login_user_id" => $this->login_user->id, 
+            "user_id" => $user_id, 
+            "access_type" => $this->access_type, 
+            "allowed_members" => $this->allowed_members
+        );
         $list_data = $this->Attendance_model->get_details($options)->result();
 
         $result = array();
@@ -307,6 +314,13 @@ class Attendance extends MY_Controller {
 
         $info_link = $note_link.$sched_link;
 
+        $duration_type = $this->input->post('duration_type');
+        if($duration_type == 'decimal') {
+            $duration  = convert_seconds_to_hour_decimal(abs($to_time - $from_time));
+        } else {
+            $duration  = convert_seconds_to_time_format(abs($to_time - $from_time));
+        }
+
         return array(
             get_team_member_profile_link($data->user_id, $user),
             $data->in_time,
@@ -316,6 +330,7 @@ class Attendance extends MY_Controller {
             $out_time ? format_to_date($out_time) : "-",
             $out_time ? format_to_time($out_time) : "-",
             convert_seconds_to_time_format(abs($to_time - $from_time)),
+            convert_seconds_to_hour_decimal(abs($to_time - $from_time)),
             $info_link,
             $option_links
         );
@@ -400,14 +415,14 @@ class Attendance extends MY_Controller {
     }
 
     //load the attendance summary details tab
-    function summary_details() {
+    function export() {
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
-        $this->load->view("attendance/summary_details_list", $view_data);
+        $this->load->view("attendance/export_list", $view_data);
     }
 
     /* get data the attendance summary details tab */
 
-    function summary_details_list_data() {
+    function export_list_data() {
         $start_date = $this->input->post('start_date');
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
@@ -437,7 +452,6 @@ class Attendance extends MY_Controller {
             $image_url = get_avatar($data->created_by_avatar);
             $user = "<span class='avatar avatar-xs mr10'><img src='$image_url'></span> $data->created_by_user";
 
-
             $duration = convert_seconds_to_time_format(abs($data->total_duration));
 
             //found a new user, add new row for the total
@@ -460,7 +474,6 @@ class Attendance extends MY_Controller {
                 $last_key = count($result) - 1;
             }
 
-
             $last_total_duration += abs($data->total_duration);
             $last_created_by = $data->created_by_user;
             $has_data = true;
@@ -481,8 +494,6 @@ class Attendance extends MY_Controller {
             $result[$last_key][3] = "<b>" . convert_seconds_to_time_format($last_total_duration) . "</b>";
             $result[$last_key][4] = "<b>" . to_decimal_format(convert_time_string_to_decimal(convert_seconds_to_time_format($last_total_duration))) . "</b>";
         }
-
-
 
         echo json_encode(array("data" => $result));
     }

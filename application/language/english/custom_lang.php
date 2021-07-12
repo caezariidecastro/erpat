@@ -502,3 +502,10 @@ $lang['update_database'] = "Update Database";
 $lang['current_version'] = "Current Version";
 $lang['target_version'] = "Target Version";
 $lang['latest_version'] = "Latest Version";
+
+$lang['time'] = "Time";
+$lang['decimal'] = "Decimal";
+$lang['info'] = "More Info";
+$lang['export'] = "Export";
+$lang['clocked_in'] = "Clocked in";
+$lang['override'] = "Override";

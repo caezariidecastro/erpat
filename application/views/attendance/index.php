@@ -7,9 +7,9 @@
             <li><a role="presentation" class="active" href="javascript:;" data-target="#daily-attendance"><?php echo lang("daily"); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("hrs/attendance/custom/"); ?>" data-target="#custom-attendance"><?php echo lang('custom'); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("hrs/attendance/summary/"); ?>" data-target="#summary-attendance"><?php echo lang('summary'); ?></a></li>
-            <li><a role="presentation" href="<?php echo_uri("hrs/attendance/summary_details/"); ?>" data-target="#summary-attendance-details"><?php echo lang('summary_details'); ?></a></li>
-            <li><a role="presentation" href="<?php echo_uri("hrs/attendance/members_clocked_in/"); ?>" data-target="#members-clocked-in"><?php echo lang('members_clocked_in'); ?></a></li>
-            <li><a role="presentation" href="<?php echo_uri("hrs/attendance/clock_in_out"); ?>" data-target="#clock-in-out"><?php echo lang('clock_in_out'); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("hrs/attendance/export/"); ?>" data-target="#export-attendance"><?php echo lang('export'); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("hrs/attendance/members_clocked_in/"); ?>" data-target="#members-clocked-in"><?php echo lang('clocked_in'); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("hrs/attendance/clock_in_out"); ?>" data-target="#clock-in-out"><?php echo lang('override'); ?></a></li>
 
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
@@ -27,36 +27,41 @@
             </div>
             <div role="tabpanel" class="tab-pane fade" id="custom-attendance"></div>
             <div role="tabpanel" class="tab-pane fade" id="summary-attendance"></div>
-            <div role="tabpanel" class="tab-pane fade" id="summary-attendance-details"></div>
+            <div role="tabpanel" class="tab-pane fade" id="export-attendance"></div>
             <div role="tabpanel" class="tab-pane fade" id="members-clocked-in"></div>
             <div role="tabpanel" class="tab-pane fade" id="clock-in-out"></div>
         </div>
     </div>
 </div>
 
-
 <script type="text/javascript">
     $(document).ready(function () {
         $("#attendance-table").appTable({
             source: '<?php echo_uri("hrs/attendance/list_data/"); ?>',
             order: [[2, "desc"]],
-            filterDropdown: [{name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>}],
+            filterDropdown: [
+                {name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>}
+            ],
             dateRangeType: "daily",
             columns: [
-                {title: "<?php echo lang("user"); ?>", "class": "w20p"},
+                {title: "<?php echo lang("employee"); ?>", "class": "w20p"},
                 {visible: false, searchable: false},
-                {title: "<?php echo lang("in_date"); ?>", "class": "w15p", iDataSort: 1},
-                {title: "<?php echo lang("in_time"); ?>", "class": "w15p"},
+                {title: "<?php echo lang("in_date"); ?>", "class": "text-center w10p", iDataSort: 1},
+                {title: "<?php echo lang("in_time"); ?>", "class": "text-center w10p"},
                 {visible: false, searchable: false},
-                {title: "<?php echo lang("out_date"); ?>", "class": "w15p", iDataSort: 4},
-                {title: "<?php echo lang("out_time"); ?>", "class": "w15p"},
-                {title: "<?php echo lang("duration"); ?>", "class": "text-right"},
-                {title: '<i class="fa fa-comment"></i>', "class": "text-center w50"},
+                {title: "<?php echo lang("out_date"); ?>", "class": "text-center w10p", iDataSort: 4},
+                {title: "<?php echo lang("out_time"); ?>", "class": "text-center w10p"},
+                {title: "<?php echo lang("duration"); ?>", "class": "w10p text-right"},
+                {title: "<?php echo lang("hours"); ?>", "class": "w10p text-right"},
+                {title: "<?php echo lang("info"); ?>", "class": "text-center w50"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             printColumns: [0, 2, 3, 5, 6, 7],
             xlsColumns: [0, 2, 3, 5, 6, 7],
-            summation: [{column: 7, dataType: 'time'}]
+            summation: [
+                {column: 7, dataType: 'time'},
+                {column: 8, dataType: 'number'}
+            ]
         });
     });
 </script>    
