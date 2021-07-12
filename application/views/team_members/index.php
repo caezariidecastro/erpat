@@ -39,10 +39,8 @@
         $("#team_member-table").appTable({
             source: '<?php echo_uri("hrs/team_members/list_data/staff") ?>',
             order: [[1, "asc"]],
-            radioButtons: [
-                {text: '<?php echo lang("active_employees") ?>', name: "status", value: "active", isChecked: true}, 
-                {text: '<?php echo lang("inactive_employees") ?>', name: "status", value: "inactive", isChecked: false},
-                {text: '<?php echo lang("deleted_employees") ?>', name: "status", value: "deleted", isChecked: false}
+            filterDropdown: [
+                {name: "status", class: "text-center w150", options: <?php echo $usertype_dropdown; ?>}
             ],
             columns: [
                 {title: '', "class": "w50 text-center"},

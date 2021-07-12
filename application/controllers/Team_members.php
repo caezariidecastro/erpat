@@ -10,6 +10,7 @@ class Team_members extends MY_Controller {
         $this->access_only_team_members();
         $this->load->library('Phpqr');
         $this->load->model('Schedule_model');
+        $this->load->model('Users_model');
     }
 
     private function can_view_team_members_contact_info() {
@@ -68,6 +69,27 @@ class Team_members extends MY_Controller {
         }
     }
 
+    function get_all_usertypes($with_delete = true) {
+        
+        if($with_delete) {
+            $usertypes_dropdown = array(array("id" => "active", "text" => lang("active") ));
+            $usertypes_dropdown[] = array("id" => "inactive", "text" => lang("inactive") );
+            $usertypes_dropdown[] = array("id" => "applicant", "text" => "Applicant");
+            $usertypes_dropdown[] = array("id" => "resigned", "text" => "Resigned");
+            $usertypes_dropdown[] = array("id" => "terminated", "text" => "Terminated");
+            $usertypes_dropdown[] = array("id" => "deleted", "text" => lang("deleted") );
+        } else {
+            $usertypes_dropdown = array(
+                "employee" => "Employee",
+                "applicant" => "Applicant",
+                "resigned" => "Resigned",
+                "terminated" => "Terminated"
+            );
+        }
+
+        return $usertypes_dropdown;
+    }
+
     public function index() {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
@@ -79,6 +101,8 @@ class Team_members extends MY_Controller {
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
+
+        $view_data["usertype_dropdown"] = json_encode( $this->get_all_usertypes() );
 
         $this->template->rander("team_members/index", $view_data);
     }
@@ -219,6 +243,8 @@ class Team_members extends MY_Controller {
         ));
 
         $view_data['role_dropdown'] = $this->_get_roles_dropdown();
+        
+        $view_data['status_dropdown'] = $this->get_all_usertypes(false);
 
         $id = $this->input->post('id');
         $options = array(
@@ -229,6 +255,17 @@ class Team_members extends MY_Controller {
         if ($view_data['model_info']->is_admin) {
             $view_data['model_info']->role_id = "admin";
         }
+
+        $cuser = $view_data['model_info'];
+        if($cuser->user_type == "staff" && $cuser->resigned == "0" && $cuser->terminated == "0") {
+            $view_data['model_info']->user_status = "employee";
+        } else if($cuser->user_type == "staff" && $cuser->terminated == "1" ) {
+            $view_data['model_info']->user_status = "terminated";
+        } else if($cuser->user_type == "staff" && $cuser->resigned == "1" ) {
+            $view_data['model_info']->user_status = "resigned";
+        } else if($cuser->user_type == "applicant" ) {
+            $view_data['model_info']->user_status = "applicant";
+        }  
 
         $this->load->view('team_members/edit_modal_form', $view_data);
     }
@@ -259,7 +296,25 @@ class Team_members extends MY_Controller {
             $user_data["is_admin"] = "0";
             $user_data["role_id"] = $this->input->post('role');
         }
-        //log_message('error', json_encode($user_data));
+
+        $status_dropdown = $this->input->post('status_dropdown');
+        if($status_dropdown == "employee") {
+            $user_data["user_type"] = "staff";
+            $user_data["resigned"] = "0";
+            $user_data["terminated"] = "0";
+        } else if($status_dropdown == "applicant" ) {
+            $user_data["user_type"] = "applicant";
+            $user_data["resigned"] = "0";
+            $user_data["terminated"] = "0";
+        } else if($status_dropdown == "terminated" ) {
+            $user_data["status"] = "inactive";
+            $user_data["resigned"] = "0";
+            $user_data["terminated"] = "1";
+        } else if($status_dropdown == "resigned" ) {
+            $user_data["status"] = "inactive";
+            $user_data["resigned"] = "1";
+            $user_data["terminated"] = "0";
+        }
 
         $user_data = clean_data($user_data);
 
@@ -340,18 +395,24 @@ class Team_members extends MY_Controller {
     }
 
     //prepere the data for members list
-    function list_data($type_of_user = NULL) {
+    function list_data($type_of_user = "staff") {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
 
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
+        $filter_user = $this->input->post("status");
+        if($filter_user == "applicant") {
+            $type_of_user = "applicant";
+        } else if( empty($filter_user) ){
+            $filter_user = "active";
+        }
+
         $options = array(
-            "status" => $this->input->post("status"),
-            "user_type" => $type_of_user != NULL ? $type_of_user : $this->input->post("staff"),
+            "status" => $filter_user,
+            "user_type" => $type_of_user,
             "custom_fields" => $custom_fields
         );
-
 
         $list_data = $this->Users_model->get_details($options)->result();
         $result = array();

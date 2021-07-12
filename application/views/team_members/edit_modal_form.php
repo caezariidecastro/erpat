@@ -48,6 +48,7 @@
                 ?>
             </div>
         </div>
+        
         <div class="form-group">
             <label for="role" class="col-md-3"><?php echo lang('role'); ?></label>
             <div class="col-md-9">
@@ -55,6 +56,14 @@
                 echo form_dropdown("role", $role_dropdown, array($model_info->role_id), "class='select2 validate-hidden' id='user-role'");
                 ?>
                 <div id="user-role-help-block" class="help-block ml10 <?php echo $model_info->role_id === "admin" ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("admin_user_has_all_power"); ?></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="status_dropdown" class="col-md-3"><?php echo lang('status'); ?></label>
+            <div class="col-md-9">
+                <?php
+                echo form_dropdown("status_dropdown", $status_dropdown, array($model_info->user_status), "class='select2 validate-hidden' id='user-status'");
+                ?>
             </div>
         </div>
         <div class="form-group">

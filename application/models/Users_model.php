@@ -83,12 +83,23 @@ class Users_model extends Crud_model {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.id=$id";
         }
+
         if ($status === "active") {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.status='active'";
         } else if ($status === "inactive") {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.status='inactive'";
+        }
+
+        if ($status === "resigned") {
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.resigned='1'";
+        }
+
+        if ($status === "terminated") {
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.terminated='1'";
         }
         
         $where .= empty($where) ? " " : " AND";
