@@ -1757,8 +1757,8 @@ CREATE TABLE IF NOT EXISTS `material_inventory_transfer_items` (
     `rate` decimal(20,2) NOT NULL DEFAULT '0.00',
     
     `created_by` bigint(20) NOT NULL DEFAULT '0',
-    `created_at` datetime NOT NULL DEFAULT current_timestamp,
-    `updated_at` datetime NOT NULL DEFAULT current_timestamp on update current_timestamp,
+    `created_at` datetime NOT NULL,
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,
     `active` int(4) NOT NULL DEFAULT '1',
     `deleted` tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`), INDEX (`uuid`)
@@ -1772,8 +1772,8 @@ CREATE TABLE IF NOT EXISTS `material_inventory_transfer_items` (
   `description` text NOT NULL,
   
   `created_by` bigint(20) NOT NULL DEFAULT '0',
-  `created_at` datetime NOT NULL DEFAULT current_timestamp,
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp on update current_timestamp,
+  `created_at` datetime NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,
   `active` int(4) NOT NULL DEFAULT '1',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`), INDEX (`uuid`)
