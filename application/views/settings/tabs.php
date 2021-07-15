@@ -11,7 +11,8 @@ $settings_menu = array(
         array("name" => "tasks", "url" => "task_status")
     ),
     "maintainance" => array(
-        array("name" => "database", "url" => "database")
+        array("name" => "migrate_database", "url" => "database"),
+        array("name" => "check_fix", "url" => "check_fix")
     ),
     "access_permission" => array(
         array("name" => "roles", "url" => "roles"),

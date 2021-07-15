@@ -509,3 +509,7 @@ $lang['info'] = "More Info";
 $lang['export'] = "Export";
 $lang['clocked_in'] = "Clocked in";
 $lang['override'] = "Override";
+
+$lang['migrate_database'] = "Migrate Database";
+$lang['check_fix'] = "Check and Fix";
+$lang['last_check'] = "Last Checked";

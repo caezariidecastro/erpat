@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-sm-3 col-lg-2">
             <?php
-            $tab_view['active_tab'] = "database";
+            $tab_view['active_tab'] = "migrate_database";
             $this->load->view("settings/tabs", $tab_view);
             ?>
         </div>

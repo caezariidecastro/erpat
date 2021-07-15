@@ -324,4 +324,22 @@ class Users_model extends Crud_model {
         ORDER BY $users_table.first_name";
         return $this->db->query($sql);
     }
+
+    function get_users_without_uuid() {
+        $users_table = $this->db->dbprefix('users');
+
+        $sql = "SELECT $users_table.id 
+        FROM $users_table
+        WHERE uuid = ''";
+        return $this->db->query($sql)->result();
+    }
+
+    function set_user_uuid($user_id, $new_uuid) {
+        $users_table = $this->db->dbprefix('users');
+
+        $sql = "UPDATE $users_table 
+        SET uuid='$new_uuid' 
+        WHERE id = '$user_id'";
+        return $this->db->query($sql);
+    }
 }
