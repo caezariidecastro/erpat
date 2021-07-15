@@ -242,7 +242,6 @@ $lang["first_day_of_week"] = "Πρώτη Ημέρα της Εβδομάδας";
 $lang["currency_symbol"] = "Σύμβολο Νομίσματος";
 $lang["general"] = "Γενικά";
 $lang["general_settings"] = "Γενικές Ρυθμίσεις";
-$lang["item_purchase_code"] = "Κωδικός Αγοράς Προϊόντος";
 $lang["company"] = "Εταιρεία";
 $lang["company_settings"] = "Ρυθμίσεις Εταιρείας";
 $lang["email_settings"] = "Ρυθμίσεις Email";

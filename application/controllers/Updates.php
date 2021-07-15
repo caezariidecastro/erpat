@@ -47,9 +47,9 @@ class Updates extends MY_Controller {
         $current_version = get_setting("app_version");
 
         $app_update_url = get_setting("app_update_url");
-        $item_purchase_code = get_setting("item_purchase_code");
+        $licence_code = get_setting("licence_code");
 
-        $remot_uplates_url = $app_update_url . "?code=" . $item_purchase_code . "&domain=" . $_SERVER['HTTP_HOST'];
+        $remot_uplates_url = $app_update_url . "?code=" . $licence_code . "&domain=" . $_SERVER['HTTP_HOST'];
 
         $local_updates_dir = get_setting("updates_path");
 

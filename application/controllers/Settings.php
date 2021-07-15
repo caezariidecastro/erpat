@@ -28,7 +28,7 @@ class Settings extends MY_Controller {
     }
 
     function save_general_settings() {
-        $settings = array("site_logo", "favicon", "show_background_image_in_signin_page", "show_logo_in_signin_page", "app_title", "language", "timezone", "date_format", "time_format", "first_day_of_week", "weekends", "default_currency", "currency_symbol", "currency_position", "decimal_separator", "no_of_decimals", "accepted_file_formats", "rows_per_page", "item_purchase_code", "scrollbar", "enable_rich_text_editor", "rtl", "show_theme_color_changer", "default_theme_color");
+        $settings = array("site_logo", "favicon", "show_background_image_in_signin_page", "show_logo_in_signin_page", "app_title", "language", "timezone", "date_format", "time_format", "first_day_of_week", "weekends", "default_currency", "currency_symbol", "currency_position", "decimal_separator", "no_of_decimals", "accepted_file_formats", "rows_per_page", "scrollbar", "enable_rich_text_editor", "rtl", "show_theme_color_changer", "default_theme_color");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);
@@ -39,8 +39,6 @@ class Settings extends MY_Controller {
 
                     //delete old file
                     delete_app_files(get_setting("system_file_path"), get_system_files_setting_value("site_logo"));
-                } else if ($setting === "item_purchase_code" && $value === "******") {
-                    $value = get_setting('item_purchase_code');
                 } else if ($setting === "favicon") {
                     $value = str_replace("~", ":", $value);
                     $value = serialize(move_temp_file("favicon.png", get_setting("system_file_path"), "", $value));

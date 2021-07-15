@@ -242,7 +242,6 @@ $lang["first_day_of_week"] = "Primo giorno della settimana";
 $lang["currency_symbol"] = "Valuta";
 $lang["general"] = "Generale";
 $lang["general_settings"] = "Impostazioni Generali";
-$lang["item_purchase_code"] = "Codice di Attivazione";
 $lang["company"] = "Azienda";
 $lang["company_settings"] = "Impostazioni Azienda";
 $lang["email_settings"] = "Impostazioni Email";

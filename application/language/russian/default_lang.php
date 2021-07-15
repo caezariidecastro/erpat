@@ -242,7 +242,6 @@ $lang["first_day_of_week"] = "Первый день недели";
 $lang["currency_symbol"] = "Денежный знак";
 $lang["general"] = "Общее";
 $lang["general_settings"] = "Общие настройки";
-$lang["item_purchase_code"] = "Код покупки позиции";
 $lang["company"] = "Компания";
 $lang["company_settings"] = "Настройки компании";
 $lang["email_settings"] = "Настройки электронной почты";

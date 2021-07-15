@@ -242,7 +242,6 @@ $lang["first_day_of_week"] = "Første dag i uken";
 $lang["currency_symbol"] = "Valuta Symbol";
 $lang["general"] = "Generelle";
 $lang["general_settings"] = "Generelle innstillinger";
-$lang["item_purchase_code"] = "Vare Kjøpskode";
 $lang["company"] = "Firma";
 $lang["company_settings"] = "Firmainnstillinger";
 $lang["email_settings"] = "E-postinnstillinger";

@@ -242,7 +242,6 @@ $lang["first_day_of_week"] = "Erster Wochentag";
 $lang["currency_symbol"] = "Währungssymbol";
 $lang["general"] = "Allgemein";
 $lang["general_settings"] = "Allgemeine Einstellungen";
-$lang["item_purchase_code"] = "CodeCanyon-Lizenzcode";
 $lang["company"] = "Unternehmen";
 $lang["company_settings"] = "Einstellungen für das Unternehmen";
 $lang["email_settings"] = "E-Mail-Einstellungen";

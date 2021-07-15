@@ -242,7 +242,6 @@ $lang["first_day_of_week"] = "První den v týdnu";
 $lang["currency_symbol"] = "Symbol měny";
 $lang["general"] = "Obecné";
 $lang["general_settings"] = "Obecné nastavení";
-$lang["item_purchase_code"] = "Nákupní kód";
 $lang["company"] = "Společnost";
 $lang["company_settings"] = "Nastavení společnosti";
 $lang["email_settings"] = "Nastavení e-mailu";
