@@ -154,6 +154,7 @@ class Team_members extends MY_Controller {
         ));
 
         $user_data = array(
+            "uuid" => $this->uuid->v4(),
             "email" => $this->input->post('email'),
             "password" => $password ? password_hash($password, PASSWORD_DEFAULT) : "",
             "first_name" => $this->input->post('first_name'),

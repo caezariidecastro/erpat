@@ -87,7 +87,6 @@ class Signup extends CI_Controller {
             "password" => "required"
         ));
 
-
         //check if there reCaptcha is enabled
         //if reCaptcha is enabled, check the validation
         //reCaptcha isn't necessary for a verified user
@@ -111,6 +110,7 @@ class Signup extends CI_Controller {
         $last_name = $this->input->post("last_name");
 
         $user_data = array(
+            "uuid" => $this->uuid->v4(),
             "first_name" => $first_name,
             "last_name" => $last_name,
             "job_title" => $this->input->post("job_title") ? $this->input->post("job_title") : "Untitled",
