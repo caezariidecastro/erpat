@@ -524,6 +524,7 @@ class Invoices extends MY_Controller {
             format_to_date($data->due_date, false),
             to_currency($data->invoice_value, $data->currency_symbol),
             to_currency($data->payment_received, $data->currency_symbol),
+            $data->note,
             $this->_get_invoice_status_label($data) . $invoice_labels
         );
 
@@ -624,6 +625,7 @@ class Invoices extends MY_Controller {
             $next_recurring,
             $data->repeat_every . " " . lang("interval_" . $data->repeat_type),
             "<span class='$cycle_class'>" . $cycles . "</span>",
+            $data->note,
             "<span class='label $invoice_status_class large'>" . lang($status) . "</span>",
             to_currency($data->invoice_value, $data->currency_symbol),
             $this->_make_options_dropdown($data->id)

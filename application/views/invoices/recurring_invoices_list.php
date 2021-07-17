@@ -24,6 +24,7 @@
     {title: "<?php echo lang("next_recurring_date") ?>", "iDataSort": 4, "class": "w10p"},
     {title: "<?php echo lang("repeat_every") ?>", "class": "w10p text-center"},
     {title: "<?php echo lang("cycles") ?>", "class": "w10p text-center"},
+    {title: "<?php echo lang("note") ?>", "class": "w10p text-center"},
     {title: "<?php echo lang("status") ?>", "class": "w10p text-center"},
     {title: "<?php echo lang("invoice_value") ?>", "class": "w10p text-right"},
     {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option w100", visible: optionVisibility}
