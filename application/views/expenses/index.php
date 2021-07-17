@@ -33,20 +33,9 @@
 
 <script type="text/javascript">
     loadExpensesTable = function (selector, dateRange) {
-        var customDatePicker = "", recurring = "0";
-        if (dateRange === "custom" || dateRange === "recurring") {
-            customDatePicker = [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}, showClearButton: true}];
-            
-            if(dateRange === "recurring"){
-                recurring = "1";
-            }
-            
-            dateRange = "";
-        }        
-
-        $(selector).appTable({
+             
+        var config = {
             source: '<?php echo_uri("fas/expenses/list_data") ?>/' + recurring,
-            dateRangeType: dateRange,
             filterDropdown: [
                 {name: "category_id", class: "w200", options: <?php echo $categories_dropdown; ?>},
                 {name: "user_id", class: "w200", options: <?php echo $members_dropdown; ?>},
@@ -55,7 +44,6 @@
                 <?php } ?>
             ],
             order: [[0, "asc"]],
-            rangeDatepicker: customDatePicker,
             columns: [
                 {visible: false, searchable: false},
                 {title: '<?php echo lang("date") ?>', "iDataSort": 0},
@@ -67,13 +55,26 @@
                 {title: '<?php echo lang("tax") ?>', "class": "text-right"},
                 {title: '<?php echo lang("second_tax") ?>', "class": "text-right"},
                 {title: '<?php echo lang("total") ?>', "class": "text-right"}
-<?php echo $custom_field_headers; ?>,
+                <?php echo $custom_field_headers; ?>,
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             printColumns: [1, 2, 3, 4, 6, 7, 8, 9],
             xlsColumns: [1, 2, 3, 4, 6, 7, 8, 9],
             summation: [{column: 6, dataType: 'currency'}, {column: 7, dataType: 'currency'}, {column: 8, dataType: 'currency'}, {column: 9, dataType: 'currency'}]
-        });
+        };
+
+        var customDatePicker = "", recurring = "0";
+        if (dateRange === "custom") {
+            customDatePicker = [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}, showClearButton: true}];
+            dateRange = "";
+        }
+        
+        if(dateRange !== "recurring") {
+            config.dateRangeType = dateRange;
+            config.rangeDatepicker = customDatePicker;
+        }
+
+        $(selector).appTable(config);
     };
 
     $(document).ready(function () {
