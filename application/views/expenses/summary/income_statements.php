@@ -1,11 +1,11 @@
 <div class="table-responsive">
-    <table id="income-vs-expenses-summary-table" class="display" cellspacing="0" width="100%">
+    <table id="income_statements-table" class="display" cellspacing="0" width="100%">
     </table>
 </div>
 
 <script>
-    $("#income-vs-expenses-summary-table").appTable({
-    source: '<?php echo_uri("fas/expenses/income_vs_expenses_summary_list_data"); ?>',
+    $("#income_statements-table").appTable({
+    source: '<?php echo_uri("fas/expenses/income_statements_list_data"); ?>',
             order: [[0, "desc"]],
             dateRangeType: "yearly",
             filterDropdown: [

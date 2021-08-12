@@ -513,3 +513,6 @@ $lang['override'] = "Override";
 $lang['migrate_database'] = "Migrate Database";
 $lang['check_fix'] = "Check and Fix";
 $lang['last_check'] = "Last Checked";
+$lang['comparison'] = "Comparison";
+$lang['income_statements'] = "Income Statements";
+$lang['cash_flows'] = "Cash Flows";

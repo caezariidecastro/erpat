@@ -25,6 +25,8 @@ class Expenses extends MY_Controller {
         $view_data['members_dropdown'] = $this->_get_team_members_dropdown();
         $view_data["projects_dropdown"] = $this->_get_projects_dropdown_for_income_and_epxenses("expenses");
 
+        $view_data["can_edit_expenses"] = true; //TODO: Check if user can edit expense row.
+
         $this->template->rander("expenses/index", $view_data);
     }
 
@@ -60,6 +62,43 @@ class Expenses extends MY_Controller {
             $accounts_dropdown[$group->id] = $group->name;
         }
         return $accounts_dropdown;
+    }
+
+    //prepare options dropdown for invoices list
+    private function _make_options_dropdown($data) {
+
+        //modal_anchor(get_uri("fas/expenses/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expense'), "data-post-id" => $data->id))
+        //        . );
+        //js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expense'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/expenses/delete"), "data-action" => "delete-confirmation")
+        $expense_id = 0;
+
+        $edit = '<li role="presentation">' . modal_anchor(
+            get_uri("fas/expenses/modal_form"), 
+            "<i class='fa fa-pencil'></i> " . lang('edit'), 
+            array("title" => lang('edit'), "data-post-id" => $expense_id)
+            ) . '</li>';
+
+        $delete = '<li role="presentation">' . modal_anchor(
+            get_uri("fas/expenses/delete"), 
+            "<i class='fa fa-times'></i> " . lang('delete'), 
+            array("title" => lang('delete'), "data-post-id" => $expense_id, "data-action" => "delete-confirmation")
+            ) . '</li>';
+
+        $add_payment = '<li role="presentation">' . modal_anchor(
+            get_uri("invoice_payments/payment_modal_form"), 
+            "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), 
+            array("title" => lang('add_payment'), 
+            "data-post-expense_id" => $expense_id)
+            ) . '</li>';
+
+        return '
+                <span class="dropdown inline-block">
+                    <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                        <i class="fa fa-cogs"></i>&nbsp;
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">' . $edit . $delete . $add_payment . '</ul>
+                </span>';
     }
 
     //load the expenses list yearly view
@@ -375,8 +414,8 @@ class Expenses extends MY_Controller {
             $files_link,
             to_currency($data->amount),
             to_currency($tax),
-            to_currency($tax2),
-            to_currency($data->amount + $tax + $tax2)
+            to_currency($data->amount + $tax + $tax2),
+            get_expense_status_label($data)
         );
 
         foreach ($custom_fields as $field) {
@@ -384,9 +423,8 @@ class Expenses extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $row_data[] = modal_anchor(get_uri("fas/expenses/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expense'), "data-post-id" => $data->id))
-                . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expense'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/expenses/delete"), "data-action" => "delete-confirmation"));
-
+        $row_data[] = $this->_make_options_dropdown($data->id);
+        
         return $row_data;
     }
 
@@ -451,13 +489,13 @@ class Expenses extends MY_Controller {
         }
     }
 
-    function income_vs_expenses() {
+    function cash_flow_comparison() {
         $this->validate_user_module_permission("module_fas");
         $view_data["projects_dropdown"] = $this->_get_projects_dropdown_for_income_and_epxenses();
-        $this->template->rander("expenses/income_vs_expenses_chart", $view_data);
+        $this->template->rander("expenses/summary/cash_flows", $view_data);
     }
 
-    function income_vs_expenses_chart_data() {
+    function cash_flow_comparison_data() {
 
         $year = $this->input->post("year");
         $project_id = $this->input->post("project_id");
@@ -496,12 +534,12 @@ class Expenses extends MY_Controller {
         }
     }
 
-    function income_vs_expenses_summary() {
+    function income_statements() {
         $view_data["projects_dropdown"] = $this->_get_projects_dropdown_for_income_and_epxenses();
-        $this->load->view("expenses/income_vs_expenses_summary", $view_data);
+        $this->load->view("expenses/summary/income_statements", $view_data);
     }
 
-    function income_vs_expenses_summary_list_data() {
+    function income_statements_list_data() {
 
         $year = explode("-", $this->input->post("start_date"));
         $project_id = $this->input->post("project_id");

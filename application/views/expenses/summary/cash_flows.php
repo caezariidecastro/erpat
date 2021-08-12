@@ -1,9 +1,15 @@
+<style type="text/css">
+    #yearly-expense-chart .flot-y1-axis {
+        left: -35px !important;
+    }
+</style>
+
 <div id="page-content" class="clearfix p20">
     <div class="panel clearfix">
         <ul id="income-vs-expenses-chart-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white inner clearfix" role="tablist">
-            <li class="title-tab"><h4 class="pl15 pt5 pr15"><?php echo lang("income_vs_expenses"); ?></h4></li>
-            <li><a id="income-vs-expenses-chart-button" role="presentation" class="active" href="javascript:;" data-target="#income-vs-expenses-chart-tab"><?php echo lang("chart"); ?></a></li>
-            <li><a role="presentation" href="<?php echo_uri("fas/expenses/income_vs_expenses_summary/"); ?>" data-target="#income-vs-expenses-summary"><?php echo lang("summary"); ?></a></li>
+            <li class="title-tab"><h4 class="pl15 pt5 pr15"><?php echo lang("summary"); ?></h4></li>
+            <li><a id="income-vs-expenses-chart-button" role="presentation" class="active" href="javascript:;" data-target="#income-vs-expenses-chart-tab"><?php echo lang("cash_flows"); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("fas/expenses/income_statements/"); ?>" data-target="#income_statements"><?php echo lang("income_statements"); ?></a></li>
             <li><a role="presentation" href="#" data-target="#balancesheet"><?php echo lang("balance_sheet"); ?></a></li>
             <span class="help pull-right p15" data-toggle="tooltip" data-placement="left" title="<?php echo lang('income_expenses_widget_help_message') ?>"><i class="fa fa-question-circle"></i></span>
         </ul>
@@ -12,7 +18,7 @@
             <div role="tabpanel" class="tab-pane fade" id="income-vs-expenses-chart-tab">
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
-                        <i class="fa fa-bar-chart pt10"></i>&nbsp; <?php echo lang("chart"); ?>
+                        <i class="fa fa-bar-chart pt10"></i>&nbsp; <?php echo lang("comparison"); ?>
                         <div class="pull-right">
                             <?php
                             if ($projects_dropdown) {
@@ -25,18 +31,28 @@
                             }
                             ?>
 
-                            <div class="inline-block" id="yearly-chart-date-range-selector"></div>
+                            <div class="inline-block" id="yearly-date-range-selector"></div>
                         </div>
                     </div>
                     <div class="panel-body">
                         <div id="income-vs-expenses-chart" style="width: 100%; height: 350px;"></div>
                     </div>
                 </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <i class="fa fa-bar-chart pt10"></i>&nbsp; <?php echo lang("expenses"); ?>
+                    </div>
+                    <div class="panel-body">
+                        <div style="padding-left:35px;">
+                            <div id="yearly-expense-chart" style="width:100%; height: 350px;"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div role="tabpanel" class="tab-pane fade" id="income-vs-expenses-summary"></div>
+            
+            <div role="tabpanel" class="tab-pane fade" id="income_statements"></div>
             <div role="tabpanel" class="tab-pane fade" id="balancesheet">
-                <?php $this->load->view("balance_sheet/index")?>
+                <?php $this->load->view("expenses/summary/balance_sheet")?>
             </div>
         </div>
 
@@ -147,13 +163,13 @@
         });
     };
 
-    var prepareExpensesFlotChart = function (data) {
+    var prepareComparisonFlotChart = function (data) {
         var project_id = $("#projects-dropdown").val() || "0";
         data.project_id = project_id;
 
         appLoader.show();
         $.ajax({
-            url: "<?php echo_uri("fas/expenses/income_vs_expenses_chart_data") ?>",
+            url: "<?php echo_uri("fas/expenses/cash_flow_comparison_data") ?>",
             data: data,
             cache: false,
             type: 'POST',
@@ -177,21 +193,74 @@
 <?php } ?>
 
         $(".reload-chart").change(function () {
-            prepareExpensesFlotChart(data);
+            prepareComparisonFlotChart(data);
         });
 
-        $("#yearly-chart-date-range-selector").appDateRange({
+        $("#yearly-date-range-selector").appDateRange({
             dateRangeType: "yearly",
             onChange: function (dateRange) {
                 data = dateRange;
-                prepareExpensesFlotChart(dateRange);
+                prepareComparisonFlotChart(dateRange);
+                prepareYearlyExpensesFlotChart(dateRange);
             },
             onInit: function (dateRange) {
                 data = dateRange;
-                prepareExpensesFlotChart(dateRange);
+                prepareComparisonFlotChart(dateRange);
+                prepareYearlyExpensesFlotChart(dateRange);
             }
         });
 
         $('[data-toggle="tooltip"]').tooltip();
     });
+
+    var prepareYearlyExpensesFlotChart = function (data) {
+        appLoader.show();
+        $.ajax({
+            url: "<?php echo_uri("fas/expenses/yearly_chart_data") ?>",
+            data: data,
+            cache: false,
+            type: 'POST',
+            dataType: "json",
+            success: function (response) {
+                appLoader.hide();
+                initYearlyExpenseFlotChart(response.data);
+            }
+        });
+
+    };
+
+    var initYearlyExpenseFlotChart = function (data) {
+        // var data = [["January", 1500], ["February", 100], ["March", 16000], ["April", 0], ["May", 17000], ["June", 10009]];
+
+        $.plot("#yearly-expense-chart", [data], {
+            series: {
+                bars: {
+                    show: true,
+                    barWidth: 0.6,
+                    align: "center"
+                }
+            },
+            xaxis: {
+                mode: "categories",
+                tickLength: 0
+            },
+            grid: {
+                color: "#bbb",
+                hoverable: true,
+                borderWidth: 0,
+                backgroundColor: '#FFF'
+            },
+            tooltip: true,
+            tooltipOpts: {
+                content: function (x, y, z) {
+                    if (x) {
+                        return "%s: " + toCurrency(z);
+                    } else {
+                        return  toCurrency(z);
+                    }
+                },
+                defaultTheme: false
+            }
+        });
+    };
 </script>

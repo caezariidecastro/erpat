@@ -144,7 +144,7 @@ $route["css/knowledge_base/(:any)/(:any)"] = "Knowledge_base/$1/$2";
 
 // FAS Controller 
 $route["fas"] = "summary/index";
-$route["fas/summary"] = "Expenses/income_vs_expenses";
+$route["fas/summary"] = "Expenses/cash_flow_comparison";
 $route["fas/balance_sheet/(:any)"] = "Balance_sheet/$1";
 
 $route['fas/payments'] = 'Invoice_payments/index';
