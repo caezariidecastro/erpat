@@ -21,7 +21,7 @@ $settings_menu = array(
         array("name" => "client_permissions", "url" => "settings/client_permissions"),
         array("name" => "client_groups", "url" => "client_groups"),
         array("name" => "dashboard", "url" => "dashboard/client_default_dashboard"),
-        array("name" => "client_left_menu", "url" => "left_menus/index/client_default"),
+        //array("name" => "client_left_menu", "url" => "left_menus/index/client_default"),
         array("name" => "client_projects", "url" => "settings/client_projects"),
     ),
     "setup" => array(
@@ -62,7 +62,7 @@ if (get_setting("module_project_timesheet") == "1") {
 $settings_menu["setup"][] = array("name" => "gdpr", "url" => "settings/gdpr");
 $settings_menu["setup"][] = array("name" => "pages", "url" => "pages");
 
-$settings_menu["setup"][] = array("name" => "left_menu", "url" => "left_menus");
+//$settings_menu["setup"][] = array("name" => "left_menu", "url" => "left_menus");
 
 $settings_menu["setup"][] = array("name" => "footer", "url" => "settings/footer");
 
