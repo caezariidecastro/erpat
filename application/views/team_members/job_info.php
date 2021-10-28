@@ -167,11 +167,9 @@
                 </div>
             </div>
         </div>
-        <?php if ($this->login_user->is_admin) { ?>
-            <div class="panel-footer">
-                <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
-            </div>
-        <?php } ?>
+        <div class="panel-footer">
+            <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
+        </div>
 
     </div>
     <?php echo form_close(); ?>

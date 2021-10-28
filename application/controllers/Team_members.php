@@ -561,12 +561,15 @@ class Team_members extends MY_Controller {
                 //admin can access all members attendance and leave
                 //none admin users can only access to his/her own information 
 
-                if ($this->login_user->is_admin || $user_info->id === $this->login_user->id || $can_update_team_members_info) {
+                if ($user_info->id === $this->login_user->id || $can_update_team_members_info) {
                     $show_attendance = true;
                     $show_leave = true;
                     $view_data['show_job_info'] = true;
                     $view_data['show_account_settings'] = true;
                 } else {
+                    $view_data['show_job_info'] = true;
+                    $view_data['show_account_settings'] = true;
+
                     //none admin users but who has access to this team member's attendance and leave can access this info
                     $access_timecard = $this->get_access_info("attendance");
                     if ($access_timecard->access_type === "all" || in_array($user_info->id, $access_timecard->allowed_members)) {
@@ -655,7 +658,7 @@ class Team_members extends MY_Controller {
 
     //show the job information of a team member
     function job_info($user_id) {
-        if(!$this->login_user->is_admin || (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission")) ) {
+        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
 			redirect("forbidden");
 		}
 
@@ -684,7 +687,7 @@ class Team_members extends MY_Controller {
 
     //save job information of a team member
     function save_job_info() {
-        if(!$this->login_user->is_admin || (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission")) ) {
+        if( !$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
 			redirect("forbidden");
 		}
 
