@@ -7,7 +7,8 @@ class Leave_types extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->access_only_admin();
+        
+        $this->init_permission_checker("leave");
     }
 
     //load leave type list view
