@@ -2,7 +2,7 @@
 
     <div class="form-group clearfix">
         <div class="col-md-12 mb20">
-            <strong class="font-18"><?php echo lang("expense") . " # " . format_to_date($expense_info->expense_date, false); ?></strong>
+            <strong class="font-18"><?php echo lang("expense") . " # " .$expense_info->id. " - ". format_to_date($expense_info->expense_date, false); ?></strong>
             <div>
                 <?php
                 if ($expense_info->amount) {
@@ -17,8 +17,10 @@
                     }
 
                     $total_amount = to_currency($expense_info->amount + $tax + $tax2);
+                    $balance = to_currency($expense_info->amount - $expense_info->payment_received);
 
-                    echo "<span class='font-14'>$total_amount</span> ";
+                    echo "<br><strong>Amount: </strong>: <span class='font-14'>$total_amount</span><br>";
+                    echo "<strong>Balance: </strong>: <span class='font-14'>$balance</span> ";
 
                     if ($tax || $tax2) {
                         $amount = to_currency($expense_info->amount);
@@ -38,12 +40,47 @@
             </div>
         </div>
 
+        <div id="page-content" class="clearfix p20">
+            <div class="panel clearfix">
+                <div class="table-responsive">
+                    <table id="expense-payments-table" class="display" cellspacing="0" width="100%">
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            loadExpensesTable = function (selector, dateRange) {
+
+                var config = {
+                    source: '<?php echo_uri("expenses_payments/payment_list_data/".$expense_info->id) ?>',
+                    order: [[0, "asc"]],
+                    columns: [
+                        {visible: false, searchable: false}, //expense_detials
+                        {title: '<?php echo lang("date") ?>', "iDataSort": 0},
+                        {visible: false, searchable: false}, //date
+                        {title: '<?php echo lang("payment_method") ?>'},
+                        {title: '<?php echo lang("note") ?>'},
+                        {title: '<?php echo lang("total") ?>'},
+                        {visible: false, searchable: false} //actions
+                    ],
+                    summation: [{column: 5, dataType: 'currency'}, {column: 6, dataType: 'currency'}]
+                };
+
+                $(selector).appTable(config);
+            };
+
+            $(document).ready(function () {
+                loadExpensesTable("#expense-payments-table");
+            });
+        </script>
+
         <div class="col-md-12 mb15">
-            <strong><?php echo $expense_info->title; ?></strong>
+            <strong><?php echo lang('title') . ": "; ?></strong> <?php echo $expense_info->title; ?>
         </div>
 
         <div class="col-md-12 mb15">
-            <?php echo $expense_info->description ? nl2br(link_it($expense_info->description)) : "-"; ?>
+            <strong><?php echo lang('description') . ": "; ?></strong> <?php echo $expense_info->description ? nl2br(link_it($expense_info->description)) : ""; ?>
         </div>
 
         <?php if ($expense_info->category_title) { ?>

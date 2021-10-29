@@ -36,9 +36,11 @@
         if ("<?php echo $can_edit_expenses ?>") {
             optionVisibility = true;
         }
+
+        var recurring = dateRange == "recurring" ? "/recurring":"";
              
         var config = {
-            source: '<?php echo_uri("fas/expenses/list_data") ?>',
+            source: '<?php echo_uri("fas/expenses/list_data") ?>'+recurring,
             filterDropdown: [
                 {name: "category_id", class: "w150", options: <?php echo $categories_dropdown; ?>},
                 {name: "user_id", class: "w150", options: <?php echo $members_dropdown; ?>},

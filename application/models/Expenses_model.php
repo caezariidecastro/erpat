@@ -54,6 +54,8 @@ class Expenses_model extends Crud_model {
         $recurring = get_array_value($options, "recurring");
         if ($recurring) {
             $where .= " AND $expenses_table.recurring=1";
+        } else {
+            $where .= " AND $expenses_table.recurring=0";
         }
 
         //prepare custom fild binding query

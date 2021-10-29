@@ -182,9 +182,9 @@ class Expenses_payments extends MY_Controller {
     /* list of expense payments, prepared for datatable  */
 
     function payment_list_data($expense_id = 0) {
-        if (!$this->can_view_expenses()) {
-            redirect("forbidden");
-        }
+        // if (!$this->can_view_expenses()) {
+        //     redirect("forbidden");
+        // }
 
         $start_date = $this->input->post('start_date');
         $end_date = $this->input->post('end_date');
