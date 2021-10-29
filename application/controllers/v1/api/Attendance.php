@@ -89,7 +89,7 @@ class Attendance extends Users {
             //$mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
             $secdiff = (int)$interval->format("%S");
 
-            if($secdiff < 7) { //7 seconds
+            if($secdiff < 12) { //12 seconds
                 return array(
                     "success" => false,
                     "message" => "You're not allowed to clockout, you need to wait for ".$secdiff." seconds since your last clocked in."
@@ -105,7 +105,7 @@ class Attendance extends Users {
             //$mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
             $secdiff = (int)$interval->format("%S");
 
-            if($secdiff < 7) { //7 seconds
+            if($secdiff < 12) { //12 seconds
                 return array(
                     "success" => false,
                     "message" => "You're not allowed to clockin, you need to wait for ".$secdiff." seconds since your last clocked out."
