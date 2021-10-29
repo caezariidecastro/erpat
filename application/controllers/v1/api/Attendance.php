@@ -86,13 +86,13 @@ class Attendance extends Users {
             $origin = new DateTime($last);
             $target = new DateTime($now);
             $interval = $origin->diff($target);
-            $mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
+            //$mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
             $secdiff = (int)$interval->format("%S");
 
-            if($mindiff < 5) { //5 minutes
+            if($secdiff < 5) { //5 seconds
                 return array(
                     "success" => false,
-                    "message" => "You're not allowed to clockout, you need to wait for ".(5-$mindiff)." minutes and ".(60-$secdiff)." seconds since your last clocked in."
+                    "message" => "You're not allowed to clockout, you need to wait for ".(60-$secdiff)." seconds since your last clocked in."
                 );
                 exit;
             }
@@ -102,13 +102,13 @@ class Attendance extends Users {
             $origin = new DateTime($last);
             $target = new DateTime($now);
             $interval = $origin->diff($target);
-            $mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
+            //$mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
             $secdiff = (int)$interval->format("%S");
 
-            if($mindiff < 5) { //5 minutes
+            if($secdiff < 5) { //5 seconds
                 return array(
                     "success" => false,
-                    "message" => "You're not allowed to clockin, you need to wait for ".(5-$mindiff)." minutes and ".(60-$secdiff)." seconds since your last clocked out."
+                    "message" => "You're not allowed to clockin, you need to wait for ".(60-$secdiff)." seconds since your last clocked out."
                 );
                 exit;
             }
