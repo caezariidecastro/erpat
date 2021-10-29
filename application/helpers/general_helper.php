@@ -827,21 +827,21 @@ if (!function_exists('get_expense_status_label')) {
         $now = get_my_local_time("Y-m-d");
 
         //ignore the hidden value. check only 2 decimal place.
-        $expense_info->expense_value = floor($expense_info->expense_value * 100) / 100;
+        $expense_info->amount = floor($expense_info->amount * 100) / 100;
 
         if ($expense_info->status == "cancelled") {
             $expense_status_class = "label-danger";
             $status = "cancelled";
-        } else if ($expense_info->status != "draft" && $expense_info->due_date < $now && $expense_info->payment_received < $expense_info->expense_value) {
+        } else if ($expense_info->status != "draft" && $expense_info->due_date < $now && $expense_info->payment_received < $expense_info->amount) {
             $expense_status_class = "label-danger";
             $status = "overdue";
         } else if ($expense_info->status !== "draft" && $expense_info->payment_received <= 0) {
             $expense_status_class = "label-warning";
             $status = "not_paid";
-        } else if ($expense_info->payment_received * 1 && $expense_info->payment_received >= $expense_info->expense_value) {
+        } else if ($expense_info->payment_received * 1 && $expense_info->payment_received >= $expense_info->amount) {
             $expense_status_class = "label-success";
             $status = "fully_paid";
-        } else if ($expense_info->payment_received > 0 && $expense_info->payment_received < $expense_info->expense_value) {
+        } else if ($expense_info->payment_received > 0 && $expense_info->payment_received < $expense_info->amount) {
             $expense_status_class = "label-primary";
             $status = "partially_paid";
         } else if ($expense_info->status === "draft") {

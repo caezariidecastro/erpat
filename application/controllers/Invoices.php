@@ -533,18 +533,23 @@ class Invoices extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $row_data[] = $this->_make_options_dropdown($data->id);
+        $row_data[] = $this->_make_options_dropdown($data);
 
         return $row_data;
     }
 
     //prepare options dropdown for invoices list
-    private function _make_options_dropdown($invoice_id = 0) {
+    private function _make_options_dropdown($data) {
+        $invoice_id = $data->id;
+
         $edit = '<li role="presentation">' . modal_anchor(get_uri("invoices/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit_invoice'), "data-post-id" => $invoice_id)) . '</li>';
 
         $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_invoice'), "class" => "delete", "data-id" => $invoice_id, "data-action-url" => get_uri("invoices/delete"), "data-action" => "delete-confirmation")) . '</li>';
 
-        $add_payment = '<li role="presentation">' . modal_anchor(get_uri("invoice_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("title" => lang('add_payment'), "data-post-invoice_id" => $invoice_id)) . '</li>';
+        $add_payment = "";
+        if($data->status != "cancelled" && (float)$data->payment_received < (float)$data->invoice_value) {
+            $add_payment = '<li role="presentation">' . modal_anchor(get_uri("invoice_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("title" => lang('add_payment'), "data-post-invoice_id" => $invoice_id)) . '</li>';
+        }
 
         return '
                 <span class="dropdown inline-block">
@@ -628,7 +633,7 @@ class Invoices extends MY_Controller {
             $data->note,
             "<span class='label $invoice_status_class large'>" . lang($status) . "</span>",
             to_currency($data->invoice_value, $data->currency_symbol),
-            $this->_make_options_dropdown($data->id)
+            $this->_make_options_dropdown($data)
         );
     }
 

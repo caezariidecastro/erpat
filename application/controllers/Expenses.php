@@ -65,13 +65,25 @@ class Expenses extends MY_Controller {
     }
 
     //prepare options dropdown for invoices list
-    private function _make_options_dropdown($expense_id) {
+    private function _make_options_dropdown($data) {
+        $expense_id = $data->id;
 
         $edit = '<li role="presentation">' . modal_anchor(get_uri("expenses/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit_invoice'), "data-post-id" => $expense_id)) . '</li>';
 
         $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_invoice'), "class" => "delete", "data-id" => $expense_id, "data-action-url" => get_uri("expenses/delete"), "data-action" => "delete-confirmation")) . '</li>';
 
-        $add_payment = '<li role="presentation">' . modal_anchor(get_uri("expenses_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("title" => lang('add_payment'), "data-post-expense_id" => $expense_id)) . '</li>';
+        $mark_unpaid = "";
+        $add_payment = "";
+
+        if($data->status != "cancelled") {
+            if((float)$data->payment_received < (float)$data->amount) {
+                $add_payment = '<li role="presentation">' . modal_anchor(get_uri("expenses_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("title" => lang('add_payment'), "data-post-expense_id" => $expense_id)) . '</li>';
+            } 
+
+            if($data->status != "not_paid" && (float)$data->payment_received == 0 && (float)$data->payment_received < (float)$data->amount) {
+                $mark_unpaid = '<li role="presentation">' . ajax_anchor(get_uri("expenses/mark_as_unpaid/".$expense_id), "<i class='fa fa-check'></i> " . lang('mark_invoice_as_not_paid'), array("data-reload-on-success" => "1")) . '</li>';
+            } 
+        }
 
         return '
                 <span class="dropdown inline-block">
@@ -79,7 +91,7 @@ class Expenses extends MY_Controller {
                         <i class="fa fa-cogs"></i>&nbsp;
                         <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu pull-right" role="menu">' . $edit . $delete . $add_payment . '</ul>
+                    <ul class="dropdown-menu pull-right" role="menu">' . $edit . $delete . $mark_unpaid . $add_payment . '</ul>
                 </span>';
     }
 
@@ -159,12 +171,14 @@ class Expenses extends MY_Controller {
 
         $recurring = $this->input->post('recurring') ? 1 : 0;
         $expense_date = $this->input->post('expense_date');
+        $due_date = $this->input->post('due_date');
         $repeat_every = $this->input->post('repeat_every');
         $repeat_type = $this->input->post('repeat_type');
         $no_of_cycles = $this->input->post('no_of_cycles');
 
         $data = array(
             "expense_date" => $expense_date,
+            "due_date" => $due_date,
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
             "account_id" => $account_id,
@@ -408,7 +422,7 @@ class Expenses extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $row_data[] = $this->_make_options_dropdown($data->id);
+        $row_data[] = $this->_make_options_dropdown($data);
         
         return $row_data;
     }
@@ -622,7 +636,16 @@ class Expenses extends MY_Controller {
         $this->load->view("expenses/expense_details", $view_data);
     }
 
-    function update_expense_status($expense_id = 0, $status = "") {
+    function mark_as_unpaid($expense_id = 0) {
+        if($expense_id) {
+            $result = $this->update_expense_status($expense_id, "not_paid", true);
+            echo $result?lang('error_occured'):lang('error_occured');
+        } else {
+            echo lang('error_occured');
+        }
+    }
+
+    function update_expense_status($expense_id = 0, $status = "", $return = false) {
 
         if ($expense_id && $status) {
             //change the draft status of the expense
@@ -638,7 +661,11 @@ class Expenses extends MY_Controller {
                 $this->Expenses_model->save($data, $expense_id);
             }
 
-            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+            if($return) {
+                return array("success" => true, 'message' => lang('record_saved'));
+            } else {
+                echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+            }
         }
 
         return "";
