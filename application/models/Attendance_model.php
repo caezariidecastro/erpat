@@ -13,7 +13,7 @@ class Attendance_model extends Crud_model {
     function auto_clockout() {
         $current_time = get_my_local_time();
         $sql = "UPDATE attendance SET out_time = '$current_time' , status='pending', note='System Clockout' 
-            WHERE (status='incomplete' OR out_time = NULL) AND in_time < DATE_SUB(NOW(), INTERVAL 18 HOUR)";
+            WHERE (status='incomplete' OR out_time = NULL) AND in_time < DATE_SUB(NOW(), INTERVAL 12 HOUR)";
         $this->db->query($sql);
     }
 

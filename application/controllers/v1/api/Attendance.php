@@ -89,10 +89,10 @@ class Attendance extends Users {
             //$mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
             $secdiff = (int)$interval->format("%S");
 
-            if($secdiff < 5) { //5 seconds
+            if($secdiff < 7) { //7 seconds
                 return array(
                     "success" => false,
-                    "message" => "You're not allowed to clockout, you need to wait for ".(60-$secdiff)." seconds since your last clocked in."
+                    "message" => "You're not allowed to clockout, you need to wait for ".$secdiff." seconds since your last clocked in."
                 );
                 exit;
             }
@@ -105,10 +105,10 @@ class Attendance extends Users {
             //$mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
             $secdiff = (int)$interval->format("%S");
 
-            if($secdiff < 5) { //5 seconds
+            if($secdiff < 7) { //7 seconds
                 return array(
                     "success" => false,
-                    "message" => "You're not allowed to clockin, you need to wait for ".(60-$secdiff)." seconds since your last clocked out."
+                    "message" => "You're not allowed to clockin, you need to wait for ".$secdiff." seconds since your last clocked out."
                 );
                 exit;
             }
