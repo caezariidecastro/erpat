@@ -38,7 +38,7 @@
         }
              
         var config = {
-            source: '<?php echo_uri("fas/expenses/list_data") ?>/' + recurring,
+            source: '<?php echo_uri("fas/expenses/list_data") ?>',
             filterDropdown: [
                 {name: "category_id", class: "w150", options: <?php echo $categories_dropdown; ?>},
                 {name: "user_id", class: "w150", options: <?php echo $members_dropdown; ?>},
@@ -66,7 +66,7 @@
             summation: [{column: 6, dataType: 'currency'}, {column: 7, dataType: 'currency'}, {column: 8, dataType: 'currency'}]
         };
 
-        var customDatePicker = "", recurring = "0";
+        var customDatePicker = "";
         if (dateRange === "custom") {
             customDatePicker = [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}, showClearButton: true}];
             dateRange = "";

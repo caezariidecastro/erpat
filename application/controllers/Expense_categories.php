@@ -7,7 +7,8 @@ class Expense_categories extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->access_only_admin();
+        $this->init_permission_checker("expense");
+        $this->access_only_allowed_members();
         $this->load->model("Expense_categories_model");
     }
 

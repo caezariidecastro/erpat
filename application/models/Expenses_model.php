@@ -160,4 +160,10 @@ class Expenses_model extends Crud_model {
 
         return $count > 0 ? TRUE : FALSE;
     }
+
+    //update expense status
+    function update_expense_status($expense_id = 0, $status = "not_paid") {
+        $status_data = array("status" => $status);
+        return $this->save($status_data, $expense_id);
+    }
 }

@@ -813,6 +813,52 @@ if (!function_exists('get_invoice_status_label')) {
 
 }
 
+/**
+ * return a colorful label accroding to expense status
+ * 
+ * @param Object $expense_info
+ * @return html
+ */
+if (!function_exists('get_expense_status_label')) {
+
+    function get_expense_status_label($expense_info, $return_html = true) {
+        $expense_status_class = "label-default";
+        $status = "not_paid";
+        $now = get_my_local_time("Y-m-d");
+
+        //ignore the hidden value. check only 2 decimal place.
+        $expense_info->expense_value = floor($expense_info->expense_value * 100) / 100;
+
+        if ($expense_info->status == "cancelled") {
+            $expense_status_class = "label-danger";
+            $status = "cancelled";
+        } else if ($expense_info->status != "draft" && $expense_info->due_date < $now && $expense_info->payment_received < $expense_info->expense_value) {
+            $expense_status_class = "label-danger";
+            $status = "overdue";
+        } else if ($expense_info->status !== "draft" && $expense_info->payment_received <= 0) {
+            $expense_status_class = "label-warning";
+            $status = "not_paid";
+        } else if ($expense_info->payment_received * 1 && $expense_info->payment_received >= $expense_info->expense_value) {
+            $expense_status_class = "label-success";
+            $status = "fully_paid";
+        } else if ($expense_info->payment_received > 0 && $expense_info->payment_received < $expense_info->expense_value) {
+            $expense_status_class = "label-primary";
+            $status = "partially_paid";
+        } else if ($expense_info->status === "draft") {
+            $expense_status_class = "label-default";
+            $status = "draft";
+        }
+
+        $expense_status = "<span class='mt0 label $expense_status_class large'>" . lang($status) . "</span>";
+        if ($return_html) {
+            return $expense_status;
+        } else {
+            return $status;
+        }
+    }
+
+}
+
 
 
 /**
@@ -1110,6 +1156,22 @@ if (!function_exists('get_invoice_id')) {
         $prefix = get_setting("invoice_prefix");
         $prefix = $prefix ? $prefix : strtoupper(lang("invoice")) . " #";
         return $prefix . $invoice_id;
+    }
+
+}
+
+/**
+ * 
+ * get expense number
+ * @param Int $expense_id
+ * @return string
+ */
+if (!function_exists('get_expense_id')) {
+
+    function get_expense_id($expense_id) {
+        $prefix = get_setting("expense_prefix");
+        $prefix = $prefix ? $prefix : strtoupper(lang("expense")) . " #";
+        return $prefix . $expense_id;
     }
 
 }

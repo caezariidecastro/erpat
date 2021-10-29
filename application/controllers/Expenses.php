@@ -65,31 +65,13 @@ class Expenses extends MY_Controller {
     }
 
     //prepare options dropdown for invoices list
-    private function _make_options_dropdown($data) {
+    private function _make_options_dropdown($expense_id) {
 
-        //modal_anchor(get_uri("fas/expenses/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expense'), "data-post-id" => $data->id))
-        //        . );
-        //js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expense'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/expenses/delete"), "data-action" => "delete-confirmation")
-        $expense_id = 0;
+        $edit = '<li role="presentation">' . modal_anchor(get_uri("expenses/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit_invoice'), "data-post-id" => $expense_id)) . '</li>';
 
-        $edit = '<li role="presentation">' . modal_anchor(
-            get_uri("fas/expenses/modal_form"), 
-            "<i class='fa fa-pencil'></i> " . lang('edit'), 
-            array("title" => lang('edit'), "data-post-id" => $expense_id)
-            ) . '</li>';
+        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_invoice'), "class" => "delete", "data-id" => $expense_id, "data-action-url" => get_uri("expenses/delete"), "data-action" => "delete-confirmation")) . '</li>';
 
-        $delete = '<li role="presentation">' . modal_anchor(
-            get_uri("fas/expenses/delete"), 
-            "<i class='fa fa-times'></i> " . lang('delete'), 
-            array("title" => lang('delete'), "data-post-id" => $expense_id, "data-action" => "delete-confirmation")
-            ) . '</li>';
-
-        $add_payment = '<li role="presentation">' . modal_anchor(
-            get_uri("invoice_payments/payment_modal_form"), 
-            "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), 
-            array("title" => lang('add_payment'), 
-            "data-post-expense_id" => $expense_id)
-            ) . '</li>';
+        $add_payment = '<li role="presentation">' . modal_anchor(get_uri("expenses_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("title" => lang('add_payment'), "data-post-expense_id" => $expense_id)) . '</li>';
 
         return '
                 <span class="dropdown inline-block">
@@ -405,9 +387,12 @@ class Expenses extends MY_Controller {
             $tax2 = $data->amount * ($data->tax_percentage2 / 100);
         }
 
+        $invoice_url = modal_anchor(get_uri("fas/expenses/expense_details"), get_expense_id($data->id), array("title" => lang("expense_details"), "data-post-id" => $data->id));
+        $invoice_url = format_to_date($data->expense_date, false)." - ".$invoice_url;
+
         $row_data = array(
-            $data->expense_date,
-            modal_anchor(get_uri("fas/expenses/expense_details"), format_to_date($data->expense_date, false), array("title" => lang("expense_details"), "data-post-id" => $data->id)),
+            $data->id,
+            $invoice_url,
             $data->category_title,
             $title,
             $description,
@@ -635,6 +620,28 @@ class Expenses extends MY_Controller {
         $view_data['custom_fields_list'] = $this->Custom_fields_model->get_combined_details("expenses", $expense_id, $this->login_user->is_admin, $this->login_user->user_type)->result();
 
         $this->load->view("expenses/expense_details", $view_data);
+    }
+
+    function update_expense_status($expense_id = 0, $status = "") {
+
+        if ($expense_id && $status) {
+            //change the draft status of the expense
+            $this->Expenses_model->update_expense_status($expense_id, $status);
+
+            //save extra information for cancellation
+            if ($status == "cancelled") {
+                $data = array(
+                    "cancelled_at" => get_current_utc_time(),
+                    "cancelled_by" => $this->login_user->id
+                );
+
+                $this->Expenses_model->save($data, $expense_id);
+            }
+
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        }
+
+        return "";
     }
 
 }
