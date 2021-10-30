@@ -65,7 +65,7 @@ class Expenses extends MY_Controller {
     }
 
     //prepare options dropdown for invoices list
-    private function _make_options_dropdown($data) {
+    private function _make_options_dropdown($data, $recurring = false) {
         $expense_id = $data->id;
 
         $edit = '<li role="presentation">' . modal_anchor(get_uri("expenses/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit_invoice'), "data-post-id" => $expense_id)) . '</li>';
@@ -75,7 +75,7 @@ class Expenses extends MY_Controller {
         $mark_unpaid = "";
         $add_payment = "";
 
-        if($data->status != "cancelled") {
+        if($data->status != "cancelled" && !$recurring) {
             if((float)$data->payment_received < (float)$data->amount) {
                 $add_payment = '<li role="presentation">' . modal_anchor(get_uri("expenses_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("title" => lang('add_payment'), "data-post-expense_id" => $expense_id)) . '</li>';
             } 
@@ -298,7 +298,7 @@ class Expenses extends MY_Controller {
 
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = $this->_make_row($data, $custom_fields);
+            $result[] = $this->_make_row($data, $custom_fields, $recurring=="recurring"?true:false);
         }
         echo json_encode(array("data" => $result));
     }
@@ -312,7 +312,7 @@ class Expenses extends MY_Controller {
     }
 
     //prepare a row of expnese list
-    private function _make_row($data, $custom_fields) {
+    private function _make_row($data, $custom_fields, $recurring = false) {
 
         $description = $data->description;
         $title = $data->title;
@@ -422,7 +422,7 @@ class Expenses extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $row_data[] = $this->_make_options_dropdown($data);
+        $row_data[] = $this->_make_options_dropdown($data, $recurring);
         
         return $row_data;
     }
