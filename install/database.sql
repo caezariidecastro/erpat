@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` enum('incomplete','pending','approved','rejected','deleted') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'incomplete',
   `user_id` int(11) NOT NULL,
+  `sched_id` int(11) NULL DEFAULT NULL,
   `in_time` datetime NOT NULL,
   `out_time` datetime DEFAULT NULL,
   `checked_by` int(11) DEFAULT NULL,
