@@ -29,7 +29,7 @@ class Migration_Add_expenses_payments extends CI_Migration {
                 'payment_date' => array(
                     'type' => 'DATE'
                 ),
-                '	note' => array(
+                'note' => array(
                     'type' => 'TEXT'
                 ),
                 'created_by' => array(
