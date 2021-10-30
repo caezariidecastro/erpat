@@ -37,8 +37,12 @@ class Crud_model extends CI_Model {
         }
     }
 
-    function get_one($id = 0) {
-        return $this->get_one_where(array('id' => $id));
+    function get_one($id = 0, $is_uuid = false) {
+        if($is_uuid) {
+            return $this->get_one_where(array('uuid' => $id));
+        } else {
+            return $this->get_one_where(array('id' => $id));
+        }
     }
 
     function get_one_where($where = array()) {

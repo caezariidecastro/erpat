@@ -67,10 +67,10 @@ class Services extends MY_Controller {
         $this->validate_access_to_items();
 
         validate_submitted_data(array(
-            "id" => "numeric"
+            "id" => "required"
         ));
 
-        $view_data['model_info'] = $this->Services_model->get_one($this->input->post('uuid'));
+        $view_data['model_info'] = $this->Services_model->get_one($this->input->post('uuid'), true);
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
 
         $this->load->view('services/modal_form', $view_data);
@@ -92,7 +92,8 @@ class Services extends MY_Controller {
             "description" => $this->input->post('description'),
             "category_id" => $this->input->post('category'),
             "unit_type" => $this->input->post('unit_type'),
-            "rate" => unformat_currency($this->input->post('item_rate'))
+            "rate" => unformat_currency($this->input->post('item_rate')),
+            "created_at" => get_current_utc_time()
         );
 
         if(!$id){
@@ -168,8 +169,20 @@ class Services extends MY_Controller {
             $data->created_at,
             $data->updated_at,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
-            modal_anchor(get_uri("services/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_item'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("services/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(
+                get_uri("services/modal_form"), 
+                "<i class='fa fa-pencil'></i>", 
+                array(
+                    "class" => "edit", "title" => lang('edit_item'), 
+                    "data-post-id" => $data->id,
+                    "data-post-uuid" => $data->uuid
+                )
+            )
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", 
+                array('title' => lang('delete'), 
+                "class" => "delete", "data-id" => $data->id, 
+                "data-action-url" => get_uri("services/delete"), 
+                "data-action" => "delete-confirmation"))
         );
     }
 

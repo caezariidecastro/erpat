@@ -1,6 +1,7 @@
 <?php echo form_open(get_uri("services/save"), array("id" => "services-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
+    <input type="hidden" name="uuid" value="<?php echo $model_info->uuid; ?>" />
 
     <?php if ($model_info->id) { ?>
         <div class="form-group">
@@ -11,7 +12,9 @@
         <label for="category" class="col-md-3"><?php echo lang('category'); ?></label>
         <div class="col-md-9">
             <?php
-            echo form_dropdown("category", $category_dropdown, $model_info ? $model_info->category : "", "class='select2 validate-hidden' id='category' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            echo form_dropdown("category", 
+            $category_dropdown, $model_info ? $model_info->category_id : "", 
+            "class='select2 validate-hidden' id='category' data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
         </div>
     </div>
