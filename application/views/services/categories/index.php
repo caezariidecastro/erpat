@@ -12,6 +12,7 @@
                 {title: "<?php echo lang('uuid') ?> ", "class": "w15p"},
                 {title: "<?php echo lang('title') ?> ", "class": "w15p"},
                 {title: "<?php echo lang('description') ?>", "class": "w100"},
+                {title: "<?php echo lang('status') ?>", "class": "text-center"},
                 {title: "<?php echo lang('created_at') ?>", "class": "w15p"},
                 {title: "<?php echo lang('updated_at') ?>", "class": "w15p"},
                 {title: "<?php echo lang('created_by') ?>", "class": "w10p"},

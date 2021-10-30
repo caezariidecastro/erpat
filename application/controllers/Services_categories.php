@@ -25,10 +25,12 @@ class Services_categories extends MY_Controller {
     }
 
     private function _make_row($data) {
+        $status = $data->active == 1 ? "<small class='label label-success'>Active</small>" : "<small class='label label-danger'>Inactive</small>";
         return array(
             $data->uuid,
             $data->title,
             nl2br($data->description),
+            $status,
             $data->created_at,
             $data->updated_at,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
@@ -48,10 +50,13 @@ class Services_categories extends MY_Controller {
             "uuid" => $this->uuid->v4(),
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
+            "created_at" => get_current_utc_time()
         );
 
         if(!$id){
             $data["created_by"] = $this->login_user->id;
+        } else {
+            $data["active"] = $this->input->post('active');
         }
 
         $id = $this->Services_categories_model->save($data, $id);

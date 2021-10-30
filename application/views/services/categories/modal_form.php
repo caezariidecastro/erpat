@@ -34,6 +34,14 @@
             ?>
         </div>
     </div>
+    <div class="form-group">
+        <label for="active" class="col-md-3"><?php echo lang('active_inactive'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_dropdown("active", array('1' => 'Active', '0' => 'Inactive'), $model_info ? $model_info->active : "", "class='select2 validate-hidden' id='active' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            ?>
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">
@@ -49,5 +57,6 @@
                 location.reload();
             }
         });
+        $('#active').select2();
     });
 </script>
