@@ -89,6 +89,7 @@ if (isset($_POST)) {
     unlink("../.env.backup.php");
     unlink("database.sql");    
 
+    //TODO: Call the migration to the latest and also the check and fix execution.
     echo json_encode(array("success" => true, "message" => "Installation successfull."));
     exit();
 }

@@ -19,11 +19,6 @@
 !*/cache/index.html
 !*/cache/.htaccess
 
-user_guide_src/build/*
-user_guide_src/cilexer/build/*
-user_guide_src/cilexer/dist/*
-user_guide_src/cilexer/pycilexer.egg-info/*
-
 #codeigniter 3
 application/logs/*
 !application/logs/index.html
@@ -31,8 +26,19 @@ application/logs/*
 /vendor/
 
 #files new uploads
-files/*
-!files/system/
+files/general/*
+files/profile_images/*
+files/project_files/*
+files/system/*
+!files/system/default-invoice-logo.png
+!files/system/default-stie-logo.png
+!files/system/import-clients-sample.xlsx
+!files/system/import-leads-sample.xlsx
+!files/system/notification.mp3
+!files/system/sigin-background-image.jpg
+
+files/temp/*
+files/timeline_files/*
 
 #PRE-INSTALLATION
 #application/config/config.php
