@@ -516,3 +516,8 @@ $lang['last_check'] = "Last Checked";
 $lang['comparison'] = "Comparison";
 $lang['income_statements'] = "Income Statements";
 $lang['cash_flows'] = "Cash Flows";
+
+$lang['excess_payment'] = "Not allowed to pay or received payment more than the amount request.";
+$lang['paid_expenses'] = "Paid Expenses";
+$lang['payables'] = "Payables";
+

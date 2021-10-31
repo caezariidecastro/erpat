@@ -117,4 +117,13 @@ class Expenses_payments_model extends Crud_model {
 
         return $count > 0 ? TRUE : FALSE;
     }
+
+    function get_total_payments($expense_id){
+        $expenses_payments_table = $this->db->dbprefix('expenses_payments');
+        $total_payments = $this->db->query("SELECT SUM(amount) AS total 
+        FROM $expenses_payments_table
+        WHERE $expenses_payments_table.deleted=0 AND $expenses_payments_table.expense_id = $expense_id")->row()->total;
+
+        return $total_payments;
+    }
 }

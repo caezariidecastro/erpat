@@ -88,17 +88,17 @@ class Expenses_model extends Crud_model {
         AND $expenses_table.id NOT IN (
             SELECT payroll.expense_id
             FROM payroll
-            WHERE payroll.deleted = 1 OR payroll.status IN ('not paid', 'cancelled')
+            WHERE payroll.deleted = 1 OR payroll.status IN ('cancelled')
         )
         AND $expenses_table.id NOT IN (
             SELECT contribution_entries.expense_id
             FROM contribution_entries
-            WHERE contribution_entries.deleted = 1 OR contribution_entries.status IN ('not paid', 'cancelled')
+            WHERE contribution_entries.deleted = 1 OR contribution_entries.status IN ('cancelled')
         )
         AND $expenses_table.id NOT IN (
             SELECT incentive_entries.expense_id
             FROM incentive_entries
-            WHERE incentive_entries.deleted = 1 OR incentive_entries.status IN ('not paid', 'cancelled')
+            WHERE incentive_entries.deleted = 1 OR incentive_entries.status IN ('cancelled')
         )";
         return $this->db->query($sql);
     }
@@ -128,6 +128,7 @@ class Expenses_model extends Crud_model {
 
     function get_yearly_expenses_chart($year, $project_id = 0) {
         $expenses_table = $this->db->dbprefix('expenses');
+        $expenses_payments_table = $this->db->dbprefix('expenses_payments');
         $taxes_table = $this->db->dbprefix('taxes');
 
         $where = "";
@@ -135,11 +136,19 @@ class Expenses_model extends Crud_model {
             $where = " AND $expenses_table.project_id=$project_id";
         }
 
-        $expenses = "SELECT SUM($expenses_table.amount + IFNULL(tax_table.percentage,0)/100*IFNULL($expenses_table.amount,0) + IFNULL(tax_table2.percentage,0)/100*IFNULL($expenses_table.amount,0)) AS total, MONTH($expenses_table.expense_date) AS month
+        $expenses = "SELECT 
+            SUM($expenses_table.amount 
+                + IFNULL(tax_table.percentage,0)/100*IFNULL($expenses_table.amount,0) 
+                + IFNULL(tax_table2.percentage,0)/100*IFNULL($expenses_table.amount,0)
+            ) AS total, 
+            (SELECT SUM(ep.amount) FROM expenses_payments as ep WHERE ep.deleted=0 AND YEAR($expenses_table.expense_date)= $year
+            ) AS payment, 
+            MONTH($expenses_table.expense_date) AS month
         FROM $expenses_table
         LEFT JOIN (SELECT $taxes_table.id, $taxes_table.percentage FROM $taxes_table) AS tax_table ON tax_table.id = $expenses_table.tax_id
         LEFT JOIN (SELECT $taxes_table.id, $taxes_table.percentage FROM $taxes_table) AS tax_table2 ON tax_table2.id = $expenses_table.tax_id2
-        WHERE $expenses_table.deleted=0 AND YEAR($expenses_table.expense_date)= $year $where
+        -- LEFT JOIN $expenses_payments_table ON $expenses_payments_table.expense_id = $expenses_table.id 
+        WHERE $expenses_table.recurring=0 AND $expenses_table.deleted=0 AND YEAR($expenses_table.expense_date)= $year $where
         GROUP BY MONTH($expenses_table.expense_date)";
 
         return $this->db->query($expenses)->result();

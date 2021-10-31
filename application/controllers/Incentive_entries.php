@@ -13,6 +13,7 @@ class Incentive_entries extends MY_Controller {
         $this->load->model("Expenses_model");
         $this->load->model("Account_transactions_model");
         $this->load->model("Expense_categories_model");
+        $this->load->model("Expenses_payments_model");
     }
 
     protected function _get_category_dropdown_data() {
@@ -44,18 +45,18 @@ class Incentive_entries extends MY_Controller {
         echo json_encode(array("data" => $result));
     }
 
-    private function get_labeled_status($status){
+    private function get_labeled_status($status, $payments = 0){
         $labeled_status = "";
 
         if($status == "not paid"){
-            $labeled_status = "<span class='label label-default'>".(ucwords($status))."</span>";
-        }
-
-        if($status == "paid"){
+            if($payments > 0) {
+                $labeled_status = "<span class='label label-primary'>".(lang('partially_paid'))."</span>";
+            } else {
+                $labeled_status = "<span class='label label-default'>".(ucwords($status))."</span>";
+            }
+        } else if($status == "paid"){
             $labeled_status = "<span class='label label-success'>".(ucwords($status))."</span>";
-        }
-
-        if($status == "cancelled"){
+        } else if($status == "cancelled"){
             $labeled_status = "<span class='label label-danger'>".(ucwords($status))."</span>";
         }
 
@@ -63,7 +64,8 @@ class Incentive_entries extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $status = $this->get_labeled_status($data->status);
+        $total_payments = $this->Expenses_payments_model->get_total_payments($data->expense_id);
+        $status = $this->get_labeled_status($data->status, $total_payments);
 
         $edit = '<li role="presentation">' . modal_anchor(get_uri("fas/incentive_entries/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("class" => "edit", "title" => lang('edit'), "data-post-id" => $data->id)) . '</li>';
         $delete = "";
@@ -72,16 +74,12 @@ class Incentive_entries extends MY_Controller {
         $pdf = "";
 
         if($data->status == "not paid"){
-            $pay = '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("fas/incentive_entries/pay/$data->id"), "data-action" => "update")) .'</li>';
+            $pay = '<li role="presentation">'. modal_anchor(get_uri("fas/incentive_entries/payment_modal_form/$data->id"), "<i class='fa fa-check'></i> " . lang('add_payment'), array("class" => "edit", "title" => lang('add_payment'), "data-post-id" => $data->id)).'</li>';
             $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i> " . lang('delete'), array('title' => lang('delete_entry'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/incentive_entries/delete"), "data-action" => "delete-confirmation")) . '</li>';
-        }
-
-        if($data->status == "paid"){
-            $pdf = "<li role='presentation'>" . anchor(get_uri("fas/incentive_entries/pdf/".$data->id), "<i class='fa fa-file-pdf-o'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
+        } else if($data->status == "paid"){
+            //$pdf = "<li role='presentation'>" . anchor(get_uri("fas/incentive_entries/pdf/".$data->id), "<i class='fa fa-file-pdf-o'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
             $cancel = '<li role="presentation">'. js_anchor("<i class='fa fa-remove'></i> " . lang('mark_as_cancelled'), array('title' => lang('update'), "data-action-url" => get_uri("fas/incentive_entries/cancel/$data->id"), "data-action" => "update"));
-        }
-
-        if($data->status == "cancelled"){
+        } else if($data->status == "cancelled"){
             $pay = '<li role="presentation">'. js_anchor("<i class='fa fa-check'></i> " . lang('mark_as_paid'), array('title' => lang('update'), "class" => "", "data-action-url" => get_uri("fas/incentive_entries/pay/$data->id"), "data-action" => "update")) .'</li>';
         }
 
@@ -90,7 +88,7 @@ class Incentive_entries extends MY_Controller {
                             <i class="fa fa-cogs"></i>&nbsp;
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu pull-right" role="menu">' . $pay . $pdf . $edit . $cancel . $delete . '</ul>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $pdf . $edit . $cancel . $delete . $pay . '</ul>
                     </span>';
 
         return array(
@@ -215,28 +213,62 @@ class Incentive_entries extends MY_Controller {
         }
     }
 
-
     private function _row_data($id) {
         $options = array("id" => $id);
         $incentive_info = $this->Incentive_entries_model->get_details($options)->row();
         return $this->_make_row($incentive_info);
     }
 
+    private function get_expense_balance($amount = 0, $expense_id = 0) {
+        $total_payments = $this->Expenses_payments_model->get_total_payments($expense_id);
+        return (float)$amount - (float)$total_payments;
+    }
+
+    function payment_modal_form($id = 0) {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        $id = $this->input->post('id');
+
+        $view_data['model_info'] = $id ? $this->Incentive_entries_model->get_details(array("id" => $id))->row() : "";
+        $view_data['accounts_dropdown'] = array("" => "-") + $this->Accounts_model->get_dropdown_list(array("name"), "id", array("deleted" => 0));
+        $view_data['payment_methods_dropdown'] = $this->Payment_methods_model->get_dropdown_list(array("title"), "id", array("online_payable" => 0, "deleted" => 0));
+        $view_data['model_info']->amount = $this->get_expense_balance($view_data['model_info']->amount, $view_data['model_info']->expense_id);
+        $view_data['model_info']->payment_date = get_current_utc_time('d/m/Y');
+
+        $this->load->view('incentive_entries/payment_modal_form', $view_data);
+    }
+
     function pay($incentive_id = 0) {
         if ($incentive_id) {
-            $incentive_data["status"] = "paid";
-
-            $save_id = $this->Incentive_entries_model->save($incentive_data, $incentive_id);
-
             $options = array("id" => $incentive_id);
             $incentive_info = $this->Incentive_entries_model->get_details($options)->row();
+            $payment_amount = $this->input->post('expense_payment_amount');
+            $expense_balance = $this->get_expense_balance($incentive_info->amount, $incentive_info->expense_id);
 
-            $transaction_data = array(
-                'deleted' => '0'
+            if( (float)$payment_amount > (float)$expense_balance  ) {
+                echo json_encode(array("success" => false, "message" => lang('excess_payment') ));
+                exit;
+            }
+
+            $expense_payment_data = array(
+                "expense_id" => $incentive_info->expense_id,
+                "account_id" =>  $this->input->post('expense_payment_amount'),
+                "payment_date" => $this->input->post('expense_payment_date'),
+                "payment_method_id" => $this->input->post('expense_payment_method_id'),
+                "note" => "",
+                "amount" => $payment_amount,
+                "created_at" => get_current_utc_time(),
+                "created_by" => $this->login_user->id,
             );
+            $expense_payment_id = $this->Expenses_payments_model->save($expense_payment_data, $id);
 
-            $this->Account_transactions_model->update_incentive($incentive_info->expense_id, $transaction_data);
-            if ($save_id) {
+            if( $expense_payment_id && (float)$payment_amount >= (float)$expense_balance ) {
+                $incentive_data["status"] = "paid"; //Fully paid
+                $save_id = $this->Incentive_entries_model->save($incentive_data, $incentive_id);
+            }
+
+            if ($expense_payment_id) {
                 echo json_encode(array("success" => true, "data" => $this->_row_data($incentive_id), "id" => $incentive_id, "message" => lang("record_saved")));
             } else {
                 echo json_encode(array("success" => false, lang('error_occurred')));
@@ -256,6 +288,8 @@ class Incentive_entries extends MY_Controller {
             $transaction_data = array(
                 'deleted' => '1'
             );
+
+            //TODO: Delete the expense payment 
 
             $this->Account_transactions_model->update_incentive($incentive_info->expense_id, $transaction_data);
             if ($save_id) {

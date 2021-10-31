@@ -12,6 +12,7 @@ class Expenses extends MY_Controller {
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
         $this->load->model("Expense_categories_model");
+        $this->load->model("Expenses_payments_model");
     }
 
     //load the expenses list view
@@ -311,6 +312,11 @@ class Expenses extends MY_Controller {
         return $this->_make_row($data, $custom_fields);
     }
 
+    private function get_expense_balance($amount = 0, $expense_id = 0) {
+        $total_payments = $this->Expenses_payments_model->get_total_payments($expense_id);
+        return (float)$amount - (float)$total_payments;
+    }
+
     //prepare a row of expnese list
     private function _make_row($data, $custom_fields, $recurring = false) {
 
@@ -403,6 +409,8 @@ class Expenses extends MY_Controller {
 
         $invoice_url = modal_anchor(get_uri("fas/expenses/expense_details"), get_expense_id($data->id), array("title" => lang("expense_details"), "data-post-id" => $data->id));
         $invoice_url = format_to_date($data->expense_date, false)." - ".$invoice_url;
+        $payable_balance = $this->get_expense_balance($data->amount, $data->id);
+        $payable_payment = $data->amount - $payable_balance;
 
         $row_data = array(
             $data->id,
@@ -414,6 +422,8 @@ class Expenses extends MY_Controller {
             to_currency($data->amount),
             to_currency($tax),
             to_currency($data->amount + $tax + $tax2),
+            to_currency($payable_payment),
+            to_currency($payable_balance),
             get_expense_status_label($data)
         );
 
@@ -476,7 +486,7 @@ class Expenses extends MY_Controller {
             $expenses = $this->Expenses_model->get_yearly_expenses_chart($year);
             $values = array();
             foreach ($expenses as $value) {
-                $values[$value->month - 1] = $value->total; //in array the month january(1) = index(0)
+                $values[$value->month - 1] = $value->payment; //in array the month january(1) = index(0)
             }
 
             foreach ($months as $key => $month) {
@@ -549,6 +559,7 @@ class Expenses extends MY_Controller {
 
             $payments = array();
             $expenses = array();
+            $balances = array();
 
             for ($i = 1; $i <= 12; $i++) {
                 $payments[$i] = 0;
@@ -559,13 +570,14 @@ class Expenses extends MY_Controller {
                 $payments[$payment->month] = $payment->total;
             }
             foreach ($expenses_data as $expense) {
-                $expenses[$expense->month] = $expense->total;
+                $expenses[$expense->month] = $expense->payment;
+                $balances[$expense->month] = (float)$expense->total - (float)$expense->payment;
             }
 
             //get the list of summary
             $result = array();
             for ($i = 1; $i <= 12; $i++) {
-                $result[] = $this->_row_data_of_summary($i, $payments[$i], $expenses[$i]);
+                $result[] = $this->_row_data_of_summary($i, $payments[$i], $expenses[$i], $balances[$i]);
             }
 
             echo json_encode(array("data" => $result));
@@ -573,7 +585,7 @@ class Expenses extends MY_Controller {
     }
 
     //get the row of summary
-    private function _row_data_of_summary($month_index, $payments, $expenses) {
+    private function _row_data_of_summary($month_index, $payments, $expenses, $payables) {
         //get the month name
         $month_array = array(" ", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
 
@@ -587,7 +599,8 @@ class Expenses extends MY_Controller {
             $month_name,
             to_currency($payments),
             to_currency($expenses),
-            to_currency($profit)
+            to_currency($profit),
+            to_currency($payables)
         );
     }
 

@@ -28,7 +28,7 @@ class Incentive_entries_model extends Crud_model {
         }
 
         if($start){
-            $where .= " AND $incentive_entries_table.created_on BETWEEN '$start' AND '$end'";
+            $where .= " AND $incentive_entries_table.created_on BETWEEN '$start' AND ('$end' + INTERVAL 1 DAY)";
         }
 
         if($user){

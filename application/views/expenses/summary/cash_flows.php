@@ -40,11 +40,11 @@
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
-                        <i class="fa fa-bar-chart pt10"></i>&nbsp; <?php echo lang("expenses"); ?>
+                        <i class="fa fa-bar-chart pt10"></i>&nbsp; <?php echo lang("paid_expenses"); ?>
                     </div>
                     <div class="panel-body">
                         <div style="padding-left:35px;">
-                            <div id="yearly-expense-chart" style="width:100%; height: 350px;"></div>
+                            <div id="yearly-expense-chart" style="width:100%; height: 200px;"></div>
                         </div>
                     </div>
                 </div>
