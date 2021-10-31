@@ -15,18 +15,20 @@
             dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [
-                {title: "<?php echo lang('account') ?> ", "class": "w20p"},
-                {title: "<?php echo lang('user') ?> ", "class": "w20p"},
                 {title: "<?php echo lang('category') ?>"},
+                {title: "<?php echo lang('account') ?>"},
+                {title: "<?php echo lang('user') ?>"},
+                {title: "<?php echo lang('signed_by') ?>"},
                 {title: "<?php echo lang('amount') ?>", "class": "text-right"},
+                {title: "<?php echo lang('remarks') ?>"},
+                {title: "<?php echo lang('status') ?>", "class": "text-center"},
                 {title: "<?php echo lang('created_on') ?>",},
                 {title: "<?php echo lang('created_by') ?>",},
-                {title: "<?php echo lang('status') ?>", "class": "text-center"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4, 5, 6],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6],
-            summation: [{column: 3, dataType: 'number'}]
+            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            summation: [{column: 4, dataType: 'number'}]
         });
     });
 </script>

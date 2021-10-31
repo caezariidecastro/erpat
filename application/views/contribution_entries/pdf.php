@@ -32,3 +32,9 @@
         <td style="text-align: right; width: 25%; border: 1px solid #fff;"> <?php echo to_currency($contribution_info->amount); ?></td>
     </tr>
 </table>
+<?php if ($contribution_info->remarks) { ?>
+    <br />
+    <br />
+    <div style="border-top: 2px solid #f2f2f2; color:#444; padding:0 0 20px 0;"><br /><?php echo nl2br($contribution_info->remarks); ?></div>
+<?php }?>
+
