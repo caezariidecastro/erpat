@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); 
 
-class Migration_Alter_user extends CI_Migration { 
+class Migration_Alter_user_uuid extends CI_Migration { 
         
         public function up()
         {
