@@ -103,6 +103,7 @@ class Incentive_entries extends MY_Controller {
                     </span>';
 
         return array(
+            $data->id,
             $data->category_name,
             $data->account_name,
             get_team_member_profile_link($data->created_by, $data->employee_name, array("target" => "_blank")),

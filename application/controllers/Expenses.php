@@ -415,7 +415,7 @@ class Expenses extends MY_Controller {
         $row_data = array(
             $data->id,
             $invoice_url,
-            $data->category_title,
+            $data->category_title . " #".$data->category_id,
             $title,
             $description,
             $files_link,

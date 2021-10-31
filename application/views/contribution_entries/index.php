@@ -15,6 +15,7 @@
             dateRangeType: "monthly",
             order: [[0, 'desc']],
             columns: [
+                {title: "<?php echo lang('id') ?>"},
                 {title: "<?php echo lang('category') ?>"},
                 {title: "<?php echo lang('account') ?>"},
                 {title: "<?php echo lang('user') ?>"},
