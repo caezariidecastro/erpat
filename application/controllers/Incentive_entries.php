@@ -50,7 +50,7 @@ class Incentive_entries extends MY_Controller {
 
         if($status == "not paid"){
             $labeled_status = "<span class='label label-default'>".(ucwords($status))."</span>";
-        } else if($status == "partial") {
+        } else if($status == "partially paid") {
             $labeled_status = "<span class='label label-primary'>".(ucwords($status))."</span>";
         } else if($status == "paid"){
             $labeled_status = "<span class='label label-success'>".(ucwords($status))."</span>";
@@ -61,9 +61,21 @@ class Incentive_entries extends MY_Controller {
         return $labeled_status;
     }
 
-    private function _make_row($data) {
+    private function get_real_status($data) {
         $balance = $this->get_expense_balance($data->amount, $data->expense_id);
-        $data->status = $balance == 0 ? "paid" : "partial";
+        $payment = $this->get_total_expense_payments($data->expense_id);
+
+        if($balance == 0 && $payment > 0) {
+            return "paid";
+        } else if($payment > 0 && $balance > 0) {
+            return "partially paid";
+        }
+
+        return "not paid";
+    }
+
+    private function _make_row($data) {
+        $data->status = $this->get_real_status($data);
         $status = $this->get_labeled_status($data->status, $balance);
 
         $edit = '<li role="presentation">' . modal_anchor(get_uri("fas/incentive_entries/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("class" => "edit", "title" => lang('edit'), "data-post-id" => $data->id)) . '</li>';
@@ -72,7 +84,7 @@ class Incentive_entries extends MY_Controller {
         $cancel = "";
         $pdf = "";
 
-        if($data->status == "not paid"){
+        if($data->status == "not paid" || $data->status == "partially paid"){
             $pay = '<li role="presentation">'. modal_anchor(get_uri("fas/incentive_entries/payment_modal_form/$data->id"), "<i class='fa fa-check'></i> " . lang('add_payment'), array("class" => "edit", "title" => lang('add_payment'), "data-post-id" => $data->id)).'</li>';
             $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i> " . lang('delete'), array('title' => lang('delete_entry'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/incentive_entries/delete"), "data-action" => "delete-confirmation")) . '</li>';
         } else if($data->status == "paid"){
@@ -95,7 +107,7 @@ class Incentive_entries extends MY_Controller {
             $data->account_name,
             get_team_member_profile_link($data->created_by, $data->employee_name, array("target" => "_blank")),
             get_team_member_profile_link($data->created_by, $data->signed_by_name, array("target" => "_blank")),
-            number_with_decimal($data->amount),
+            to_currency($data->amount),
             nl2br($data->remarks),
             $status,
             $data->created_on,
@@ -118,6 +130,7 @@ class Incentive_entries extends MY_Controller {
         $incentive_data = array(
             "user" => $user,
             "account_id" => $account_id,
+            "amount" => $amount,
             "remarks" => $this->input->post('remarks'),
             "signed_by" => $this->input->post('signed_by'),
             "category" => $this->input->post('category'),
@@ -128,11 +141,9 @@ class Incentive_entries extends MY_Controller {
             $incentive_data["created_by"] = $this->login_user->id;
         }
 
-        $saved_id = $this->Incentive_entries_model->save($incentive_data, $id);
+        $contribution_data["expense_id"] = $this->save_expense($account_id, $amount, $user, $expense_id);
 
-        $incentive_data["expense_id"] = $this->save_expense($account_id, $amount, $user, $expense_id);
-
-        $incentive_id = $this->Incentive_entries_model->save($incentive_data, $saved_id);
+        $contribution_id = $this->Contribution_entries_model->save($contribution_data, $id);
         if ($incentive_id) {
             $options = array("id" => $incentive_id);
             $incentive_info = $this->Incentive_entries_model->get_details($options)->row();
@@ -218,8 +229,12 @@ class Incentive_entries extends MY_Controller {
         return $this->_make_row($incentive_info);
     }
 
+    private function get_total_expense_payments($expense_id = 0) {
+        return $this->Expenses_payments_model->get_total_payments($expense_id);
+    }
+
     private function get_expense_balance($amount = 0, $expense_id = 0) {
-        $total_payments = $this->Expenses_payments_model->get_total_payments($expense_id);
+        $total_payments = $this->get_total_expense_payments($expense_id);
         return (float)$amount - (float)$total_payments;
     }
 
@@ -252,7 +267,7 @@ class Incentive_entries extends MY_Controller {
 
             $expense_payment_data = array(
                 "expense_id" => $incentive_info->expense_id,
-                "account_id" =>  $this->input->post('expense_payment_amount'),
+                "account_id" =>  $this->input->post('account_id'),
                 "payment_date" => $this->input->post('expense_payment_date'),
                 "payment_method_id" => $this->input->post('expense_payment_method_id'),
                 "note" => "",
