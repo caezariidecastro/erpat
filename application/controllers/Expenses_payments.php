@@ -63,6 +63,11 @@ class Expenses_payments extends MY_Controller {
         $this->load->view("expenses/custom_payments_list");
     }
 
+    private function get_expense_balance($amount = 0, $expense_id = 0) {
+        $total_payments = $this->Expenses_payments_model->get_total_payments($expense_id);
+        return (float)$amount - (float)$total_payments;
+    }
+
     /* load payment modal */
 
     function payment_modal_form() {
@@ -72,10 +77,18 @@ class Expenses_payments extends MY_Controller {
             "id" => "numeric",
             "expense_id" => "numeric"
         ));
+        $payment_id = $this->input->post('id');
+        $payment_info = $this->Expenses_payments_model->get_one($payment_id);
 
-        $view_data['model_info'] = $this->Expenses_payments_model->get_one($this->input->post('id'));
+        $expense_id = $this->input->post('expense_id');
+        if(!$payment_info->id) {
+            $payment_info = $this->Expenses_model->get_one($expense_id);
+            $payment_info->id = "";
+        }        
 
-        $expense_id = $this->input->post('expense_id') ? $this->input->post('expense_id') : $view_data['model_info']->expense_id;
+        $view_data['model_info'] = $payment_info;
+        $view_data['model_info']->amount = $this->get_expense_balance($payment_info->amount, $expense_id);
+        $view_data['model_info']->payment_date = $payment_info->id ? convert_date_utc_to_local($payment_info->payment_date, 'd/m/Y') : get_current_utc_time('d/m/Y');
 
         // if (!$expense_id) {
         //     //prepare expenses dropdown
@@ -89,9 +102,9 @@ class Expenses_payments extends MY_Controller {
         //     $view_data['expenses_dropdown'] = array("" => "-") + $expenses_dropdown;
         // }
 
+        $view_data['expense_id'] = $expense_id;
         $view_data['accounts_dropdown'] = $this->_get_accounts_dropdown_data();
         $view_data['payment_methods_dropdown'] = $this->Payment_methods_model->get_dropdown_list(array("title"), "id", array("online_payable" => 0, "deleted" => 0));
-        $view_data['expense_id'] = $expense_id;
 
         $this->load->view('expenses/payment_modal_form', $view_data);
     }
@@ -128,23 +141,24 @@ class Expenses_payments extends MY_Controller {
 
         $expense_payment_id = $this->Expenses_payments_model->save($expense_payment_data, $id);
 
-        if($id){
+        if($id) {
             $data = array(
                 'account_id' => $account_id,
                 'amount' => $amount,
                 'reference' => $id
             );
-
             $this->Account_transactions_model->update_payment($id, $data);
-        }
-        else{
+        } else {
             $this->Account_transactions_model->add_expense($account_id, $amount, $expense_payment_id);
         }
 
         if ($expense_payment_id) {
 
             //As receiving payment for the expense, we'll remove the 'draft' status from the expense 
-            //$this->Expenses_model->update_expense_status($expense_id);
+            $balance = $this->get_expense_balance($payment_info->amount, $expense_id);
+            if($balance == 0) {
+                $this->Expenses_model->update_expense_status($expense_id);
+            }
 
             // if (!$id) { //show payment confirmation for new payments only
             //     log_notification("expense_payment_confirmation", array("expense_payment_id" => $expense_payment_id, "expense_id" => $expense_id), "0");
@@ -201,7 +215,7 @@ class Expenses_payments extends MY_Controller {
         $list_data = $this->Expenses_payments_model->get_details($options)->result();
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = $this->_make_payment_row($data, $expense_id);
+            $result[] = $this->_make_payment_row($data);
         }
         echo json_encode(array("data" => $result));
     }
@@ -237,7 +251,7 @@ class Expenses_payments extends MY_Controller {
 
     /* prepare a row of expense payment list table */
 
-    private function _make_payment_row($data, $include_account) {
+    private function _make_payment_row($data) {
         $expense_url = "";
         // if (!$this->can_view_expenses($data->client_id)) {
         //     redirect("forbidden");

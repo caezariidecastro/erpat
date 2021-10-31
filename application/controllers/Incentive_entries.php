@@ -45,15 +45,13 @@ class Incentive_entries extends MY_Controller {
         echo json_encode(array("data" => $result));
     }
 
-    private function get_labeled_status($status, $payments = 0){
+    private function get_labeled_status($status){
         $labeled_status = "";
 
         if($status == "not paid"){
-            if($payments > 0) {
-                $labeled_status = "<span class='label label-primary'>".(lang('partially_paid'))."</span>";
-            } else {
-                $labeled_status = "<span class='label label-default'>".(ucwords($status))."</span>";
-            }
+            $labeled_status = "<span class='label label-default'>".(ucwords($status))."</span>";
+        } else if($status == "partial") {
+            $labeled_status = "<span class='label label-primary'>".(ucwords($status))."</span>";
         } else if($status == "paid"){
             $labeled_status = "<span class='label label-success'>".(ucwords($status))."</span>";
         } else if($status == "cancelled"){
@@ -64,8 +62,9 @@ class Incentive_entries extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $total_payments = $this->Expenses_payments_model->get_total_payments($data->expense_id);
-        $status = $this->get_labeled_status($data->status, $total_payments);
+        $balance = $this->get_expense_balance($data->amount, $data->expense_id);
+        $data->status = $balance == 0 ? "paid" : "partial";
+        $status = $this->get_labeled_status($data->status, $balance);
 
         $edit = '<li role="presentation">' . modal_anchor(get_uri("fas/incentive_entries/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("class" => "edit", "title" => lang('edit'), "data-post-id" => $data->id)) . '</li>';
         $delete = "";
