@@ -36,7 +36,7 @@ class Migration_Add_expenses_payments extends CI_Migration {
                     'type' => 'INT',
                     'constraint' => 11
                 ),
-                'created_at datetime default current_timestamp',
+                'created_at timestamp default current_timestamp',
                 'deleted' => array(
                     'type' => 'TINYINT',
                     'constraint' => 1,
