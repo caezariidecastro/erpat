@@ -201,7 +201,7 @@ class Expenses_payments extends MY_Controller {
         $list_data = $this->Expenses_payments_model->get_details($options)->result();
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = $this->_make_payment_row($data);
+            $result[] = $this->_make_payment_row($data, $expense_id);
         }
         echo json_encode(array("data" => $result));
     }
@@ -237,7 +237,7 @@ class Expenses_payments extends MY_Controller {
 
     /* prepare a row of expense payment list table */
 
-    private function _make_payment_row($data) {
+    private function _make_payment_row($data, $include_account) {
         $expense_url = "";
         // if (!$this->can_view_expenses($data->client_id)) {
         //     redirect("forbidden");
@@ -248,12 +248,16 @@ class Expenses_payments extends MY_Controller {
         } else {
             $expense_url = anchor(get_uri("expenses/preview/" . $data->expense_id), get_invoice_id($data->expense_id));
         }
+
+        $accounts = $this->Accounts_model->get_one( $data->account_id );
+        $accounts = $accounts ? "Account Name: <strong>".$accounts->name."</strong>":"Unknown";
+
         return array(
             $expense_url,
             $data->payment_date,
             format_to_date($data->payment_date, false),
             $data->payment_method_title,
-            $data->note,
+            $accounts ? $accounts : $data->note,
             to_currency($data->amount, $data->currency_symbol),
             modal_anchor(get_uri("expense_payments/payment_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_payment'), "data-post-id" => $data->id, "data-post-expense_id" => $data->expense_id,))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("expense_payments/delete_payment"), "data-action" => "delete-confirmation"))

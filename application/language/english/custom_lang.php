@@ -520,4 +520,6 @@ $lang['cash_flows'] = "Cash Flows";
 $lang['excess_payment'] = "Not allowed to pay or received payment more than the amount request.";
 $lang['paid_expenses'] = "Paid Expenses";
 $lang['payables'] = "Payables";
+$lang['credited_transactions'] = "Credited Transactions";
+
 
