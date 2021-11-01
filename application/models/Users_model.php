@@ -330,7 +330,7 @@ class Users_model extends Crud_model {
 
         $sql = "SELECT $users_table.id 
         FROM $users_table
-        WHERE uuid = ''";
+        WHERE uuid = '' OR uuid IS NULL";
         return $this->db->query($sql)->result();
     }
 

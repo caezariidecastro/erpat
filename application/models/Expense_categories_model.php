@@ -31,4 +31,22 @@ class Expense_categories_model extends Crud_model {
         AND $expense_categories_table.title = '$title'";
         return $this->db->query($sql);
     }
+
+    function get_default_expense_categories() {
+        $expense_categories_table = $this->db->dbprefix('expense_categories');
+
+        $sql = "SELECT $expense_categories_table.id 
+        FROM $expense_categories_table
+        WHERE id <= 3 AND is_editable = 1";
+        return $this->db->query($sql)->result();
+    }
+
+    function secure_default($id) {
+        $expense_categories = $this->db->dbprefix('expense_categories');
+    
+        $sql = "UPDATE $expense_categories 
+        SET is_editable='0' 
+        WHERE id = '$id'";
+        return $this->db->query($sql);
+    }
 }

@@ -220,11 +220,11 @@ CREATE TABLE IF NOT EXISTS `expense_categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Payroll', '0');
-INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Contribution', '0');
-INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Incentive', '0');
-INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Purchase', '0');
-INSERT IGNORE INTO `expense_categories` (`id`, `title`, `deleted`) VALUES (NULL, 'Miscellaneous', '0');
+INSERT IGNORE INTO `expense_categories` (`id`, `title`, `is_editable`) VALUES (NULL, 'Payroll', '0');
+INSERT IGNORE INTO `expense_categories` (`id`, `title`, `is_editable`) VALUES (NULL, 'Contribution', '0');
+INSERT IGNORE INTO `expense_categories` (`id`, `title`, `is_editable`) VALUES (NULL, 'Incentive', '0');
+INSERT IGNORE INTO `expense_categories` (`id`, `title`, `is_editable`) VALUES (NULL, 'Purchase', '1');
+INSERT IGNORE INTO `expense_categories` (`id`, `title`, `is_editable`) VALUES (NULL, 'Miscellaneous', '1');
 
 CREATE TABLE IF NOT EXISTS `labels` (
 `id` int(11) NOT NULL AUTO_INCREMENT,

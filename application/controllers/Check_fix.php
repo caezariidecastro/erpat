@@ -10,6 +10,7 @@ class Check_fix extends MY_Controller
         $this->access_only_admin();
         $this->load->model("Settings_model");
         $this->load->model("Users_model");
+        $this->load->model("Expense_categories_model");
     }
 
     public function index()
@@ -22,18 +23,23 @@ class Check_fix extends MY_Controller
     public function execute()
     {
         //Execute all fixing here.
-        $user_uuid = $this->add_uuidto_users();
+        $user_uuid = $this->add_uuid_to_users();
+        $secured = $this->secure_expense_defaults();
 
         $utc_datetime = get_current_utc_time();
         $this->Settings_model->save_setting("last_check_fix", $utc_datetime);
         echo json_encode(array(
             "success"=>true,
             "current"=>format_to_datetime($utc_datetime),
-            "message"=>"We updated $user_uuid users UUID."
+            "data" => array(
+                "user_uuid" => $user_uuid,
+                "expense_default" => $secured
+            ),
+            "message"=>"Added $user_uuid users UUID and secured $secured expense categories."
         ));
     }
 
-    protected function add_uuidto_users() {
+    protected function add_uuid_to_users() {
         $users = $this->Users_model->get_users_without_uuid();
 
         foreach($users as $user) {
@@ -42,5 +48,15 @@ class Check_fix extends MY_Controller
         }
 
         return count($users);
+    }
+
+    protected function secure_expense_defaults() {
+        $expense_categories = $this->Expense_categories_model->get_default_expense_categories();
+
+        foreach($expense_categories as $expense_category) {
+            $this->Expense_categories_model->secure_default($expense_category->id);
+        }
+
+        return count($expense_categories);
     }
 }
