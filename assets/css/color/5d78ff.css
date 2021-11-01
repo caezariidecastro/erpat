@@ -2,24 +2,24 @@
 .btn-primary,
 .nav-tabs>li:not(.title-tab):after,
 #timeline .post-content .post-date span{
-    background: #5D78FF;
+    background: #5770ec;
 }
 .nav-tabs>li.active>a, 
 .nav-tabs>li.active>a:active,
 .nav-tabs>li.active>a:hover, 
 .nav-tabs>li.active>a:focus{
-    color: #5D78FF;
-    border-color: #5D78FF;
+    color: #5770ec;
+    border-color: #5770ec;
 }
 .nav-tabs>li>a:hover{
-    color: #5D78FF;
+    color: #5770ec;
 }
 .dataTable tbody tr.active td, 
 .dataTable tbody tr.active:hover td{
-    background: #5D78FF !important;
+    background: #5770ec !important;
 }
 .select2-results .select2-highlighted{
-    background-color: #5D78FF;
+    background-color: #5770ec;
 }
 .datepicker table tr td.active.active,
 .datepicker table tr td.active.active:hover,
@@ -32,8 +32,8 @@
 .list-group-item.active,
 .list-group-item.active:focus, 
 .list-group-item.active:hover{
-    background: #5D78FF;
-    border-color: #5D78FF;
+    background: #5770ec;
+    border-color: #5770ec;
 }
 
 
@@ -82,5 +82,5 @@ a:active{
 }
 
 .atwho-view .cur{
-    background-color: #5D78FF;
+    background-color: #5770ec;
 }

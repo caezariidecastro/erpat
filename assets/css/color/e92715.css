@@ -2,24 +2,24 @@
 .btn-primary,
 .nav-tabs>li:not(.title-tab):after,
 #timeline .post-content .post-date span{
-    background: #2e4053;
+    background: #e92715;
 }
 .nav-tabs>li.active>a, 
 .nav-tabs>li.active>a:active,
 .nav-tabs>li.active>a:hover, 
 .nav-tabs>li.active>a:focus{
-    color: #2e4053;
-    border-color: #2e4053;
+    color: #e92715;
+    border-color: #e92715;
 }
 .nav-tabs>li>a:hover{
-    color: #2e4053;
+    color: #e92715;
 }
 .dataTable tbody tr.active td, 
 .dataTable tbody tr.active:hover td{
-    background: #2e4053 !important;
+    background: #e92715 !important;
 }
 .select2-results .select2-highlighted{
-    background-color: #2e4053;
+    background-color: #e92715;
 }
 .datepicker table tr td.active.active,
 .datepicker table tr td.active.active:hover,
@@ -32,8 +32,8 @@
 .list-group-item.active,
 .list-group-item.active:focus, 
 .list-group-item.active:hover{
-    background: #2e4053;
-    border-color: #2e4053;
+    background: #e92715;
+    border-color: #e92715;
 }
 
 
@@ -45,44 +45,44 @@
 #sidebar-menu > li.active > a,
 #sidebar-menu li a:hover
 {
-    background: #283747; 
-    color: #b8c4d0;
+    background: #ca2314; 
+    color: #FFF;
 }
 #sidebar-menu .devider{
-    border-color: #283747
+    border-color: #ca2314
 }
 a {
-    color: #283747;
+    color: #ca2314;
 }
 .bg-success{
-    background: #283747;
+    background: #ca2314;
 }
 
 
 #sidebar-menu li a,
 #sidebar-menu li.expand > a:before{
-    color: #b8c4d0;
+    color: #fff;
 }
 #sidebar-menu > li.active > a{
-    border-color: #b8c4d0;
+    border-color: #fff;
 }
 #sidebar-menu > li > ul > li > a:hover{
-    background: #212f3c;
-    color: #b8c4d0;
+    background: #7b241c;
+    color: #fff;
 }
 
 
 a:hover,
 a:focus,
 a:active{
-    color: #1b2631;
+    color: #641e16;
 }
 .bg-dark-success{
-    background: #1b2631; 
+    background: #641e16; 
 }
 
 .atwho-view .cur, 
 .note-hint-group .active, 
 .note-hint-item:hover{
-    background-color: #2e4053 !important;
+    background-color: #e92715 !important;
 }

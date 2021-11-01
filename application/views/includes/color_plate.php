@@ -1,7 +1,7 @@
 <div class="color-palet">
     <?php
     $selected_color = $model_info->color ? $model_info->color : "#83c340";
-    $colors = array("#83c340", "#29c2c2", "#2d9cdb", "#aab7b7", "#f1c40f", "#e18a00", "#e74c3c", "#d43480", "#ad159e", "#37b4e1", "#34495e", "#dbadff");
+    $colors = array("#83c340", "#29c2c2", "#2d9cdb", "#aab7b7", "#f1c40f", "#e18a00", "#e74c3c", "#d43480", "#ad159e", "#37b4e1", "#34495e", "#7b4547");
     foreach ($colors as $color) {
         $active_class = "";
         if ($selected_color === $color) {
