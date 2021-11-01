@@ -355,9 +355,9 @@ class Left_menu {
             if (is_user_has_module_permission("module_sms")) {
                 $sidebar_menu["menu_sms"] = array("name" => "menu_sms", "url" => "sms", "class" => "fa-tags", "devider" => true,
                 "submenu" => array(
-                    array("name" => "submenu_sms_pointofsale", "url" => "sms/point-of-sale"),
-                    array("name" => "submenu_sms_giftcard", "url" => "sms/giftcard"),
-                    array("name" => "submenu_sms_coupons", "url" => "sms/coupons"),
+                    // array("name" => "submenu_sms_pointofsale", "url" => "sms/point-of-sale"),
+                    // array("name" => "submenu_sms_giftcard", "url" => "sms/giftcard"),
+                    // array("name" => "submenu_sms_coupons", "url" => "sms/coupons"),
                     array("name" => "submenu_sms_salesmatrix", "url" => "sms/sales-matrix"),
                     array("name" => "submenu_sms_estimates", "url" => "sms/estimates"),
                     array("name" => "submenu_sms_invoices", "url" => "sms/invoices"),
