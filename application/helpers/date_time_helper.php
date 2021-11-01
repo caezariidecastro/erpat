@@ -24,7 +24,7 @@ if (!function_exists('get_timezone_offset')) {
  */
 if (!function_exists('convert_date_local_to_utc')) {
 
-    function convert_date_local_to_utc($date = "", $format = "Y-m-d H:i:s") {
+    function convert_date_local_to_utc($date = "", $format = "Y-m-d H:i:s", $add_days = 0) {
         if (!$date) {
             return false;
         }
@@ -32,7 +32,7 @@ if (!function_exists('convert_date_local_to_utc')) {
         $time_offset = get_timezone_offset() * -1;
 
         //add time offset
-        return date($format, strtotime($date) + $time_offset);
+        return date($format, strtotime($date . "+$add_days days") + $time_offset);
     }
 
 }
@@ -62,9 +62,10 @@ if (!function_exists('get_current_utc_time')) {
  */
 if (!function_exists('convert_date_utc_to_local')) {
 
-    function convert_date_utc_to_local($date_time, $format = "Y-m-d H:i:s") {
+    function convert_date_utc_to_local($date_time, $format = "Y-m-d H:i:s", $add_days = 0) {
         $date = new DateTime($date_time . ' +00:00');
         $date->setTimezone(new DateTimeZone(get_setting('timezone')));
+        $date->add(new DateInterval("P".$add_days."D"));
         return $date->format($format);
     }
 

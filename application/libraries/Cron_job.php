@@ -427,12 +427,16 @@ class Cron_job {
         //check recurring expense once/hour?
 
         $expense_date = $expense->next_recurring_date;
+        $due_date = convert_date_local_to_utc($expense_date, "Y-m-d", 7);
 
         $new_expense_data = array(
             "title" => $expense->title,
             "expense_date" => $expense_date,
+            "due_date" => $due_date,
+            "status" => "not_paid",
             "description" => $expense->description,
             "category_id" => $expense->category_id,
+            "account_id" => $expense->account_id,
             "amount" => $expense->amount,
             "project_id" => $expense->project_id,
             "user_id" => $expense->user_id,

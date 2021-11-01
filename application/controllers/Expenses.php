@@ -377,13 +377,11 @@ class Expenses extends MY_Controller {
                 $description .= "<br /> ";
                 $description .= lang("next_recurring_date") . ": " . format_to_date($data->next_recurring_date, false);
             }
-        }
-
-        if ($data->recurring_expense_id) {
-            if ($description) {
+        } else {
+            if ($data->recurring_expense_id) {
                 $description .= "<br /> ";
+                $description .= lang("generated_by") . ": " . lang("expense") ." #". $data->recurring_expense_id;
             }
-            $description .= modal_anchor(get_uri("fas/expenses/expense_details"), lang("original_expense"), array("title" => lang("expense_details"), "data-post-id" => $data->recurring_expense_id));
         }
 
         $files_link = "";
@@ -408,6 +406,7 @@ class Expenses extends MY_Controller {
         }
 
         $invoice_url = modal_anchor(get_uri("fas/expenses/expense_details"), get_expense_id($data->id), array("title" => lang("expense_details"), "data-post-id" => $data->id));
+        $invoice_url = $data->recurring ? get_expense_id($data->id) : $invoice_url;
         $invoice_url = format_to_date($data->expense_date, false)." - ".$invoice_url;
         $payable_balance = $this->get_expense_balance($data->amount, $data->id);
         $payable_payment = $data->amount - $payable_balance;
