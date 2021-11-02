@@ -32,16 +32,27 @@ class Attendance extends Users {
             exit;
         }
 
-        //Check if this user id is 5 min last timein.
+        //Check if this user id is 60 seconds last timein.
         $checking = $this->check_if_now_allowed($userid);
         if($checking['success'] == false) {
             echo json_encode( $checking );
             exit;
         }
 
+        $user = $this->Users_model->get_details(array("id"=>$userid,"deleted"=>0))->row();
+        $user = array(
+            "fname" => $user->first_name,
+            "lname" => $user->last_name,
+            "email" => $user->email,
+            "avatar" => get_avatar($user->image),
+            "status" => $user->status,
+            "job" => $user->job_title
+        );
+
         $is_currently_clocked_in = $this->Attendance_model->log_time($userid, "System Generated", true);  
         echo json_encode( array(
             "success"=>true, 
+            "data"=>$user,
             "message"=>"Successfully clocked ".($is_currently_clocked_in ? "in." : "out."),
             "stamp"=>get_my_local_time(),
             "clocked"=>$is_currently_clocked_in,
@@ -65,6 +76,12 @@ class Attendance extends Users {
         echo json_encode(array("success" => true, "data" => $list_data));
     }
 
+    protected function get_time_diff($start_date, $end_date) {
+        $start_time  = strtotime($start_date);
+        $end_time = strtotime($end_date);
+        return $end_time - $start_time;
+    }
+
     protected function check_if_now_allowed($userid) {
         $options = array(
             "user_id" => $userid,
@@ -79,36 +96,29 @@ class Attendance extends Users {
             exit;
         }
 
-        $now = get_current_utc_time();
+        $timespan = 30;
+        $end_date = get_current_utc_time();
         //Check if previously clocked in.
         if($list_data[0]->out_time == "") {
-            $last = $list_data[0]->in_time;
-            $origin = new DateTime($last);
-            $target = new DateTime($now);
-            $interval = $origin->diff($target);
-            //$mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
-            $secdiff = (int)$interval->format("%S");
+            $start_date = $list_data[0]->in_time;
+            $countdown = $timespan - $this->get_time_diff($start_date, $end_date);
 
-            if($secdiff < 12) { //12 seconds
+            if($countdown > 0) { 
                 return array(
                     "success" => false,
-                    "message" => "You're not allowed to clockout, you need to wait for ".$secdiff." seconds since your last clocked in."
+                    "message" => "You're not allowed to clockout, you need to wait for ".$countdown." seconds since your last clocked in."
                 );
                 exit;
             }
             //return json_encode(array("message" => "clocked in: ".$mindiff ));
         } else { //clocked out
-            $last = $list_data[0]->out_time;
-            $origin = new DateTime($last);
-            $target = new DateTime($now);
-            $interval = $origin->diff($target);
-            //$mindiff = (int)$interval->format("%I"); //"%H:%I:%S"
-            $secdiff = (int)$interval->format("%S");
+            $start_date = $list_data[0]->out_time;
+            $countdown = $timespan - $this->get_time_diff($start_date, $end_date);
 
-            if($secdiff < 12) { //12 seconds
+            if($countdown > 0) { 
                 return array(
                     "success" => false,
-                    "message" => "You're not allowed to clockin, you need to wait for ".$secdiff." seconds since your last clocked out."
+                    "message" => "You're not allowed to clockin, you need to wait for ".$countdown." seconds since your last clocked out."
                 );
                 exit;
             }
