@@ -11,9 +11,10 @@ class Attendance_model extends Crud_model {
 
     //Clock out all user more than time out.
     function auto_clockout() {
-        $current_time = get_my_local_time();
-        $sql = "UPDATE attendance SET out_time = '$current_time' , status='pending', note='System Clockout' 
-            WHERE (status='incomplete' OR out_time = NULL) AND in_time < DATE_SUB(NOW(), INTERVAL 12 HOUR)";
+        $now = get_current_utc_time();
+        $sql = "UPDATE attendance SET out_time = '$now' , status='pending', note='System Clockout' 
+            WHERE (status='incomplete' OR out_time = NULL) 
+                AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 >= 12";
         $this->db->query($sql);
     }
 
