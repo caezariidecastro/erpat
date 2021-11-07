@@ -445,7 +445,7 @@
                             <?php
                             echo form_checkbox("module_clients", "1", get_setting("module_clients") ? true : false, "id='module_clients' class='ml15'");
                             ?>   
-                            <label for="module_clients"><?php echo lang('submenu_pms_clients'); ?></label>                    
+                            <label for="module_clients"><?php echo lang('submenu_sms_clients'); ?></label>                    
                         </div>
                         <div class="col-md-4">
                             <?php

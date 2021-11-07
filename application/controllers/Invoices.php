@@ -508,7 +508,7 @@ class Invoices extends MY_Controller {
         $client = "";
 
         if($data->client_id){
-            $client = anchor(get_uri("pms/clients/view/" . $data->client_id), $data->company_name);
+            $client = anchor(get_uri("sms/clients/view/" . $data->client_id), $data->company_name);
         }
 
         if($data->consumer_id){
@@ -624,7 +624,7 @@ class Invoices extends MY_Controller {
 
         return array(
             $invoice_url,
-            anchor(get_uri("pms/clients/view/" . $data->client_id), $data->company_name),
+            anchor(get_uri("sms/clients/view/" . $data->client_id), $data->company_name),
             $data->project_title ? anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title) : "-",
             $next_recurring_date,
             $next_recurring,

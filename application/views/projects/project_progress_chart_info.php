@@ -18,7 +18,7 @@
     </div>
     <?php if ($this->login_user->user_type === "staff") { ?>
         <div class="p10">
-            <?php echo lang("client"); ?>: <?php echo anchor(get_uri("pms/clients/view/" . $project_info->client_id), $project_info->company_name); ?>
+            <?php echo lang("client"); ?>: <?php echo anchor(get_uri("sms/clients/view/" . $project_info->client_id), $project_info->company_name); ?>
         </div>
     <?php } else { ?>
         <div class="p10">

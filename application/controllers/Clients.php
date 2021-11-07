@@ -225,7 +225,7 @@ class Clients extends MY_Controller {
         }
 
         $row_data = array($data->id,
-            anchor(get_uri("pms/clients/view/" . $data->id), $data->company_name),
+            anchor(get_uri("sms/clients/view/" . $data->id), $data->company_name),
             $data->primary_contact ? $primary_contact : "",
             $group_list,
             to_decimal_format($data->total_projects),
@@ -1092,7 +1092,7 @@ class Clients extends MY_Controller {
         $row_data = array(
             $user_avatar,
             $contact_link,
-            anchor(get_uri("pms/clients/view/" . $data->client_id), $client_info->company_name),
+            anchor(get_uri("sms/clients/view/" . $data->client_id), $client_info->company_name),
             $data->job_title,
             $data->email,
             $data->phone ? $data->phone : "-",

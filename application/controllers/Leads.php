@@ -1036,7 +1036,7 @@ class Leads extends MY_Controller {
                     }
                 }
 
-                echo json_encode(array("success" => true, 'redirect_to' => get_uri("pms/clients/view/$save_client_id"), "message" => lang('record_saved')));
+                echo json_encode(array("success" => true, 'redirect_to' => get_uri("sms/clients/view/$save_client_id"), "message" => lang('record_saved')));
             } else {
                 echo json_encode(array("success" => false, lang('error_occurred')));
             }

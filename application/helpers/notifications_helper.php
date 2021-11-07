@@ -72,7 +72,7 @@ if (!function_exists('get_notification_config')) {
         $client_link = function($options) {
             $url = "";
             if (isset($options->client_id)) {
-                $url = get_uri("pms/clients/view/" . $options->client_id);
+                $url = get_uri("sms/clients/view/" . $options->client_id);
             }
 
             return array("url" => $url);
