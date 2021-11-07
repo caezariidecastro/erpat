@@ -66,10 +66,6 @@ class Services extends MY_Controller {
     function modal_form() {
         $this->validate_access_to_items();
 
-        validate_submitted_data(array(
-            "id" => "required"
-        ));
-
         $view_data['model_info'] = $this->Services_model->get_one($this->input->post('uuid'), true);
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
 

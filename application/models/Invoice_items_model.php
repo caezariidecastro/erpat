@@ -36,7 +36,7 @@ class Invoice_items_model extends Crud_model {
     function get_item_suggestion($keyword = "") {
         $items_table = $this->db->dbprefix('services');
         
-        $limits = $this->config->item("max_services_dropdown_count");
+        $limits = 1000;
         $sql = "SELECT $items_table.title
             FROM $items_table
             WHERE $items_table.deleted=0

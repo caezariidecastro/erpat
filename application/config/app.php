@@ -6,8 +6,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['app_version'] = '1.4.2';
 
-$config['max_services_dropdown_count'] = 10;
-
 define("TOKEN_EXPIRY", 43200); //12hrs
 
 $config['app_update_url'] = 'https://businext.app/latest/';
