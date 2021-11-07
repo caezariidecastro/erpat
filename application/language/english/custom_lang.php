@@ -59,7 +59,7 @@ $lang["submenu_pms_my_tasks"] = "My Tasks";
 $lang["submenu_pms_view_gantts"] = "View Gantts";
 $lang["submenu_pms_timesheets"] = "Timesheets";
 $lang["submenu_pms_clients"] = "Clients";
-$lang["submenu_pms_services"] = "Services";
+$lang["submenu_sms_services"] = "Services";
 
 $lang["submenu_ams_assets"] = "Assets";
 $lang["submenu_ams_category"] = "Category";

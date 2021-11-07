@@ -361,6 +361,7 @@ class Left_menu {
                     array("name" => "submenu_sms_salesmatrix", "url" => "sms/sales-matrix"),
                     array("name" => "submenu_sms_estimates", "url" => "sms/estimates"),
                     array("name" => "submenu_sms_invoices", "url" => "sms/invoices"),
+                    array("name" => "submenu_sms_services", "url" => "sms/services"),
                     array("name" => "submenu_sms_customers", "url" => "sms/customers"),
                 ));
             }
@@ -383,8 +384,7 @@ class Left_menu {
                     array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks"),
                     array("name" => "submenu_pms_view_gantts", "url" => "pms/view_gantts"),
                     array("name" => "submenu_pms_timesheets", "url" => "pms/timesheets"),
-                    array("name" => "submenu_pms_clients", "url" => "pms/clients"),
-                    array("name" => "submenu_pms_services", "url" => "pms/services")
+                    array("name" => "submenu_pms_clients", "url" => "pms/clients")
                 ));
             }
             // End: Module permissions workaround

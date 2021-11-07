@@ -451,7 +451,7 @@
                             <?php
                             echo form_checkbox("module_services", "1", get_setting("module_services") ? true : false, "id='module_services' class='ml15'");
                             ?>   
-                            <label for="module_services"><?php echo lang('submenu_pms_services'); ?></label>                    
+                            <label for="module_services"><?php echo lang('submenu_sms_services'); ?></label>                    
                         </div>
                     </div>
 
