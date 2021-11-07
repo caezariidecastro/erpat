@@ -128,7 +128,7 @@ $route["css"] = "tickets/index";
 $route["css/tickets"] = "Tickets/index";
 $route["css/tickets/(:any)"] = "Tickets/$1";
 $route["css/tickets/(:any)/(:any)"] = "Tickets/$1/$2";
-$route["css/tickets/(:any)/(:any)/(:any)"] = "Tickets/$1/$2/3";
+$route["css/tickets/(:any)/(:any)/(:any)"] = "Tickets/$1/$2/$3";
 
 $route["css/ticket_types"] = "Ticket_types/index";
 $route["css/ticket_types/(:any)"] = "Ticket_types/$1";
