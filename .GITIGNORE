@@ -46,3 +46,4 @@ files/timeline_files/*
 #index.php
 .env.production.php
 .env.development.php
+.vscode/settings.json
