@@ -214,6 +214,16 @@ class Users_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function get_baseinfo($user_id = 0) {
+        $users_table = $this->db->dbprefix('users');
+
+        $sql = "SELECT $users_table.id, $users_table.uuid, $users_table.user_type, $users_table.is_admin, $users_table.role_id, $users_table.email,
+            $users_table.first_name, $users_table.last_name, $users_table.image
+        FROM $users_table 
+        WHERE $users_table.deleted=0 AND $users_table.id=$user_id";
+        return $this->db->query($sql)->row();
+    }
+
     function get_access_info($user_id = 0) {
         $users_table = $this->db->dbprefix('users');
         $roles_table = $this->db->dbprefix('roles');

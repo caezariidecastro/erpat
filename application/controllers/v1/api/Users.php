@@ -46,24 +46,22 @@ class Users extends MY_Controller {
             exit();
         }
 
+        $info = $this->Users_model->get_baseinfo($user_id);
         $now = strtotime(get_my_local_time());
         $span = TOKEN_EXPIRY;
         $expiry = (int)$now + (int)$span;
 
         $user = array(
             "id" => $user_id,
+            "uuid" => $info->uuid,
+            "avatar" => get_avatar($user_id, true),
+            "fullname" => $info->first_name ." ".$info->last_name,
             "email" => $email,
             "expired" => $expiry //SHOULD BE INT.
         );
         $token = JWT::encode($user, ENCRYPTION);
 
-        $info = $this->Users_model->get_details(array("id"=>$user_id,"deleted"=>0))->row();
-        $user['avatar'] = get_avatar($info->image);
-        $user['fname'] = $info->first_name;
-        $user['lname'] = $info->last_name;
-        $user['id'] = $info->id;
-
-        echo json_encode(array("success"=>true, "data"=> array("token"=>$token,"user"=>$user)));
+        echo json_encode(array("success"=>true, "data"=> $token));
     }
 
     function verify() {

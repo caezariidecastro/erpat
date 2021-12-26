@@ -52,19 +52,28 @@ if (!function_exists('get_file_uri')) {
  */
 if (!function_exists('get_avatar')) {
 
-    function get_avatar($image = "") {
-        if ($image === "system_bot") {
+    function get_avatar($request = "", $isId = false) {
+        if ($request === "system_bot") {
             return base_url("assets/images/avatar-bot.jpg");
-        } else if ($image === "bitbucket") {
+        } else if ($request === "bitbucket") {
             return base_url("assets/images/bitbucket_logo.png");
-        } else if ($image === "github") {
+        } else if ($request === "github") {
             return base_url("assets/images/github_logo.png");
-        } else if ($image) {
-            $file = @unserialize($image);
+        } else if ($request) {
+            if($isId) {
+                $ci = get_instance();
+                $usr_instance = $ci->Users_model->get_baseinfo((int)$request);
+
+                if(!isset($usr_instance->image))
+                    return base_url("assets/images/avatar.jpg");
+
+                $request = $usr_instance->image;
+            }
+            $file = @unserialize($request);
             if (is_array($file)) {
                 return get_source_url_of_file($file, get_setting("profile_image_path") . "/", "thumbnail");
             } else {
-                return base_url(get_setting("profile_image_path")) . "/" . $image;
+                return base_url(get_setting("profile_image_path")) . "/" . $request;
             }
         } else {
             return base_url("assets/images/avatar.jpg");
