@@ -72,6 +72,7 @@ class Attendance extends Users {
             $item->fname = $instance->first_name;
             $item->lname = $instance->last_name;
             $item->avatar = get_avatar($instance->image);
+            $item->in_time = convert_date_utc_to_local($item->in_time, "Y-m-d h:i:s");
         }
         echo json_encode(array("success" => true, "data" => $list_data));
     }
