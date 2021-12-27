@@ -10,7 +10,7 @@
 
 <script>
     $(document).ready(function() {
-        let dateTime = new Date('<?= $local_time ?>');
+        const dateTime = new Date('<?= $local_time ?>');
 
         setInterval(function(){
             displayTime();
@@ -18,18 +18,7 @@
     
         function displayTime() {
             dateTime.setSeconds(dateTime.getSeconds() + 1);
-
-            var hours = dateTime.getHours();
-                hours = hours % 12;
-                hours = hours ? hours : 12; // the hour '0' should be '12'
-            var minutes = dateTime.getMinutes();
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-            var seconds = dateTime.getSeconds();
-                seconds = seconds < 10 ? '0' + seconds : seconds;
-            var ampm = hours >= 12 ? 'PM' : 'AM';
-            var strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
-
-            document.getElementById("nav_time_display").innerHTML = strTime;
+            document.getElementById("nav_time_display").innerHTML = dateTime.toLocaleTimeString();
         }
     });
 </script>
