@@ -63,7 +63,29 @@ class Attendance extends Users {
     function clocked_in_list() {
         $options = array(
             "access_type" => "all", 
-            "only_clocked_in_members" => true
+            "only_clocked_in_members" => false
+        );
+        $list_data = $this->Attendance_model->get_details($options)->result();
+
+        foreach($list_data as $item) {
+            $instance = $this->Users_model->get_details(array("id"=>$item->user_id,"deleted"=>0))->row();
+            $item->fname = $instance->first_name;
+            $item->lname = $instance->last_name;
+            $item->avatar = get_avatar($instance->image);
+            $item->in_time = convert_date_utc_to_local($item->in_time, "Y-m-d h:i:s");
+        }
+        
+        echo json_encode(array("success" => true, "data" => $list_data));
+    }
+
+    function my_clocked_in_list() {
+        $user_token = JWT::decode(getBearerToken(), ENCRYPTION);
+        $options = array(
+            "access_type" => "all", 
+            "start_date" => convert_date_utc_to_local(get_my_local_time(), "Y-m-d H:i:s", 30, true),
+            "end_date" => get_current_utc_time(),
+            "user_id" => $user_token->id,
+            //"only_clocked_in_members" => false
         );
         $list_data = $this->Attendance_model->get_details($options)->result();
 
