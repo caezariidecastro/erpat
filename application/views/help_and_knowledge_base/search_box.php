@@ -20,7 +20,10 @@ echo form_input(array(
         var awesomplete = new Awesomplete($searchBox[0], {
             minChars: 1,
             autoFirst: true,
-            maxItems: 10
+            maxItems: 10,
+            filter: function(text, input) {
+                return true;
+            }
         });
 
         $searchBox.on("keyup", function (e) {
