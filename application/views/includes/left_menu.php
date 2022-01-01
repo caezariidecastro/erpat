@@ -36,18 +36,22 @@
                         if ($submenu) {
                             echo "<ul>";
                             foreach ($submenu as $s_menu) {
-                                if (isset($s_menu['name'])) {
-                                    $sub_menu_target = (isset($s_menu['is_custom_menu_item']) && isset($s_menu['open_in_new_tab']) && $s_menu['open_in_new_tab']) ? "target='_blank'" : "";
-                                    ?>
+                                $s_menu['is_custom_menu_item'] = isset($s_menu['is_custom_menu_item']) ? true:false;
+
+                                if(isset($s_menu['name']) && $main_menu['name'] == $s_menu['name'] && $s_menu['is_custom_menu_item']) {
+                                    continue;
+                                }
+                                                                        
+                                $sub_menu_target = (isset($s_menu['is_custom_menu_item']) && isset($s_menu['open_in_new_tab']) && $s_menu['open_in_new_tab']) ? "target='_blank'" : "";
+                            ?>
                                 <li>
-                                    <a <?php echo $sub_menu_target; ?> href="<?php echo isset($s_menu['is_custom_menu_item']) ? $s_menu['url'] : get_uri($s_menu['url']); ?>">
+                                    <a <?php echo $sub_menu_target; ?> href="<?php echo $s_menu['is_custom_menu_item'] ? $s_menu['url'] : get_uri($s_menu['url']); ?>">
                                         <i class="dot fa fa-circle"></i>
-                                        <span><?php echo isset($s_menu['is_custom_menu_item']) ? $s_menu['name'] : lang($s_menu['name']); ?></span>
+                                        <span><?php echo $s_menu['is_custom_menu_item'] ? $s_menu['name'] : lang($s_menu['name']); ?></span>
                                     </a>
                                 </li>
-                                <?php
+                            <?php   
                             }
-                        }
                         echo "</ul>";
                     }
                     ?>
