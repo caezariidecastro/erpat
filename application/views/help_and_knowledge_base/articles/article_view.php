@@ -14,7 +14,7 @@
             if ($total_files > 1) {
                 $download_caption = sprintf(lang('download_files'), $total_files);
             }
-            echo anchor(get_uri("css/".$article_info->type."/download_files/" . $article_info->id), $download_caption, array("class" => "", "title" => $download_caption));
+            echo anchor(get_uri($article_info->type."/download_files/" . $article_info->id), $download_caption, array("class" => "", "title" => $download_caption));
         }
     }
     ?>

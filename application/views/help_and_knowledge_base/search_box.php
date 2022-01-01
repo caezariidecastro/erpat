@@ -52,7 +52,7 @@ echo form_input(array(
         function getAwesompleteList() {
 
             $.ajax({
-                url: "<?php echo get_uri("css/".$type . '/get_article_suggestion/'); ?>",
+                url: "<?php echo get_uri($type . '/get_article_suggestion/'); ?>",
                 data: {search: $searchBox.val()},
                 cache: false,
                 type: 'POST',
@@ -76,7 +76,7 @@ echo form_input(array(
         $searchBox.on('awesomplete-selectcomplete', function () {
             //serch result selected, redirect to the article view
             if (this.value) {
-                window.location.href = "<?php echo get_uri("css/".$type . "/view"); ?>/" + this.value;
+                window.location.href = "<?php echo get_uri($type . "/view"); ?>/" + this.value;
             }
             this.value = "";
         });

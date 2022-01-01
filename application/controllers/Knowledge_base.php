@@ -41,12 +41,14 @@ class Knowledge_base extends CI_Controller {
         $type = "knowledge_base";
         $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => $type, "only_active_categories" => true))->result();
         $view_data["type"] = $type;
-
-        if (!isset($this->login_user->id)) {
+        if (isset($this->login_user->id)) {
+            $view_data['external'] = true;
+            $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
+        } else {
             $view_data['topbar'] = "includes/public/topbar";
             $view_data['left_menu'] = false;
+            $this->template->rander("help_and_knowledge_base/index", $view_data);
         }
-        $this->template->rander("help_and_knowledge_base/index", $view_data);
     }
 
     //show knowledge base category
@@ -125,6 +127,31 @@ class Knowledge_base extends CI_Controller {
         download_app_files(get_setting("timeline_file_path"), $info->files);
     }
 
+    //show help articles list
+    function view_preview() {
+        //$this->access_only_allowed_members();
+
+        $view_data["type"] = "knowledge_base";
+        $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => "knowledge_base", "only_active_categories" => true))->result();
+        $this->load->view("help_and_knowledge_base/index", $view_data);
+    }
+
+    //show help articles list
+    function view_articles() {
+        //$this->access_only_allowed_members();
+
+        $view_data["type"] = "knowledge_base";
+        $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => "knowledge_base", "only_active_categories" => true))->result();
+        $this->load->view("help_and_knowledge_base/articles/tab-panel", $view_data);
+    }
+
+    //show help articles list
+    function  view_categories() {
+        //$this->access_only_allowed_members();
+
+        $view_data["type"] = "knowledge_base";
+        $this->load->view("help_and_knowledge_base/categories/tab-panel", $view_data);
+    }
 }
 
 /* End of file help.php */

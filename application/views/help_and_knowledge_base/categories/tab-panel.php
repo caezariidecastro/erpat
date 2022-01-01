@@ -1,7 +1,7 @@
 <div id="page-content" class="p20 clearfix">
     <div class="panel panel-default">
         <div class="page-title clearfix">
-            <h4> <?php echo lang('categories') . " (" . lang($type) . ")"; ?></h4>
+            <h4> <?php echo lang('manage'); ?></h4>
             <div class="title-button-group">
                 <?php echo modal_anchor(get_uri("help/category_modal_form/" . $type), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'))); ?>
             </div>

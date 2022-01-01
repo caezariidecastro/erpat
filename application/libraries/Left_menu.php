@@ -517,24 +517,13 @@ class Left_menu {
                     $help_knowledge_base_menues[]= array("name" => "ticket_type", "url" => "css/ticket_types", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
                 }    
 
-                if ($module_help) {
-                    $help_knowledge_base_menues[] = array("name" => "help", "url" => "css/".$main_url, "class" => "fa-question-circle");
-                }
-
                 //push the help manage menu if user has access
                 if ($manage_help_and_knowledge_base && $module_help) {
-                    $help_knowledge_base_menues[] = array("name" => "articles", "url" => "css/help/help_articles", "class" => "fa-question-circle");
-                    $help_knowledge_base_menues[] = array("name" => "categories", "url" => "css/help/help_categories", "class" => "fa-question-circle");
+                    $help_knowledge_base_menues[] = array("name" => "help_page_title", "url" => "help", "class" => "fa-question-circle");
                 }
 
                 if ($module_knowledge_base) {
-                    $help_knowledge_base_menues[] = array("name" => "knowledge_base", "url" => "css/knowledge_base", "class" => "fa-question-circle-o");
-                }
-
-                //push the knowledge_base manage menu if user has access
-                if ($manage_help_and_knowledge_base && $module_knowledge_base) {
-                    $help_knowledge_base_menues[] = array("name" => "articles", "category" => "help", "url" => "css/help/knowledge_base_articles", "class" => "fa-question-circle-o");
-                    $help_knowledge_base_menues[] = array("name" => "categories", "category" => "help", "url" => "css/help/knowledge_base_categories", "class" => "fa-question-circle-o");
+                    $help_knowledge_base_menues[] = array("name" => "knowledge_base", "url" => "knowledge_base", "class" => "fa-question-circle-o");
                 }
 
 

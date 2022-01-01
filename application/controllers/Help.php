@@ -19,10 +19,8 @@ class Help extends MY_Controller {
         $this->check_module_availability("module_help");
 
         $type = "help";
-
-        $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => $type, "only_active_categories" => true))->result();
         $view_data["type"] = $type;
-        $this->template->rander("help_and_knowledge_base/index", $view_data);
+        $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
     }
 
     //show article
@@ -82,11 +80,29 @@ class Help extends MY_Controller {
     }
 
     //show help articles list
-    function help_articles() {
+    function view_preview() {
         $this->access_only_allowed_members();
 
         $view_data["type"] = "help";
-        $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
+        $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => "help", "only_active_categories" => true))->result();
+        $this->load->view("help_and_knowledge_base/index", $view_data);
+    }
+
+    //show help articles list
+    function view_articles() {
+        $this->access_only_allowed_members();
+
+        $view_data["type"] = "help";
+        $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => "help", "only_active_categories" => true))->result();
+        $this->load->view("help_and_knowledge_base/articles/tab-panel", $view_data);
+    }
+
+    //show help articles list
+    function  view_categories() {
+        $this->access_only_allowed_members();
+
+        $view_data["type"] = "help";
+        $this->load->view("help_and_knowledge_base/categories/tab-panel", $view_data);
     }
 
     //show knowledge base articles list
@@ -94,15 +110,7 @@ class Help extends MY_Controller {
         $this->access_only_allowed_members();
 
         $view_data["type"] = "knowledge_base";
-        $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
-    }
-
-    //show help articles list
-    function help_categories() {
-        $this->access_only_allowed_members();
-
-        $view_data["type"] = "help";
-        $this->template->rander("help_and_knowledge_base/categories/index", $view_data);
+        $this->template->rander("help_and_knowledge_base/articles/tab-panel", $view_data);
     }
 
     //show knowledge base articles list
@@ -110,7 +118,7 @@ class Help extends MY_Controller {
         $this->access_only_allowed_members();
 
         $view_data["type"] = "knowledge_base";
-        $this->template->rander("help_and_knowledge_base/categories/index", $view_data);
+        $this->template->rander("help_and_knowledge_base/categories/tab-panel", $view_data);
     }
 
     //show add/edit category modal
@@ -203,8 +211,8 @@ class Help extends MY_Controller {
             $data->description ? $data->description : "-",
             lang($data->status),
             $data->sort,
-            modal_anchor(get_uri("css/help/category_modal_form/" . $data->type), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_category'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("css/help/delete_category"), "data-action" => "delete"))
+            modal_anchor(get_uri("help/category_modal_form/" . $data->type), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_category'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("help/delete_category"), "data-action" => "delete"))
         );
     }
 
@@ -263,10 +271,10 @@ class Help extends MY_Controller {
         $save_id = $this->Help_articles_model->save($data, $id);
         if ($save_id) {
             $this->session->set_flashdata("success_message", lang('record_saved'));
-            redirect(get_uri("css/help/article_form/" . $type . "/" . $save_id));
+            redirect(get_uri("help/article_form/" . $type . "/" . $save_id));
         } else {
             $this->session->set_flashdata("error_message", lang('error_occurred'));
-            redirect(get_uri("css/help/article_form/" . $type));
+            redirect(get_uri("help/article_form/" . $type));
         }
     }
 
@@ -316,12 +324,12 @@ class Help extends MY_Controller {
     //make a row of article row
     private function _make_article_row($data) {
         return array(
-            anchor(get_uri("css/help/view/" . $data->id), $data->title),
+            anchor(get_uri("help/view/" . $data->id), $data->title),
             $data->category_title,
             lang($data->status),
             $data->total_views,
-            anchor(get_uri("css/help/article_form/" . $data->type . "/" . $data->id), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_article')))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_article'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("css/help/delete_article"), "data-action" => "delete"))
+            anchor(get_uri("help/article_form/" . $data->type . "/" . $data->id), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_article')))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_article'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("help/delete_article"), "data-action" => "delete"))
         );
     }
     

@@ -1,7 +1,7 @@
 <div id="page-content" class="clearfix p20">
     <div class="panel view-container">
         <div id="help-dropzone" class="post-dropzone">
-            <?php echo form_open(get_uri("css/help/save_article"), array("id" => "article-form", "class" => "general-form", "role" => "form")); ?>
+            <?php echo form_open(get_uri("help/save_article"), array("id" => "article-form", "class" => "general-form", "role" => "form")); ?>
 
             <div class="panel-default">
 
@@ -9,8 +9,8 @@
                     <?php if ($model_info->id) { ?>
                         <h1><?php echo lang('edit_article') . " (" . lang($type) . ")"; ?></h1>
                         <div class="title-button-group">
-                            <?php echo anchor(get_uri("css/help/view/" . $model_info->id), "<i class='fa fa-external-link-square'></i> " . lang('view'), array("class" => "btn btn-default", "title" => lang('view'))); ?>
-                            <?php echo anchor(get_uri("css/help/article_form/" . $type), "<i class='fa fa-plus-circle'></i> " . lang('add_article'), array("class" => "btn btn-default", "title" => lang('add_article'))); ?>
+                            <?php echo anchor(get_uri("help/view/" . $model_info->id), "<i class='fa fa-external-link-square'></i> " . lang('view'), array("class" => "btn btn-default", "title" => lang('view'))); ?>
+                            <?php echo anchor(get_uri("help/article_form/" . $type), "<i class='fa fa-plus-circle'></i> " . lang('add_article'), array("class" => "btn btn-default", "title" => lang('add_article'))); ?>
                         </div>
                     <?php } else { ?>
                         <h1><?php echo lang('add_article') . " (" . lang($type) . ")"; ?></h1>
@@ -133,8 +133,8 @@
         $("#category_id").select2();
 
 
-        var uploadUrl = "<?php echo get_uri("css/help/upload_file"); ?>";
-        var validationUrl = "<?php echo get_uri("css/help/validate_file"); ?>";
+        var uploadUrl = "<?php echo get_uri("help/upload_file"); ?>";
+        var validationUrl = "<?php echo get_uri("help/validate_file"); ?>";
 
         var dropzone = attachDropzoneWithForm("#help-dropzone", uploadUrl, validationUrl);
     });

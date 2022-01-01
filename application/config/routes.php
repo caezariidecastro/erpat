@@ -133,15 +133,6 @@ $route["css/tickets/(:any)/(:any)/(:any)"] = "Tickets/$1/$2/$3";
 $route["css/ticket_types"] = "Ticket_types/index";
 $route["css/ticket_types/(:any)"] = "Ticket_types/$1";
 
-$route["css/help"] = "Help/index";
-$route["css/help/(:any)"] = "Help/$1";
-$route["css/help/(:any)/(:any)"] = "Help/$1/$2";
-
-$route["css/knowledge_base"] = "Knowledge_base/index";
-$route["css/knowledge_base/(:any)"] = "Knowledge_base/$1";
-$route["css/knowledge_base/(:any)/(:any)"] = "Knowledge_base/$1/$2";
-
-
 // FAS Controller 
 $route["fas"] = "summary/index";
 $route["fas/summary"] = "Expenses/cash_flow_comparison";

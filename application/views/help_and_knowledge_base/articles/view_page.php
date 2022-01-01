@@ -12,7 +12,7 @@
                         if ($category->id === $selected_category_id) {
                             $active_class = "active";
                         }
-                        echo anchor(get_uri("css/".$type . "/category/" . $category->id), $category->title, array("class" => "list-group-item $active_class"));
+                        echo anchor(get_uri($type . "/category/" . $category->id), $category->title, array("class" => "list-group-item $active_class"));
                     }
                     ?>
                 </ul>
