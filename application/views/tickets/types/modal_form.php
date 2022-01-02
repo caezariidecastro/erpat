@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("css/ticket_types/save"), array("id" => "ticket-type-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("ticket_types/save"), array("id" => "ticket-type-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <div class="form-group" style="min-height: 60px;">

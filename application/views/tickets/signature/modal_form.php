@@ -1,6 +1,6 @@
 <?php
 $user_id = $this->login_user->id;
-echo form_open(get_uri("css/tickets/save_settings"), array("id" => "ticket-settings-form", "class" => "general-form", "role" => "form"));
+echo form_open(get_uri("tickets/save_settings"), array("id" => "ticket-settings-form", "class" => "general-form", "role" => "form"));
 ?>
 <div class="modal-body clearfix">
     <div class="form-group">

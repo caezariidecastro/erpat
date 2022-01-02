@@ -5,8 +5,8 @@
         <div class="tab-title clearfix no-border">
             <div class="title-button-group">
                 <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "ticket")); ?>
-                <?php echo modal_anchor(get_uri("css/tickets/settings_modal_form"), "<i class='fa fa fa-cog'></i> " . lang('signature'), array("class" => "btn btn-default", "title" => lang('signature'))); ?>
-                <?php echo modal_anchor(get_uri("css/tickets/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_ticket'), array("class" => "btn btn-default", "title" => lang('add_ticket'))); ?>
+                <?php echo modal_anchor(get_uri("tickets/settings_modal_form"), "<i class='fa fa fa-cog'></i> " . lang('signature'), array("class" => "btn btn-default", "title" => lang('signature'))); ?>
+                <?php echo modal_anchor(get_uri("tickets/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_ticket'), array("class" => "btn btn-default", "title" => lang('add_ticket'))); ?>
             </div>
         </div>
     </ul>
@@ -38,7 +38,7 @@
         }
 
         $("#ticket-table").appTable({
-            source: '<?php echo_uri("css/tickets/list_data") ?>',
+            source: '<?php echo_uri("tickets/list_data") ?>',
             order: [[6, "desc"]],
             radioButtons: [{text: '<?php echo lang("open") ?>', name: "status", value: "open", isChecked: true}, {text: '<?php echo lang("closed") ?>', name: "status", value: "closed", isChecked: false}],
             filterDropdown: [{name: "ticket_type_id", class: "w200", options: <?php echo $ticket_types_dropdown; ?>}, {name: "ticket_label", class: "w200", options: <?php echo $ticket_labels_dropdown; ?>}, {name: "assigned_to", class: "w200", options: <?php echo $assigned_to_dropdown; ?>}],

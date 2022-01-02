@@ -366,7 +366,7 @@ class Tickets extends MY_Controller {
         $ticket_status = "<span class='label $ticket_status_class large clickable'>" . lang($data->status) . "</span> ";
 
 
-        $title = anchor(get_uri("css/tickets/view/" . $data->id), $data->title);
+        $title = anchor(get_uri("tickets/view/" . $data->id), $data->title);
 
 
         //show labels fild to team members only
@@ -384,7 +384,7 @@ class Tickets extends MY_Controller {
         }
 
         $row_data = array(
-            anchor(get_uri("css/tickets/view/" . $data->id), get_ticket_id($data->id)),
+            anchor(get_uri("tickets/view/" . $data->id), get_ticket_id($data->id)),
             $title,
             $data->company_name ? anchor(get_uri("sms/clients/view/" . $data->client_id), $data->company_name) : lang("unknown_client"),
             $data->project_title ? anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title) : "-",
@@ -408,26 +408,26 @@ class Tickets extends MY_Controller {
             if ($ticket_info) {
                 $this->access_only_allowed_members_or_client_contact($ticket_info->client_id);
 
-                $edit = '<li role="presentation">' . modal_anchor(get_uri("css/tickets/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $ticket_info->id)) . '</li>';
+                $edit = '<li role="presentation">' . modal_anchor(get_uri("tickets/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $ticket_info->id)) . '</li>';
 
                 //show option to close/open the tickets
                 $status = "";
                 if ($ticket_info->status === "closed") {
-                    $status = '<li role="presentation">' . js_anchor("<i class='fa fa-check-circle'></i> " . lang('mark_as_open'), array('title' => lang('mark_as_open'), "class" => "", "data-action-url" => get_uri("css/tickets/save_ticket_status/$ticket_info->id/open"), "data-action" => "update")) . '</li>';
+                    $status = '<li role="presentation">' . js_anchor("<i class='fa fa-check-circle'></i> " . lang('mark_as_open'), array('title' => lang('mark_as_open'), "class" => "", "data-action-url" => get_uri("tickets/save_ticket_status/$ticket_info->id/open"), "data-action" => "update")) . '</li>';
                 } else {
-                    $status = '<li role="presentation">' . js_anchor("<i class='fa fa-check-circle'></i> " . lang('mark_as_closed'), array('title' => lang('mark_as_closed'), "class" => "", "data-action-url" => get_uri("css/tickets/save_ticket_status/$ticket_info->id/closed"), "data-action" => "update")) . '</li>';
+                    $status = '<li role="presentation">' . js_anchor("<i class='fa fa-check-circle'></i> " . lang('mark_as_closed'), array('title' => lang('mark_as_closed'), "class" => "", "data-action-url" => get_uri("tickets/save_ticket_status/$ticket_info->id/closed"), "data-action" => "update")) . '</li>';
                 }
 
                 $assigned_to = "";
                 if ($ticket_info->assigned_to === "0") {
-                    $assigned_to = '<li role="presentation">' . js_anchor("<i class='fa fa-user'></i> " . lang('assign_to_me'), array('title' => lang('assign_myself_in_this_ticket'), "data-action-url" => get_uri("css/tickets/assign_to_me/$ticket_info->id"), "data-action" => "update")) . '</li>';
+                    $assigned_to = '<li role="presentation">' . js_anchor("<i class='fa fa-user'></i> " . lang('assign_to_me'), array('title' => lang('assign_myself_in_this_ticket'), "data-action-url" => get_uri("tickets/assign_to_me/$ticket_info->id"), "data-action" => "update")) . '</li>';
                 }
 
 
                 //show the delete menu if user has access to delete the tickets
                 $delete_ticket = "";
                 if ($this->can_delete_tickets()) {
-                    $delete_ticket = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("css/tickets/delete"), "data-action" => "delete-confirmation")) . '</li>';
+                    $delete_ticket = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("tickets/delete"), "data-action" => "delete-confirmation")) . '</li>';
                 }
 
                 $row_data[] = '
@@ -770,7 +770,7 @@ class Tickets extends MY_Controller {
             $title = $data->title;
             $ticket_type = "";
         } else {
-            $title = modal_anchor(get_uri("css/tickets/ticket_template_view/" . $data->id), $data->title, array("class" => "edit", "title" => lang('ticket_template'), "data-post-id" => $data->id));
+            $title = modal_anchor(get_uri("tickets/ticket_template_view/" . $data->id), $data->title, array("class" => "edit", "title" => lang('ticket_template'), "data-post-id" => $data->id));
             $ticket_type = $data->ticket_type ? $data->ticket_type : "-";
         }
 
@@ -782,10 +782,10 @@ class Tickets extends MY_Controller {
         }
 
         //only creator and admin can edit/delete templates
-        $actions = modal_anchor(get_uri("css/tickets/ticket_template_view/" . $data->id), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('template_details'), "data-modal-title" => lang('template'), "data-post-id" => $data->id));
+        $actions = modal_anchor(get_uri("tickets/ticket_template_view/" . $data->id), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('template_details'), "data-modal-title" => lang('template'), "data-post-id" => $data->id));
         if ($data->created_by == $this->login_user->id || $this->login_user->is_admin) {
-            $actions = modal_anchor(get_uri("css/tickets/ticket_template_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_template'), "data-post-id" => $data->id))
-                    . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("css/tickets/delete_ticket_template"), "data-action" => "delete-confirmation"));
+            $actions = modal_anchor(get_uri("tickets/ticket_template_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_template'), "data-post-id" => $data->id))
+                    . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("tickets/delete_ticket_template"), "data-action" => "delete-confirmation"));
         }
 
         if ($view_type == "modal") {

@@ -82,7 +82,7 @@ class Ticket_types extends MY_Controller {
     private function _make_row($data) {
         return array($data->title,
             modal_anchor(get_uri("ticket_types/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_ticket_type'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_ticket_type'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("css/ticket_types/delete"), "data-action" => "delete"))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_ticket_type'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("ticket_types/delete"), "data-action" => "delete"))
         );
     }
 

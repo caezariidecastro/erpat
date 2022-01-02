@@ -11,7 +11,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#ticket-template-table").appTable({
-            source: '<?php echo_uri("css/tickets/ticket_template_list_data/modal/" . $ticket_type_id) ?>',
+            source: '<?php echo_uri("tickets/ticket_template_list_data/modal/" . $ticket_type_id) ?>',
             order: [[0, 'desc']],
             columns: [
                 {title: '<?php echo lang("title"); ?>'}

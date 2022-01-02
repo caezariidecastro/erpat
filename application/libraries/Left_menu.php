@@ -513,7 +513,7 @@ class Left_menu {
                         $ticket_badge = count_new_tickets($specific_ticket_permission);
                     }
     
-                    $help_knowledge_base_menues[]= array("name" => "tickets", "url" => "css/tickets", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+                    $help_knowledge_base_menues[]= array("name" => "tickets", "url" => "tickets", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
                 }    
 
                 //push the help manage menu if user has access
@@ -574,7 +574,7 @@ class Left_menu {
             }
 
             if (get_setting("module_ticket") == "1" && !in_array("tickets", $hidden_menu)) {
-                $sidebar_menu[] = array("name" => "tickets", "url" => "css/tickets", "class" => "fa-life-ring");
+                $sidebar_menu[] = array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring");
             }
 
             if (get_setting("module_announcement") == "1" && !in_array("announcements", $hidden_menu)) {

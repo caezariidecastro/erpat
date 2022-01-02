@@ -39,7 +39,7 @@
                     $download_caption = sprintf(lang('download_files'), $total_files);
                 }
                 echo "<i class='fa fa-paperclip pull-left font-16'></i>";
-                echo anchor(get_uri("css/tickets/download_comment_files/" . $comment->id), $download_caption, array("class" => "pull-right", "title" => $download_caption));
+                echo anchor(get_uri("tickets/download_comment_files/" . $comment->id), $download_caption, array("class" => "pull-right", "title" => $download_caption));
             }
             ?>
         </div>

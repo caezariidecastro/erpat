@@ -18,7 +18,7 @@
 <div class="modal-footer">
     <?php
     if ($model_info->created_by == $this->login_user->id || $this->login_user->is_admin) {
-        echo modal_anchor(get_uri("css/tickets/ticket_template_modal_form/"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("class" => "btn btn-default", "data-post-id" => $model_info->id, "title" => lang('edit_template')));
+        echo modal_anchor(get_uri("tickets/ticket_template_modal_form/"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("class" => "btn btn-default", "data-post-id" => $model_info->id, "title" => lang('edit_template')));
     }
     ?>
     <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> <?php echo lang('close'); ?></button>

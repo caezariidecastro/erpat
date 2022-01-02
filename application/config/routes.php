@@ -125,13 +125,13 @@ $route["ams/brands/(:any)"] = "Brands/$1";
 
 // CSS Controller 
 $route["css"] = "tickets/index";
-$route["css/tickets"] = "Tickets/index";
-$route["css/tickets/(:any)"] = "Tickets/$1";
-$route["css/tickets/(:any)/(:any)"] = "Tickets/$1/$2";
-$route["css/tickets/(:any)/(:any)/(:any)"] = "Tickets/$1/$2/$3";
+$route["tickets"] = "Tickets/index";
+$route["tickets/(:any)"] = "Tickets/$1";
+$route["tickets/(:any)/(:any)"] = "Tickets/$1/$2";
+$route["tickets/(:any)/(:any)/(:any)"] = "Tickets/$1/$2/$3";
 
-$route["css/ticket_types"] = "Ticket_types/index";
-$route["css/ticket_types/(:any)"] = "Ticket_types/$1";
+$route["ticket_types"] = "Ticket_types/index";
+$route["ticket_types/(:any)"] = "Ticket_types/$1";
 
 // FAS Controller 
 $route["fas"] = "summary/index";
