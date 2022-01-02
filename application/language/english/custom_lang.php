@@ -526,3 +526,6 @@ $lang['error_occured'] = "Something went wrong.";
 
 $lang["is_sub_menu"] = "This is Child Menu";
 $lang["manage"] = "Manage";
+$lang["browse"] = "Browse";
+$lang["templates"] = "Templates";
+$lang["types"] = "Types";

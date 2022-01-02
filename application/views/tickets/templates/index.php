@@ -1,16 +1,12 @@
 <div id="page-content" class="p20 pb0 clearfix">
 
     <ul class="nav nav-tabs bg-white title" role="tablist">
-        <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("tickets"); ?></h4></li>
-
-        <?php $this->load->view("tickets/index", array("active_tab" => "ticket_templates")); ?>
-
+        <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("manage"); ?></h4></li>
         <div class="tab-title clearfix no-border">
             <div class="title-button-group">
                 <?php echo modal_anchor(get_uri("css/tickets/ticket_template_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_template'), array("class" => "btn btn-default", "title" => lang('add_template'))); ?>
             </div>
         </div>
-
     </ul>
 
     <div class="panel panel-default">

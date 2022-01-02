@@ -16,13 +16,12 @@ class Ticket_types extends MY_Controller {
     }
 
     function modal_form() {
-
         validate_submitted_data(array(
             "id" => "numeric"
         ));
 
         $view_data['model_info'] = $this->Ticket_types_model->get_one($this->input->post('id'));
-        $this->load->view('ticket_types/modal_form', $view_data);
+        $this->load->view('tickets/types/modal_form', $view_data);
     }
 
     function save() {
@@ -82,7 +81,7 @@ class Ticket_types extends MY_Controller {
 
     private function _make_row($data) {
         return array($data->title,
-            modal_anchor(get_uri("css/ticket_types/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_ticket_type'), "data-post-id" => $data->id))
+            modal_anchor(get_uri("ticket_types/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_ticket_type'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_ticket_type'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("css/ticket_types/delete"), "data-action" => "delete"))
         );
     }

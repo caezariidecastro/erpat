@@ -1,18 +1,14 @@
 <div id="page-content" class="p20 clearfix">
 
     <ul class="nav nav-tabs bg-white title" role="tablist">
-        <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang('tickets'); ?></h4></li>
-
-        <?php $this->load->view("tickets/index", array("active_tab" => "tickets_list")); ?>
-
+        <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("manage"); ?></h4></li>
         <div class="tab-title clearfix no-border">
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "ticket")); ?>
-                <?php echo modal_anchor(get_uri("css/tickets/settings_modal_form"), "<i class='fa fa fa-cog'></i> " . lang('settings'), array("class" => "btn btn-default", "title" => lang('settings'))); ?>
+                <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "ticket")); ?>
+                <?php echo modal_anchor(get_uri("css/tickets/settings_modal_form"), "<i class='fa fa fa-cog'></i> " . lang('signature'), array("class" => "btn btn-default", "title" => lang('signature'))); ?>
                 <?php echo modal_anchor(get_uri("css/tickets/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_ticket'), array("class" => "btn btn-default", "title" => lang('add_ticket'))); ?>
             </div>
         </div>
-
     </ul>
 
     <div class="panel panel-default">
@@ -23,7 +19,6 @@
     </div>
 
 </div>
-
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -65,7 +60,7 @@
                 {visible: false, searchable: false},
                 {title: '<?php echo lang("last_activity") ?>', "iDataSort": 6, "class": "w10p"},
                 {title: '<?php echo lang("status") ?>', "class": "w5p"}
-<?php echo $custom_field_headers; ?>,
+                <?php echo $custom_field_headers; ?>,
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option w50", visible: optionsVisibility}
             ],
             printColumns: combineCustomFieldsColumns([0, 2, 1, 3, 4, 6, 7], '<?php echo $custom_field_headers; ?>'),

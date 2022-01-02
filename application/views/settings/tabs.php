@@ -48,6 +48,10 @@ if (get_setting("module_estimate") == "1") {
     $settings_menu["components"][] = array("name" => "estimates", "url" => "settings/estimates");
 }
 
+if (get_setting("module_ticket") == "1") {
+    $settings_menu["components"][] = array("name" => "tickets", "url" => "settings/tickets");
+}
+
 $settings_menu["components"][] = array("name" => "email_title_smtp", "url" => "settings/email");
 $settings_menu["components"][] = array("name" => "imap_settings", "url" => "settings/imap_settings");
 

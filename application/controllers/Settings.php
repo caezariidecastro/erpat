@@ -591,7 +591,7 @@ class Settings extends MY_Controller {
     /* show the ticket settings tab */
 
     function tickets() {
-        $this->load->view("settings/tickets/index");
+        $this->template->rander("settings/tickets/index");
     }
 
     /* save ticket settings */

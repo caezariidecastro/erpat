@@ -44,12 +44,55 @@ class Tickets extends MY_Controller {
 
             $view_data['ticket_types_dropdown'] = json_encode($this->_get_ticket_types_dropdown_list_for_filter());
 
-            $this->template->rander("tickets/tickets_list", $view_data);
+            $this->template->rander("tickets/index", $view_data);
         } else {
             $view_data['client_id'] = $this->login_user->client_id;
             $view_data['page_type'] = "full";
             $this->template->rander("clients/tickets/index", $view_data);
         }
+    }
+
+    function view_browse() {
+        $this->check_module_availability("module_ticket");
+
+        $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("tickets", $this->login_user->is_admin, $this->login_user->user_type);
+
+        $view_data['show_project_reference'] = get_setting('project_reference_in_tickets');
+
+        //prepare ticket label filter list
+        $view_data['ticket_labels_dropdown'] = json_encode($this->make_labels_dropdown("ticket", "", true));
+
+        //prepare assign to filter list
+        $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang("assigned_to") . " -"));
+
+        $assigned_to_list = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        foreach ($assigned_to_list as $key => $value) {
+            $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
+        }
+
+        $view_data['show_options_column'] = true; //team members can view the options column
+
+        $view_data['assigned_to_dropdown'] = json_encode($assigned_to_dropdown);
+
+        $view_data['ticket_types_dropdown'] = json_encode($this->_get_ticket_types_dropdown_list_for_filter());
+        
+        $this->load->view("tickets/browse/index", $view_data);
+    }
+
+    function view_templates() {
+        $this->access_only_team_members();
+        $view_data["type"] = "templates";
+        $this->load->view("tickets/templates/index", $view_data);
+    }
+
+    function view_types() {
+        $view_data["type"] = "types";
+        $this->load->view("tickets/types/index", $view_data);
+    }
+
+    function view_settings() {
+        $view_data["type"] = "settings";
+        $this->load->view("settings/tickets/", $view_data);
     }
 
     //load new tickt modal 
@@ -600,12 +643,6 @@ class Tickets extends MY_Controller {
         }
     }
 
-    //load the ticket templates view of ticket template list
-    function ticket_templates() {
-        $this->access_only_team_members();
-        $this->template->rander("tickets/templates/index");
-    }
-
     private function can_view_ticket_template($id = 0) {
         if ($id) {
             $template_info = $this->Ticket_templates_model->get_one($id);
@@ -821,7 +858,7 @@ class Tickets extends MY_Controller {
     /* load tickets settings modal */
 
     function settings_modal_form() {
-        $this->load->view('tickets/settings/modal_form');
+        $this->load->view('tickets/signature/modal_form');
     }
 
     /* save tickets settings */
