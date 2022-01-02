@@ -165,13 +165,17 @@ class MY_Controller extends CI_Controller {
     }
 
     //access only allowed team members
-    protected function access_only_allowed_members() {
+    protected function access_only_allowed_members($exit = true) {
         if ($this->access_type === "all") {
             return true; //can access if user has permission
         } else if ($this->module_group === "ticket" && $this->access_type === "specific") {
             return true; //can access if it's tickets module and user has a pertial access
         } else {
-            redirect("forbidden");
+            if($exit) {
+                redirect("forbidden");
+            } else {
+                return false;
+            }
         }
     }
 

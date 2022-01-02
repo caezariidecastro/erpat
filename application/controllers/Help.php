@@ -20,6 +20,7 @@ class Help extends MY_Controller {
 
         $type = "help";
         $view_data["type"] = $type;
+        $view_data['allowed_member'] = $this->validate_user_role_permission('help_and_knowledge_base', true);
         $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
     }
 

@@ -13,8 +13,10 @@
                 </h4>
             </li>
             <li><a  role="presentation" class="active" href="<?php echo_uri("$type/view_preview"); ?>" data-target="#preview-panel"><?php echo lang("preview"); ?></a></li>
+            <?php if($allowed_member) { ?>
             <li><a  role="presentation" href="<?php echo_uri("$type/view_articles"); ?>" data-target="#articles-panel"><?php echo lang("articles"); ?></a></li>
             <li><a  role="presentation" href="<?php echo_uri("$type/view_categories"); ?>" data-target="#category-panel"><?php echo lang("categories"); ?></a></li>
+            <?php } ?>
         </ul>
         <div class="tab-content">
         <div role="tabpanel" class="tab-pane fade active" id="preview-panel"></div>
