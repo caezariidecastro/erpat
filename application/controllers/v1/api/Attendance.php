@@ -11,14 +11,10 @@ class Attendance extends Users {
         parent::__construct(false);
     }
 
-    function check() {
-        //Check if currently in.
-    }
+    function logtime($userid, $self_auth = false) {
+        $client_token  = getBearerToken();
 
-    function logtime($userid) {
-        $secret_key  = $this->input->get_request_header('Basic');
-
-        $validation = self::validate($secret_key);
+        $validation = self::validate($client_token);
         if($validation['success'] !== true) {
             echo json_encode( array("success"=>false, "message"=>$validation['message'] ) );
             exit();
@@ -63,7 +59,7 @@ class Attendance extends Users {
     function clocked_in_list() {
         $options = array(
             "access_type" => "all", 
-            "only_clocked_in_members" => false
+            "only_clocked_in_members" => true
         );
         $list_data = $this->Attendance_model->get_details($options)->result();
 
@@ -72,7 +68,7 @@ class Attendance extends Users {
             $item->fname = $instance->first_name;
             $item->lname = $instance->last_name;
             $item->avatar = get_avatar($instance->image);
-            $item->in_time = convert_date_utc_to_local($item->in_time, "Y-m-d h:i:s");
+            $item->in_time = convert_date_utc_to_local($item->in_time, "Y-m-d g:i A");
         }
         
         echo json_encode(array("success" => true, "data" => $list_data));
@@ -82,19 +78,19 @@ class Attendance extends Users {
         $user_token = JWT::decode(getBearerToken(), ENCRYPTION);
         $options = array(
             "access_type" => "all", 
-            "start_date" => convert_date_utc_to_local(get_my_local_time(), "Y-m-d H:i:s", 30, true),
+            "start_date" => sub_day_to_datetime(get_current_utc_time(), 30),
             "end_date" => get_current_utc_time(),
             "user_id" => $user_token->id,
-            //"only_clocked_in_members" => false
         );
         $list_data = $this->Attendance_model->get_details($options)->result();
 
         foreach($list_data as $item) {
-            $instance = $this->Users_model->get_details(array("id"=>$item->user_id,"deleted"=>0))->row();
-            $item->fname = $instance->first_name;
-            $item->lname = $instance->last_name;
-            $item->avatar = get_avatar($instance->image);
-            $item->in_time = convert_date_utc_to_local($item->in_time, "Y-m-d h:i:s");
+            if(isset($item->out_time)) {
+                $instance = $this->Users_model->get_details(array("id"=>$item->user_id,"deleted"=>0))->row();
+                $item->duration = convert_seconds_to_time_format(abs(strtotime($item->out_time) - strtotime($item->in_time)), true);
+                $item->in_time = convert_date_utc_to_local($item->in_time, "Y-m-d g:i A");
+                $item->out_time = convert_date_utc_to_local($item->out_time, "Y-m-d g:i A");
+            }
         }
         echo json_encode(array("success" => true, "data" => $list_data));
     }

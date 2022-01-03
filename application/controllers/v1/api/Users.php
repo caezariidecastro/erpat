@@ -3,10 +3,10 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Users extends MY_Controller {
+class Users extends CI_Controller {
     
     function __construct() {
-        parent::__construct(false);
+        parent::__construct();
         $this->load->library('encryption');
         header('Content-Type: application/json');
         header('Access-Control-Allow-Origin: *');
@@ -16,24 +16,6 @@ class Users extends MY_Controller {
         if ($method == "OPTIONS") {
             die();
         }
-    }
-
-    function index(){
-        echo json_encode(array("success"=>true, "message"=>"Action not defined!"));
-    }
-
-    function token() {
-        //TODO: Verify dynamic encryption key.
-        $secret_key  = $this->input->get_request_header('Basic');
-
-        if(isset($secret_key) && $secret_key == ENCRYPTION) {
-            $name = $this->security->get_csrf_token_name();
-            $value = $this->security->get_csrf_hash();
-            echo json_encode( array("success"=>true, "data"=>[array("name"=>$name,"value"=>$value)] ));
-            exit();
-        }
-        
-        echo json_encode( array("success"=>false, "message"=>"Invalid secret or encryption key provided." ) );
     }
 
     function signin() {
@@ -47,8 +29,8 @@ class Users extends MY_Controller {
         }
 
         $info = $this->Users_model->get_baseinfo($user_id);
-        $now = strtotime(get_my_local_time());
-        $span = TOKEN_EXPIRY;
+        $now = strtotime(get_current_utc_time());
+        $span = TOKEN_EXPIRY; //12 hrs default
         $expiry = (int)$now + (int)$span;
 
         $user = array(
@@ -57,18 +39,14 @@ class Users extends MY_Controller {
             "avatar" => get_avatar($user_id, true),
             "fullname" => $info->first_name ." ".$info->last_name,
             "email" => $email,
-            "expired" => $expiry //SHOULD BE INT.
+            "expired" => $expiry
         );
         $token = JWT::encode($user, ENCRYPTION);
 
         echo json_encode(array("success"=>true, "data"=> $token));
     }
 
-    function verify() {
-        $token  = $this->input->get_request_header('Basic');
-        echo json_encode(self::validate($token));
-    }
-
+    //Temporary get the user data.
     function get($user_id, $encoded = 'true', $isEcho = true, $generalOnly = true) {
         $instance = $this->Users_model->get_details(array("id"=>$user_id,"deleted"=>0))->row();
         $user_data = array(

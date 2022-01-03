@@ -32,7 +32,11 @@ if (!function_exists('convert_date_local_to_utc')) {
         $time_offset = get_timezone_offset() * -1;
 
         //add time offset
-        return date($format, strtotime($date . "+$add_days days") + $time_offset);
+        if($negative) {
+            return date($format, strtotime($date . "-$add_days days") + $time_offset);
+        } else {
+            return date($format, strtotime($date . "+$add_days days") + $time_offset);
+        }
     }
 
 }
@@ -197,7 +201,7 @@ if (!function_exists('convert_time_string_to_decimal')) {
  */
 if (!function_exists('convert_seconds_to_time_format')) {
 
-    function convert_seconds_to_time_format($seconds = 0) {
+    function convert_seconds_to_time_format($seconds = 0, $addUnits = false) {
         $is_negative = false;
         if ($seconds < 0) {
             $seconds = $seconds * -1;
@@ -213,6 +217,10 @@ if (!function_exists('convert_seconds_to_time_format')) {
         $secs = ($secs < 10) ? "0" . $secs : $secs;
 
         $string = $hours . ":" . $mins . ":" . $secs;
+        if($addUnits) {
+            $string = $hours . "h " . $mins . "m " . $secs."s";
+        }
+        
         if ($is_negative) {
             $string = "-" . $string;
         }
@@ -540,6 +548,27 @@ if (!function_exists('convert_seconds_to_hour_decimal')) {
             $total = -$total;
         }
         return strval($total);
+    }
+
+}
+
+if (!function_exists('add_to_datetime')) {
+
+    function add_day_to_datetime($datetime, $days = 0, $format = "Y-m-d H:i:s") {
+        $date = new DateTime($datetime);
+        $date->add(new DateInterval("P".$days."D"));
+       return $date->format($format);
+    }
+
+    
+}
+
+if (!function_exists('add_to_datetime')) {
+
+    function sub_day_to_datetime($datetime, $days = 0, $format = "Y-m-d H:i:s") {
+        $date = new DateTime($datetime);
+        $date->sub(new DateInterval("P".$days."D"));
+       return $date->format($format);
     }
 
 }
