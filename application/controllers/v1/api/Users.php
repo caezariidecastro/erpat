@@ -46,6 +46,20 @@ class Users extends CI_Controller {
         echo json_encode(array("success"=>true, "data"=> $token));
     }
 
+    function permissions() {
+        $user_token = self::validate(getBearerToken());
+        if(!isset($user_token->id)) {
+            echo json_encode( array("success"=>false, "message"=>"Client token is invalid or tampered!" ) );
+            exit();
+        }//$user_token->id
+
+        //Check if has permission
+        $userData = self::getUserData($user_token->id);
+        $userData->is_admin = $userData->is_admin?true:false;
+
+        echo json_encode( array("success"=>true, "admin"=>$userData->is_admin, "data"=>$userData->permissions ) );
+    }
+
     //Temporary get the user data.
     function get($user_id, $encoded = 'true', $isEcho = true, $generalOnly = true) {
         $instance = $this->Users_model->get_details(array("id"=>$user_id,"deleted"=>0))->row();
@@ -66,16 +80,27 @@ class Users extends CI_Controller {
         }
     }
 
+    private function getUserData($user_id) {
+        $login_user = $this->Users_model->get_access_info($user_id);
+        if ($login_user->permissions) {
+            $permissions = unserialize($login_user->permissions);
+            $login_user->permissions = is_array($permissions) ? $permissions : array();
+        } else {
+            $login_user->permissions = array();
+        }
+        return $login_user;
+    }
+
     public static function validate($token) {
         if(empty($token )) {
-            return array("success"=>false, "message"=> "You're token is invalid!");
+            return false;
         }
         
         $decoded = JWT::decode($token, ENCRYPTION);
         if($decoded) {
-            return array("success"=>true, "data"=> array("token"=>(array)$decoded));
+            return $decoded;
         } else {
-            return array("success"=>false, "message"=> "You're token is tampered!");
+            return false;
         }
     }
 }

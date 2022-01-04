@@ -96,6 +96,13 @@
 
                             <div>
                                 <?php
+                                echo form_checkbox("can_use_biometric", "1", $can_use_biometric ? true : false, "id='can_use_biometric'");
+                                ?>
+                                <label for="can_use_biometric"><?php echo lang("can_use_biometric"); ?></label>
+                            </div>
+
+                            <div>
+                                <?php
                                 echo form_checkbox("can_view_team_members_contact_info", "1", $can_view_team_members_contact_info ? true : false, "id='can_view_team_members_contact_info'");
                                 ?>
                                 <label for="can_view_team_members_contact_info"><?php echo lang("can_view_team_members_contact_info"); ?></label>

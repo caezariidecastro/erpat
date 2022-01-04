@@ -529,3 +529,4 @@ $lang["manage"] = "Manage";
 $lang["browse"] = "Browse";
 $lang["templates"] = "Templates";
 $lang["types"] = "Types";
+$lang["can_use_biometric"] = "Can use Syntry Biometrics";
