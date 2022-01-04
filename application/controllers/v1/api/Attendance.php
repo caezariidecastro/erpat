@@ -23,7 +23,7 @@ class Attendance extends Users {
         //Get the user object from the target id.
         $user_id = $authId = $this->input->post('self') ? $user_token->id : $userid;
         $user = $this->get($user_id, false, false, false);
-        if($user['data']->status === 'inactive' || $user['data']->deleted === '1' || !user_has_permission($authId, 'attendance')) {
+        if($user['data']->status === 'inactive' || $user['data']->deleted === '1') {
             echo json_encode( array("success"=>false, "message"=>"User is currently inactive/deleted or dont have permission." ) );
             exit;
         }
