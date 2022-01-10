@@ -327,7 +327,8 @@ class Invoices_model extends Crud_model {
 
         $sql = "SELECT * FROM $invoices_table
                         WHERE $invoices_table.deleted=0 AND $invoices_table.recurring=1
-                        AND $invoices_table.next_recurring_date IS NOT NULL AND $invoices_table.next_recurring_date<='$date'
+                        AND $invoices_table.next_recurring_date IS NOT NULL 
+                            AND (YEAR($invoices_table.next_recurring_date)<=YEAR('$date') AND MONTH($invoices_table.next_recurring_date)<=MONTH('$date'))
                         AND ($invoices_table.no_of_cycles < 1 OR ($invoices_table.no_of_cycles_completed < $invoices_table.no_of_cycles ))";
 
         return $this->db->query($sql);
