@@ -90,7 +90,7 @@ class Attendance extends Users {
         $options = array(
             "access_type" => "all", 
             "start_date" => sub_day_to_datetime(get_current_utc_time(), 30),
-            "end_date" => get_current_utc_time(),
+            "end_date" => add_day_to_datetime(get_current_utc_time(), 1),
             "user_id" => $user_token->id
         );
         $list_data = $this->Attendance_model->get_details($options)->result();
