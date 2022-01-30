@@ -20,6 +20,12 @@ rm -R .env.backup.php
 chmod 600 .env.production.php
 ```
 
+## Issues on Plesk with JWT
+- Add this to the top of the .htaccess
+```
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+```
+
 ## Contributing
 
 Please read [CONTRIBUTING](CONTRIBUTING) for details on our code of conduct, and the process for submitting pull requests to us.
