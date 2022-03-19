@@ -46,6 +46,16 @@ class Users extends CI_Controller {
         echo json_encode(array("success"=>true, "data"=> $token));
     }
 
+    function verify() {
+        $user_token = self::validate(getBearerToken());
+        if(!isset($user_token->id)) {
+            echo json_encode( array("success"=>false, "message"=>"Client token is invalid or tampered!" ) );
+            exit();
+        }
+
+        echo json_encode( array("success"=>true, "data"=>$user_token ) );
+    }
+
     function permissions() {
         $user_token = self::validate(getBearerToken());
         if(!isset($user_token->id)) {
@@ -58,6 +68,38 @@ class Users extends CI_Controller {
         $userData->is_admin = $userData->is_admin?true:false;
 
         echo json_encode( array("success"=>true, "admin"=>$userData->is_admin, "data"=>$userData->permissions ) );
+    }
+
+    function listall() {
+        $user_token = self::validate(getBearerToken());
+        if(!isset($user_token->id)) {
+            echo json_encode( array("success"=>false, "message"=>"Client token is invalid or tampered!" ) );
+            exit();
+        }
+
+        $listall = $this->Users_model->get_details(array(
+            "user_type" => "staff",
+            "deleted" => 0
+        ))->result();
+
+        foreach($listall as $current) {
+            $job = $this->Users_model->get_job_info($current->id);
+            $current->contri_sss = $job->sss;
+            $current->contri_tin = $job->tin;
+            $current->contri_pagibig = $job->pag_ibig;
+            $current->contri_phealth = $job->phil_health;
+
+            $current->contact_name = $job->contact_name;
+            $current->contact_address = $job->contact_address;
+            $current->contact_phone = $job->contact_phone;
+
+            $current->signiture = $job->signiture_url;
+            $current->photo = get_avatar($current->image);
+            $current->job_idnum = $job->job_idnum;
+            $current->blood_type = $current->ssn;
+        }
+
+        echo json_encode( array("success"=>true, "data"=>$listall ) );
     }
 
     //Temporary get the user data.

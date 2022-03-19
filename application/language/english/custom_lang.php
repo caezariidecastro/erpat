@@ -530,3 +530,11 @@ $lang["browse"] = "Browse";
 $lang["templates"] = "Templates";
 $lang["types"] = "Types";
 $lang["can_use_biometric"] = "Can use Syntry Biometrics";
+
+$lang["emergency_contact"] = "Emergency Contact";
+$lang["contact_name"] = "Name";
+$lang["contact_address"] = "Address";
+$lang["contact_phone"] = "Phone";
+$lang["job_idnum"] = "ID Number";
+$lang["signiture_url"] = "Digital Signature";
+$lang["signiture_url_placeholder"] = "Upload the jpg or png image on employee file and paste the url here.";

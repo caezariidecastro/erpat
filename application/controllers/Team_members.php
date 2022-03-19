@@ -699,6 +699,7 @@ class Team_members extends MY_Controller {
 
         $job_data = array(
             "user_id" => $user_id,
+            "job_idnum" => $this->input->post('job_idnum'),
             "sched_id" => $this->input->post('sched_id'),
             "salary" => unformat_currency($this->input->post('salary')),
             "salary_term" => $this->input->post('salary_term'),
@@ -708,7 +709,11 @@ class Team_members extends MY_Controller {
             "sss" => $this->input->post('sss'),
             "tin" => $this->input->post('tin'),
             "pag_ibig" => $this->input->post('pag_ibig'),
-            "phil_health" => $this->input->post('phil_health')
+            "phil_health" => $this->input->post('phil_health'),
+            "contact_name" => $this->input->post('contact_name'),
+            "contact_address" => $this->input->post('contact_address'),
+            "contact_phone" => $this->input->post('contact_phone'),
+            "signiture_url" => $this->input->post('signiture_url')
         );
 
         //we'll save the job title in users table

@@ -179,7 +179,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="ssn" class=" col-md-2"><?php echo lang('ssn'); ?></label>
+                <label for="ssn" class=" col-md-2"><?php echo "Blood Type";//lang('ssn'); ?></label>
                 <div class=" col-md-10">
                     <?php
                     echo form_input(array(
@@ -187,7 +187,7 @@
                         "name" => "ssn",
                         "value" => $user_info->ssn,
                         "class" => "form-control",
-                        "placeholder" => lang('ssn')
+                        "placeholder" => "Ex: AB+"//lang('ssn')
                     ));
                     ?>
                 </div>

@@ -8,6 +8,20 @@
         </div>
         <div class="panel-body">
             <div class="form-group">
+                <label for="job_idnum" class=" col-md-2"><?php echo lang('job_idnum'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "job_idnum",
+                        "name" => "job_idnum",
+                        "value" => $job_info->job_idnum,
+                        "class" => "form-control",
+                        "placeholder" => lang('job_idnum')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="job_title" class=" col-md-2"><?php echo lang('job_title'); ?></label>
                 <div class="col-md-10">
                     <?php
@@ -100,7 +114,70 @@
                     ?>
                 </div>
             </div>
-            
+            <div class="form-group">
+                <label for="signiture_url" class=" col-md-2"><?php echo lang('signiture_url'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "signiture_url",
+                        "name" => "signiture_url",
+                        "value" => $job_info->signiture_url,
+                        "class" => "form-control",
+                        "placeholder" => lang('signiture_url_placeholder'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="panel-default panel-heading">
+            <h4><?php echo lang('emergency_contact'); ?></h4>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="contact_name" class=" col-md-2"><?php echo lang('contact_name'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "contact_name",
+                        "name" => "contact_name",
+                        "value" => $job_info->contact_name,
+                        "class" => "form-control",
+                        "placeholder" => lang('contact_name'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="contact_address" class=" col-md-2"><?php echo lang('contact_address'); ?></label>
+                <div class=" col-md-10">
+                    <?php
+                    echo form_textarea(array(
+                        "id" => "contact_address",
+                        "name" => "contact_address",
+                        "value" => $job_info->contact_address,
+                        "class" => "form-control",
+                        "placeholder" => lang('contact_address')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="contact_phone" class=" col-md-2"><?php echo lang('contact_phone'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "contact_phone",
+                        "name" => "contact_phone",
+                        "value" => $job_info->contact_phone,
+                        "class" => "form-control",
+                        "placeholder" => lang('contact_phone'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+            </div>
         </div>
         <div class="panel-default panel-heading">
             <h4><?php echo lang('contributions'); ?></h4>
