@@ -78,6 +78,7 @@ class Users_model extends Crud_model {
         $client_id = get_array_value($options, "client_id");
         $vendor_id = get_array_value($options, "vendor_id");
         $exclude_user_id = get_array_value($options, "exclude_user_id");
+        $search = get_array_value($options, "search");
 
         if ($id) {
             $where .= empty($where) ? " " : " AND";
@@ -132,6 +133,11 @@ class Users_model extends Crud_model {
         if ($exclude_user_id) {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.id!=$exclude_user_id";
+        }
+
+        if ($search) {
+            $where .= empty($where) ? " " : " AND";
+            $where .= " ($users_table.first_name LIKE '%$search%' OR $users_table.last_name LIKE '%$search%' OR $users_table.email LIKE '%$search%' OR $users_table.job_title LIKE '%$search%')";
         }
 
         $custom_field_type = "team_members";

@@ -79,6 +79,7 @@ class Users extends CI_Controller {
 
         $listall = $this->Users_model->get_details(array(
             "user_type" => "staff",
+            "search" => $this->input->post('search'),
             "deleted" => 0
         ))->result();
 
