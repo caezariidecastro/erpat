@@ -106,10 +106,10 @@ class Attendance extends Users {
             }
         }
 
-        $is_clocked_in = isset($list_data[0]->out_time) ? false:true;
+        $can_clockin = count($list_data) > 0 ? (isset($list_data[0]->out_time) ? false:true): false;
         $status_data = array(
             "local_time" => get_my_local_time(),
-            "clocked_in" => $is_clocked_in ? convert_date_utc_to_local($list_data[0]->in_time) : false //from database todo.
+            "clocked_in" => $can_clockin ? convert_date_utc_to_local($list_data[0]->in_time) : false //from database todo.
         );
 
         echo json_encode(array("success" => true, "data" => $list_response, "status"=>$status_data));
