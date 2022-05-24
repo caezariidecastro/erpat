@@ -123,6 +123,41 @@ class Users extends CI_Controller {
         }
     }
 
+    function changepass() {
+        $user_token = self::validate(getBearerToken());
+        if(!isset($user_token->id)) {
+            echo json_encode( array("success"=>false, "message"=>"Client token is invalid or tampered!" ) );
+            exit();
+        }
+
+        $oldpass = $this->input->post('oldpass');
+        $newpass = $this->input->post('newpass');
+        $confirmpass = $this->input->post('confirmpass');
+
+        if(empty($oldpass) || empty($newpass) || empty($confirmpass)) {
+            echo json_encode( array("success"=>false, "message"=>"Incomplete inputs submitted!" ) );
+            exit();
+        }
+
+        if($newpass !== $confirmpass) {
+            echo json_encode( array("success"=>false, "message"=>"New password and confirm password is not the same." ) );
+            exit();
+        }
+
+        if($oldpass === $newpass) {
+            echo json_encode( array("success"=>false, "message"=>"The old and new password is the same." ) );
+            exit();
+        }
+
+        $success = $this->Users_model->changepass($user_token->id, $oldpass, $newpass);
+        if($success) {
+            echo json_encode( array("success"=>true, "message"=>"You've successfully changed your password!") );
+        } else {
+            echo json_encode( array("success"=>true, "message"=>"Old password provided is incorrect!") );
+        }
+    }
+
+
     private function getUserData($user_id) {
         $login_user = $this->Users_model->get_access_info($user_id);
         if ($login_user->permissions) {

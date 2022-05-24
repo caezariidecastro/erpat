@@ -358,4 +358,27 @@ class Users_model extends Crud_model {
         WHERE id = '$user_id'";
         return $this->db->query($sql);
     }
+
+    function changepass($user_id, $old_password, $new_password) {
+
+        $oldpass = $this->db->escape_str($old_password);
+        $newpass = $this->db->escape_str($new_password);
+
+        $this->table = $this->db->dbprefix('users');
+        $this->db->select("password");
+        $result = $this->db->get_where($this->table, array('id' => $user_id, 'status' => 'active', 'deleted' => 0, 'disable_login' => 0));
+
+        if ($result->num_rows() !== 1) {
+            return false;
+        }
+
+        $user_info = $result->row();
+        if ((strlen($user_info->password) === 60 && password_verify($oldpass, $user_info->password)) || $user_info->password === md5($oldpass)) {
+            $data = array("password" => password_hash($newpass, PASSWORD_DEFAULT) );
+            $where = array("id" => $user_id);
+            return parent::update_where($data, $where);
+        }
+
+        return false;
+    }
 }
