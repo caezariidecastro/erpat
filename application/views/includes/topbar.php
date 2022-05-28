@@ -45,9 +45,9 @@
             // if (!in_array("favorite_clients", $hidden_topbar_menus)) {
             //     $this->load->view("clients/star/topbar_icon");
             // }
-            // if (!in_array("dashboard_customization", $hidden_topbar_menus) && (get_setting("disable_new_dashboard_icon") != 1)) {
-            //     $this->load->view("dashboards/list/topbar_icon");
-            // }
+            if (!in_array("dashboard_customization", $hidden_topbar_menus) && (get_setting("disable_new_dashboard_icon") != 1)) {
+                $this->load->view("dashboards/list/topbar_icon");
+            }
 
             ?>
 
@@ -68,9 +68,9 @@
             <?php } */ ?>
 
             <?php
-            // if (!in_array("quick_add", $hidden_topbar_menus)) {
-            //     $this->load->view("settings/topbar_parts/quick_add");
-            // }
+                // if (!in_array("quick_add", $hidden_topbar_menus)) {
+                //     $this->load->view("settings/topbar_parts/quick_add");
+                // }
             ?>
 
             <?php /* if (!in_array("language", $hidden_topbar_menus) && (($this->login_user->user_type == "staff" && !get_setting("disable_language_selector_for_team_members")) || ($this->login_user->user_type == "client" && !get_setting("disable_language_selector_for_clients")))) { ?>
