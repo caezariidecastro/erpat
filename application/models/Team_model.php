@@ -34,4 +34,13 @@ class Team_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function get_teams($user_id) {
+        $team_table = $this->db->dbprefix('team');
+
+        $sql = "SELECT $team_table.title
+        FROM $team_table
+        WHERE $team_table.deleted=0 AND ($user_id in($team_table.heads) OR $user_id in($team_table.members))";
+        return $this->db->query($sql);
+    }
+
 }
