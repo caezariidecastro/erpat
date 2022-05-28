@@ -166,4 +166,35 @@ class Attendance extends Users {
         
         return array("success" => true);
     }
+
+    function my_sched() {
+
+        $user_token = self::validate(getBearerToken());
+        if(!isset($user_token->id)) {
+            echo json_encode( array("success"=>false, "message"=>"Client token is invalid or tampered!" ) );
+            exit();
+        }//$user_token->id
+
+        $this->load->model("Schedule_model");
+
+        $sched_id = $this->Schedule_model->getUserSchedId($user_token->id);
+        if( !$sched_id ) {
+            echo json_encode( array("success" => false, "message"=>"This account does'nt have a schedule.") );
+            exit();
+        }
+
+        $schedule = $this->Schedule_model->get_details(array("id"=>$sched_id))->row();
+        $schedule->mon = unserialize($schedule->mon);
+        $schedule->tue = unserialize($schedule->tue);
+        $schedule->wed = unserialize($schedule->wed);
+        $schedule->thu = unserialize($schedule->thu);
+        $schedule->fri = unserialize($schedule->fri);
+        $schedule->sat = unserialize($schedule->sat);
+        $schedule->sun = unserialize($schedule->sun);
+        unset($schedule->id);
+        unset($schedule->created_by);
+        unset($schedule->deleted);
+        unset($schedule->creator_name);
+        echo json_encode( array("success" => true, "data"=>$schedule) );
+    }
 }
