@@ -39,7 +39,7 @@ class Team_model extends Crud_model {
 
         $sql = "SELECT $team_table.title
         FROM $team_table
-        WHERE $team_table.deleted=0 AND ($user_id in($team_table.heads) OR $user_id in($team_table.members))";
+        WHERE $team_table.deleted=0 AND (FIND_IN_SET('$user_id', $team_table.heads) OR FIND_IN_SET('$user_id', $team_table.members))";
         return $this->db->query($sql);
     }
 
