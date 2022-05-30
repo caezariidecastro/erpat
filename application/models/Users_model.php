@@ -13,7 +13,7 @@ class Users_model extends Crud_model {
 
         $email = $this->db->escape_str($email);
 
-        $this->db->select("id,user_type,client_id,password");
+        $this->db->select("id,is_admin,user_type,client_id,password");
         $result = $this->db->get_where($this->table, array('email' => $email, 'status' => 'active', 'deleted' => 0, 'disable_login' => 0));
 
         if ($result->num_rows() !== 1) {
@@ -21,6 +21,10 @@ class Users_model extends Crud_model {
         }
 
         $user_info = $result->row();
+
+        if(!$user_info->is_admin && !$user_info->access_erpat) {
+            return false;
+        }
 
         //there has two password encryption method for legacy (md5) compatibility
         //check if anyone of them is correct

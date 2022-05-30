@@ -93,6 +93,26 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="access_erpat" class="col-md-2"><?php echo lang('access_erpat'); ?></label>
+                    <div class="col-md-10">
+                        <?php
+                        echo form_checkbox("access_erpat", "1", $user_info->access_erpat ? true : false, "id='access_erpat' class='ml15'");
+                        ?>
+                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_erpat ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="access_syntry" class="col-md-2"><?php echo lang('access_syntry'); ?></label>
+                    <div class="col-md-10">
+                        <?php
+                        echo form_checkbox("access_syntry", "1", $user_info->access_syntry ? true : false, "id='access_syntry' class='ml15'");
+                        ?>
+                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_syntry ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="user_status" class="col-md-2"><?php echo lang('mark_as_inactive'); ?></label>
                     <div class="col-md-10">
                         <?php
