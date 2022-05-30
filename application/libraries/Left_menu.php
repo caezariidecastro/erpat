@@ -294,6 +294,7 @@ class Left_menu {
                 }
                 array_push($hrs_sub_module, array("name" => "submenu_hrm_department", "url" => "hrs/department"));
                 array_push($hrs_sub_module, array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance"));
+                array_push($hrs_sub_module, array("name" => "submenu_hrm_overtime", "url" => "hrs/overtime"));
                 array_push($hrs_sub_module, array("name" => "submenu_hrm_schedule", "url" => "hrs/schedule"));
                 array_push($hrs_sub_module, array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary"));
                 array_push($hrs_sub_module, array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves"));

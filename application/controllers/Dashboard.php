@@ -73,6 +73,7 @@ class Dashboard extends MY_Controller {
         $widget = array();
 
         $show_attendance = get_setting("module_attendance");
+        $show_overtime= get_setting("module_overtime");
         $show_invoice = get_setting("module_invoice");
         $show_expense = get_setting("module_expense");
         $show_ticket = get_setting("module_ticket");

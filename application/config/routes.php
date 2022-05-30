@@ -179,6 +179,7 @@ $route["hrs/team_members/(:any)/(:any)"] = "Team_members/$1/$2";
 $route["hrs/team_members/(:any)/(:any)/(:any)"] = "Team_members/$1/$2/$3";
 
 $route["hrs/attendance/(:any)"] = "Attendance/$1";
+$route["hrs/overtime/(:any)"] = "Overtime/$1";
 $route["hrs/discipline_entries/(:any)"] = "Discipline_entries/$1";
 $route["hrs/discipline_categories/(:any)"] = "Discipline_categories/$1";
 $route["hrs/holidays/(:any)"] = "Holidays/$1";
@@ -192,6 +193,10 @@ $route["hrs/team/(:any)"] = "Team/$1";
 $route['hrs/attendance'] = 'attendance/index';
 $route["hrs/attendance/(:any)"] = "attendance/$1";
 $route["hrs/attendance/(:any)/(:any)"] = "attendance/$1/$2";
+
+$route['hrs/overtime'] = 'Overtime/index';
+$route["hrs/overtime/(:any)"] = "Overtime/$1";
+$route["hrs/overtime/(:any)/(:any)"] = "Overtime/$1/$2";
 
 $route['hrs/disciplinary'] = 'discipline_categories/index';
 $route["hrs/disciplinary/(:any)"] = "disciplinary/$1";

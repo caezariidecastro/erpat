@@ -643,6 +643,7 @@ INSERT IGNORE INTO settings(`setting_name`, `setting_value`, `deleted`) VALUES
   ('time_format', 'small', 0),
   ('module_announcement', '1', 0),
   ('module_attendance', '1', 0),
+  ('module_overtime', '1', 0),
   ('module_event', '1', 0),
   ('module_expense', '1', 0),
   ('module_invoice', '1', 0),

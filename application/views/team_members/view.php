@@ -60,6 +60,10 @@
             <li><a role="presentation" href="<?php echo_uri("hrs/team_members/attendance_info/" . $user_info->id); ?>" data-target="#tab-attendance-info"> <?php echo lang('attendance'); ?></a></li>
         <?php } ?>
 
+        <?php if ($show_overtime) { ?>
+            <li><a role="presentation" href="<?php echo_uri("hrs/team_members/overtime_info/" . $user_info->id); ?>" data-target="#tab-overtime-info"> <?php echo lang('overtime'); ?></a></li>
+        <?php } ?>
+
         <?php if ($show_leave) { ?>
             <li><a role="presentation" href="<?php echo_uri("hrs/team_members/leave_info/" . $user_info->id); ?>" data-target="#tab-leave-info"><?php echo lang('leaves'); ?></a></li>
         <?php } ?>
@@ -82,6 +86,7 @@
         <div role="tabpanel" class="tab-pane fade" id="tab-user-left-menu"></div>
         <div role="tabpanel" class="tab-pane fade" id="tab-projects-info"></div>
         <div role="tabpanel" class="tab-pane fade" id="tab-attendance-info"></div>
+        <div role="tabpanel" class="tab-pane fade" id="tab-overtime-info"></div>
         <div role="tabpanel" class="tab-pane fade" id="tab-leave-info"></div>
         <div role="tabpanel" class="tab-pane fade" id="tab-expense-info"></div>
     </div>

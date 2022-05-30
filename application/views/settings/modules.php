@@ -102,6 +102,12 @@
                         </div>
                         <div class="col-md-4">
                             <?php
+                            echo form_checkbox("module_overtime", "1", get_setting("module_overtime") ? true : false, "id='module_overtime' class='ml15'");
+                            ?>   
+                            <label for="module_overtime"><?php echo lang('overtime'); ?></label>                    
+                        </div>
+                        <div class="col-md-4">
+                            <?php
                             echo form_checkbox("module_hrm_disciplinary", "1", get_setting("module_hrm_disciplinary") ? true : false, "id='module_hrm_disciplinary' class='ml15'");
                             ?>   
                             <label for="module_hrm_disciplinary"><?php echo lang('disciplinary'); ?></label>                    

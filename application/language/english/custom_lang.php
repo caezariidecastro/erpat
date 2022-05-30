@@ -27,6 +27,7 @@ $lang["module_enable"] = "Enable this Module";
 $lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_department"] = "Department";
 $lang["submenu_hrm_attendance"] = "Attendance";
+$lang["submenu_hrm_overtime"] = "Overtime";
 $lang["submenu_hrm_schedule"] = "Schedule";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
@@ -540,3 +541,7 @@ $lang["signiture_url"] = "Digital Signature";
 $lang["signiture_url_placeholder"] = "Upload the jpg or png image on employee file and paste the url here.";
 
 $lang["last_online"] = "Last Online";
+$lang["overtime"] = "Overtime";
+$lang["add_overtime"] = "Add Overtime";
+$lang["edit_overtime"] = "Edit Overtime";
+$lang["delete_overtime"] = "Delete Overtime";
