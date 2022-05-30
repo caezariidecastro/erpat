@@ -66,9 +66,9 @@
             $out_time = is_date_exists($model_info->out_time) ? convert_date_utc_to_local($model_info->out_time) : "";
 
             if ($time_format_24_hours) {
-                $out_time_value = $in_time ? date("H:i", strtotime($out_time)) : "";
+                $out_time_value = $out_time ? date("H:i", strtotime($out_time)) : "";
             } else {
-                $out_time_value = $in_time ? convert_time_to_12hours_format(date("H:i:s", strtotime($out_time))) : "";
+                $out_time_value = $out_time ? convert_time_to_12hours_format(date("H:i:s", strtotime($out_time))) : "";
             }
 
             echo form_input(array(
