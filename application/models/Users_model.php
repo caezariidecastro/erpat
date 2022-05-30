@@ -68,6 +68,7 @@ class Users_model extends Crud_model {
 
     function get_details($options = array()) {
         $users_table = $this->db->dbprefix('users');
+        $team_table = $this->db->dbprefix('team');
         $team_member_job_info_table = $this->db->dbprefix('team_member_job_info');
         $clients_table = $this->db->dbprefix('clients');
 
@@ -79,6 +80,7 @@ class Users_model extends Crud_model {
         $vendor_id = get_array_value($options, "vendor_id");
         $exclude_user_id = get_array_value($options, "exclude_user_id");
         $search = get_array_value($options, "search");
+        $teams = get_array_value($options, "include_teams");
 
         if ($id) {
             $where .= empty($where) ? " " : " AND";
@@ -147,6 +149,8 @@ class Users_model extends Crud_model {
             $custom_field_type = "lead_contacts";
         }
 
+        $teams_lists = ", ( SELECT GROUP_CONCAT($team_table.title) FROM $team_table WHERE FIND_IN_SET($users_table.id, $team_table.heads) OR FIND_IN_SET($users_table.id, $team_table.members) ) as team_list";
+
         //prepare custom fild binding query
         $custom_fields = get_array_value($options, "custom_fields");
         $custom_field_query_info = $this->prepare_custom_field_query_string($custom_field_type, $custom_fields, $users_table);
@@ -156,7 +160,7 @@ class Users_model extends Crud_model {
 
         //prepare full query string
         $sql = "SELECT $users_table.*,
-            $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term $select_custom_fieds
+            $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term $teams_lists $select_custom_fieds
         FROM $users_table
         LEFT JOIN $team_member_job_info_table ON $team_member_job_info_table.user_id=$users_table.id
         LEFT JOIN $clients_table ON $clients_table.id=$users_table.client_id

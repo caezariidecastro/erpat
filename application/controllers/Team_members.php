@@ -428,7 +428,8 @@ class Team_members extends MY_Controller {
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
         $options = array(
             "id" => $id,
-            "custom_fields" => $custom_fields
+            "custom_fields" => $custom_fields,
+            "include_teams" => "yes"
         );
 
         $data = $this->Users_model->get_details($options)->row();
@@ -444,21 +445,12 @@ class Team_members extends MY_Controller {
         //check contact info view permissions
         $show_cotact_info = $this->can_view_team_members_contact_info();
 
-        //Get the team names.
-        $this->load->model("Team_model");
-        $my_teams = $this->Team_model->get_teams( $data->id )->result();
-        $team_name = [];
-        foreach($my_teams as $team) {
-            $team_name[] = $team->title;
-        }
-        $team_name = implode(",", $team_name);
-
         $row_data = array(
             $user_avatar,
             get_team_member_profile_link($data->id, $full_name),
             $data->job_title,
             $show_cotact_info ? $data->email : "",
-            $team_name,
+            $data->team_list,
             $show_cotact_info && $data->phone ? $data->phone : "-"
         );
 
