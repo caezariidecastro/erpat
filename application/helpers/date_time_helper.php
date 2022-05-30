@@ -573,35 +573,42 @@ if (!function_exists('add_to_datetime')) {
 
 }
 
+if (!function_exists('pluralize_text')) {
+
+    function pluralize_text( $count, $text )
+    {
+        return $count . ( ( $count == 1 ) ? ( " $text" ) : ( " ${text}s" ) );
+    }
+
+}
+
 if (!function_exists('last_online_text')) {
 
     function last_online_text($last_online) {
-        $now = get_my_local_time();
-        $last_online = convert_date_utc_to_local($last_online);
 
-        $diff_seconds = abs(strtotime($now) - strtotime($last_online));
-        $diff_minutes = floor($diff_seconds / 60);
-        $diff_hours = floor($diff_minutes / 60);
-        $diff_days = floor($diff_hours / 24);
-        $diff_weeks = floor($diff_days / 7);
-        $diff_months = floor($diff_weeks / 4);
-        $diff_years = floor($diff_months / 12);
+        //get Date diff as intervals 
+        $d1 = new DateTime( convert_date_utc_to_local($last_online) );
+        $d2 = new DateTime( get_my_local_time() );
+        $interval = $d1->diff($d2);
 
-        if($diff_minutes > 1 && $diff_hours < 1) {
-            return "$diff_minutes minute(s) ago";
-        } else if($diff_hours > 1 && $diff_days < 1) {
-            return "$diff_hours hour(s) ago";
-        } else if($diff_days > 1 && $diff_weeks < 1) {
-            return "$diff_days day(s) ago";
-        } else if($diff_weeks > 1 && $diff_months < 1) {
-            return "$diff_weeks week(s) ago";
-        } else if($diff_months > 1 && $diff_years < 1) {
-            return "$diff_months month(s) ago";
-        } else if($diff_years > 1) {
-            return "$diff_years year(s) ago";
-        } else {
-            return "$diff_seconds second(s) ago";
-        }
+        $diff_seconds = $interval->s;
+        $diff_minutes = $interval->i;
+        $diff_hours   = $interval->h;
+        $diff_days    = $interval->d;
+        $diff_weeks    = floor($interval->d/7);
+        $diff_months  = $interval->m;
+        $diff_years   = $interval->y;
+
+        $suffix = ( $interval->invert ? ' ago' : '' );
+
+        if ( $v = $interval->y >= 1 ) return pluralize_text( $interval->y, 'year' ) . $suffix;
+        if ( $v = $interval->m >= 1 ) return pluralize_text( $interval->m, 'month' ) . $suffix;
+        if ( $v = $interval->d >= 1 ) return pluralize_text( $interval->d, 'day' ) . $suffix;
+        if ( $v = $interval->h >= 1 ) return pluralize_text( $interval->h, 'hour' ) . $suffix;
+        if ( $v = $interval->i >= 1 ) return pluralize_text( $interval->i, 'minute' ) . $suffix;
+        if ( $v = $interval->s >= 1 ) return pluralize_text( $interval->s, 'second' ) . $suffix;
+
+        return "Never";
     }
 
 }
