@@ -44,11 +44,12 @@
             ],
             columns: [
                 {title: '', "class": "w25 text-center"},
-                {title: "<?php echo lang("name") ?>"},
-                {title: "<?php echo lang("job_title") ?>", "class": "w15p"},
-                {visible: visibleContact, title: "<?php echo lang("email") ?>", "class": "w15p"},
-                {title: "<?php echo lang("department") ?>", "class": "w10p"},
-                {visible: visibleContact, title: "<?php echo lang("phone") ?>", "class": "w15p"}
+                {title: "<?php echo lang("name") ?>", "class": "w15p"},
+                {visible: visibleContact, title: "<?php echo lang("email") ?>", "class": "w20p"},
+                {visible: visibleContact, title: "<?php echo lang("phone") ?>", "class": "w10p"},
+                {title: "<?php echo lang("job_title") ?>", "class": "w10p"},
+                {title: "<?php echo lang("department") ?>"},
+                {title: "<?php echo lang("last_online") ?>", "class": "w10p"}
                 <?php echo $custom_field_headers; ?>,
                 {visible: visibleDelete, title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],

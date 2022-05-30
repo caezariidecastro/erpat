@@ -448,10 +448,11 @@ class Team_members extends MY_Controller {
         $row_data = array(
             $user_avatar,
             get_team_member_profile_link($data->id, $full_name),
-            $data->job_title,
             $show_cotact_info ? $data->email : "",
+            $show_cotact_info && $data->phone ? $data->phone : "-",
+            $data->job_title,
             $data->team_list,
-            $show_cotact_info && $data->phone ? $data->phone : "-"
+            last_online_text($data->last_online)
         );
 
         foreach ($custom_fields as $field) {

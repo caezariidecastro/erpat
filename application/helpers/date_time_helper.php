@@ -572,3 +572,36 @@ if (!function_exists('add_to_datetime')) {
     }
 
 }
+
+if (!function_exists('last_online_text')) {
+
+    function last_online_text($last_online) {
+        $now = get_my_local_time();
+        $last_online = convert_date_utc_to_local($last_online);
+
+        $diff_seconds = abs(strtotime($now) - strtotime($last_online));
+        $diff_minutes = floor($diff_seconds / 60);
+        $diff_hours = floor($diff_minutes / 60);
+        $diff_days = floor($diff_hours / 24);
+        $diff_weeks = floor($diff_days / 7);
+        $diff_months = floor($diff_weeks / 4);
+        $diff_years = floor($diff_months / 12);
+
+        if($diff_minutes > 1 && $diff_hours < 1) {
+            return "$diff_minutes minute(s) ago";
+        } else if($diff_hours > 1 && $diff_days < 1) {
+            return "$diff_hours hour(s) ago";
+        } else if($diff_days > 1 && $diff_weeks < 1) {
+            return "$diff_days day(s) ago";
+        } else if($diff_weeks > 1 && $diff_months < 1) {
+            return "$diff_weeks week(s) ago";
+        } else if($diff_months > 1 && $diff_years < 1) {
+            return "$diff_months month(s) ago";
+        } else if($diff_years > 1) {
+            return "$diff_years year(s) ago";
+        } else {
+            return "$diff_seconds second(s) ago";
+        }
+    }
+
+}

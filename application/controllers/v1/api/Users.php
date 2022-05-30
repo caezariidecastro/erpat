@@ -157,6 +157,18 @@ class Users extends CI_Controller {
         }
     }
 
+    function count_notification() {
+        $user_token = self::validate(getBearerToken());
+        if(!isset($user_token->id)) {
+            echo json_encode( array("success"=>false, "message"=>"Client token is invalid or tampered!" ) );
+            exit();
+        }
+
+        $this->load->model('Notifications_model');
+        $count = $this->Notifications_model->count_notifications($user_token->id);
+
+        echo json_encode( array("success"=>true, "data"=>$count) );
+    }
 
     private function getUserData($user_id) {
         $login_user = $this->Users_model->get_access_info($user_id);
