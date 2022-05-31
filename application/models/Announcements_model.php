@@ -45,7 +45,7 @@ class Announcements_model extends Crud_model {
         $sql = "SELECT $announcements_table.*, CONCAT($users_table.first_name, ' ', $users_table.last_name) AS created_by_user, $users_table.image AS created_by_avatar
         FROM $announcements_table
         LEFT JOIN $users_table ON $users_table.id= $announcements_table.created_by
-        WHERE $announcements_table.deleted=0 $where";
+        WHERE $announcements_table.deleted=0 $where ORDER BY start_date DESC";
         return $this->db->query($sql);
     }
 
