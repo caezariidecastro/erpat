@@ -36,8 +36,6 @@ class Users extends CI_Controller {
         $user = array(
             "id" => $user_id,
             "uuid" => $info->uuid,
-            "avatar" => get_avatar($user_id, true),
-            "fullname" => $info->first_name ." ".$info->last_name,
             "email" => $email,
             "expired" => $expiry
         );
@@ -157,6 +155,17 @@ class Users extends CI_Controller {
         }
     }
 
+    function get_user_info() {
+        $user_token = self::validate(getBearerToken());
+        if(!isset($user_token->id)) {
+            echo json_encode( array("success"=>false, "message"=>"Client token is invalid or tampered!" ) );
+            exit();
+        }
+
+        $user_info = $this->getUserData($user_token->id);
+        echo json_encode(array("success"=>true, "data"=> $user_info));
+    }
+
     function count_notification() {
         $user_token = self::validate(getBearerToken());
         if(!isset($user_token->id)) {
@@ -178,6 +187,9 @@ class Users extends CI_Controller {
         } else {
             $login_user->permissions = array();
         }
+        $login_user->image = get_avatar($login_user->image);
+        unset($login_user->client_id);
+        unset($login_user->is_primary_contact);
         return $login_user;
     }
 
