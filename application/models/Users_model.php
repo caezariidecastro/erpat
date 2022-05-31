@@ -13,7 +13,7 @@ class Users_model extends Crud_model {
 
         $email = $this->db->escape_str($email);
 
-        $this->db->select("id,is_admin,user_type,client_id,password");
+        $this->db->select("id,is_admin,user_type,client_id,password,access_erpat");
         $result = $this->db->get_where($this->table, array('email' => $email, 'status' => 'active', 'deleted' => 0, 'disable_login' => 0));
 
         if ($result->num_rows() !== 1) {
