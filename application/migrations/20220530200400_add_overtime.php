@@ -37,7 +37,7 @@ class Migration_Add_overtime extends CI_Migration {
                     'constraint' => 11,
                     'null' => true
                 ),
-                'updated_at datetime default current_timestamp on update current_timestamp',
+                'updated_at timestamp default current_timestamp on update current_timestamp',
                 'date_created' => array(
                     'type' => 'DATETIME',
                     'default' => NULL,
