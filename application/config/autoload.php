@@ -180,6 +180,4 @@ $autoload['model'] = array(
     'Expenses_model',
     'Accounts_model',
     'Account_transactions_model',
-    
-    'Services_model'
 );

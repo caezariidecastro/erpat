@@ -8,6 +8,7 @@ class Estimates extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->init_permission_checker("estimate");
+        $this->load->model("Services_model");
     }
 
     private function _get_consumer_select2_data() {

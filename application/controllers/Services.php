@@ -10,6 +10,7 @@ class Services extends MY_Controller {
         $this->access_only_team_members();
 
         $this->load->library("Uuid");
+        $this->load->model("Services_model");
         $this->load->model("Services_categories_model");
     }
 
