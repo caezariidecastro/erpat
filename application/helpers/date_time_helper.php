@@ -586,6 +586,10 @@ if (!function_exists('last_online_text')) {
 
     function last_online_text($last_online) {
 
+        if(!$last_online) {
+            return "Never";
+        }
+
         //get Date diff as intervals 
         $d1 = new DateTime( convert_date_utc_to_local($last_online) );
         $d2 = new DateTime( get_my_local_time() );
@@ -601,14 +605,21 @@ if (!function_exists('last_online_text')) {
 
         $suffix = ( $interval->invert ? ' ago' : '' );
 
-        if ( $v = $interval->y >= 1 ) return pluralize_text( $interval->y, 'year' ) . $suffix;
-        if ( $v = $interval->m >= 1 ) return pluralize_text( $interval->m, 'month' ) . $suffix;
-        if ( $v = $interval->d >= 1 ) return pluralize_text( $interval->d, 'day' ) . $suffix;
-        if ( $v = $interval->h >= 1 ) return pluralize_text( $interval->h, 'hour' ) . $suffix;
-        if ( $v = $interval->i >= 1 ) return pluralize_text( $interval->i, 'minute' ) . $suffix;
-        if ( $v = $interval->s >= 1 ) return pluralize_text( $interval->s, 'second' ) . $suffix;
-
-        return "Never";
+        if ( $interval->y >= 1 ) {
+            return pluralize_text( $interval->y, 'year' ) . $suffix;
+        } else if ( $interval->m >= 1 ) {
+            return pluralize_text( $interval->m, 'month' ) . $suffix;
+        } else if ( $interval->d >= 1 ) {
+            return pluralize_text( $interval->d, 'day' ) . $suffix;
+        } else if ( $interval->h >= 1 ) {
+            return pluralize_text( $interval->h, 'hour' ) . $suffix;
+        } else if ( $interval->i >= 1 ) {
+            return pluralize_text( $interval->i, 'minute' ) . $suffix;
+        } else if ( $interval->s >= 1 ) {
+            return pluralize_text( $interval->s, 'second' ) . $suffix;
+        } else {
+            return "Online";
+        }
     }
 
 }
