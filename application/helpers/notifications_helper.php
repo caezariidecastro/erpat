@@ -443,6 +443,7 @@ if (!function_exists('send_notification_emails')) {
         $ci->load->model("Invoices_model");
         $ci->load->model("Ticket_comments_model");
         $ci->load->model("Tasks_model");
+        $ci->load->model("Clients_model");
 
         $notification = $ci->Notifications_model->get_email_notification($notification_id);
 

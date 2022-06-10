@@ -16,6 +16,7 @@ class Invoices extends MY_Controller {
         $this->load->model("Projects_model");
         $this->load->model("Estimates_model");
         $this->load->model("Estimate_items_model");
+        $this->load->model("Clients_model");
     }
 
     function get_inventory_items_select2_data($warehouse_id = null) {

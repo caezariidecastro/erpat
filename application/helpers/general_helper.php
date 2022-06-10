@@ -880,6 +880,7 @@ if (!function_exists('get_invoice_making_data')) {
 
     function get_invoice_making_data($invoice_id) {
         $ci = get_instance();
+        $ci->load->model("Clients_model");
         $ci->load->model("Invoices_model");
         $ci->load->model("Invoice_items_model");
         $invoice_info = $ci->Invoices_model->get_details(array("id" => $invoice_id))->row();

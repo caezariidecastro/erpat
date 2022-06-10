@@ -9,6 +9,7 @@ class Request_estimate extends CI_Controller {
         parent::__construct();
         $this->load->model("Estimate_forms_model");
         $this->load->model("Estimate_requests_model");
+        $this->load->model("Clients_model");
     }
 
     function index() {

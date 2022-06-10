@@ -10,6 +10,7 @@ class Search extends MY_Controller {
         $this->access_only_team_members();
         $this->load->model("Projects_model");
         $this->load->model("Tasks_model");
+        $this->load->model("Clients_model");
     }
 
     public function index() {

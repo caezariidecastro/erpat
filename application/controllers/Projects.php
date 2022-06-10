@@ -12,6 +12,9 @@ class Projects extends MY_Controller {
         $this->load->model("Project_members_model");
         $this->load->model("Project_settings_model");
         $this->load->model("Project_comments_model");
+        $this->load->model("Milestones_model");
+        $this->load->model("Clients_model");
+        $this->load->model("Timesheets_model");
 
         $this->load->model("Tasks_model");
         $this->load->model("Checklist_items_model");

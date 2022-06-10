@@ -249,6 +249,7 @@ if (!function_exists('has_my_open_timers')) {
 
     function has_my_open_timers() {
         $ci = get_instance();
+        $ci->load->model("Timesheets_model");
         $timers = $ci->Timesheets_model->get_open_timers($ci->login_user->id);
         return $timers->num_rows();
     }
@@ -317,6 +318,7 @@ if (!function_exists('invoice_statistics_widget')) {
     function invoice_statistics_widget($return_as_data = false, $options = array()) {
         $ci = get_instance();
         $ci->load->model("Invoices_model");
+        $ci->load->model("Clients_model");
 
         $currency_symbol = get_array_value($options, "currency");
 

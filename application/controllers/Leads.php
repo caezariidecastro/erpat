@@ -12,6 +12,7 @@ class Leads extends MY_Controller {
         $this->init_permission_checker("lead");
         $this->load->model("Lead_status_model");
         $this->load->model("Lead_source_model");
+        $this->load->model("Clients_model");
     }
 
     /* load leads list view */

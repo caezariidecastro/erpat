@@ -20,6 +20,7 @@ if (!function_exists('get_change_logs')) {
         $ci->load->model("Project_files_model");
         $ci->load->model("Project_comments_model");
         $ci->load->model("Tasks_model");
+        $ci->load->model("Milestones_model");
 
         $model_schema = array();
         if ($log_type === "task") {

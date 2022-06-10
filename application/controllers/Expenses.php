@@ -16,6 +16,7 @@ class Expenses extends MY_Controller {
         $this->load->model("Expenses_payments_model");
         $this->load->model("Invoice_payments_model");
         $this->load->model("Projects_model");
+        $this->load->model("Clients_model");
     }
 
     //load the expenses list view

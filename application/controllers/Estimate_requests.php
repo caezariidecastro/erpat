@@ -11,6 +11,7 @@ class Estimate_requests extends MY_Controller {
         $this->load->model("Estimates_model");
         $this->load->model("Estimate_forms_model");
         $this->load->model("Estimate_requests_model");
+        $this->load->model("Clients_model");
     }
 
     //load the estimate requests view

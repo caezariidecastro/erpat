@@ -14,6 +14,7 @@ class Tickets extends MY_Controller {
         $this->load->model("Ticket_comments_model");
         $this->load->model("Tickets_model");
         $this->load->model("Projects_model");
+        $this->load->model("Clients_model");
     }
 
     //only admin can delete tickets

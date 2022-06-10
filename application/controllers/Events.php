@@ -11,6 +11,7 @@ class Events extends MY_Controller {
         $this->load->model("Leave_applications_model");
         $this->load->model("Projects_model");
         $this->load->model("Tasks_model");
+        $this->load->model("Clients_model");
     }
 
     //load calendar view

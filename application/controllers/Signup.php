@@ -6,6 +6,7 @@ class Signup extends CI_Controller {
         parent::__construct();
         $this->load->helper('email');
         $this->load->model("Verification_model");
+        $this->load->model("Clients_model");
     }
 
     function index() {
