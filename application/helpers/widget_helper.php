@@ -108,7 +108,7 @@ if (!function_exists('announcements_alert_widget')) {
 
     function announcements_alert_widget($return_as_data = false) {
         $ci = get_instance();
-        $this->ci->load->model("Announcements_model");
+        $ci->load->model("Announcements_model");
         $announcements = $ci->Announcements_model->get_unread_announcements($ci->login_user->id, $ci->login_user->user_type)->result();
         $view_data["announcements"] = $announcements;
         return $ci->load->view("announcements/alert", $view_data, $return_as_data);
@@ -188,6 +188,7 @@ if (!function_exists('new_posts_widget')) {
 
     function new_posts_widget($return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Posts_model");
         $view_data["total"] = $ci->Posts_model->count_new_posts();
         return $ci->load->view("timeline/new_posts_widget", $view_data, $return_as_data);
     }
@@ -921,6 +922,7 @@ if (!function_exists('clocked_in_team_members_widget')) {
 
     function clocked_in_team_members_widget($data = array(), $return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model('Attendance_model');
 
         $options = array(
             "login_user_id" => $ci->login_user->id,
