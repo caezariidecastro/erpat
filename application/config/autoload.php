@@ -161,8 +161,5 @@ $autoload['model'] = array(
     'Dashboards_model',
     'Labels_model',
     'Verification_model',
-    'Leave_credits_model',
-    'Leave_types_model',
-    'Leave_applications_model',
     'Team_model'
 );

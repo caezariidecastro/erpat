@@ -550,6 +550,7 @@ if (!function_exists('count_total_time_widget')) {
 
     function count_total_time_widget($user_id = 0, $return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Leave_credits_model");
         $options = array("user_id" => $user_id ? $user_id : $ci->login_user->id);
         $info = $ci->Attendance_model->count_total_time($options);
         $view_data["total_hours_worked"] = to_decimal_format($info->timecard_total / 60 / 60);
@@ -1018,6 +1019,7 @@ if (!function_exists('pending_leave_approval_widget')) {
 
     function pending_leave_approval_widget($return_as_data = false, $data = array()) {
         $ci = get_instance();
+        $ci->load->model("Leave_applications_model");
 
         $options = array(
             "login_user_id" => $ci->login_user->id,

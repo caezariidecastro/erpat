@@ -9,6 +9,7 @@ class Leave_types extends MY_Controller {
         parent::__construct();
         
         $this->init_permission_checker("leave");
+        $this->load->model("Leave_types_model");
     }
 
     //load leave type list view

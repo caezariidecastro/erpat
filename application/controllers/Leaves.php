@@ -9,6 +9,8 @@ class Leaves extends MY_Controller {
         parent::__construct();
         $this->access_only_team_members();
         $this->load->model("Leave_credits_model");
+        $this->load->model("Leave_types_model");
+        $this->load->model("Leave_applications_model");
 
         $this->init_permission_checker("leave");
     }
