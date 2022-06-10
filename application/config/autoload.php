@@ -147,8 +147,6 @@ $autoload['model'] = array(
     'Notifications_model',
     'Custom_fields_model',
     'Custom_field_values_model',
-    'Estimates_model',
-    'Estimate_items_model',
     'General_files_model',
     'Todo_model',
     'Client_groups_model',

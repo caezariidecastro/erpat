@@ -8,6 +8,7 @@ class Estimate_requests extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->init_permission_checker("estimate");
+        $this->load->model("Estimates_model");
         $this->load->model("Estimate_forms_model");
         $this->load->model("Estimate_requests_model");
     }

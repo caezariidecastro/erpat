@@ -1262,6 +1262,8 @@ if (!function_exists('get_estimate_making_data')) {
 
     function get_estimate_making_data($estimate_id) {
         $ci = get_instance();
+        $ci->load->model("Estimates_model");
+        $ci->load->model("Estimate_items_model");
         $estimate_info = $ci->Estimates_model->get_details(array("id" => $estimate_id))->row();
         if ($estimate_info) {
             $data['estimate_info'] = $estimate_info;

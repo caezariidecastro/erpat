@@ -9,6 +9,7 @@ class Settings extends MY_Controller {
         parent::__construct();
         $this->access_only_admin();
         $this->load->model("Invoices_model");
+        $this->load->model("Estimates_model");
     }
 
     function index() {
