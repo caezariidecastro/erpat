@@ -172,7 +172,5 @@ $autoload['model'] = array(
     'Attendance_model',
     'Overtime_model',
     'Team_model',
-    'Expenses_model',
-    'Accounts_model',
-    'Account_transactions_model',
+    'Expenses_model'
 );
