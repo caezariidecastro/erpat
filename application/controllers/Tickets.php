@@ -10,6 +10,9 @@ class Tickets extends MY_Controller {
         $this->init_permission_checker("ticket");
 
         $this->load->model("Ticket_templates_model");
+        $this->load->model("Ticket_types_model");
+        $this->load->model("Ticket_comments_model");
+        $this->load->model("Tickets_model");
     }
 
     //only admin can delete tickets

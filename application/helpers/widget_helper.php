@@ -280,6 +280,7 @@ if (!function_exists('ticket_status_widget')) {
 
     function ticket_status_widget($return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Tickets_model");
         $statuses = $ci->Tickets_model->get_ticket_status_info()->result();
 
         $view_data["new"] = 0;
@@ -637,6 +638,7 @@ if (!function_exists('count_new_tickets')) {
 
     function count_new_tickets($ticket_types = "") {
         $ci = get_instance();
+        $ci->load->model("Tickets_model");
         return $ci->Tickets_model->count_new_tickets($ticket_types);
     }
 
@@ -861,6 +863,7 @@ if (!function_exists('ticket_status_widget_small')) {
 
     function ticket_status_widget_small($data = array(), $return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Tickets_model");
         $allowed_ticket_types = get_array_value($data, "allowed_ticket_types");
         $status = get_array_value($data, "status");
 

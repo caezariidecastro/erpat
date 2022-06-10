@@ -15,6 +15,9 @@ class Imap {
 
         //load ddeboer-imap resources
         require_once(APPPATH . "third_party/Imap/ddeboer-imap/vendor/autoload.php");
+
+        $this->ci->load->model("Tickets_model");
+        $this->ci->load->model("Ticket_comments_model");
     }
 
     function authorize_imap_and_get_inbox() {

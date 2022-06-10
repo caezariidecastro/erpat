@@ -10,6 +10,8 @@ class Clients extends MY_Controller {
 
         //check permission to access this module
         $this->init_permission_checker("client");
+
+        $this->load->model("Tickets_model");
     }
 
     /* load clients list view */

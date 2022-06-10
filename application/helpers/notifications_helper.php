@@ -439,6 +439,7 @@ if (!function_exists('send_notification_emails')) {
     function send_notification_emails($notification_id, $email_notify_to, $extra_data = array()) {
 
         $ci = & get_instance();
+        $ci->load->model("Ticket_comments_model");
 
         $notification = $ci->Notifications_model->get_email_notification($notification_id);
 

@@ -8,6 +8,7 @@ class Ticket_types extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
+        $this->load->model("Ticket_types_model");
     }
 
     function index($tab = "") {
