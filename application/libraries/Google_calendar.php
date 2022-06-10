@@ -9,6 +9,7 @@ class Google_calendar {
 
     public function __construct() {
         $this->ci = & get_instance();
+        $this->ci->load->model("Events_model");
 
         //load resources
         require_once(APPPATH . "third_party/Google/google-api-php-client/vendor/autoload.php");

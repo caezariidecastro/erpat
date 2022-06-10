@@ -157,6 +157,7 @@ if (!function_exists('events_today_widget')) {
 
     function events_today_widget($return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Events_model");
 
         $options = array(
             "user_id" => $ci->login_user->id,

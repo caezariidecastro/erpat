@@ -7,6 +7,7 @@ class Events extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->load->model("Events_model");
     }
 
     //load calendar view
