@@ -13,6 +13,7 @@ class Invoice_payments extends MY_Controller {
         $this->load->model("Invoices_model");
         $this->load->model("Invoice_payments_model");
         $this->load->model("Clients_model");
+        $this->load->model("Payment_methods_model");
     }
 
     protected function _get_accounts_dropdown_data() {

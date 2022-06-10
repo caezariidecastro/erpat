@@ -14,6 +14,7 @@ class PurchaseReturns extends MY_Controller {
         $this->load->model("Purchase_order_return_materials_model");
         $this->load->model("Purchase_order_budgets_model");
         $this->load->model("Account_transactions_model");
+        $this->load->model("Payment_methods_model");
     }
 
     protected function _get_vendor_select2_data() {

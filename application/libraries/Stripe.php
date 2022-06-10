@@ -11,6 +11,7 @@ class Stripe {
     public function __construct() {
         $this->ci = & get_instance();
         $this->ci->load->model("Stripe_ipn_model");
+        $this->ci->load->model("Payment_methods_model");
 
         $this->stripe_config = $this->ci->Payment_methods_model->get_oneline_payment_method("stripe");
 

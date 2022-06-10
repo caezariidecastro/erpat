@@ -12,6 +12,7 @@ class Payroll extends MY_Controller {
         $this->load->model("Account_transactions_model");
         $this->load->model("Accounts_model");
         $this->load->model("Expense_categories_model");
+        $this->load->model("Payment_methods_model");
     }
 
     protected function _get_users_select2_data() {
