@@ -15,6 +15,7 @@ class Estimates extends MY_Controller {
         $this->load->model("Estimate_items_model");
         $this->load->model("Clients_model");
         $this->load->model("Taxes_model");
+        $this->load->model("Email_templates_model");
     }
 
     private function _get_consumer_select2_data() {

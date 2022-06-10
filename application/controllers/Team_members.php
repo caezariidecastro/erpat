@@ -12,6 +12,7 @@ class Team_members extends MY_Controller {
         $this->load->model('Schedule_model');
         $this->load->model('Users_model');
         $this->load->model("Social_links_model");
+        $this->load->model("Email_templates_model");
     }
 
     private function can_view_team_members_contact_info() {

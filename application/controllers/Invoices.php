@@ -19,6 +19,7 @@ class Invoices extends MY_Controller {
         $this->load->model("Clients_model");
         $this->load->model("Payment_methods_model");
         $this->load->model("Taxes_model");
+        $this->load->model("Email_templates_model");
     }
 
     function get_inventory_items_select2_data($warehouse_id = null) {

@@ -8,6 +8,7 @@ class Email_templates extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
+        $this->load->model("Email_templates_model");
     }
 
     private function _templates() {

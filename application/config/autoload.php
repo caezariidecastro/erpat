@@ -133,7 +133,6 @@ $autoload['model'] = array(
     'Users_model',
     'Messages_model',
     'Activity_logs_model',
-    'Email_templates_model',
     'Roles_model',
     'Notification_settings_model',
     'Notifications_model',

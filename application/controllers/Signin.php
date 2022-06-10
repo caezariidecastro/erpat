@@ -5,6 +5,7 @@ class Signin extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->helper('email');
+        $this->load->model("Email_templates_model");
     }
 
     function index() {

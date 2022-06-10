@@ -8,6 +8,7 @@ class Vendors extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model("Asset_vendors_model");
+        $this->load->model("Email_templates_model");
     }
 
     protected function _get_status_select2_data() {

@@ -20,6 +20,7 @@ class PurchaseOrders extends MY_Controller {
         $this->load->model("Expense_categories_model");
         $this->load->model("Expenses_model");
         $this->load->model("Payment_methods_model");
+        $this->load->model("Email_templates_model");
     }
 
     protected function _get_vendor_dropdown_data($status = null) {

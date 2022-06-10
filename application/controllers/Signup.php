@@ -7,6 +7,7 @@ class Signup extends CI_Controller {
         $this->load->helper('email');
         $this->load->model("Verification_model");
         $this->load->model("Clients_model");
+        $this->load->model("Email_templates_model");
     }
 
     function index() {

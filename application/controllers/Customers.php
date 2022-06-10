@@ -8,6 +8,7 @@ class Customers extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model("Customers_model");
+        $this->load->model("Email_templates_model");
     }
 
     function index(){

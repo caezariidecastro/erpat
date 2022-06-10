@@ -9,6 +9,7 @@ class Suppliers extends MY_Controller {
         parent::__construct();
         $this->load->model("Vendors_model");
         $this->load->model("Users_model");
+        $this->load->model("Email_templates_model");
     }
 
     protected function _get_status_select2_data() {
