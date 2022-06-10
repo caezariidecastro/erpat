@@ -16,6 +16,8 @@ class Attendance extends MY_Controller {
 
         //initialize managerial permission
         $this->init_permission_checker("attendance");
+
+        $this->load->model("Attendance_model");
     }
 
     //check ip restriction for none admin users

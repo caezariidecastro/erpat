@@ -12,6 +12,7 @@ class Cron_job {
     function run() {
         $this->today = get_today_date();
         $this->ci = get_instance();
+        $this->ci->load->model("Attendance_model");
         $this->ci->load->model("Tickets_model");
         $this->current_time = strtotime(get_current_utc_time());
 

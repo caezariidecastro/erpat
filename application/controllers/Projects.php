@@ -11,6 +11,7 @@ class Projects extends MY_Controller {
         $this->load->model("Checklist_items_model");
         $this->load->model("Likes_model");
         $this->load->model("Tickets_model");
+        $this->load->model("Attendance_model");
     }
 
     private function can_delete_projects() {

@@ -9,6 +9,7 @@ class Attendance extends Users {
     
     function __construct() {
         parent::__construct(false);
+        $this->load->model("Attendance_model");
     }
 
     function logtime($userid) {

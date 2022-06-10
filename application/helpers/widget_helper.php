@@ -9,6 +9,7 @@ if (!function_exists('clock_widget')) {
 
     function clock_widget($return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Attendance_model");
         $view_data["clock_status"] = $ci->Attendance_model->current_clock_in_record($ci->login_user->id);
         return $ci->load->view("attendance/clock_widget", $view_data, $return_as_data);
     }
