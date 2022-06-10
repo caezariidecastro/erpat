@@ -7,6 +7,7 @@ class Todo extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->load->model("Todo_model");
     }
 
     protected function validate_access($todo_info) {

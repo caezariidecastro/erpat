@@ -11,6 +11,7 @@ class Search extends MY_Controller {
         $this->load->model("Projects_model");
         $this->load->model("Tasks_model");
         $this->load->model("Clients_model");
+        $this->load->model("Todo_model");
     }
 
     public function index() {

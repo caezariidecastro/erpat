@@ -8,6 +8,7 @@ class Notes extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_team_members();
+        $this->load->model("Notes_model");
     }
 
     protected function validate_access_to_note($note_info, $edit_mode = false) {
