@@ -152,8 +152,6 @@ $autoload['model'] = array(
     'Notification_settings_model',
     'Notifications_model',
     'Custom_fields_model',
-    'Estimate_forms_model',
-    'Estimate_requests_model',
     'Custom_field_values_model',
     'Estimates_model',
     'Estimate_items_model',
