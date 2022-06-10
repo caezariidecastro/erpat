@@ -9,6 +9,7 @@ class Events extends MY_Controller {
         parent::__construct();
         $this->load->model("Events_model");
         $this->load->model("Leave_applications_model");
+        $this->load->model("Projects_model");
     }
 
     //load calendar view

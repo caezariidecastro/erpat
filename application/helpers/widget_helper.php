@@ -528,6 +528,7 @@ if (!function_exists('count_project_status_widget')) {
 
     function count_project_status_widget($user_id = 0, $return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Projects_model");
         $options = array(
             "user_id" => $user_id ? $user_id : $ci->login_user->id
         );

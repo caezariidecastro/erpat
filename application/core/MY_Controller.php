@@ -267,11 +267,13 @@ class MY_Controller extends CI_Controller {
     //When checking project permissions, to reduce db query we'll use this init function, where team members has to be access on the project
     protected function init_project_permission_checker($project_id = 0) {
         if ($this->login_user->user_type == "client") {
+            $this->load->model("Projects_model");
             $project_info = $this->Projects_model->get_one($project_id);
             if ($project_info->client_id == $this->login_user->client_id) {
                 $this->is_clients_project = true;
             }
         } else {
+            $this->load->model("Project_members_model");
             $this->is_user_a_project_member = $this->Project_members_model->is_user_a_project_member($project_id, $this->login_user->id);
         }
     }

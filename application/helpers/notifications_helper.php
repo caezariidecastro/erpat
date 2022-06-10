@@ -767,6 +767,7 @@ if (!function_exists('get_notification_multiple_tasks_data')) {
 
     function get_notification_multiple_tasks_data($tasks, $event) {
         $ci = get_instance();
+        $ci->load->model("Project_members_model");
         $user_wise_tasks = array();
 
         //user whose are on the notify to team members or notify to team, will get all tasks

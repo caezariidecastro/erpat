@@ -7,6 +7,7 @@ class Notifications_model extends Crud_model {
     function __construct() {
         $this->table = 'notifications';
         parent::__construct($this->table);
+        $this->load->model("Project_comments_model");
     }
 
     function create_notification($event, $user_id, $options = array()) {

@@ -7,7 +7,12 @@ class Projects extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
+        $this->load->model("Projects_model");
+        $this->load->model("Project_files_model");
+        $this->load->model("Project_members_model");
         $this->load->model("Project_settings_model");
+        $this->load->model("Project_comments_model");
+
         $this->load->model("Checklist_items_model");
         $this->load->model("Likes_model");
         $this->load->model("Tickets_model");

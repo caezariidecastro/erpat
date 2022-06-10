@@ -8,6 +8,7 @@ class Search extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_team_members();
+        $this->load->model("Projects_model");
     }
 
     public function index() {

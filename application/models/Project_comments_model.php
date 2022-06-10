@@ -7,6 +7,8 @@ class Project_comments_model extends Crud_model {
     function __construct() {
         $this->table = 'project_comments';
         parent::__construct($this->table);
+        $this->load->model("Projects_model");
+        $this->load->model("Project_files_model");
     }
 
     function schema() {

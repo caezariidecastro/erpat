@@ -7,6 +7,7 @@ class Milestones_model extends Crud_model {
     function __construct() {
         $this->table = 'milestones';
         parent::__construct($this->table);
+        $this->load->model("Projects_model");
         parent::init_activity_log("milestone", "title", "project", "project_id");
     }
 
