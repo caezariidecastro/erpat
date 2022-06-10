@@ -412,6 +412,7 @@ class Cron_job {
     }
 
     private function create_recurring_expenses() {
+        $this->ci->load->model("Expenses_model");
         $recurring_expenses = $this->ci->Expenses_model->get_renewable_expenses($this->today);
         if ($recurring_expenses->num_rows()) {
             foreach ($recurring_expenses->result() as $expense) {

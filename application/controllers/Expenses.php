@@ -11,6 +11,7 @@ class Expenses extends MY_Controller {
         $this->access_only_allowed_members();
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
+        $this->load->model("Expenses_model");
         $this->load->model("Expense_categories_model");
         $this->load->model("Expenses_payments_model");
     }

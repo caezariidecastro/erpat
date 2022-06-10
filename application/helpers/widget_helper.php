@@ -263,6 +263,7 @@ if (!function_exists('income_vs_expenses_widget')) {
 
     function income_vs_expenses_widget($custom_class = "", $return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Expenses_model");
         $info = $ci->Expenses_model->get_income_expenses_info();
         $view_data["income"] = $info->income ? $info->income : 0;
         $view_data["expenses"] = $info->expneses ? $info->expneses : 0;

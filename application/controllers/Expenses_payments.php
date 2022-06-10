@@ -10,6 +10,7 @@ class Expenses_payments extends MY_Controller {
         $this->init_permission_checker("expense");
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
+        $this->load->model("Expenses_model");
         $this->load->model("Expenses_payments_model");
     }
 
