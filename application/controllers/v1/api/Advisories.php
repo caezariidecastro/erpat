@@ -9,6 +9,7 @@ class Advisories extends Users {
     
     function __construct() {
         parent::__construct(false);
+        $this->load->model("Announcements_model");
     }
 
     function listdata() {

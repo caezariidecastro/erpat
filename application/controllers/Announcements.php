@@ -8,6 +8,7 @@ class Announcements extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->init_permission_checker("announcement");
+        $this->load->model("Announcements_model");
     }
 
     //show announcements list

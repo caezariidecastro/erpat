@@ -106,6 +106,7 @@ if (!function_exists('announcements_alert_widget')) {
 
     function announcements_alert_widget($return_as_data = false) {
         $ci = get_instance();
+        $this->ci->load->model("Announcements_model");
         $announcements = $ci->Announcements_model->get_unread_announcements($ci->login_user->id, $ci->login_user->user_type)->result();
         $view_data["announcements"] = $announcements;
         return $ci->load->view("announcements/alert", $view_data, $return_as_data);
