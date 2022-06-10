@@ -1781,4 +1781,7 @@ CREATE TABLE IF NOT EXISTS `material_inventory_transfer_items` (
   PRIMARY KEY (`id`), INDEX (`uuid`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 
+  CREATE TABLE `migrations` (
+    `version` bigint(20) NOT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* #endregion Services */
