@@ -13,6 +13,8 @@ class Clients extends MY_Controller {
 
         $this->load->model("Tickets_model");
         $this->load->model("Clients_model");
+        $this->load->model("Client_groups_model");
+        $this->load->model("Social_links_model");
     }
 
     /* load clients list view */

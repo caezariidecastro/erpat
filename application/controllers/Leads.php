@@ -13,6 +13,7 @@ class Leads extends MY_Controller {
         $this->load->model("Lead_status_model");
         $this->load->model("Lead_source_model");
         $this->load->model("Clients_model");
+        $this->load->model("Social_links_model");
     }
 
     /* load leads list view */

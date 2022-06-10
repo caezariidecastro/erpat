@@ -8,6 +8,7 @@ class Timeline extends MY_Controller {
     public function __construct() {
         parent::__construct();
         $this->access_only_team_members();
+        $this->load->model("Posts_model");
     }
 
     /* load timeline view */

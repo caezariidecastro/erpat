@@ -8,6 +8,7 @@ class Client_groups extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
+        $this->load->model("Client_groups_model");
     }
 
     //load client groups list view

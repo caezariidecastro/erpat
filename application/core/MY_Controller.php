@@ -386,6 +386,7 @@ class MY_Controller extends CI_Controller {
     }
 
     protected function _get_groups_dropdown_select2_data($show_header = false) {
+        $this->load->model("Client_groups_model");
         $client_groups = $this->Client_groups_model->get_all()->result();
         $groups_dropdown = array();
 

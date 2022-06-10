@@ -8,6 +8,7 @@ class Taxes extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
+        $this->load->model("Taxes_model");
     }
 
     function index() {

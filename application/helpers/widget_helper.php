@@ -67,6 +67,7 @@ if (!function_exists('timeline_widget')) {
 
     function timeline_widget($params = array(), $return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Posts_model");
 
         $limit = get_array_value($params, "limit");
         $limit = $limit ? $limit : "20";
