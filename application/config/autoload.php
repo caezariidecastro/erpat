@@ -170,6 +170,5 @@ $autoload['model'] = array(
     'Leave_types_model',
     'Leave_applications_model',
     'Attendance_model',
-    'Overtime_model',
     'Team_model'
 );

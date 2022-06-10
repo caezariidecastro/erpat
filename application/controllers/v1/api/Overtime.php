@@ -9,6 +9,7 @@ class Overtime extends Users {
     
     function __construct() {
         parent::__construct(false);
+        $this->load->model("Overtime_model");
     }
 
     function logtime($userid) {
