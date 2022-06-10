@@ -16,6 +16,8 @@ class Clients extends MY_Controller {
         $this->load->model("Client_groups_model");
         $this->load->model("Social_links_model");
         $this->load->model("Email_templates_model");
+        $this->load->model("Verification_model");
+        $this->load->model("General_files_model");
     }
 
     /* load clients list view */

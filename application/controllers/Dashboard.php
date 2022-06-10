@@ -11,6 +11,7 @@ class Dashboard extends MY_Controller {
         parent::__construct();
         $this->load->model("Custom_widgets_model");
         $this->load->model("Clients_model");
+        $this->load->model("Dashboards_model");
     }
 
     public function index() {

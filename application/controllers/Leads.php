@@ -15,6 +15,7 @@ class Leads extends MY_Controller {
         $this->load->model("Clients_model");
         $this->load->model("Social_links_model");
         $this->load->model("Email_templates_model");
+        $this->load->model("General_files_model");
     }
 
     /* load leads list view */

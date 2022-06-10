@@ -13,6 +13,8 @@ class Team_members extends MY_Controller {
         $this->load->model('Users_model');
         $this->load->model("Social_links_model");
         $this->load->model("Email_templates_model");
+        $this->load->model("Verification_model");
+        $this->load->model("General_files_model");
     }
 
     private function can_view_team_members_contact_info() {

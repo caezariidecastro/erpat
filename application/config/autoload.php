@@ -138,9 +138,6 @@ $autoload['model'] = array(
     'Notifications_model',
     'Custom_fields_model',
     'Custom_field_values_model',
-    'General_files_model',
-    'Dashboards_model',
     'Labels_model',
-    'Verification_model',
     'Team_model'
 );

@@ -1745,6 +1745,7 @@ if (!function_exists('validate_invoice_verification_code')) {
     function validate_invoice_verification_code($code = "", $given_invoice_data = array()) {
         if ($code) {
             $ci = get_instance();
+            $ci->load->model("Verification_model");
             $options = array("code" => $code, "type" => "invoice_payment");
             $verification_info = $ci->Verification_model->get_details($options)->row();
 

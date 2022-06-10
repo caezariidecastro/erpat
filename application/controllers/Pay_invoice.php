@@ -8,6 +8,7 @@ class Pay_invoice extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model("Payment_methods_model");
+        $this->load->model("Verification_model");
     }
 
     function index($verification_code = "") {
