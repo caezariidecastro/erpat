@@ -442,6 +442,7 @@ if (!function_exists('send_notification_emails')) {
         $ci->load->model("Estimate_requests_model");
         $ci->load->model("Invoices_model");
         $ci->load->model("Ticket_comments_model");
+        $ci->load->model("Tasks_model");
 
         $notification = $ci->Notifications_model->get_email_notification($notification_id);
 

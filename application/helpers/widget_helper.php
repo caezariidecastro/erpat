@@ -125,6 +125,7 @@ if (!function_exists('my_open_tasks_widget')) {
 
     function my_open_tasks_widget($return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Tasks_model");
         $view_data["total"] = $ci->Tasks_model->count_my_open_tasks($ci->login_user->id);
         return $ci->load->view("projects/tasks/open_tasks_widget", $view_data, $return_as_data);
     }
@@ -1005,6 +1006,7 @@ if (!function_exists('my_tasks_list_widget')) {
 
     function my_tasks_list_widget($return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model("Task_status_model");
         $view_data['task_statuses'] = $ci->Task_status_model->get_details()->result();
         return $ci->load->view("projects/tasks/my_tasks_list_widget", $view_data, $return_as_data);
     }

@@ -13,10 +13,14 @@ class Projects extends MY_Controller {
         $this->load->model("Project_settings_model");
         $this->load->model("Project_comments_model");
 
+        $this->load->model("Tasks_model");
+
         $this->load->model("Checklist_items_model");
         $this->load->model("Likes_model");
         $this->load->model("Tickets_model");
         $this->load->model("Attendance_model");
+
+        $this->load->model("Task_status_model");
     }
 
     private function can_delete_projects() {

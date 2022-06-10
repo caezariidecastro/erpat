@@ -16,6 +16,8 @@ class Cron_job {
         $this->ci->load->model("Tickets_model");
         $this->ci->load->model("Invoices_model");
         $this->ci->load->model("Invoice_items_model");
+        $this->ci->load->model("Tasks_model");
+        
         $this->current_time = strtotime(get_current_utc_time());
 
         $this->call_minutely_jobs();

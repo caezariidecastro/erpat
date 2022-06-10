@@ -17,6 +17,8 @@ class Notification_processor extends CI_Controller {
         parent::__construct();
         $this->load->helper('notifications');
         $this->load->model("Invoices_model");
+        $this->load->model("Tasks_model");
+        $this->load->model("Task_status_model");
     }
 
     //don't show anything here

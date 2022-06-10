@@ -5,6 +5,10 @@ if (!defined('BASEPATH'))
 
 class Webhooks_listener extends CI_Controller {
 
+    function __construct() {
+        $this->load->model("Tasks_model");
+    }
+
     function bitbucket($key) {
         //save bitbucket commit as a activity log of tasks by bitbucket webhook
         //the commit message should be ending with #task_id. ex: Added webhook #233

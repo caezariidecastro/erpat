@@ -9,6 +9,7 @@ class Tasks_model extends Crud_model {
         parent::__construct($this->table);
         parent::init_activity_log("task", "title", "project", "project_id");
         $this->load->model("Tickets_model");
+        $this->load->model("Task_status_model");
     }
 
     function schema() {

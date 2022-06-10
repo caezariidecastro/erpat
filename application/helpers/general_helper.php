@@ -1440,6 +1440,7 @@ if (!function_exists('update_custom_fields_changes')) {
     function update_custom_fields_changes($related_to_type, $related_to_id, $changes, $activity_log_id = 0) {
         if ($changes && count($changes)) {
             $ci = get_instance();
+            $ci->load->model("Tasks_model");
 
             $related_to_data = new stdClass();
 
