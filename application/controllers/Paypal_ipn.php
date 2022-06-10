@@ -11,6 +11,8 @@ class Paypal_ipn extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->load->model("Invoices_model");
+        $this->load->model("Invoice_payments_model");
     }
 
     /* load invoice list view */

@@ -10,6 +10,8 @@ class Invoice_payments extends MY_Controller {
         $this->init_permission_checker("invoice");
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
+        $this->load->model("Invoices_model");
+        $this->load->model("Invoice_payments_model");
     }
 
     protected function _get_accounts_dropdown_data() {

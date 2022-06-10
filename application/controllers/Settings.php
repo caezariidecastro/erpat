@@ -8,6 +8,7 @@ class Settings extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
+        $this->load->model("Invoices_model");
     }
 
     function index() {

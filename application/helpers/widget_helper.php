@@ -315,6 +315,7 @@ if (!function_exists('invoice_statistics_widget')) {
 
     function invoice_statistics_widget($return_as_data = false, $options = array()) {
         $ci = get_instance();
+        $ci->load->model("Invoices_model");
 
         $currency_symbol = get_array_value($options, "currency");
 

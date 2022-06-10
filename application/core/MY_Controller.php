@@ -310,6 +310,7 @@ class MY_Controller extends CI_Controller {
 
     //get currencies dropdown
     protected function _get_currencies_dropdown() {
+        $this->load->model("Invoices_model");
         $used_currencies = $this->Invoices_model->get_used_currencies_of_client()->result();
 
         if ($used_currencies) {
@@ -366,6 +367,7 @@ class MY_Controller extends CI_Controller {
 
     //get existing projects dropdown for income and expenses
     protected function _get_projects_dropdown_for_income_and_epxenses($type = "all") {
+        $this->load->model("Invoice_payments_model");
         $projects = $this->Invoice_payments_model->get_used_projects($type)->result();
 
         if ($projects) {
