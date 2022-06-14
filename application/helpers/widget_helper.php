@@ -205,6 +205,7 @@ if (!function_exists('events_widget')) {
 
     function events_widget($return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model('Events_model');
 
         $options = array("user_id" => $ci->login_user->id, "limit" => 10, "team_ids" => $ci->login_user->team_ids);
 
@@ -381,6 +382,7 @@ if (!function_exists('project_timesheet_statistics_widget')) {
 
     function project_timesheet_statistics_widget($type = "", $return_as_data = false) {
         $ci = get_instance();
+        $ci->load->model('Timesheets_model');
 
         $timesheets = array();
         $timesheets_array = array();
