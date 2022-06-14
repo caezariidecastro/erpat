@@ -141,6 +141,8 @@ class MY_Controller extends CI_Controller {
 
             foreach ($team as $value) {
                 if ($value->members) {
+                    $heads_array = explode(",", $value->heads);
+                    $allowed_members = array_merge($allowed_members, $heads_array);
                     $members_array = explode(",", $value->members);
                     $allowed_members = array_merge($allowed_members, $members_array);
                 }

@@ -28,7 +28,7 @@ class Team_model extends Crud_model {
         $team_table = $this->db->dbprefix('team');
         $team_ids = implode(",", $team_ids);
 
-        $sql = "SELECT $team_table.members
+        $sql = "SELECT $team_table.heads, $team_table.members
         FROM $team_table
         WHERE $team_table.deleted=0 AND id in($team_ids)";
         return $this->db->query($sql);
