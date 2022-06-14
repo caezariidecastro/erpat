@@ -20,7 +20,10 @@
                 {title: "<?php echo lang("out_date"); ?>", "class": "text-center w10p", iDataSort: 4},
                 {title: "<?php echo lang("out_time"); ?>", "class": "text-center w10p"},
                 {title: "<?php echo lang("duration"); ?>", "class": "w10p text-right"},
-                {title: "<?php echo lang("hours"); ?>", "class": "w10p text-right"},
+                {title: "<?php echo lang("worked"); ?>", "class": "w10p text-right"},
+                {title: "<?php echo lang("idle"); ?>", "class": "w10p text-right"},
+                {title: "<?php echo lang("lates"); ?>", "class": "w10p text-right"},
+                {title: "<?php echo lang("undertime"); ?>", "class": "w10p text-right"},
                 {title: "<?php echo lang("info"); ?>", "class": "text-center w50"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
@@ -28,7 +31,10 @@
             xlsColumns: [0, 2, 3, 5, 6, 7],
             summation: [
                 {column: 7, dataType: 'time'},
-                {column: 8, dataType: 'number'}
+                {column: 8, dataType: 'number'},
+                {column: 9, dataType: 'number'},
+                {column: 10, dataType: 'number'},
+                {column: 11, dataType: 'number'}
             ]
         });
     });

@@ -18,6 +18,7 @@ class Attendance extends MY_Controller {
         $this->init_permission_checker("attendance");
 
         $this->load->model("Attendance_model");
+        $this->load->model("Schedule_model");
     }
 
     //check ip restriction for none admin users
@@ -323,6 +324,53 @@ class Attendance extends MY_Controller {
             $duration  = convert_seconds_to_time_format(abs($to_time - $from_time));
         }
 
+        $worked = 0;
+        $nonworked = 0; 
+        $lates = 0; 
+        $under = 0;
+
+        if($sched_instance = $this->Schedule_model->get_details(array("id"=>$data->sched_id))) {
+            $start_time_sched = strtotime(convert_date_utc_to_local($data->in_time));
+            $out_time_sched = strtotime(convert_date_utc_to_local($data->out_time));
+
+            $sched_instance = $sched_instance->row();
+
+            $day_sched_name = convert_date_utc_to_local($data->in_time, 'D');
+            $curSched = unserialize($sched_instance->{strtolower($day_sched_name)});
+
+            $sched_day = convert_date_utc_to_local($data->in_time, 'Y-m-d');
+            $start_sched = strtotime(add_day_to_datetime($sched_day.' '.$curSched['in'], 0));
+
+            //Check first if PM yung IN and AM ito then next day na yung date.
+            $end_sched = strtotime(add_day_to_datetime($sched_day.' '.$curSched['out'], 0));
+            if (strpos($curSched['in'], 'PM') !== false && strpos($curSched['out'], 'AM') !== false) {
+                $end_sched = strtotime(add_day_to_datetime($end_sched, 1)); //ADD ONE DAY
+            }
+
+            //Get lates: x = diff_time(in_time, start_sched)
+            $lates = convert_seconds_to_hour_decimal(max(($start_time_sched-$start_sched), 0) );
+            $lates = number_format((float)($lates), 2, '.', '');
+
+            //Get undertime: y = diff_time(end_sched, out_time)
+            $under = convert_seconds_to_hour_decimal(max(($end_sched-$out_time_sched), 0) );
+            $under = number_format((float)($under), 2, '.', '');
+
+            //Get scheduled worked hours: z = diff_time(start_sched, end_sched) - 1 hour
+            $sched_hours = (convert_seconds_to_hour_decimal(max(($end_sched-$start_sched), 0)  ) - 1.00);
+            $sched_hours = number_format((float)$sched_hours, 2, '.', '');
+
+            //Get non worked hours: a = x+y
+            $nonworked = number_format((float)($lates+$under), 2, '.', '');
+
+            //Get the worked hours: b = z-a;
+            $worked = number_format((float)max($sched_hours-$nonworked, 0), 2, '.', '');
+            if($worked <= 0) {
+                $nonworked = number_format((float)(0), 2, '.', '');
+                $lates = number_format((float)(0), 2, '.', '');
+                $under = number_format((float)(0), 2, '.', '');
+            }
+        }
+
         return array(
             get_team_member_profile_link($data->user_id, $user),
             $data->in_time,
@@ -331,8 +379,8 @@ class Attendance extends MY_Controller {
             $out_time ? $out_time : 0,
             $out_time ? format_to_date($out_time) : "-",
             $out_time ? format_to_time($out_time) : "-",
-            convert_seconds_to_time_format(abs($to_time - $from_time)),
-            convert_seconds_to_hour_decimal(abs($to_time - $from_time)),
+            convert_seconds_to_time_format(abs($to_time - $from_time)), //json_encode($sched_instance)
+            $worked, $nonworked, $lates, $under,
             $info_link,
             $option_links
         );
