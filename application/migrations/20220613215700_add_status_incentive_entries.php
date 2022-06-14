@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); 
 
-class Migration_Add_status_contribution_entries extends CI_Migration { 
+class Migration_Add_status_incentive_entries extends CI_Migration { 
         
         public function up()
         {
@@ -17,6 +17,6 @@ class Migration_Add_status_contribution_entries extends CI_Migration {
 
         public function down()
         {
-                $this->dbforge->drop_column('incentive_entries', 'status');
+                //
         }
 }

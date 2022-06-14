@@ -17,6 +17,6 @@ class Migration_Add_status_contribution_entries extends CI_Migration {
 
         public function down()
         {
-                $this->dbforge->drop_column('contribution_entries', 'status');
+                //
         }
 }
