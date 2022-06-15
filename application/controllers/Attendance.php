@@ -354,15 +354,15 @@ class Attendance extends MY_Controller {
             $sched_end = strtotime($sched_end);
 
             //Get lates: x = diff_time(in_time, sched_start)
-            $lates = convert_seconds_to_hour_decimal( abs($time_from-$sched_start) );
+            $lates = convert_seconds_to_hour_decimal( max($time_from-$sched_start, 0) );
             $lates = convert_number_to_decimal($lates);
 
             //Get undertime: y = diff_time(sched_end, out_time)
-            $under = convert_seconds_to_hour_decimal( abs($sched_end-$time_to) );
+            $under = convert_seconds_to_hour_decimal( max($sched_end-$time_to, 0) );
             $under = convert_number_to_decimal($under);
-
-            //Get scheduled worked hours: z = diff_time(sched_start, sched_end) - 1 hour 
-            $sched_hours = convert_seconds_to_hour_decimal( abs($sched_end-$sched_start) );
+			
+			//Get scheduled worked hours: z = diff_time(sched_start, sched_end) - 1 hour 
+            $sched_hours = convert_seconds_to_hour_decimal( max($sched_end-$sched_start, 0) );
 
             //Get non worked hours: a = x+y
             $nonworked = convert_number_to_decimal( max(($lates+$under), 0) );
@@ -370,10 +370,11 @@ class Attendance extends MY_Controller {
             //Get the worked hours: b = z-a;
             $worked = convert_number_to_decimal( max(($hours_per_day-$nonworked), 0) );
 
-            $lunch_break = convert_number_to_decimal( max(($sched_hours-$hours_per_day), 0) );  
-            if($worked >= 6.00) { //6 hours entitle to excess lunch break = 1 hour
-                $worked -= 1.00;
-            }
+            //TODO: Only apply lunch break on hour greater than.
+            // $lunch_break = convert_number_to_decimal( max(($sched_hours-$hours_per_day), 0) );  
+            // if($worked >= 6.00) { //6 hours entitle to excess lunch break = 1 hour
+            //     $worked -= 1.00;
+            // }
 
             if($worked <= 0) {
                 $nonworked = '0.00';
@@ -388,12 +389,18 @@ class Attendance extends MY_Controller {
             $worked = convert_number_to_decimal( max($hours_per_day-$nonworked, 0) );
         }
 
-        if($actual <= 0) {
-            $worked = 'Invalid work time';
-            $worked = 'Invalid work time';
-            $nonworked = 'Invalid work time';
-            $lates = 'Invalid work time';
-            $under = 'Invalid work time';
+        if($out_time && $actual <= 0) {
+            $worked = 'Invalid';
+            $worked = 'Invalid';
+            $nonworked = 'Invalid';
+            $lates = 'Invalid';
+            $under = 'Invalid';
+        } else if(!$out_time && $actual <= 0) {
+            $worked = 'Pending';
+            $worked = 'Pending';
+            $nonworked = 'Pending';
+            $lates = 'Pending';
+            $under = 'Pending';
         }
 
         return array(
