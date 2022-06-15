@@ -66,6 +66,7 @@ class Attendance_model extends Crud_model {
     function get_details($options = array()) {
         $attendnace_table = $this->db->dbprefix('attendance');
         $users_table = $this->db->dbprefix('users');
+        $team_table = $this->db->dbprefix('team');
 
         $where = "";
         $id = get_array_value($options, "id");
@@ -110,7 +111,9 @@ class Attendance_model extends Crud_model {
             $where .= " AND $attendnace_table.status = 'incomplete'";
         }
 
-        $sql = "SELECT $attendnace_table.*,  CONCAT($users_table.first_name, ' ',$users_table.last_name) AS created_by_user, $users_table.image as created_by_avatar, $users_table.id as user_id, $users_table.job_title as user_job_title
+        $teams_lists = ", (SELECT GROUP_CONCAT($team_table.title) FROM $team_table WHERE FIND_IN_SET($attendnace_table.user_id, $team_table.heads) OR FIND_IN_SET($attendnace_table.user_id, $team_table.members) ) as team_list";
+
+        $sql = "SELECT $attendnace_table.*,  CONCAT($users_table.first_name, ' ',$users_table.last_name) AS created_by_user, $users_table.image as created_by_avatar, $users_table.id as user_id, $users_table.job_title as user_job_title $teams_lists 
         FROM $attendnace_table
         LEFT JOIN $users_table ON $users_table.id = $attendnace_table.user_id
         WHERE $attendnace_table.deleted=0 $where

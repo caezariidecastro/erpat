@@ -405,6 +405,7 @@ class Attendance extends MY_Controller {
 
         return array(
             get_team_member_profile_link($data->user_id, $user),
+            $data->team_list,
             $data->in_time,
             format_to_date($data->in_time),
             format_to_time($data->in_time),

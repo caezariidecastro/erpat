@@ -553,4 +553,4 @@ $lang["disable_access_help_message"] = "User will not be able to use the said mo
 $lang["worked"] = "Worked";
 $lang["idle"] = "Idle";
 $lang["lates"] = "Lates";
-$lang["undertime"] = "Undertime";
+$lang["undertime"] = "Under";
