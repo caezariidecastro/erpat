@@ -623,3 +623,26 @@ if (!function_exists('last_online_text')) {
     }
 
 }
+
+
+if (!function_exists('convert_to_standard')) {
+
+    function convert_to_standard($datetime, $totime = false, $format = "Y-m-d H:i:s") {
+        $date = new DateTime($datetime);
+
+        if($totime) {
+            return strtotime($date->format($format));
+        }
+        
+        return $date->format($format);
+    }
+    
+}
+
+if (!function_exists('convert_number_to_decimal')) {
+
+    function convert_number_to_decimal($number, $length = 2, $separator = '.') {
+        return number_format((float)($number), $length, $separator, '');
+    }
+    
+}
