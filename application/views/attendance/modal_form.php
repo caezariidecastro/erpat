@@ -20,6 +20,15 @@
             </div>
         </div>
 
+        <label for="current_schedule" class=" col-md-3 col-sm-3"><?php echo lang('current_schedule'); ?></label>
+        <div class="col-md-9 col-sm-9 form-group">
+            <div class="form-group">
+                <?php
+                    echo form_dropdown("sched_id", $sched_dropdown, $model_info->sched_id, "class='select2 validate-hidden' id='sched_id' ". "'");
+                ?>
+            </div>
+        </div>
+
         <label for="in_date" class=" col-md-3 col-sm-3"><?php echo lang('in_date'); ?></label>
         <div class="col-md-4 col-sm-4 form-group">
             <?php
@@ -130,7 +139,7 @@
                 $(".dataTable:visible").appTable({newData: result.data, dataId: result.id});
             }
         });
-        if ($("#attendance_user_id").length) {
+        if (!$("#attendance_user_id").length) {
             $("#attendance_user_id").select2();
         }
         setDatePicker("#in_date, #out_date");
@@ -138,5 +147,7 @@
         setTimePicker("#in_time, #out_time");
 
         $("#name").focus();
+
+        $("#attendance-form .select2").select2();
     });
 </script>

@@ -87,9 +87,24 @@ class Attendance extends MY_Controller {
 
             $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
         }
+        $view_data['sched_dropdown'] = $this->_get_schedule_dropdown();
 
         $this->load->view('attendance/modal_form', $view_data);
     }
+
+    //prepare the dropdown list of schedule
+    private function _get_schedule_dropdown() {
+        $sched_dropdown = array(
+            "" => '-',
+        );
+
+        $schedule = $this->Schedule_model->get_details()->result();
+        foreach ($schedule as $item) {
+            $sched_dropdown[$item->id] = $item->title;
+        }
+        return $sched_dropdown;
+    }
+
 
     //show attendance note modal
     function note_modal_form($user_id = 0) {
@@ -107,6 +122,7 @@ class Attendance extends MY_Controller {
     //add/edit attendance record
     function save() {
         $id = $this->input->post('id');
+        $sched_id = $this->input->post('sched_id');
 
         validate_submitted_data(array(
             "id" => "numeric",
@@ -149,8 +165,13 @@ class Attendance extends MY_Controller {
             $data["user_id"] = $user_id;
         }
 
-        $this->access_only_allowed_members($user_id);
+        if ($sched_id) {
+            $data['sched_id'] = $sched_id;
+        } else {
+            $data['sched_id'] = 0;
+        }
 
+        $this->access_only_allowed_members($user_id);
 
         $save_id = $this->Attendance_model->save($data, $id);
         if ($save_id) {
