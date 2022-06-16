@@ -623,9 +623,9 @@ class Dashboard extends MY_Controller {
         if (is_numeric($key)) {
 
             $widgets_title = $value;
-            $details_button = modal_anchor(get_uri("dashboard/view_custom_widget"), "<i class='fa fa-ellipsis-h'></i>", array("class" => "text-off pr10 pl10", "title" => lang('custom_widget_details'), "data-post-id" => $key));
+            $details_button = modal_anchor(get_uri("dashboard/view_custom_widget"), "<i class='fa fa-eye' style='color: darkslategrey;'></i>", array("class" => "text-off pr10 pl10", "title" => lang('custom_widget_details'), "data-post-id" => $key));
         } else {
-            $details_button = modal_anchor(get_uri("dashboard/view_default_widget"), "<i class='fa fa-ellipsis-h'></i>", array("class" => "text-off pr10 pl10", "title" => lang($key), "data-post-widget" => $key));
+            $details_button = modal_anchor(get_uri("dashboard/view_default_widget"), "<i class='fa fa-eye' style='color: darkslategrey;'></i>", array("class" => "text-off pr10 pl10", "title" => lang($key), "data-post-widget" => $key));
             $widgets_title = lang($key);
         }
 
