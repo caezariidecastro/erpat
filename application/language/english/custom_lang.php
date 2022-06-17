@@ -531,6 +531,7 @@ $lang["browse"] = "Browse";
 $lang["templates"] = "Templates";
 $lang["types"] = "Types";
 $lang["can_use_biometric"] = "Can use Syntry Biometrics";
+$lang["can_use_payroll"] = "Can use Payroll";
 
 $lang["emergency_contact"] = "Emergency Contact";
 $lang["contact_name"] = "Name";
@@ -548,6 +549,7 @@ $lang["delete_overtime"] = "Delete Overtime";
 
 $lang["access_erpat"] = "Access on ERPat";
 $lang["access_syntry"] = "Access on Syntry";
+$lang["access_payroll"] = "Access on ERPat";
 $lang["disable_access_help_message"] = "User will not be able to use the said module. This setting is overriden by Disable Login.";
 
 $lang["worked"] = "Worked";

@@ -354,6 +354,12 @@
                             ?>
                             <label for="module_fas"><?php echo lang("module_enable"); ?></label>
                         </div>
+                        <div>
+                            <?php
+                            echo form_checkbox("can_use_payroll", "1", $can_use_payroll ? true : false, "id='can_use_payroll'");
+                            ?>
+                            <label for="can_use_payroll"><?php echo lang("can_use_payroll"); ?></label>
+                        </div>
                         <h5><?php echo lang("can_access_expenses"); ?></h5>
                         <div>
                             <?php
