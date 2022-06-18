@@ -85,7 +85,7 @@ class roles extends MY_Controller {
             $view_data['can_delete_files'] = get_array_value($permissions, "can_delete_files");
 
             $view_data['can_use_biometric'] = get_array_value($permissions, "can_use_biometric");
-            $view_data['can_use_payroll'] = get_array_value($permissions, "can_use_payroll");
+            $view_data['can_use_payhp'] = get_array_value($permissions, "can_use_payhp");
             $view_data['can_view_team_members_contact_info'] = get_array_value($permissions, "can_view_team_members_contact_info");
             $view_data['can_view_team_members_social_links'] = get_array_value($permissions, "can_view_team_members_social_links");
             $view_data['team_member_update_permission'] = get_array_value($permissions, "team_member_update_permission");
@@ -211,7 +211,7 @@ class roles extends MY_Controller {
         $help_and_knowledge_base = $this->input->post('help_and_knowledge_base');
 
         $can_use_biometric = $this->input->post('can_use_biometric');
-        $can_use_payroll = $this->input->post('can_use_payroll');
+        $can_use_payhp = $this->input->post('can_use_payhp');
         $can_view_team_members_contact_info = $this->input->post('can_view_team_members_contact_info');
         $can_view_team_members_social_links = $this->input->post('can_view_team_members_social_links');
         $team_member_update_permission = $this->input->post('team_member_update_permission');
@@ -265,7 +265,7 @@ class roles extends MY_Controller {
             "can_delete_milestones" => $can_delete_milestones,
             "can_delete_files" => $can_delete_files,
             "can_use_biometric" => $can_use_biometric,
-            "can_use_payroll" => $can_use_payroll,
+            "can_use_payhp" => $can_use_payhp,
             "can_view_team_members_contact_info" => $can_view_team_members_contact_info,
             "can_view_team_members_social_links" => $can_view_team_members_social_links,
             "team_member_update_permission" => $team_member_update_permission,

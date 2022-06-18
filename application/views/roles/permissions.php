@@ -356,9 +356,9 @@
                         </div>
                         <div>
                             <?php
-                            echo form_checkbox("can_use_payroll", "1", $can_use_payroll ? true : false, "id='can_use_payroll'");
+                            echo form_checkbox("can_use_payhp", "1", $can_use_payhp ? true : false, "id='can_use_payhp'");
                             ?>
-                            <label for="can_use_payroll"><?php echo lang("can_use_payroll"); ?></label>
+                            <label for="can_use_payhp"><?php echo lang("can_use_payhp"); ?></label>
                         </div>
                         <h5><?php echo lang("can_access_expenses"); ?></h5>
                         <div>

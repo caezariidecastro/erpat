@@ -531,7 +531,7 @@ $lang["browse"] = "Browse";
 $lang["templates"] = "Templates";
 $lang["types"] = "Types";
 $lang["can_use_biometric"] = "Can use Syntry Biometrics";
-$lang["can_use_payroll"] = "Can use Payroll";
+$lang["can_use_payhp"] = "Can use PayHP";
 
 $lang["emergency_contact"] = "Emergency Contact";
 $lang["contact_name"] = "Name";
