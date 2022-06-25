@@ -13,7 +13,8 @@
             ],
             order: [[0, 'desc']],
             columns: [
-                {title: "<?php echo lang('name') ?> ", "class": "w20p"},
+                {title: "<?php echo lang('preview') ?>", "class": "w10 text-center"},
+                {title: "<?php echo lang('name') ?>", "class": "w20p"},
                 {title: "<?php echo lang('sku') ?>"},
                 {title: "<?php echo lang('unit') ?>"},
                 {title: "<?php echo lang('category') ?>"},

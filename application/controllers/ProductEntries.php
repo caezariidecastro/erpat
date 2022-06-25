@@ -107,7 +107,11 @@ class ProductEntries extends MY_Controller {
                         <ul class="dropdown-menu pull-right" role="menu">' . $add_bom . $add_material . $edit . $delete . '</ul>
                     </span>';
 
+        $image_url = "https://erpat.dev/assets/images/image.jpg";
+        $product_preview = "<span class='avatar avatar-s'><img src='$image_url' alt='...' style='border-radius: 5%;'></span>";
+
         return array(
+            $product_preview,
             $data->name,
             $data->sku,
             $data->unit_abbreviation,

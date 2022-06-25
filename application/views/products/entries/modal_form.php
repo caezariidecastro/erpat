@@ -61,7 +61,7 @@
             echo form_input(array(
                 "id" => "cost_price",
                 "name" => "cost_price",
-                "value" => $model_info ? $model_info->cost_price : "",
+                "value" => isset($model_info->cost_price) && (int)$model_info->cost_price > 0 ? $model_info->cost_price : "0",
                 "class" => "form-control",
                 "placeholder" => lang('cost_price'),
                 "type" => "number",
@@ -78,7 +78,7 @@
             echo form_input(array(
                 "id" => "selling_price",
                 "name" => "selling_price",
-                "value" => $model_info ? $model_info->selling_price : "",
+                "value" => isset($model_info->selling_price) && (int)$model_info->selling_price > 0 ? $model_info->selling_price : "0",
                 "class" => "form-control",
                 "placeholder" => lang('selling_price'),
                 "type" => "number",
