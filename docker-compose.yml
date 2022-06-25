@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  mariadb:
+    container_name: 'mariadb'
+    image: 'mariadb'
+    restart: 'always'
+    ports:
+      - 18766:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'erpat'
+      MYSQL_USER:  'admin' 
+      MYSQL_PASSWORD: 'admin'
+    volumes:
+      - './temp/mariadb:/var/lib/mysql'
+
+  phpmyadmin:
+    image: 'phpmyadmin'
+    restart: 'always'
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306 
+    ports:
+      - "8080:80"
+    depends_on:
+      - 'mariadb'
+
+  apache:
+    container_name: 'apache-php'
+    depends_on:
+      - mariadb
+    image: 'wordpress:latest'
+    ports:
+      - '8000:80'
+    volumes:
+      - "./:/var/www/html"
