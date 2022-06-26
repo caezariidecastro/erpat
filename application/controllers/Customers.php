@@ -83,6 +83,8 @@ class Customers extends MY_Controller {
         );
         
         if(!$id){
+            $customer_data["uuid"] = $this->uuid->v4();
+
             if ($this->Users_model->is_email_exists($email)) {
                 echo json_encode(array("success" => false, 'message' => lang('duplicate_email')));
                 exit();

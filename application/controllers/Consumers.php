@@ -99,8 +99,7 @@ class Consumers extends MY_Controller {
             validate_submitted_data(array(
                 "company_name" => "required"
             ));
-        }
-        else{
+        } else {
             $consumer_data["company"] = serialize(array(
                 "company_name" => $company_name,
                 "company_address" => $company_address,
@@ -111,6 +110,8 @@ class Consumers extends MY_Controller {
         }
 
         if(!$id){
+            $consumer_data["uuid"] = $this->uuid->v4();
+
             if ($this->Users_model->is_email_exists($email)) {
                 echo json_encode(array("success" => false, 'message' => lang('duplicate_email')));
                 exit();

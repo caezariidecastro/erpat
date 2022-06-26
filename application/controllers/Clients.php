@@ -822,6 +822,7 @@ class Clients extends MY_Controller {
 
         if (!$contact_id) {
             //inserting new contact. client_id is required
+            $user_data["uuid"] = $this->uuid->v4();
 
             validate_submitted_data(array(
                 "email" => "required|valid_email",
