@@ -75,6 +75,7 @@ $lang["submenu_sms_salesmatrix"] = "Sales Matrix";
 $lang["submenu_sms_customers"] = "Customers";
 $lang["submenu_sms_giftcard"] = "Gift Card - Todo!";
 $lang["submenu_sms_coupons"] = "Coupons - Todo!";
+$lang["submenu_sms_stores"] = "Stores";
 
 $lang["submenu_lms_delivery"] = "Delivery";
 $lang["submenu_lms_warehouse"] = "Warehouse";
