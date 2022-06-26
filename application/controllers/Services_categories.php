@@ -47,13 +47,13 @@ class Services_categories extends MY_Controller {
         $id = $this->input->post('id');
 
         $data = array(
-            "uuid" => $this->uuid->v4(),
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
             "created_at" => get_current_utc_time()
         );
 
         if(!$id){
+            $data["uuid"] = $this->uuid->v4();
             $data["created_by"] = $this->login_user->id;
         } else {
             $data["active"] = $this->input->post('active');
