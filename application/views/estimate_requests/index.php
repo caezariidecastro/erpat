@@ -1,7 +1,8 @@
-<div class="table-responsive">
+<div class="table-responsive" style="display: contents;">
     <table id="estimate-request-table" class="display" cellspacing="0" width="100%">            
     </table>
 </div>
+
 
 <script type="text/javascript">
     $(document).ready(function () {
