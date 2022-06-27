@@ -12,7 +12,7 @@
     </ul>
 
     <div class="panel panel-default">
-        <div class="table-responsive">
+        <div class="table-responsive" style="display: contents;">
             <table id="ticket-table" class="display" cellspacing="0" width="100%">            
             </table>
         </div>
