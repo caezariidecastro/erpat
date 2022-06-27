@@ -35,7 +35,7 @@ class Settings_model extends Crud_model {
         } else {
             $fields['type'] = $type;
             $this->db->where('setting_name', $setting_name);
-            $this->db->update($this->table, $fields);
+            return $this->db->update($this->table, $fields);
         }
     }
 

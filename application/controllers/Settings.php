@@ -479,8 +479,122 @@ class Settings extends MY_Controller {
         }
     }
 
+    function module_list() {
+        $list_data = array(
+           'timeline' => 'General',
+           'event' => 'General',
+           'todo' => 'General',
+           'note' => 'General',
+           'announcement' => 'General',
+           'message' => 'General',
+           'chat' => 'General',
+
+           'employee' => 'Human Resource',
+           'department' => 'Human Resource',
+           'attendance' => 'Human Resource',
+           'schedule' => 'Human Resource',
+           'overtime' => 'Human Resource',
+           'disciplinary' => 'Human Resource',
+           'leave' => 'Human Resource',
+           'holidays' => 'Human Resource',
+
+           'payroll' => 'HR Finance',
+           'contributions' => 'HR Finance',
+           'incentives' => 'HRFinance',
+
+           'summary' => 'Finance',
+           'payments' => 'Finance',
+           'expense' => 'Finance',
+           'accounts' => 'Finance',
+           'transfer' => 'Finance',
+           'balancesheet' => 'Finance',
+
+           'sales_matrix' => 'Sales Finance',
+           'invoice' => 'Sales Finance',
+           'customers' => 'Sales',
+           'consumer' => 'Sales',
+           'clients' => 'Sales', 
+           'services' => 'Sales',  
+
+           'estimate' => 'Sales Marketing',
+           'estimate_request' => 'Sales Marketing',
+
+           'lead' => 'Marketing',
+
+           'productions' => 'Productions',
+           'billofmaterials' => 'Productions',
+           'rawmaterials' => 'Productions',
+
+           'warehouse' => 'Warehouse',
+           'products' => 'Warehouse',
+           'inventory' => 'Warehouse',
+           'returns' => 'Warehouse',
+
+           'purchases' => 'Purchasing',
+           'supplier' => 'Purchasing',
+
+           'delivery' => 'Logistics',
+           'item_transfer' => 'Logistics',
+           'vehicles' => 'Logistics',
+           'driver' => 'Logistics',
+           
+           'assets' => 'Storage',
+           'asset_category' => 'Storage',
+           'location' => 'Storage',
+           'vendors' => 'Storage',
+           'brands' => 'Storage',
+
+           'allprojects' => 'Planning',
+           'mytask' => 'Planning',
+           'gantt' => 'Planning',
+           'project_timesheet' => 'Planning',
+
+           'ticket' => 'Support',
+           'help' => 'Support',
+
+           'pages' => 'Content',
+           'knowledge_base' => 'Content',
+        );
+        $result = array();
+        foreach ($list_data as $key => $val) {
+            $result[] = $this->make_module_row($key, $val);
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    function make_module_row($key, $val) {
+
+        if (strpos($key, 'module_') !== false) {
+            $key = str_replace("module_", "", $key);
+        }
+        
+        return array(
+            lang($key), //Name
+            $val, //Group
+            get_setting("module_$key") ? "Active" : "Inactive", 
+            js_anchor(
+                "<i class='fa fa-".( get_setting("module_$key")?"stop":"play" )."' style='color: ".( get_setting("module_$key")?"red":"green" ).";'></i>", 
+                array(
+                    'title' => lang('module_updated'), 
+                    "class" => "update", 
+                    "data-action-url" => get_uri("settings/save_module_status?key=module_$key&val=$val"), 
+                    "data-action" => "update",
+                    "data-reload-on-success" => "1"
+                )
+            )
+        );
+    }
+
     function modules() {
         $this->template->rander("settings/modules");
+    }
+
+    function save_module_status() {
+        $key = $this->input->get('key');
+        $val = $this->input->get('val');
+        $status = get_setting($key)?"0":"1";
+        $success = $this->Settings_model->save_setting($key, $status);
+        echo json_encode(array("success" => true, 'data' => $this->make_module_row($key, $val), 'message' => lang('settings_updated'))); 
     }
 
     function save_module_settings() {
@@ -488,25 +602,25 @@ class Settings extends MY_Controller {
         $settings = array(
             "module_timeline", "module_event", "module_todo", "module_note", "module_message", "module_chat", "module_announcement", 
         "module_hrs", 
-            "module_hrm_department", "module_hrm_employee", "module_attendance", "module_overtime", "module_hrm_disciplinary", "module_leave", "module_hrm_holidays",
+            "module_department", "module_employee", "module_attendance", "module_overtime", "module_disciplinary", "module_leave", "module_holidays",
         "module_fas", 
-            "module_fas_summary", "module_fas_payments", "module_expense", "module_fas_contributions", "module_fas_incentives", "module_fas_payroll", "module_fas_accounts", "module_fas_transfer", "module_fas_balancesheet",
+            "module_summary", "module_payments", "module_expense", "module_contributions", "module_incentives", "module_payroll", "module_accounts", "module_transfer", "module_balancesheet",
         "module_mes", 
-            "module_pid_productions", "module_pid_billofmaterials", "module_pid_rawmaterials", "module_pid_inventory", "module_pid_products", "module_pid_purchases", "module_pid_returns", "module_pid_supplier",
+            "module_productions", "module_billofmaterials", "module_rawmaterials", "module_inventory", "module_products", "module_purchases", "module_returns", "module_supplier",
         "module_mcs", 
             "module_lead",
         "module_lds", 
-            "module_lms_delivery", "module_lms_warehouse", "module_lms_transfer", "module_lms_vehicles", "module_lms_driver", "module_lms_consumer",
+            "module_delivery", "module_warehouse", "module_item_transfer", "module_vehicles", "module_driver", "module_consumer",
         "module_sms", 
-            "module_sms_pos", "module_sms_giftcard", "module_sms_coupons", "module_sms_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_sms_customers",
+            "module_pos", "module_giftcard", "module_coupons", "module_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_customers",
         "module_ams",
-            "module_assets", "module_ams_category", "module_ams_location", "module_vendors", "module_brands", 
+            "module_assets", "module_asset_category", "module_location", "module_vendors", "module_brands", 
         "module_pms", 
             "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 
         "module_css",  
             "module_ticket", "module_help", "module_knowledge_base",
     
-    );
+        );
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);

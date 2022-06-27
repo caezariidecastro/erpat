@@ -326,6 +326,8 @@ $lang["select_a_material"] = "Select a material to view";
 $lang["duplicate_material_error"] = "Material is already at the selected warehouse";
 
 // Production & Inventory > Bill of Materials
+$lang["rawmaterials"] = "Raw Materials";
+$lang["billofmaterials"] = "Bill of Materials";
 $lang["bill_of_material"] = "Bill of Material";
 $lang["bill_of_materials"] = "Bill of Materials";
 $lang["add_bill_of_material"] = "Add bill of material";
@@ -559,3 +561,13 @@ $lang["lates"] = "Lates";
 $lang["undertime"] = "Under";
 
 $lang["bill_to"] = "Bill to";
+$lang["balancesheet"] = "Balance Sheet";
+$lang["transfer"] = "Account Transfer";
+$lang["mytask"] = "My Task";
+$lang["allprojects"] = "All Projects";
+$lang["asset_category"] = "Asset Category";
+$lang["location"] = "Location";
+$lang["sales_matrix"] = "Sales Matrix";
+$lang["item_transfer"] = "Item Transfer";
+
+$lang["module_updated"] = "Module Updated";
