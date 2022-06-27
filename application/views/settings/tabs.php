@@ -63,7 +63,6 @@ if (get_setting("module_project_timesheet") == "1") {
 }
 
 $settings_menu["setup"][] = array("name" => "gdpr", "url" => "settings/gdpr");
-$settings_menu["setup"][] = array("name" => "pages", "url" => "pages");
 
 $settings_menu["setup"][] = array("name" => "left_menu", "url" => "left_menus");
 
