@@ -36,6 +36,7 @@
                         if ($submenu) {
                             echo "<ul>";
                             foreach ($submenu as $s_menu) {
+                                if (isset($s_menu["name"])) {
                                 $s_menu['is_custom_menu_item'] = isset($s_menu['is_custom_menu_item']) ? true:false;
 
                                 if(isset($s_menu['name']) && $main_menu['name'] == $s_menu['name'] && $s_menu['is_custom_menu_item']) {
@@ -51,6 +52,7 @@
                                     </a>
                                 </li>
                             <?php   
+                                }
                             }
                         echo "</ul>";
                     }
