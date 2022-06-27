@@ -56,7 +56,6 @@ $settings_menu["components"][] = array("name" => "email_title_smtp", "url" => "s
 $settings_menu["components"][] = array("name" => "imap_settings", "url" => "settings/imap_settings");
 
 $settings_menu["components"][] = array("name" => "payment_methods", "url" => "payment_methods");
-$settings_menu["components"][] = array("name" => "taxes", "url" => "taxes");
 $settings_menu["components"][] = array("name" => "projects", "url" => "settings/projects");
 
 if (get_setting("module_project_timesheet") == "1") {

@@ -329,6 +329,7 @@ class Left_menu {
                 $sidebar_menu["payroll"] = array("name" => "submenu_fas_payroll", "url" => "fas/payroll", "class" => "fa-circle");
                 $sidebar_menu["transfers"] = array("name" => "submenu_fas_transfers", "url" => "fas/transfers", "class" => "fa-circle");
                 $sidebar_menu["accounts"] = array("name" => "submenu_fas_accounts", "url" => "fas/accounts", "class" => "fa-circle");
+                $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
             }
 
             if (is_user_has_module_permission("module_mes")) {
