@@ -21,6 +21,7 @@ class Invoices extends MY_Controller {
         $this->load->model("Taxes_model");
         $this->load->model("Email_templates_model");
         $this->load->model("Verification_model");
+        $this->load->model("Inventory_item_entries_model");
     }
 
     function get_inventory_items_select2_data($warehouse_id = null) {
@@ -31,6 +32,22 @@ class Invoices extends MY_Controller {
         }
 
         echo json_encode($inventory_items_select2);
+    }
+
+    private function _get_customer_select2_data() {
+        $customer_list = array(array("id" => "", "text" => "-"));
+
+        $consumers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
+        foreach ($consumers as $value) {
+            $customer_list[] = array("id" => "user-".$value->id, "text" => "Customer: ".trim($value->first_name . " " . $value->last_name));
+        }
+
+        $clients = $this->Clients_model->get_all_where(array("deleted" => 0, "is_lead" => 0))->result();
+        foreach ($clients as $client) {
+            $customer_list[] = array("id" => $client->id, "text" => "Company: ".$client->company_name);
+        }
+
+        return $customer_list;
     }
 
     private function _get_consumer_select2_data() {
@@ -117,10 +134,12 @@ class Invoices extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric",
             "client_id" => "numeric",
+            //"consumer_id" => "numeric",
             "project_id" => "numeric"
         ));
 
         $client_id = $this->input->post('client_id');
+        $consumer_id = $this->input->post('consumer_id');
         $project_id = $this->input->post('project_id');
         $model_info = $this->Invoices_model->get_one($this->input->post('id'));
 
@@ -157,7 +176,6 @@ class Invoices extends MY_Controller {
 
         //make the drodown lists
         $view_data['taxes_dropdown'] = array("" => "-") + $this->Taxes_model->get_dropdown_list(array("title"));
-        $view_data['clients_dropdown'] = array("" => "-") + $this->Clients_model->get_dropdown_list(array("company_name"), "id", array("is_lead" => 0));
         $projects = $this->Projects_model->get_dropdown_list(array("title"), "id", array("client_id" => $project_client_id));
         $suggestion = array(array("id" => "", "text" => "-"));
         foreach ($projects as $key => $value) {
@@ -166,6 +184,7 @@ class Invoices extends MY_Controller {
         $view_data['projects_suggestion'] = $suggestion;
 
         $view_data['client_id'] = $client_id;
+        $view_data['consumer_id'] = "user-".$consumer_id;
         $view_data['project_id'] = $project_id;
 
 
@@ -178,8 +197,7 @@ class Invoices extends MY_Controller {
 
 
         $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("invoices", $model_info->id, $this->login_user->is_admin, $this->login_user->user_type)->result();
-        $view_data["consumer_dropdown"] = $this->_get_consumer_select2_data();
-        $view_data['clients_dropdown'] = $this->_get_clients_select2_data();
+        $view_data['billto_dropdown'] = $this->_get_customer_select2_data();
 
 
         $this->load->view('invoices/modal_form', $view_data);
@@ -209,12 +227,11 @@ class Invoices extends MY_Controller {
 
         validate_submitted_data(array(
             "id" => "numeric",
-            "invoice_client_id" => "required|numeric",
+            "invoice_client_id" => "required",
             "invoice_bill_date" => "required",
             "invoice_due_date" => "required"
         ));
-
-        $client_id = $this->input->post('invoice_client_id');
+        
         $id = $this->input->post('id');
 
         $target_path = get_setting("timeline_file_path");
@@ -226,13 +243,21 @@ class Invoices extends MY_Controller {
         $repeat_every = $this->input->post('repeat_every');
         $repeat_type = $this->input->post('repeat_type');
         $no_of_cycles = $this->input->post('no_of_cycles');
-        $type = $this->input->post('type');
 
+        $client_id = $this->input->post('invoice_client_id');
+        $project_id = 0;
+        $consumer_id = 0;
+        if (strpos($client_id, "user-") !== FALSE) {
+            $consumer_id = str_replace("user-", "", $client_id);
+            $client_id = 0;
+        } else {
+            $project_id = $this->input->post('invoice_project_id');
+        }        
 
         $invoice_data = array(
-            "client_id" => $type == "product" ? 0 : $client_id,
-            "consumer_id" => $type == "product" ? $client_id : NULL,
-            "project_id" => $this->input->post('invoice_project_id') ? $this->input->post('invoice_project_id') : 0,
+            "client_id" => $client_id,
+            "consumer_id" => $consumer_id,
+            "project_id" => $project_id,
             "bill_date" => $bill_date,
             "due_date" => $this->input->post('invoice_due_date'),
             "tax_id" => $this->input->post('tax_id') ? $this->input->post('tax_id') : 0,
@@ -243,8 +268,7 @@ class Invoices extends MY_Controller {
             "repeat_type" => $repeat_type ? $repeat_type : NULL,
             "no_of_cycles" => $no_of_cycles ? $no_of_cycles : 0,
             "note" => $this->input->post('invoice_note'),
-            "labels" => $this->input->post('labels'),
-            "type" => $type,
+            "labels" => $this->input->post('labels')
         );
 
         if ($id) {
@@ -552,8 +576,10 @@ class Invoices extends MY_Controller {
     //prepare options dropdown for invoices list
     private function _make_options_dropdown($data) {
         $invoice_id = $data->id;
+        $client_id = $data->client_id;
+        $consumer_id = $data->consumer_id;
 
-        $edit = '<li role="presentation">' . modal_anchor(get_uri("invoices/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit_invoice'), "data-post-id" => $invoice_id)) . '</li>';
+        $edit = '<li role="presentation">' . modal_anchor(get_uri("invoices/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit_invoice'), "data-post-id" => $invoice_id, "data-post-client_id" => $client_id, "data-post-consumer_id" => $consumer_id)) . '</li>';
 
         $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_invoice'), "class" => "delete", "data-id" => $invoice_id, "data-action-url" => get_uri("invoices/delete"), "data-action" => "delete-confirmation")) . '</li>';
 
@@ -700,7 +726,7 @@ class Invoices extends MY_Controller {
         $this->load->view('invoices/item_modal_form', $view_data);
     }
 
-    function add_delivery_item_modal_form() {
+    function product_modal_form() {
         if (!$this->can_edit_invoices()) {
             redirect("forbidden");
         }
@@ -713,9 +739,9 @@ class Invoices extends MY_Controller {
         $options = array("invoice_id" => $invoice_id);
         $view_data['delivery_info'] = $this->Deliveries_model->get_details($options)->row();
 
-        $view_data['model_info'] = $this->Invoice_items_model->get_one($this->input->post('id'));
+        $view_data['model_info'] = $this->Inventory_item_entries_model->get_one($this->input->post('id'));
         $view_data['invoice_id'] = $invoice_id;
-        $this->load->view('invoices/add_delivery_item_modal_form', $view_data);
+        $this->load->view('invoices/product_modal_form', $view_data);
     }
 
     /* add or edit an invoice item */
@@ -847,7 +873,7 @@ class Invoices extends MY_Controller {
         $actions = "";
 
         if($data->delivery_reference_no){
-            $actions = modal_anchor(get_uri("invoices/add_delivery_item_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-invoice_id" => $data->invoice_id, "data-post-id" => $data->id))
+            $actions = modal_anchor(get_uri("invoices/product_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-invoice_id" => $data->invoice_id, "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("invoices/delete_item"), "data-action" => "delete"));
         }
         else{

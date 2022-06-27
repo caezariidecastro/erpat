@@ -557,3 +557,5 @@ $lang["worked"] = "Worked";
 $lang["idle"] = "Idle";
 $lang["lates"] = "Lates";
 $lang["undertime"] = "Under";
+
+$lang["bill_to"] = "Bill to";

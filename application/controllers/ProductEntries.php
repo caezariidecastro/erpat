@@ -136,6 +136,7 @@ class ProductEntries extends MY_Controller {
 
         $item_data = array(
             "name" => $this->input->post('name'),
+            "description" => $this->input->post('description'),
             "sku" => $this->input->post('sku'),
             "unit" => $this->input->post('unit'),
             "category" => $this->input->post('category'),

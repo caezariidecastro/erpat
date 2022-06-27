@@ -35,7 +35,7 @@ class Inventory_model extends Crud_model {
             $item_query = "AND i.item_id = $inventory_table.item_id";
         }
 
-        $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, units.abbreviation AS unit_abbreviation, 
+        $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, inventory_items.`description` AS `description`, units.abbreviation AS unit_abbreviation, 
         COALESCE((
             SELECT SUM(inventory_stock_override.stock)
             FROM inventory_stock_override
@@ -138,6 +138,7 @@ class Inventory_model extends Crud_model {
         FROM $inventory_table
         LEFT JOIN users ON users.id = $inventory_table.created_by
         LEFT JOIN warehouses w ON w.id = $inventory_table.warehouse
+        LEFT JOIN inventory_items ON inventory_items.id = $inventory_table.item_id
         LEFT JOIN units ON units.id = $inventory_table.unit
         WHERE $inventory_table.deleted=0 $where";
         return $this->db->query($sql);

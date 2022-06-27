@@ -25,6 +25,21 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="invoice_item_description" class="col-md-3"><?php echo lang('description'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_textarea(array(
+                "id" => "invoice_item_description",
+                "name" => "invoice_item_description",
+                "value" => $model_info->description ? $model_info->description : "",
+                "class" => "form-control",
+                "placeholder" => lang('description'),
+                "data-rich-text-editor" => true
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="invoice_item_quantity" class=" col-md-3"><?php echo lang('quantity'); ?></label>
         <div class="col-md-9">
             <?php
@@ -112,13 +127,14 @@
                     $('#inventory_id').val(inventory_id);
         
                     $.ajax({
-                        url: "<?php echo get_uri("inventory/get_inventory"); ?>",
+                        url: "<?php echo get_uri("mes/ProductInventory/get_inventory"); ?>",
                         data: {id: inventory_id},
                         cache: false,
                         type: 'POST',
                         dataType: "json",
                         success: function (response) {
                             if (response && response.success) {
+                                $("#invoice_item_description").val(response.inventory_info.description);
                                 $("#invoice_unit_type").val(response.inventory_info.unit_abbreviation);
                                 $("#invoice_item_rate").val(response.inventory_info.selling_price);
                             }

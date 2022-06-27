@@ -5,12 +5,12 @@ class Inventory_item_entries_model extends Crud_model {
     private $table = null;
 
     function __construct() {
-        $this->table = 'inventory_items';
+        $this->table = $this->db->dbprefix('inventory_items');
         parent::__construct($this->table);
     }
 
     function get_details($options = array()) {
-        $inventory_items_table = $this->db->dbprefix('inventory_items');
+        $inventory_items_table = $this->table;
         $where = "";
         $id = get_array_value($options, "id");
         $category = get_array_value($options, "category");

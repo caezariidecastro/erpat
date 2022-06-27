@@ -1,22 +1,12 @@
 <!-- WORKAROUND -->
 
 <?php
-    $bill_type_lang = "";
-    $cost_type_lang = "";
-    $add_bill_type_lang = "";
-    
-    if($invoice_info->client_id){
-        $bill_type_lang = lang("service");
-        $cost_type_lang = lang("rate");
-        $add_bill_type_lang = modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-invoice_id" => $invoice_info->id));
-    }
+    $bill_type_lang = lang("item");
+    $cost_type_lang = lang("rate");
 
-    if($invoice_info->consumer_id){
-        $bill_type_lang = lang("product");
-        $cost_type_lang = lang("amount");
-        $add_bill_type_lang = modal_anchor(get_uri("invoices/add_delivery_item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_product'), array("class" => "btn btn-default", "title" => lang('add_product'), "data-post-invoice_id" => $invoice_info->id));
-    }
+    $add_service_button = modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-invoice_id" => $invoice_info->id));
 
+    $add_product_button = modal_anchor(get_uri("invoices/product_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_product'), array("class" => "btn btn-default", "title" => lang('add_product'), "data-post-invoice_id" => $invoice_info->id));
 ?>
 
 <div id="page-content" class="clearfix">
@@ -67,7 +57,8 @@
                     </ul>
                 </span>
                 <?php if ($invoice_status !== "cancelled" && $can_edit_invoices) { ?>
-                    <?php echo $add_bill_type_lang; ?>
+                    <?php echo $add_service_button; ?>
+                    <?php echo $add_product_button; ?>
                     <?php echo modal_anchor(get_uri("invoice_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("class" => "btn btn-default", "title" => lang('add_payment'), "data-post-invoice_id" => $invoice_info->id)); ?>
                 <?php } ?>
             </div>
