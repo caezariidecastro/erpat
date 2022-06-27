@@ -12,7 +12,7 @@ class Lead_status extends MY_Controller {
     }
 
     function index() {
-        $this->template->rander("lead_source/index");
+        $this->template->rander("lead_status/index");
     }
 
     function modal_form() {
