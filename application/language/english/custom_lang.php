@@ -552,7 +552,9 @@ $lang["delete_overtime"] = "Delete Overtime";
 
 $lang["access_erpat"] = "Access on ERPat";
 $lang["access_syntry"] = "Access on Syntry";
-$lang["access_payroll"] = "Access on ERPat";
+$lang["access_madage"] = "Access on MadAge";
+$lang["access_galyon"] = "Access on Galyon";
+$lang["access_payroll"] = "Access on PayHP";
 $lang["disable_access_help_message"] = "User will not be able to use the said module. This setting is overriden by Disable Login.";
 
 $lang["worked"] = "Worked";

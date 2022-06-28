@@ -113,6 +113,26 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="access_madage" class="col-md-2"><?php echo lang('access_madage'); ?></label>
+                    <div class="col-md-10">
+                        <?php
+                        echo form_checkbox("access_madage", "1", $user_info->access_madage ? true : false, "id='access_madage' class='ml15'");
+                        ?>
+                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_madage ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="access_galyon" class="col-md-2"><?php echo lang('access_galyon'); ?></label>
+                    <div class="col-md-10">
+                        <?php
+                        echo form_checkbox("access_galyon", "1", $user_info->access_galyon ? true : false, "id='access_galyon' class='ml15'");
+                        ?>
+                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_galyon ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="user_status" class="col-md-2"><?php echo lang('mark_as_inactive'); ?></label>
                     <div class="col-md-10">
                         <?php

@@ -294,6 +294,7 @@ class Team_members extends MY_Controller {
             "disable_login" => $this->input->post('login'),
             "access_erpat" => $this->input->post('erpat'),
             "access_syntry" => $this->input->post('syntry'),
+            "access_galyon" => $this->input->post('galyon'),
             "status" => $this->input->post('status'),
         );
         if( $this->input->post('role') == "admin") {
@@ -944,6 +945,8 @@ class Team_members extends MY_Controller {
             $account_data['disable_login'] = $this->input->post('disable_login');
             $account_data['access_erpat'] = $this->input->post('access_erpat');
             $account_data['access_syntry'] = $this->input->post('access_syntry');
+            $account_data['access_madage'] = $this->input->post('access_madage');
+            $account_data['access_galyon'] = $this->input->post('access_galyon');
             $account_data['status'] = $this->input->post('status') === "inactive" ? "inactive" : "active";
         }
 
