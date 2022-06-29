@@ -847,7 +847,7 @@ if (!function_exists('get_language_list')) {
         if (is_dir($dir)) {
             if ($dh = opendir($dir)) {
                 while (($file = readdir($dh)) !== false) {
-                    if ($file && $file != "." && $file != ".." && $file != "index.html") {
+                    if ($file && $file != "." && $file != ".." && $file != "index.html" && $file === "english") {
                         $language_dropdown[$file] = ucfirst($file);
                     }
                 }

@@ -109,7 +109,7 @@ class Google_calendar {
         $url = get_uri("google_api/save_access_token_of_calendar");
 
         $client = new Google_Client();
-        $client->setApplicationName(get_setting('app_title'));
+        $client->setApplicationName(get_setting('site_title'));
         $client->setRedirectUri($url);
         $client->setAccessType("offline");
         $client->setPrompt('select_account consent');

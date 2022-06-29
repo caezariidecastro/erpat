@@ -10,7 +10,9 @@
         <div class="col-sm-9 col-lg-10">
             <?php echo form_open(get_uri("settings/save_ticket_settings"), array("id" => "ticket-settings-form", "class" => "general-form dashed-row", "role" => "form")); ?>
                 <div class="panel">
-
+                    <div class="panel-default panel-heading">
+                        <h4><?php echo lang("tickets") ?></h4>
+                    </div>
                     <div class="panel-body">
                         <div class="form-group">
                             <label for="show_recent_ticket_comments_at_the_top" class="col-md-4 col-xs-8 col-sm-4"><?php echo lang('show_most_recent_ticket_comments_at_the_top'); ?></label>

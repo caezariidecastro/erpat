@@ -573,3 +573,8 @@ $lang["sales_matrix"] = "Sales Matrix";
 $lang["item_transfer"] = "Item Transfer";
 
 $lang["module_updated"] = "Module Updated";
+$lang["system"] = "System";
+$lang["calendar"] = "Calendar";
+$lang["site_title"] = "Site Title";
+$lang["customization"] = "Customization";
+$lang["display"] = "Display";

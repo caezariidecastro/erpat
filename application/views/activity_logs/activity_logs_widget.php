@@ -32,7 +32,7 @@ foreach ($activity_logs as $log) {
                     } else if ($log->action === "github_notification_received") {
                         echo "<strong>GitHub</strong>";
                     } else {
-                        echo "<strong>" . get_setting("app_title") . "</strong>";
+                        echo "<strong>" . get_setting("site_title") . "</strong>";
                     }
                     ?>
                     <small><span class="text-off"><?php echo format_to_relative_time($log->created_at); ?></span></small>

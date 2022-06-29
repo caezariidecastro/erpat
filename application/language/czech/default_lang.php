@@ -232,7 +232,7 @@ $lang["all_team_clients"] = "Všichni klienti";
 
 /* settings */
 $lang["app_settings"] = "Nastavení aplikace";
-$lang["app_title"] = "Název aplikace";
+$lang["site_title"] = "Název aplikace";
 $lang["site_logo"] = "Logo stránky";
 $lang["invoice_logo"] = "Fakturační logo";
 $lang["timezone"] = "Časové pásmo";

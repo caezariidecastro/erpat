@@ -232,7 +232,7 @@ $lang["all_team_clients"] = "Tous les clients";
 
 /* settings */
 $lang["app_settings"] = "Paramètres de l'application";
-$lang["app_title"] = "Titre de l'application";
+$lang["site_title"] = "Titre de l'application";
 $lang["site_logo"] = "Logo du site";
 $lang["invoice_logo"] = "Logo des factures";
 $lang["timezone"] = "Fuseau horaire";

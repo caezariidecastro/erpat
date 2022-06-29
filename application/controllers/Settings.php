@@ -8,6 +8,7 @@ class Settings extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
+        $this->load->model("Estimates_model");
         $this->load->model("Invoices_model");
         $this->load->model("Estimates_model");
     }
@@ -17,20 +18,12 @@ class Settings extends MY_Controller {
     }
 
     function general() {
-        $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
-        $view_data['timezone_dropdown'] = array();
-        foreach ($tzlist as $zone) {
-            $view_data['timezone_dropdown'][$zone] = $zone;
-        }
-
         $view_data['language_dropdown'] = get_language_list();
-
-        $view_data["currency_dropdown"] = get_international_currency_code_dropdown();
         $this->template->rander("settings/general", $view_data);
     }
 
     function save_general_settings() {
-        $settings = array("site_logo", "favicon", "show_background_image_in_signin_page", "show_logo_in_signin_page", "app_title", "language", "timezone", "date_format", "time_format", "first_day_of_week", "weekends", "default_currency", "currency_symbol", "currency_position", "decimal_separator", "no_of_decimals", "accepted_file_formats", "rows_per_page", "scrollbar", "enable_rich_text_editor", "rtl", "show_theme_color_changer", "default_theme_color");
+        $settings = array("site_logo", "favicon", "show_background_image_in_signin_page", "show_logo_in_signin_page", "site_title", "language");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);
@@ -52,12 +45,7 @@ class Settings extends MY_Controller {
                 }
 
 
-                $this->Settings_model->save_setting($setting, $value);
-            }
-
-            //save empty value too for weekends
-            if ($setting === "weekends") {
-                $this->Settings_model->save_setting($setting, $value);
+                $this->Settings_model->save_setting($setting, $value, 'general');
             }
         }
 
@@ -67,7 +55,7 @@ class Settings extends MY_Controller {
         $sigin_page_background = get_array_value($unserialize_files_data, 0);
         if ($sigin_page_background) {
             delete_app_files(get_setting("system_file_path"), get_system_files_setting_value("signin_page_background"));
-            $this->Settings_model->save_setting("signin_page_background", serialize($sigin_page_background));
+            $this->Settings_model->save_setting("signin_page_background", serialize($sigin_page_background), 'general');
         }
 
         if ($_FILES) {
@@ -77,11 +65,68 @@ class Settings extends MY_Controller {
                 $site_logo = serialize(move_temp_file("site-logo.png", get_setting("system_file_path")));
                 //delete old file
                 delete_app_files(get_setting("system_file_path"), get_system_files_setting_value("site_logo"));
-                $this->Settings_model->save_setting("site_logo", $site_logo);
+                $this->Settings_model->save_setting("site_logo", $site_logo, 'general');
             }
         }
 
         echo json_encode(array("success" => true, 'message' => lang('settings_updated'), 'reload_page' => $sigin_page_background));
+    }
+
+    function display() {
+        $this->template->rander("settings/display");
+    }
+
+    function save_display_settings() {
+        $settings = array("rows_per_page", "scrollbar", "enable_rich_text_editor", "rtl", "show_theme_color_changer", "default_theme_color", "accepted_file_formats");
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if ($value || $value === "0") {
+                $this->Settings_model->save_setting($setting, $value, 'display');
+            }
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
+    function calendar() {
+        $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+        $view_data['timezone_dropdown'] = array();
+        foreach ($tzlist as $zone) {
+            $view_data['timezone_dropdown'][$zone] = $zone;
+        }
+
+        $this->template->rander("settings/calendar", $view_data);
+    }
+
+    function save_calendar_settings() {
+        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends");
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if ($value || $value === "0") {
+                $this->Settings_model->save_setting($setting, $value, 'calendar');
+            }
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
+    function finance() {
+        $view_data["currency_dropdown"] = get_international_currency_code_dropdown();
+        $this->template->rander("settings/finance", $view_data);
+    }
+
+    function save_finance_settings() {
+        $settings = array("default_currency", "currency_symbol", "currency_position", "decimal_separator", "no_of_decimals");
+
+        foreach ($settings as $setting) {
+            foreach ($settings as $setting) {
+                $value = $this->input->post($setting);
+                if ($value || $value === "0") {
+                    $this->Settings_model->save_setting($setting, $value, 'finance');
+                }
+            }
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
     }
 
     function company() {
@@ -92,7 +137,7 @@ class Settings extends MY_Controller {
         $settings = array("company_name", "company_address", "company_phone", "company_email", "company_website", "company_vat_number");
 
         foreach ($settings as $setting) {
-            $this->Settings_model->save_setting($setting, $this->input->post($setting));
+            $this->Settings_model->save_setting($setting, $this->input->post($setting), 'company');
         }
         echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
     }

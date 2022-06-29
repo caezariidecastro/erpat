@@ -464,7 +464,7 @@ if (!function_exists('send_notification_emails')) {
         }
 
 
-        $parser_data["APP_TITLE"] = get_setting("app_title");
+        $parser_data["APP_TITLE"] = get_setting("site_title");
         $parser_data["COMPANY_NAME"] = get_setting("company_name");
 
         $notification_multiple_tasks_user_wise = get_array_value($extra_data, "notification_multiple_tasks_user_wise");
@@ -707,7 +707,7 @@ if (!function_exists('send_push_notifications')) {
 
             $data = array(
                 "message" => $message,
-                "title" => $user_id ? $user_info->first_name . " " . $user_info->last_name : get_setting('app_title'),
+                "title" => $user_id ? $user_info->first_name . " " . $user_info->last_name : get_setting('site_title'),
                 "icon" => get_avatar($user_id ? $user_info->image : "system_bot"),
                 "notification_id" => $notification_id,
                 "url_attributes" => $url_attributes
@@ -854,7 +854,7 @@ if (!function_exists('send_slack_notification')) {
             }
 
             $user_info = $ci->Users_model->get_one($user_id);
-            $title = $user_id ? ($user_info->first_name . " " . $user_info->last_name) : get_setting('app_title');
+            $title = $user_id ? ($user_info->first_name . " " . $user_info->last_name) : get_setting('site_title');
             $avatar = get_avatar($user_id ? $user_info->image : "system_bot");
 
             $data = array(

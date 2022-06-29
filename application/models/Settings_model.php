@@ -21,19 +21,20 @@ class Settings_model extends Crud_model {
         }
     }
 
-    function save_setting($setting_name, $setting_value, $type = "app") {
+    function save_setting($setting_name, $setting_value, $type = false) {
         $fields = array(
             'setting_name' => $setting_name,
-            'setting_value' => $setting_value
+            'setting_value' => $setting_value,
         );
+
+        if( $type  ) {
+            $fields['type'] = $type;
+        }
 
         $exists = $this->get_setting($setting_name);
         if ($exists === NULL) {
-            $fields["type"] = $type; //type can't be updated
-
             return $this->db->insert($this->table, $fields);
         } else {
-            $fields['type'] = $type;
             $this->db->where('setting_name', $setting_name);
             return $this->db->update($this->table, $fields);
         }
@@ -45,7 +46,7 @@ class Settings_model extends Crud_model {
         $settings_table = $this->table;
         $sql = "SELECT $settings_table.setting_name,  $settings_table.setting_value
         FROM $settings_table
-        WHERE $settings_table.deleted=0 AND ($settings_table.type = 'app' OR ($settings_table.type ='user' AND $settings_table.setting_name LIKE 'user_" . $user_id . "_%'))";
+        WHERE $settings_table.deleted=0 AND ($settings_table.type != 'user' OR ($settings_table.type ='user' AND $settings_table.setting_name LIKE 'user_" . $user_id . "_%'))";
         return $this->db->query($sql);
     }
 

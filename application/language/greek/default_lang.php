@@ -232,7 +232,7 @@ $lang["all_team_clients"] = "Όλοι οι πελάτες";
 
 /* settings */
 $lang["app_settings"] = "Ρυθμίσεις Εφαρμογής";
-$lang["app_title"] = "Τίτλος Εφαρμογής";
+$lang["site_title"] = "Τίτλος Εφαρμογής";
 $lang["site_logo"] = "Λογότυπο Ιστοσελίδας";
 $lang["invoice_logo"] = "Λογότυπο Τιμολογίων";
 $lang["timezone"] = "Ζώνη Ώρας";

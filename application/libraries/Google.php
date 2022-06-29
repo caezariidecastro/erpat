@@ -73,7 +73,7 @@ class Google {
         }
 
         //create parent folder
-        $this->_create_folder(get_setting('app_title'), "parent");
+        $this->_create_folder(get_setting('site_title'), "parent");
     }
 
     //check a folder if it exists of not
@@ -181,7 +181,7 @@ class Google {
                         'uploadType' => 'multipart',
                         'fields' => 'id'));
                 } else {
-                    $this->_create_folder(get_setting('app_title'), "parent");
+                    $this->_create_folder(get_setting('site_title'), "parent");
                 }
             }
 
@@ -285,7 +285,7 @@ class Google {
         $url = get_uri("google_api/save_access_token");
 
         $client = new Google_Client();
-        $client->setApplicationName(get_setting('app_title'));
+        $client->setApplicationName(get_setting('site_title'));
         $client->setRedirectUri($url);
         $client->setClientId(get_setting('google_drive_client_id'));
         $client->setClientSecret(get_setting('google_drive_client_secret'));
