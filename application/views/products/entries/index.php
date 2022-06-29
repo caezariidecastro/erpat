@@ -18,6 +18,7 @@
                 {title: "<?php echo lang('sku') ?>"},
                 {title: "<?php echo lang('unit') ?>"},
                 {title: "<?php echo lang('category') ?>"},
+                {title: "<?php echo lang('brand') ?>"},
                 {title: "<?php echo lang('cost_price') ?>"},
                 {title: "<?php echo lang('selling_price') ?>"},
                 {title: "<?php echo lang('supplier') ?>"},

@@ -15,6 +15,14 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="brand" class="col-md-3"><?php echo lang('brand'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_dropdown("brand", $brand_dropdown, $model_info ? $model_info->brand : "", "class='select2 validate-hidden' id='brand' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="name" class="col-md-3"><?php echo lang('name'); ?></label>
         <div class=" col-md-9">
             <?php

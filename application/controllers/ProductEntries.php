@@ -9,6 +9,7 @@ class ProductEntries extends MY_Controller {
         parent::__construct();
         $this->load->model("Inventory_item_entries_model");
         $this->load->model("Inventory_item_categories_model");
+        $this->load->model("Inventory_item_brands_model");
         $this->load->model("Units_model");
         $this->load->model("Vendors_model");
     }
@@ -21,6 +22,16 @@ class ProductEntries extends MY_Controller {
             $category_dropdown[$group->id] = $group->title;
         }
         return $category_dropdown;
+    }
+
+    protected function _get_brand_dropdown_data() {
+        $Inventory_item_brands = $this->Inventory_item_brands_model->get_all()->result();
+        $brand_dropdown = array('' => '-');
+
+        foreach ($Inventory_item_brands as $group) {
+            $brand_dropdown[$group->id] = $group->name;
+        }
+        return $brand_dropdown;
     }
 
     protected function _get_units_dropdown_data() {
@@ -53,6 +64,16 @@ class ProductEntries extends MY_Controller {
         return $category_select2;
     }
 
+    protected function _get_brand_select2_data() {
+        $inventory_item_brands = $this->Inventory_item_brands_model->get_all()->result();
+        $brands_select2 = array(array('id' => '', 'text'  => '- Brands -'));
+
+        foreach ($inventory_item_brands as $group) {
+            $brands_select2[] = array('id' => $group->id, 'text' => $group->title) ;
+        }
+        return $brands_select2;
+    }
+
     protected function _get_vendor_select2_data($status = null) {
         $vendors = $this->Vendors_model->get_details(array("status" => $status))->result();
         $vendor_select2 = array(array('id' => '', 'text'  => '- '.lang('suppliers').' -'));
@@ -66,6 +87,7 @@ class ProductEntries extends MY_Controller {
     function index(){
         $this->validate_user_module_permission("module_mes");
         $view_data['category_select2'] = $this->_get_category_select2_data();
+        $view_data['brand_select2'] = $this->_get_brand_select2_data();
         $view_data['vendor_select2'] = $this->_get_vendor_select2_data();
         $this->template->rander("products/index", $view_data);
     }
@@ -116,6 +138,7 @@ class ProductEntries extends MY_Controller {
             $data->sku,
             $data->unit_abbreviation,
             $data->category_name,
+            $data->brand_name,
             number_with_decimal($data->cost_price),
             number_with_decimal($data->selling_price),
             get_supplier_contact_link($data->vendor, $data->vendor_name),
@@ -140,6 +163,7 @@ class ProductEntries extends MY_Controller {
             "sku" => $this->input->post('sku'),
             "unit" => $this->input->post('unit'),
             "category" => $this->input->post('category'),
+            "brand" => $this->input->post('brand'),
             "cost_price" => $this->input->post('cost_price'),
             "selling_price" => $this->input->post('selling_price'),
             "vendor" => $this->input->post('vendor'),
@@ -169,6 +193,7 @@ class ProductEntries extends MY_Controller {
 
         $view_data['model_info'] = $this->Inventory_item_entries_model->get_one($id);
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
+        $view_data['brand_dropdown'] = $this->_get_brand_dropdown_data();
         $view_data['units_dropdown'] = $this->_get_units_dropdown_data();
         $view_data['vendor_dropdown'] = $this->_get_vendor_dropdown_data($id ? "" : "active");
 

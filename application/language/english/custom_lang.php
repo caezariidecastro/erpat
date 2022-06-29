@@ -604,3 +604,5 @@ $lang["package_rate"] = "Per Atrribute Rate";
 $lang["tax_applied"] = "Tax Applied";
 $lang["delivery_verification"] = "Delivery Verification";
 $lang["optional"] = "Optional";
+
+$lang["add_brands"] = "Add Brand";

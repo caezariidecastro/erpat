@@ -730,6 +730,11 @@ if (!function_exists('get_team_member_profile_link')) {
 
     function get_team_member_profile_link($id = 0, $name = "", $attributes = array()) {
         $ci = get_instance();
+
+        if( !$id ) {
+            return "None";
+        }
+
         if ($ci->login_user->user_type === "staff") {
             return anchor("hrs/employee/view/" . $id, $name, $attributes);
         } else {
