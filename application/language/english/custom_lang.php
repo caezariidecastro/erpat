@@ -578,3 +578,13 @@ $lang["calendar"] = "Calendar";
 $lang["site_title"] = "Site Title";
 $lang["customization"] = "Customization";
 $lang["display"] = "Display";
+$lang["apis"] = "API's";
+
+$lang["syntry"] = "Web App";
+$lang["makeid"] = "Windows";
+$lang["payhp"] = "Website";
+$lang["galyon_app"] = "Mobile App";
+$lang["galyon_web"] = "Website";
+
+$lang["manage_apis"] = "Manage API's";
+$lang["api_settings_instructions"] = "Select the api you want to enable/disable.";

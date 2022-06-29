@@ -524,6 +524,56 @@ class Settings extends MY_Controller {
         }
     }
 
+    function apis_list() {
+        $list_data = array(
+           'syntry' => 'Syntry',
+           'makeid' => 'MakeID',
+           'payhp' => 'PayHP',
+           'galyon_app' => 'Galyon',
+           'galyon_web' => 'Galyon',
+        );
+        $result = array();
+        foreach ($list_data as $key => $val) {
+            $result[] = $this->make_apis_row($key, $val);
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    function make_apis_row($key, $val) {
+
+        if (strpos($key, 'apis_') !== false) {
+            $key = str_replace("apis_", "", $key);
+        }
+        
+        return array(
+            lang($key), //Name
+            $val, //Group
+            get_setting("apis_$key") ? "Active" : "Inactive", 
+            js_anchor(
+                "<i class='fa fa-".( get_setting("apis_$key")?"stop":"play" )."' style='color: ".( get_setting("apis_$key")?"red":"green" ).";'></i>", 
+                array(
+                    'title' => lang('apis_updated'), 
+                    "class" => "update", 
+                    "data-action-url" => get_uri("settings/save_module_status?key=apis_$key&val=$val"), 
+                    "data-action" => "update",
+                    "data-reload-on-success" => "1"
+                )
+            )
+        );
+    }
+
+    function apis() {
+        $this->template->rander("settings/apis");
+    }
+
+    function save_apis_status() {
+        $key = $this->input->get('key');
+        $val = $this->input->get('val');
+        $status = get_setting($key)?"0":"1";
+        $success = $this->Settings_model->save_setting($key, $status, 'apis');
+        echo json_encode(array("success" => true, 'data' => $this->make_apis_row($key, $val), 'message' => lang('settings_updated'))); 
+    }
+
     function module_list() {
         $list_data = array(
            'timeline' => 'General',
@@ -638,7 +688,7 @@ class Settings extends MY_Controller {
         $key = $this->input->get('key');
         $val = $this->input->get('val');
         $status = get_setting($key)?"0":"1";
-        $success = $this->Settings_model->save_setting($key, $status);
+        $success = $this->Settings_model->save_setting($key, $status, 'modules');
         echo json_encode(array("success" => true, 'data' => $this->make_module_row($key, $val), 'message' => lang('settings_updated'))); 
     }
 

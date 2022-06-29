@@ -17,6 +17,7 @@ $settings_menu = array(
         array("name" => "notifications", "url" => "settings/notifications"),
     ),
     "maintainance" => array(
+        array("name" => "apis", "url" => "settings/apis"),
         array("name" => "modules", "url" => "settings/modules"),
         array("name" => "migrate_database", "url" => "database"),
         array("name" => "check_fix", "url" => "check_fix")
