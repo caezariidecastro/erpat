@@ -40,6 +40,7 @@ $settings_menu = array(
         array("name" => "integration", "url" => "settings/integration"),
         array("name" => "imap_settings", "url" => "settings/imap_settings"),
         array("name" => "payment_methods", "url" => "payment_methods"),
+        array("name" => "shipping_option", "url" => "settings/shipping_option"),
     ),
 );
 

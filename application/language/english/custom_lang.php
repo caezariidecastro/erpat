@@ -588,3 +588,19 @@ $lang["galyon_web"] = "Website";
 
 $lang["manage_apis"] = "Manage API's";
 $lang["api_settings_instructions"] = "Select the api you want to enable/disable.";
+
+$lang["shipping_option"] = "Shipping Option";
+$lang["minimum_order"] = "Minimum Order";
+$lang["base_delivery_fee"] = "Base Delivery Fee";
+$lang["free_shipping_amount"] = "Free Shipping Amount";
+$lang["shipping_computation"] = "Shipping Computation";
+$lang["fixed"] = "Fixed Amount";
+$lang["distance"] = "Base on Distance";
+$lang["package"] = "Base on Package Attributes";
+
+$lang["fixed_amount"] = "Fixed Amount Fee";
+$lang["distance_rate"] = "Per Kilometer Rate";
+$lang["package_rate"] = "Per Atrribute Rate";
+$lang["tax_applied"] = "Tax Applied";
+$lang["delivery_verification"] = "Delivery Verification";
+$lang["optional"] = "Optional";

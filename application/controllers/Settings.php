@@ -142,6 +142,23 @@ class Settings extends MY_Controller {
         echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
     }
 
+    function shipping_option() {
+        $view_data['tax_lists'] = array(
+            "0" => "None",
+            "12" => "VAT (12%)",
+        );
+        $this->template->rander("settings/shipping_option", $view_data);
+    }
+
+    function save_shipping_option_settings() {
+        $settings = array("minimum_order", "base_delivery_fee", "free_shipping_amount", "shipping_computation", "fixed_amount", "distance_rate", "package_rate", "tax_applied", "delivery_verification");
+
+        foreach ($settings as $setting) {
+            $this->Settings_model->save_setting($setting, $this->input->post($setting), 'shipping');
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
     function email() {
         $this->template->rander("settings/email");
     }
