@@ -3,6 +3,14 @@
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
 
     <div class="form-group">
+        <div class=" col-md-12">
+            <div class="alert alert-info" role="alert">
+                It is recommended to base the input time to <strong><?= get_setting('timezone'); ?></strong> timezone. Failure to follow the said instruction may result to invalid lates and undertime reports.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="name" class=" col-md-3"><?php echo lang('title'); ?></label>
         <div class=" col-md-9">
             <?php

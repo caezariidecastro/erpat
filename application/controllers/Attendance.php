@@ -300,17 +300,6 @@ class Attendance extends MY_Controller {
     private function _make_row($data) {
         $image_url = get_avatar($data->created_by_avatar);
         $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
-        $out_time = $data->out_time;
-        if (!is_date_exists($out_time)) {
-            $out_time = "";
-        }
-
-        $to_time = strtotime($data->out_time);
-        if (!$out_time) {
-            $to_time = strtotime($data->in_time);
-        }
-        $from_time = strtotime($data->in_time);
-
         $option_links = modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_attendance'), "data-post-id" => $data->id))
                 . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_attendance'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/attendance/delete"), "data-action" => "delete"));
 
@@ -336,54 +325,58 @@ class Attendance extends MY_Controller {
         if ($data->sched_id) {
             $sched_link = modal_anchor(get_uri("hrs/schedule/modal_form/display"), "<i class='fa fa-clock-o p10'></i>", array("class" => "edit text-muted", "title" => lang("schedule"), "data-modal-title" => lang("schedule"), "data-post-id" => $data->sched_id));
         }
-
         $info_link = $note_link.$sched_link;
-
-        $duration_type = $this->input->post('duration_type');
-        if($duration_type == 'decimal') {
-            $duration  = convert_seconds_to_hour_decimal(abs($to_time - $from_time));
-        } else {
-            $duration  = convert_seconds_to_time_format(abs($to_time - $from_time));
-        }
 
         //Get job info for computation of total hours.
         $job_info = $this->Users_model->get_job_info($data->user_id);
-        $hours_per_day = convert_number_to_decimal( (float)$job_info->hours_per_day );  
-        $actual = convert_seconds_to_hour_decimal( max($to_time - $from_time, 0) );
+        $hours_per_day = convert_number_to_decimal( (float)$job_info->hours_per_day ); 
 
-        if($out_time && $data->sched_id) {
-            //Get the instance of the schedule.
-            $cur_sched = $this->Schedule_model->get_details(array("id" => $data->sched_id))->row();
 
-            //Get actual time of attendance in and out.
-            $time_from = strtotime(convert_date_utc_to_local($data->in_time));
-            $time_to = strtotime(convert_date_utc_to_local($data->out_time));
+        //Important attendance triggers.
+        $to_time = is_date_exists($data->out_time) ? 
+            strtotime($data->out_time) : null;
+        $from_time = strtotime($data->in_time);
+
+        //Get the instance of the schedule.
+        $cur_sched = $this->Schedule_model->get_details(array("id" => $data->sched_id))->row();
+
+        //If no schedule make sure to have an actual in and out as official schedule.
+        $sched_day = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
+        $sched_in = $data->in_time;
+
+        //Get the current day schedule instance based on in time.
+        $day_name = format_to_custom($data->in_time, 'D');
+        if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
+            $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
+            $sched_in = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
+        }
+        $sched_in = strtotime($sched_in);
+        
+        //Get lates: x = diff_time(in_time, sched_in)
+        $lates = convert_seconds_to_hour_decimal( max($from_time-$sched_in, 0) );
+
+        if( $data->out_time ) {
+
+            //If no schedule make sure to have an actual in and out as official schedule.
+            $sched_day = convert_date_utc_to_local($data->out_time, 'Y-m-d'); //local
+            $sched_out = $data->out_time;
 
             //Get the current day schedule instance based on in time.
-            $day_name = convert_date_utc_to_local($data->in_time, 'D');
-            $today_sched = unserialize($cur_sched->{strtolower($day_name)});
-            
-            //Get the schedule start date.
-            $sched_day = convert_date_utc_to_local($data->in_time, 'Y-m-d');
-            $sched_start = convert_to_standard($sched_day.' '.convert_time_to_24hours_format($today_sched['in']), true);
-
-            //Check first if PM yung IN and AM ito then next day na yung date.
-            $sched_end = convert_to_standard($sched_day.' '.convert_time_to_24hours_format($today_sched['out']));
-            if (strpos($today_sched['in'], 'PM') !== false && strpos($today_sched['out'], 'AM') !== false) {
-                $sched_end = add_day_to_datetime($sched_end, 1); //ADD ONE DAY
+            $day_name = format_to_custom($data->out_time, 'D');
+            if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
+                $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
+                $sched_out = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
             }
-            $sched_end = strtotime($sched_end);
-
-            //Get lates: x = diff_time(in_time, sched_start)
-            $lates = convert_seconds_to_hour_decimal( max($time_from-$sched_start, 0) );
-            $lates = convert_number_to_decimal($lates);
+            $sched_out = strtotime($sched_out);
+            
+            //Actual time in hours decimal.
+            $actual = max($to_time-$from_time, 0);
 
             //Get undertime: y = diff_time(sched_end, out_time)
-            $under = convert_seconds_to_hour_decimal( max($sched_end-$time_to, 0) );
-            $under = convert_number_to_decimal($under);
+            $under = convert_seconds_to_hour_decimal( max($sched_out-$to_time, 0) );
 			
-			//Get scheduled worked hours: z = diff_time(sched_start, sched_end) - 1 hour 
-            $sched_hours = convert_seconds_to_hour_decimal( max($sched_end-$sched_start, 0) );
+			//Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
+            $sched_hours = convert_seconds_to_hour_decimal( max($sched_end-$sched_in, 0) );
 
             //Get non worked hours: a = x+y
             $nonworked = convert_number_to_decimal( max(($lates+$under), 0) );
@@ -391,37 +384,26 @@ class Attendance extends MY_Controller {
             //Get the worked hours: b = z-a;
             $worked = convert_number_to_decimal( max(($hours_per_day-$nonworked), 0) );
 
-            //TODO: Only apply lunch break on hour greater than.
-            // $lunch_break = convert_number_to_decimal( max(($sched_hours-$hours_per_day), 0) );  
-            // if($worked >= 6.00) { //6 hours entitle to excess lunch break = 1 hour
-            //     $worked -= 1.00;
-            // }
+            //Current duration of actual
+            $duration = convert_seconds_to_time_format( $actual );
 
-            if($worked <= 0) {
-                $nonworked = '0.00';
-                $lates = '0.00';
-                $under = '0.00';
+            if( $actual == 0 ) {
+                $duration = 'Invalid';
+                $worked = "Invalid";
+                $nonworked = 'Invalid';
+                $lates = 'Invalid';
+                $under = 'Invalid';
             }
         } else {
-            $under = convert_number_to_decimal( max($hours_per_day - $actual, 0) );
-            $lates = convert_number_to_decimal(0);
-
-            $nonworked = convert_number_to_decimal( max($lates+$under, 0) );
-            $worked = convert_number_to_decimal( max($hours_per_day-$nonworked, 0) );
-        }
-
-        if($out_time && $actual <= 0) {
-            $worked = 'Invalid';
-            $worked = 'Invalid';
-            $nonworked = 'Invalid';
-            $lates = 'Invalid';
-            $under = 'Invalid';
-        } else if(!$out_time && $actual <= 0) {
-            $worked = 'Pending';
+            $duration = 'Pending';
             $worked = 'Pending';
             $nonworked = 'Pending';
-            $lates = 'Pending';
             $under = 'Pending';
+        }
+
+        if( !$data->sched_id ) {
+            $lates = '-';
+            $under = '-';
         }
 
         return array(
@@ -430,9 +412,9 @@ class Attendance extends MY_Controller {
             $data->in_time,
             format_to_date($data->in_time),
             format_to_time($data->in_time),
-            $out_time ? $out_time : 0,
-            $out_time ? format_to_date($out_time) : "-",
-            $out_time ? format_to_time($out_time) : "-",
+            $data->out_time ? $data->out_time : 0,
+            $data->out_time ? format_to_date( $data->out_time ) : "-",
+            $data->out_time ? format_to_time( $data->out_time ) : "-",
             $duration,
             $worked, $nonworked, $lates, $under,
             $info_link,
@@ -499,23 +481,122 @@ class Attendance extends MY_Controller {
         $user_id = $this->input->post('user_id');
 
         $options = array("start_date" => $start_date, "end_date" => $end_date, "login_user_id" => $this->login_user->id, "user_id" => $user_id, "access_type" => $this->access_type, "allowed_members" => $this->allowed_members);
-        $list_data = $this->Attendance_model->get_summary_details($options)->result();
+        $list_data = $this->Attendance_model->get_details($options)->result();
 
         $result = array();
+        $list_temp = array();
+
         foreach ($list_data as $data) {
-            $image_url = get_avatar($data->created_by_avatar);
-            $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
+            if( $data->out_time && max(strtotime($data->out_time)-strtotime($data->in_time), 0) > 0 ) {
+                $single = $this->_make_compute_row( $data );
 
-            $duration = convert_seconds_to_time_format(abs($data->total_duration));
+                if( isset($list_temp[$data->user_id]) ) {
+                    $list_temp[$data->user_id][2] += (double)$single[2];
+                    $list_temp[$data->user_id][3] += (double)$single[3];
+                    $list_temp[$data->user_id][4] += (double)$single[4];
+                    $list_temp[$data->user_id][5] += (double)$single[5];
+                    $list_temp[$data->user_id][6] += (double)$single[6];
+                } else {
+                    $list_temp[$data->user_id] = array();
+                    $list_temp[$data->user_id][0] = $single[0];
+                    $list_temp[$data->user_id][1] = $single[1];
+                    $list_temp[$data->user_id][2] = (double)$single[2];
+                    $list_temp[$data->user_id][3] = (double)$single[3];
+                    $list_temp[$data->user_id][4] = (double)$single[4];
+                    $list_temp[$data->user_id][5] = (double)$single[5];
+                    $list_temp[$data->user_id][6] = (double)$single[6];
+                }
+            }
+        }
 
-            $result[] = array(
-                get_team_member_profile_link($data->user_id, $user),
-                $duration,
-                to_decimal_format(convert_time_string_to_decimal($duration))
-            );
+        foreach ($list_temp as $key => $item) {
+            $item[2] = convert_seconds_to_time_format($item[2]);
+            $item[3] = strval($item[3]);
+            $item[4] = strval($item[4]);
+            $item[5] = strval($item[5]);
+            $item[6] = strval($item[6]);
+            $result[] = $item;
         }
 
         echo json_encode(array("data" => $result));
+    }
+
+    private function _make_compute_row($data) {
+        $image_url = get_avatar($data->created_by_avatar);
+        $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
+
+        //Get job info for computation of total hours.
+        $job_info = $this->Users_model->get_job_info($data->user_id);
+        $hours_per_day = convert_number_to_decimal( (float)$job_info->hours_per_day ); 
+
+
+        //Important attendance triggers.
+        $to_time = is_date_exists($data->out_time) ? 
+            strtotime($data->out_time) : null;
+        $from_time = strtotime($data->in_time);
+
+
+        //Get the instance of the schedule.
+        $cur_sched = $this->Schedule_model->get_details(array("id" => $data->sched_id))->row();
+
+        //If no schedule make sure to have an actual in and out as official schedule.
+        $sched_day = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
+        $sched_in = $data->in_time;
+
+        //Get the current day schedule instance based on in time.
+        $day_name = format_to_custom($data->in_time, 'D');
+        if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
+            $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
+            $sched_in = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
+        }
+        $sched_in = strtotime($sched_in);
+        
+        //Get lates: x = diff_time(in_time, sched_in)
+        $lates = convert_seconds_to_hour_decimal( max($from_time-$sched_in, 0) );
+
+        if( $data->out_time ) {
+
+            //If no schedule make sure to have an actual in and out as official schedule.
+            $sched_day = convert_date_utc_to_local($data->out_time, 'Y-m-d'); //local
+            $sched_out = $data->out_time;
+
+            //Get the current day schedule instance based on in time.
+            $day_name = format_to_custom($data->out_time, 'D');
+            if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
+                $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
+                $sched_out = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
+            }
+            $sched_out = strtotime($sched_out);
+            
+            //Actual time in hours decimal.
+            $actual = max($to_time-$from_time, 0);
+
+            //Get undertime: y = diff_time(sched_end, out_time)
+            $under = convert_seconds_to_hour_decimal( max($sched_out-$to_time, 0) );
+			
+			//Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
+            $sched_hours = convert_seconds_to_hour_decimal( max($sched_end-$sched_in, 0) );
+
+            //Get non worked hours: a = x+y
+            $nonworked = convert_number_to_decimal( max(($lates+$under), 0) );
+
+            //Get the worked hours: b = z-a;
+            $worked = convert_number_to_decimal( max(($hours_per_day-$nonworked), 0) );
+
+            //Current duration of actual
+            $duration = $actual;
+        }
+
+        return array(
+            get_team_member_profile_link($data->user_id, $user),
+            $data->team_list,
+            $duration,
+            $worked, 
+            $nonworked, 
+            $lates, 
+            $under,
+            $data->in_time,
+        );
     }
 
     //load the attendance summary details tab
@@ -538,65 +619,49 @@ class Attendance extends MY_Controller {
             "user_id" => $user_id,
             "access_type" => $this->access_type,
             "allowed_members" => $this->allowed_members,
-            "summary_details" => true
+            // "summary_details" => true
         );
-
-        $list_data = $this->Attendance_model->get_summary_details($options)->result();
-
-        //group the list by users
+        
+        $list_data = $this->Attendance_model->get_details($options)->result();
 
         $result = array();
-        $last_key = 0;
-        $last_user = "";
-        $last_total_duration = 0;
-        $last_created_by = "";
-        $has_data = false;
+        $list_temp = array();
+        $last_user = NULL;
+        $list_user = [];
+        $list_total = [];
 
         foreach ($list_data as $data) {
-            $image_url = get_avatar($data->created_by_avatar);
-            $user = "<span class='avatar avatar-xs mr10'><img src='$image_url'></span> $data->created_by_user";
+            if( $data->out_time && max(strtotime($data->out_time)-strtotime($data->in_time), 0) > 0 ) {
+                $single = $this->_make_compute_row( $data );
 
-            $duration = convert_seconds_to_time_format(abs($data->total_duration));
+                if ( !in_array($data->user_id, $list_user) ) {
+                    $list_user[] = $data->user_id;
 
-            //found a new user, add new row for the total
-            if ($last_user != $data->user_id) {
-                $last_user = $data->user_id;
+                    $result[] = [
+                        $data->user_id."-b".$data->id,
+                        $single[0]."<br>".$single[1], //name
+                        "", //department
+                        "", //duration total
+                        "", //work total
+                        "", //idle total
+                        "", //late total
+                        "" //under total
+                    ];
 
-                $result[] = array(
-                    $data->created_by_user,
-                    get_team_member_profile_link($data->user_id, $user),
-                    "",
-                    "",
-                    ""
-                );
+                    $last_user = $data->user_id;
+                }
 
-                $result[$last_key][0] = $last_created_by;
-                $result[$last_key][3] = "<b>" . convert_seconds_to_time_format($last_total_duration) . "</b>";
-                $result[$last_key][4] = "<b>" . to_decimal_format(convert_time_string_to_decimal(convert_seconds_to_time_format($last_total_duration))) . "</b>";
-
-                $last_total_duration = 0;
-                $last_key = count($result) - 1;
+                $result[] = [
+                    $data->user_id."-b".$data->id,
+                    "", //name and department
+                    format_to_custom( $single[7], 'Y-m-d' ), //date
+                    convert_seconds_to_time_format($single[2]), //duration total
+                    $single[3], //work total
+                    $single[4], //idle total
+                    $single[5], //late total
+                    $single[6] //under total
+                ];
             }
-
-            $last_total_duration += abs($data->total_duration);
-            $last_created_by = $data->created_by_user;
-            $has_data = true;
-
-            $duration = convert_seconds_to_time_format(abs($data->total_duration));
-
-            $result[] = array(
-                $data->created_by_user,
-                "",
-                format_to_date($data->start_date, false),
-                $duration,
-                to_decimal_format(convert_time_string_to_decimal($duration))
-            );
-        }
-
-        if ($has_data) {
-            $result[$last_key][0] = $data->created_by_user;
-            $result[$last_key][3] = "<b>" . convert_seconds_to_time_format($last_total_duration) . "</b>";
-            $result[$last_key][4] = "<b>" . to_decimal_format(convert_time_string_to_decimal(convert_seconds_to_time_format($last_total_duration))) . "</b>";
         }
 
         echo json_encode(array("data" => $result));

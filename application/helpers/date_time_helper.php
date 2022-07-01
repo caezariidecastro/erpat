@@ -547,7 +547,7 @@ if (!function_exists('convert_seconds_to_hour_decimal')) {
         if ($is_negative) {
             $total = -$total;
         }
-        return strval($total);
+        return strval( convert_number_to_decimal($total) );
     }
 
 }
@@ -625,9 +625,9 @@ if (!function_exists('last_online_text')) {
 }
 
 
-if (!function_exists('convert_to_standard')) {
+if (!function_exists('format_to_custom')) {
 
-    function convert_to_standard($datetime, $totime = false, $format = "Y-m-d H:i:s") {
+    function format_to_custom($datetime, $format = "Y-m-d H:i:s", $totime = false) {
         $date = new DateTime($datetime);
 
         if($totime) {

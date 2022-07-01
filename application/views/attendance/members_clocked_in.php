@@ -8,15 +8,23 @@
             source: '<?php echo_uri("hrs/attendance/clocked_in_members_list_data/"); ?>',
             order: [[2, "desc"]],
             columns: [
-                {title: "<?php echo lang("user"); ?>", "class": "w20p"},
+                {title: "<?php echo lang("user"); ?>", "class": "w15p"},
+                {title: "<?php echo lang("department"); ?>", "class": "w20p"},
                 {visible: false, searchable: false},
                 {title: "<?php echo lang("in_date"); ?>", "class": "w15p", iDataSort: 1},
-                {title: "<?php echo lang("in_time"); ?>", "class": "w15p"}
+                {title: "<?php echo lang("in_time"); ?>", "class": "w15p"},
+                {visible: false, searchable: false},
+                {visible: false, searchable: false},
+                {visible: false, searchable: false},
+                {visible: false, searchable: false},
+                {visible: false, searchable: false},
+                {visible: false, searchable: false},
+                {title: "<?php echo lang("lates"); ?>", "class": "w15p"}
             ],
             printColumns: [0, 2, 3],
             xlsColumns: [0, 2, 3],
             tableRefreshButton: true,
-            columnShowHideOption:false
+            //columnShowHideOption:false
             
         });
     });
