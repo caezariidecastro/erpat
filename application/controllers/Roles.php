@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class roles extends MY_Controller {
+class Roles extends MY_Controller {
 
     function __construct() {
         parent::__construct();
@@ -55,6 +55,7 @@ class roles extends MY_Controller {
             $view_data['invoice'] = get_array_value($permissions, "invoice");
             $view_data['estimate'] = get_array_value($permissions, "estimate");
             $view_data['expense'] = get_array_value($permissions, "expense");
+            $view_data['payroll'] = get_array_value($permissions, "payroll");
             $view_data['client'] = get_array_value($permissions, "client");
             $view_data['lead'] = get_array_value($permissions, "lead");
 
@@ -175,6 +176,7 @@ class roles extends MY_Controller {
         $invoice = $this->input->post('invoice_permission');
         $estimate = $this->input->post('estimate_permission');
         $expense = $this->input->post('expense_permission');
+        $payroll = $this->input->post('payroll_permission');
         $client = $this->input->post('client_permission');
         $lead = $this->input->post('lead_permission');
 
@@ -243,6 +245,7 @@ class roles extends MY_Controller {
             "invoice" => $invoice,
             "estimate" => $estimate,
             "expense" => $expense,
+            "payroll" => $payroll,
             "client" => $client,
             "lead" => $lead,
             "ticket" => $ticket,

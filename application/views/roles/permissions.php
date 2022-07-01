@@ -360,81 +360,135 @@
                             ?>
                             <label for="can_use_payhp"><?php echo lang("can_use_payhp"); ?></label>
                         </div>
-                        <h5><?php echo lang("can_access_expenses"); ?></h5>
-                        <div>
-                            <?php
-                            echo form_radio(array(
-                                "id" => "expense_no",
-                                "name" => "expense_permission",
-                                "value" => "",
-                                    ), $expense, ($expense === "") ? true : false);
-                            ?>
-                            <label for="expense_no"><?php echo lang("no"); ?> </label>
-                        </div>
-                        <div>
-                            <?php
-                            echo form_radio(array(
-                                "id" => "expense_yes",
-                                "name" => "expense_permission",
-                                "value" => "all",
-                                    ), $expense, ($expense === "all") ? true : false);
-                            ?>
-                            <label for="expense_yes"><?php echo lang("yes"); ?></label>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <strong class="perm-head"><?php echo lang("can_access_payrolls"); ?></strong>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "payroll_no",
+                                        "name" => "payroll_permission",
+                                        "value" => "",
+                                            ), $payroll, ($payroll === "") ? true : false);
+                                    ?>
+                                    <label for="payroll_no"><?php echo lang("no"); ?> </label>
+                                </div>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "payroll_yes",
+                                        "name" => "payroll_permission",
+                                        "value" => "all",
+                                            ), $payroll, ($payroll === "all") ? true : false);
+                                    ?>
+                                    <label for="payroll_yes"><?php echo lang("yes"); ?></label>
+                                </div>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "payroll_read_only",
+                                        "name" => "payroll_permission",
+                                        "value" => "read_only",
+                                            ), $payroll, ($payroll === "read_only") ? true : false);
+                                    ?>
+                                    <label for="payroll_read_only"><?php echo lang("read_only"); ?></label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <h5><?php echo lang("can_access_expenses"); ?></h5>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "expense_no",
+                                        "name" => "expense_permission",
+                                        "value" => "",
+                                            ), $expense, ($expense === "") ? true : false);
+                                    ?>
+                                    <label for="expense_no"><?php echo lang("no"); ?> </label>
+                                </div>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "expense_yes",
+                                        "name" => "expense_permission",
+                                        "value" => "all",
+                                            ), $expense, ($expense === "all") ? true : false);
+                                    ?>
+                                    <label for="expense_yes"><?php echo lang("yes"); ?></label>
+                                </div>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "expense_read_only",
+                                        "name" => "expense_permission",
+                                        "value" => "read_only",
+                                            ), $invoice, ($invoice === "read_only") ? true : false);
+                                    ?>
+                                    <label for="expense_read_only"><?php echo lang("read_only"); ?></label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <strong class="perm-head"><?php echo lang("can_access_invoices"); ?></strong>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "invoice_no",
+                                        "name" => "invoice_permission",
+                                        "value" => "",
+                                            ), $invoice, ($invoice === "") ? true : false);
+                                    ?>
+                                    <label for="invoice_no"><?php echo lang("no"); ?> </label>
+                                </div>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "invoice_yes",
+                                        "name" => "invoice_permission",
+                                        "value" => "all",
+                                            ), $invoice, ($invoice === "all") ? true : false);
+                                    ?>
+                                    <label for="invoice_yes"><?php echo lang("yes"); ?></label>
+                                </div>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "invoice_read_only",
+                                        "name" => "invoice_permission",
+                                        "value" => "read_only",
+                                            ), $invoice, ($invoice === "read_only") ? true : false);
+                                    ?>
+                                    <label for="invoice_read_only"><?php echo lang("read_only"); ?></label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <strong class="perm-head"><?php echo lang("can_access_estimates"); ?></strong>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "estimate_no",
+                                        "name" => "estimate_permission",
+                                        "value" => "",
+                                            ), $estimate, ($estimate === "") ? true : false);
+                                    ?>
+                                    <label for="estimate_no"><?php echo lang("no"); ?> </label>
+                                </div>
+                                <div>
+                                    <?php
+                                    echo form_radio(array(
+                                        "id" => "estimate_yes",
+                                        "name" => "estimate_permission",
+                                        "value" => "all",
+                                            ), $estimate, ($estimate === "all") ? true : false);
+                                    ?>
+                                    <label for="estimate_yes"><?php echo lang("yes"); ?></label>
+                                </div>
+                            </div>
                         </div>
 
-                        <strong class="perm-head"><?php echo lang("can_access_estimates"); ?></strong>
-                        <div>
-                            <?php
-                            echo form_radio(array(
-                                "id" => "estimate_no",
-                                "name" => "estimate_permission",
-                                "value" => "",
-                                    ), $estimate, ($estimate === "") ? true : false);
-                            ?>
-                            <label for="estimate_no"><?php echo lang("no"); ?> </label>
-                        </div>
-                        <div>
-                            <?php
-                            echo form_radio(array(
-                                "id" => "estimate_yes",
-                                "name" => "estimate_permission",
-                                "value" => "all",
-                                    ), $estimate, ($estimate === "all") ? true : false);
-                            ?>
-                            <label for="estimate_yes"><?php echo lang("yes"); ?></label>
-                        </div>
-
-                        <strong class="perm-head"><?php echo lang("can_access_invoices"); ?></strong>
-                        <div>
-                            <?php
-                            echo form_radio(array(
-                                "id" => "invoice_no",
-                                "name" => "invoice_permission",
-                                "value" => "",
-                                    ), $invoice, ($invoice === "") ? true : false);
-                            ?>
-                            <label for="invoice_no"><?php echo lang("no"); ?> </label>
-                        </div>
-                        <div>
-                            <?php
-                            echo form_radio(array(
-                                "id" => "invoice_yes",
-                                "name" => "invoice_permission",
-                                "value" => "all",
-                                    ), $invoice, ($invoice === "all") ? true : false);
-                            ?>
-                            <label for="invoice_yes"><?php echo lang("yes"); ?></label>
-                        </div>
-                        <div>
-                            <?php
-                            echo form_radio(array(
-                                "id" => "invoice_read_only",
-                                "name" => "invoice_permission",
-                                "value" => "read_only",
-                                    ), $invoice, ($invoice === "read_only") ? true : false);
-                            ?>
-                            <label for="invoice_read_only"><?php echo lang("read_only"); ?></label>
-                        </div>
                             </ul>
                         </div>
                     </ul>

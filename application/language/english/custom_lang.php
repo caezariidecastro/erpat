@@ -606,3 +606,4 @@ $lang["delivery_verification"] = "Delivery Verification";
 $lang["optional"] = "Optional";
 
 $lang["add_brands"] = "Add Brand";
+$lang["can_access_payrolls"] = "Can Access Payrolls";
