@@ -59,16 +59,13 @@ $route['about/(:any)'] = 'about/index/$1';
 $route['sms/estimates'] = 'estimates/index';
 $route['sms/estimates/(:any)'] = 'estimates/$1';
 $route['sms/estimates/(:any)/(:any)'] = 'estimates/$1/$2';
-$route['sms/invoices/view/(:any)'] = 'invoices/view/$1';
-
-$route['estimates/(:any)'] = 'estimates/$1';
-$route['estimates/(:any)/(:any)'] = 'estimates/$1/$2';
-
-// Payments
-// $route['fas/payments'] = 'invoice_payments/index';
 
 // Invoices
 $route['sms/invoices'] = 'invoices/index';
+$route['sms/invoices/(:any)'] = 'invoices/$1';
+$route['sms/invoices/(:any)/(:any)'] = 'invoices/$1/$2';
+
+// Payments
 
 // Sales Matrix
 $route["sms/sales-matrix"] = "sales_matrix/index";
