@@ -607,3 +607,8 @@ $lang["optional"] = "Optional";
 
 $lang["add_brands"] = "Add Brand";
 $lang["can_access_payrolls"] = "Can Access Payrolls";
+$lang["payrolls"] = "Payrolls";
+
+$lang["role_permissions"] = "Role Permissions";
+$lang["changes"] = "Changes";
+$lang["save_permission"] = "Save Permission";
