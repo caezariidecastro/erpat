@@ -5,4 +5,4 @@ if (!get_setting($estimate_logo)) {
 }
 ?>
 
-<img src="<?php echo get_file_from_setting($estimate_logo, get_setting('only_file_path')); ?>" />
+<img src="<?php echo get_file_from_setting($estimate_logo, true); ?>" />
