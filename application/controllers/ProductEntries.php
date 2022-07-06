@@ -130,7 +130,7 @@ class ProductEntries extends MY_Controller {
                     </span>';
 
         $image_url = "https://erpat.dev/assets/images/image.jpg";
-        $product_preview = "<span class='avatar avatar-s'><img src='$image_url' alt='...' style='border-radius: 5%;'></span>";
+        $product_preview = "<span class='avatar avatar-s'><img src='$image_url' alt='...' style='max-width: 100px; border-radius: 5%;'></span>";
 
         return array(
             $product_preview,
