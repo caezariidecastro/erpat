@@ -20,6 +20,8 @@ class Attendance extends MY_Controller {
         $this->load->model("Attendance_model");
         $this->load->model("Schedule_model");
         $this->load->model("Users_model");
+
+        $this->load->helper("biometric");
     }
 
     //check ip restriction for none admin users
@@ -331,80 +333,9 @@ class Attendance extends MY_Controller {
         $job_info = $this->Users_model->get_job_info($data->user_id);
         $hours_per_day = convert_number_to_decimal( (float)$job_info->hours_per_day ); 
 
-
-        //Important attendance triggers.
-        $to_time = is_date_exists($data->out_time) ? 
-            strtotime($data->out_time) : null;
-        $from_time = strtotime($data->in_time);
-
-        //Get the instance of the schedule.
-        $cur_sched = $this->Schedule_model->get_details(array("id" => $data->sched_id))->row();
-
-        //If no schedule make sure to have an actual in and out as official schedule.
-        $sched_day = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
-        $sched_in = $data->in_time;
-
-        //Get the current day schedule instance based on in time.
-        $day_name = format_to_custom($data->in_time, 'D');
-        if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
-            $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
-            $sched_in = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
-        }
-        $sched_in = strtotime($sched_in);
-        
-        //Get lates: x = diff_time(in_time, sched_in)
-        $lates = convert_seconds_to_hour_decimal( max($from_time-$sched_in, 0) );
-
-        if( $data->out_time ) {
-
-            //If no schedule make sure to have an actual in and out as official schedule.
-            $sched_day = convert_date_utc_to_local($data->out_time, 'Y-m-d'); //local
-            $sched_out = $data->out_time;
-
-            //Get the current day schedule instance based on in time.
-            $day_name = format_to_custom($data->out_time, 'D');
-            if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
-                $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
-                $sched_out = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
-            }
-            $sched_out = strtotime($sched_out);
-            
-            //Actual time in hours decimal.
-            $actual = max($to_time-$from_time, 0);
-
-            //Get undertime: y = diff_time(sched_end, out_time)
-            $under = convert_seconds_to_hour_decimal( max($sched_out-$to_time, 0) );
-			
-			//Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
-            $sched_hours = convert_seconds_to_hour_decimal( max($sched_end-$sched_in, 0) );
-
-            //Get non worked hours: a = x+y
-            $nonworked = convert_number_to_decimal( max(($lates+$under), 0) );
-
-            //Get the worked hours: b = z-a;
-            $worked = convert_number_to_decimal( max(($hours_per_day-$nonworked), 0) );
-
-            //Current duration of actual
-            $duration = convert_seconds_to_time_format( $actual );
-
-            if( $actual == 0 ) {
-                $duration = 'Invalid';
-                $worked = "Invalid";
-                $nonworked = 'Invalid';
-                $lates = 'Invalid';
-                $under = 'Invalid';
-            }
-        } else {
-            $duration = 'Pending';
-            $worked = 'Pending';
-            $nonworked = 'Pending';
-            $under = 'Pending';
-        }
-
-        if( !$data->sched_id ) {
-            $lates = '-';
-            $under = '-';
-        }
+        $attd = (new BioMeet($this, array(
+            "hours_per_day" => $hours_per_day
+        ), true))->addAttendance($data)->calculate();
 
         return array(
             get_team_member_profile_link($data->user_id, $user),
@@ -415,8 +346,9 @@ class Attendance extends MY_Controller {
             $data->out_time ? $data->out_time : 0,
             $data->out_time ? format_to_date( $data->out_time ) : "-",
             $data->out_time ? format_to_time( $data->out_time ) : "-",
-            $duration,
-            $worked, $nonworked, $lates, $under,
+            $attd->getTotalDuration(),
+            strval($attd->getTotalWork()), strval($attd->getTotalAbsent()), 
+            strval($attd->getTotalLates()), strval($attd->getTotalUndertime()),
             $info_link,
             $option_links
         );

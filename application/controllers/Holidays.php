@@ -33,6 +33,7 @@ class Holidays extends MY_Controller {
             nl2br($data->description),
             $data->date_from,
             $data->date_to,
+            ucfirst($data->type),
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             modal_anchor(get_uri("hrs/holidays/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_holiday'), "data-post-id" => $data->id))
@@ -52,6 +53,7 @@ class Holidays extends MY_Controller {
             "description" => $this->input->post('description'),
             "date_from" => $this->input->post('date_from'),
             "date_to" => $this->input->post('date_to'),
+            "type" => $this->input->post('hd_type'),
         );
 
         if(!$id){
