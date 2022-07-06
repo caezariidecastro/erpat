@@ -560,7 +560,7 @@ $lang["disable_access_help_message"] = "User will not be able to use the said mo
 $lang["worked"] = "Worked";
 $lang["idle"] = "Idle";
 $lang["lates"] = "Lates";
-$lang["undertime"] = "Under";
+$lang["undertime"] = "Undertime";
 
 $lang["bill_to"] = "Bill to";
 $lang["balancesheet"] = "Balance Sheet";
@@ -612,3 +612,101 @@ $lang["payrolls"] = "Payrolls";
 $lang["role_permissions"] = "Role Permissions";
 $lang["changes"] = "Changes";
 $lang["save_permission"] = "Save Permission";
+$lang["payslips"] = "Payslips";
+
+$lang["sched_hour"] = "Schedule";
+$lang["work_hour"] = "Work Hour";
+$lang["idle_hour"] = "Idle Hour";
+
+$lang["view_payslip"] = "View Payslip";
+$lang["payslip_id"] = "Payslip ID";
+$lang["basic_pay"] = "Basic Pay";
+$lang["monthly_salary"] = "Monthly Salary";
+$lang["total_earn"] = "Total Earn";
+$lang["total_deduct"] = "Total Deduct";
+$lang["net_pay"] = "Net Pay";
+
+$lang["total_net_pay"] = "Total Net Pay";
+$lang["view_payroll"] = "View Payroll";
+$lang["pay_date"] = "Payment Date";
+
+$lang["mark_as_ongoing"] = "Mark as Ongoing";
+$lang["override"] = "Override";
+
+$lang["payslip_preview"] = "Payslip Preview";
+$lang["payroll_details"] = "Payroll Details";
+$lang["payslip"] = "Payslip";
+
+$lang["sss"] = "SSS";
+$lang["pagibig"] = "PAGIBIG";
+$lang["phealth"] = "PhilHealth";
+$lang["hmo"] = "HMO";
+
+$lang["com_loan"] = "Company";
+$lang["hdmf_loan"] = "HDMF";
+$lang["sss_loan"] = "SSS";
+
+$lang["deduct_adjust"] = "Adjustments";
+$lang["deduct_other"] = "Others";
+
+$lang["allowance"] = "Allowance";
+$lang["incentive"] = "Incentive";
+$lang["bonus"] = "Bonus";
+$lang["13th_month"] = "13th Month";
+$lang["earn_adjust"] = "Adjustments";
+$lang["earn_other"] = "Others";
+
+$lang["net_taxable"] = "Net Taxable";
+$lang["gross_pay"] = "Gross Pay";
+
+$lang["calculate"] = "Calculate";
+
+$lang["unwork_pay"] = "Unwork Pay";
+$lang["absent"] = "Absent";
+$lang["overbreak"] = "Overbreak";
+
+$lang["regular_nd"] = "Regular ND";
+$lang["restday_nd"] = "Restday ND";
+$lang["legal_hd_nd"] = "Legal HD ND";
+$lang["special_hd_nd"] = "Special HD ND";
+
+$lang["regular_ot"] = "Regular OT";
+$lang["restday_ot"] = "Restday OT";
+$lang["legal_hd_ot"] = "Legal HD OT";
+$lang["special_hd_ot"] = "Special HD OT";
+
+$lang["regular_ot_nd"] = "Regular OT ND";
+$lang["restday_ot_nd"] = "Restday OT ND";
+$lang["legal_hd_ot_nd"] = "Legal HD OT ND";
+$lang["special_hd_ot_nd"] = "Special HD OT ND";
+
+$lang["total_contributions"] = "Total Contribution";
+$lang["total_loans"] = "Total Loans";
+$lang["unwork_deductions"] = "Unwork Deductions";
+$lang["other_adjust"] = "Total Earning Adjustments";
+
+$lang["overtimePay"] = "Overtime Pay";
+$lang["nightdiffPay"] = "Night Diff Pay";
+$lang["specialPay"] = "Special Pay";
+$lang["hourly_rate"] = "Hourly Rate";
+
+$lang["compensation_tax"] = "Compensation Tax";
+$lang["paid_timeoff"] = "Paid Time Off";
+$lang["fullname"] = "Fullname";
+$lang["overwrite"] = "Overwrite";
+
+$lang["hours_paid"] = "Paid Hours";
+$lang["payroll_id"] = "Payroll ID";
+
+$lang["payslip_list"] = "Payslip List";
+$lang["tax_due"] = "Tax Due";
+
+$lang["update"] = "Update";
+
+$lang["total_payslips"] = "Total Payslips";
+$lang["assigned_to"] = "Assigned To";
+$lang["end_date"] = "End Date";
+$lang["pay_period"] = "Pay Period";
+
+$lang["lock_payment"] = "Lock Payment";
+$lang["expense_category"] = "Expense Category";
