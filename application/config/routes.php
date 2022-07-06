@@ -65,6 +65,11 @@ $route['sms/invoices'] = 'invoices/index';
 $route['sms/invoices/(:any)'] = 'invoices/$1';
 $route['sms/invoices/(:any)/(:any)'] = 'invoices/$1/$2';
 
+// Payrolls
+$route['fas/payrolls'] = 'payrolls/index';
+$route['fas/payrolls/(:any)'] = 'payrolls/$1';
+$route['fas/payrolls/(:any)/(:any)'] = 'payrolls/$1/$2';
+
 // Payments
 
 // Sales Matrix
