@@ -1045,14 +1045,14 @@ if (!function_exists('prepare_payroll_pdf')) {
         $ci->load->library('pdf');
         $ci->pdf->setPrintHeader(false);
         $ci->pdf->setPrintFooter(false);
-        $ci->pdf->SetCellPadding(1.5);
-        $ci->pdf->setImageScale(1.42);
+        $ci->pdf->SetCellPadding(1);
+        $ci->pdf->setImageScale(2.0);
         $ci->pdf->AddPage();
-        $ci->pdf->SetFontSize(10);
+        $ci->pdf->SetFontSize(9);
 
         if ($payroll_data) {
 
-            $html = $ci->load->view("payroll/pdf", $payroll_data, true);
+            $html = $ci->load->view("payrolls/pdf", $payroll_data, true);
             $ci->pdf->writeHTML($html, true, false, true, false, '');
 
             $payroll_info = get_array_value($payroll_data, "payroll_info");
@@ -1063,6 +1063,39 @@ if (!function_exists('prepare_payroll_pdf')) {
     }
 
 }
+
+/**
+ * 
+ * get payroll number
+ * @param Int $payroll_id
+ * @return string
+ */
+if (!function_exists('get_payroll_id')) {
+
+    function get_payroll_id($payroll_id) {
+        $prefix = strtoupper(lang("payroll")) . " #";
+        $value = str_pad($payroll_id, 4, 0, STR_PAD_LEFT);
+        return $prefix . $value ;
+    }
+
+}
+
+/**
+ * 
+ * get payslip number
+ * @param Int $payslip_id
+ * @return string
+ */
+if (!function_exists('get_payslip_id')) {
+
+    function get_payslip_id($id, $payroll_id) {
+        $prefix = str_pad($payroll_id, 4, 0, STR_PAD_LEFT); 
+        $value = str_pad($id, 3, 0, STR_PAD_LEFT);
+        return $prefix ."-". $value ;
+    }
+
+}
+
 
 if (!function_exists('prepare_contribution_pdf')) {
 
@@ -1170,7 +1203,7 @@ if (!function_exists('prepare_estimate_pdf')) {
 if (!function_exists('get_invoice_id')) {
 
     function get_invoice_id($invoice_id) {
-        $prefix = get_setting("invoice_prefix");
+        $prefix = get_setting("payroll_prefix");
         $prefix = $prefix ? $prefix : strtoupper(lang("invoice")) . " #";
         return $prefix . $invoice_id;
     }

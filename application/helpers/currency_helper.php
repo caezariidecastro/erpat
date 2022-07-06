@@ -329,3 +329,11 @@ if (!function_exists('ignor_minor_value')) {
     }
 
 };
+
+if (!function_exists('convert_number_to_decimal')) {
+
+    function convert_number_to_decimal($number, $length = 2, $separator = '.') {
+        return number_format((float)($number), $length, $separator, '');
+    }
+    
+}
