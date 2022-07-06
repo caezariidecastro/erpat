@@ -24,6 +24,7 @@
                 {title: "<?php echo lang('description') ?>"},
                 {title: "<?php echo lang('from') ?>", "class": "w100"},
                 {title: "<?php echo lang('to') ?>", "class": "w100"},
+                {title: "<?php echo lang('type') ?>", "class": "w100"},
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<?php echo lang('date_created') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}

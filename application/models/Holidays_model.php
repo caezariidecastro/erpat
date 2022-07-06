@@ -15,9 +15,14 @@ class Holidays_model extends Crud_model {
         $id = get_array_value($options, "id");
         $start = get_array_value($options, "start");
         $end = get_array_value($options, "end");
+        $type = get_array_value($options, "type");
 
         if ($id) {
             $where .= " AND $holidays_table.id=$id";
+        }
+
+        if ($type) {
+            $where .= " AND $holidays_table.type=$type";
         }
 
         if($start){
