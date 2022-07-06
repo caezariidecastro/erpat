@@ -27,7 +27,7 @@ class ProductBrands extends MY_Controller {
         return array(
             $data->name,
             nl2br($data->description),
-            $data->created_on,
+            $data->timestamp,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             modal_anchor(get_uri("mes/ProductBrands/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_brand'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("mes/ProductBrands/delete"), "data-action" => "delete-confirmation"))
@@ -41,19 +41,19 @@ class ProductBrands extends MY_Controller {
 
         $id = $this->input->post('id');
 
-        $contribution_data = array(
+        $data = array(
             "name" => $this->input->post('title'),
             "description" => $this->input->post('description'),
         );
 
         if(!$id){
-            $contribution_data["created_by"] = $this->login_user->id;
-            $contribution_data["timestamp"] = get_current_utc_time();
+            $data["created_by"] = $this->login_user->id;
+            $data["timestamp"] = get_current_utc_time();
         }
 
-        $contribution_id = $this->Inventory_item_brands_model->save($contribution_data, $id);
-        if ($contribution_id) {
-            $options = array("id" => $contribution_id);
+        $data_id = $this->Inventory_item_brands_model->save($data, $id);
+        if ($data_id) {
+            $options = array("id" => $data_id);
             $brand_info = $this->Inventory_item_brands_model->get_details($options)->row();
             echo json_encode(array("success" => true, "id" => $brand_info->id, "data" => $this->_make_row($brand_info), 'message' => lang('record_saved')));
         } else {
