@@ -129,8 +129,15 @@ class ProductEntries extends MY_Controller {
                         <ul class="dropdown-menu pull-right" role="menu">' . $add_bom . $add_material . $edit . $delete . '</ul>
                     </span>';
 
-        $image_url = "https://erpat.dev/assets/images/image.jpg";
-        $product_preview = "<span class='avatar avatar-s'><img src='$image_url' alt='...' style='max-width: 100px; border-radius: 5%;'></span>";
+        $image_url =  $data->image?$data->image:"https://erpat.dev/assets/images/image.jpg"; //get_avatar($user_info->image)
+        $product_preview = form_open(get_uri($url . "/save_product_image/" . $data->id), array("id" => $data->id."-product-image-form", "class" => "cropper-form", "role" => "form")). //style="opacity: 35%; font-size: 25px;" //style="opacity: 35%; font-size: 25px;"
+        '<div id="'.$data->id.'-holder" class="file-upload btn mt0 p0 product-image-upload">
+            <span><i class="btn fa fa-camera"></i></span> 
+            <input id="'.$data->id.'-product_image_file" class="upload" name="'.$data->id.'-product_image_file" type="file" data-height="200" data-width="200" data-preview-container="#'.$data->id.'-product-image-preview" data-input-field="#'.$data->id.'-product_image" />
+        </div>'.
+        '<input type="hidden" class="product_base64" id="'.$data->id.'-product_image" name="'.$data->id.'-product_image" value=""  />'.
+        "<span class='avatar avatar-s'><img id='".$data->id."-product-image-preview' src='$image_url' alt='...' style='max-width: 100px; border-radius: 5%;'></span>".
+        form_close();
 
         return array(
             $product_preview,
@@ -148,6 +155,27 @@ class ProductEntries extends MY_Controller {
             modal_anchor(get_uri("mes/ProductEntries/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_entry'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_entry'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("mes/ProductEntries/delete"), "data-action" => "delete-confirmation"))
         );
+    }
+
+    function update_product_image() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        $id = $this->input->post('id');
+
+        $image = $this->input->post('image'); //TODO: Process
+        $saved_url = save_base_64_image($image);
+
+        //save url to database.
+        $item_data["image"] = $saved_url;
+        $item_id = $this->Inventory_item_entries_model->save($item_data, $id);
+        
+        if ($item_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+            exit;
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
     }
 
     function save() {

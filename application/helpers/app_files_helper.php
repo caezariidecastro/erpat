@@ -859,3 +859,33 @@ if (!function_exists('get_language_list')) {
 
 }
 
+if (!function_exists('save_base_64_image')) {
+
+    function save_base_64_image($base64, $path = "", $extention = ".png") {
+        //Remopved: data:image/png;base64,
+        $image_array_1 = explode(";", $base64);
+        $image_array_2 = explode(",", $image_array_1[1]);
+
+        //Save Image to WordPress
+        $imageData = base64_decode($image_array_2[1]);
+
+        //Make sure directory is existing.
+        $target_dir = get_setting("product_image_path");
+        if (!file_exists($target_dir . $path)) {
+            mkdir($target_dir . $path, 0777, true);
+        }
+
+        //Generate name for this photo.
+        $fileName = empty($name) ? sha1(date("Y-m-d~h:i:s")).$extention : $name.$extention;
+        $path = empty($path) ? "" : $path."/";
+        $imageDir = $target_dir . $path . $fileName;
+        $imageUrl = get_uri( $target_dir . $path . $fileName );
+
+        if( file_put_contents($imageDir, $imageData) === false ) {
+            return false;
+        } else {
+            return $imageUrl;
+        }
+    }
+
+}

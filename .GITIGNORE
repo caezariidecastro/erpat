@@ -27,6 +27,7 @@ application/logs/*
 
 #files new uploads
 files/general/*
+files/products_images/*
 files/profile_images/*
 files/project_files/*
 files/system/*

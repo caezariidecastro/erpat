@@ -1,3 +1,5 @@
+<?php $this->load->view("includes/cropbox"); ?>
+
 <div class="table-responsive">
     <table id="inventory-item-entries-table" class="display" cellspacing="0" width="100%">            
     </table>
@@ -29,6 +31,42 @@
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6],
             xlsColumns: [0, 1, 2, 3, 4, 5, 6],
+            onInitComplete: function () {
+                $(".upload").change(function () {
+                    var split = $(this).attr('id').split("-");
+                    var id = split[0];
+                    if (typeof FileReader == 'function') {
+                        showCropBox(this);
+                    } else {
+                        $("#"+id+"-product-form").submit();
+                    }
+                });
+
+                $(".product_base64").change(function () {
+                    var split = $(this).attr('id').split("-");
+                    var id = split[0]
+                    var base64 = $('#'+id+'-product_image').attr('value');
+                    
+                    appLoader.show();
+                    $.ajax({
+                        url: "<?php echo get_uri("ProductEntries/update_product_image"); ?>/",
+                        method: "POST",
+                        data: {
+                            id: id,
+                            image: base64
+                        },
+                        dataType: 'json',
+                        success: function (result) {
+                            if (result.success) {
+                                appAlert.success(result.message);
+                            } else {
+                                appAlert.error(result.message);
+                            }
+                            appLoader.hide();
+                        }
+                    });
+                });
+            }
         });
     });
 </script>
