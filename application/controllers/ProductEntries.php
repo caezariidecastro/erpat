@@ -129,7 +129,7 @@ class ProductEntries extends MY_Controller {
                         <ul class="dropdown-menu pull-right" role="menu">' . $add_bom . $add_material . $edit . $delete . '</ul>
                     </span>';
 
-        $image_url =  $data->image?$data->image:"https://erpat.dev/assets/images/image.jpg"; //get_avatar($user_info->image)
+        $image_url =  $data->image?$data->image:get_uri("assets/images/image.jpg"); //get_avatar($user_info->image)
         $product_preview = form_open(get_uri($url . "/save_product_image/" . $data->id), array("id" => $data->id."-product-image-form", "class" => "cropper-form", "role" => "form")). //style="opacity: 35%; font-size: 25px;" //style="opacity: 35%; font-size: 25px;"
         '<div id="'.$data->id.'-holder" class="file-upload btn mt0 p0 product-image-upload">
             <span><i class="btn fa fa-camera"></i></span> 
@@ -164,7 +164,7 @@ class ProductEntries extends MY_Controller {
         $id = $this->input->post('id');
 
         $image = $this->input->post('image'); //TODO: Process
-        $saved_url = save_base_64_image($image);
+        $saved_url = save_base_64_image($image, get_setting("product_image_path"));
 
         //save url to database.
         $item_data["image"] = $saved_url;

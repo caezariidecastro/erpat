@@ -1,3 +1,5 @@
+<?php $this->load->view("includes/cropbox"); ?>
+
 <div id="page-content" class="clearfix p20">
     <div class="panel clearfix">
         <ul id="stores-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
@@ -36,6 +38,7 @@
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('uuid') ?> ", "class": "w10p"},
+                {title: "<?php echo lang('image') ?> ", "class": "w10p"},
                 {title: "<?php echo lang('title') ?> ", "class": "w15p"},
                 {title: "<?php echo lang('description') ?>"},
                 {title: "<?php echo lang('category') ?>"},
@@ -46,7 +49,43 @@
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5],
-            xlsColumns: [0, 1, 2, 3, 4, 5]
+            xlsColumns: [0, 1, 2, 3, 4, 5],
+            onInitComplete: function () {
+                $(".upload").change(function () {
+                    var split = $(this).attr('id').split("-");
+                    var id = split[0];
+                    if (typeof FileReader == 'function') {
+                        showCropBox(this);
+                    } else {
+                        $("#"+id+"-store-form").submit();
+                    }
+                });
+
+                $(".store_base64").change(function () {
+                    var split = $(this).attr('id').split("-");
+                    var id = split[0]
+                    var base64 = $('#'+id+'-store_image').attr('value');
+                    
+                    appLoader.show();
+                    $.ajax({
+                        url: "<?php echo get_uri("Stores/update_store_image"); ?>/",
+                        method: "POST",
+                        data: {
+                            id: id,
+                            image: base64
+                        },
+                        dataType: 'json',
+                        success: function (result) {
+                            if (result.success) {
+                                appAlert.success(result.message);
+                            } else {
+                                appAlert.error(result.message);
+                            }
+                            appLoader.hide();
+                        }
+                    });
+                });
+            }
         });
 
         setInterval(function(){

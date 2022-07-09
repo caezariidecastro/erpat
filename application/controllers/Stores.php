@@ -130,8 +130,19 @@ class Stores extends MY_Controller {
         $type = $data->unit_type ? $data->unit_type : "";
         $status = $data->status == 1 ? "<small class='label label-success'>Active</small>" : "<small class='label label-danger'>Inactive</small>";
 
+        $image_url =  $data->image?$data->image:get_uri("assets/images/image.jpg"); //get_avatar($user_info->image)
+        $store_preview = form_open(get_uri($url . "/save_store_image/" . $data->id), array("id" => $data->id."-store-image-form", "class" => "cropper-form", "role" => "form")). //style="opacity: 35%; font-size: 25px;" //style="opacity: 35%; font-size: 25px;"
+        '<div id="'.$data->id.'-holder" class="file-upload btn mt0 p0 store-image-upload">
+            <span><i class="btn fa fa-camera"></i></span> 
+            <input id="'.$data->id.'-store_image_file" class="upload" name="'.$data->id.'-store_image_file" type="file" data-height="200" data-width="200" data-preview-container="#'.$data->id.'-store-image-preview" data-input-field="#'.$data->id.'-store_image" />
+        </div>'.
+        '<input type="hidden" class="store_base64" id="'.$data->id.'-store_image" name="'.$data->id.'-store_image" value=""  />'.
+        "<span class='avatar avatar-s'><img id='".$data->id."-store-image-preview' src='$image_url' alt='...' style='max-width: 100px; border-radius: 5%;'></span>".
+        form_close();
+
         return array(
             $data->uuid,
+            $store_preview,
             $data->name,
             nl2br($data->description),
             $data->category_name ? $data->category_name : "Uncategorized",
@@ -156,6 +167,26 @@ class Stores extends MY_Controller {
         );
     }
 
+    function update_store_image() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        $id = $this->input->post('id');
+
+        $image = $this->input->post('image'); //TODO: Process
+        $saved_url = save_base_64_image($image, get_setting("store_image_path"));
+
+        //save url to database.
+        $item_data["image"] = $saved_url;
+        $item_id = $this->Stores_model->save($item_data, $id);
+        
+        if ($item_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+            exit;
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
 }
 
 /* End of file Stores.php */

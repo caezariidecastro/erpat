@@ -870,16 +870,15 @@ if (!function_exists('save_base_64_image')) {
         $imageData = base64_decode($image_array_2[1]);
 
         //Make sure directory is existing.
-        $target_dir = get_setting("product_image_path");
-        if (!file_exists($target_dir . $path)) {
-            mkdir($target_dir . $path, 0777, true);
+        $target_dir = $path;
+        if (!file_exists( $target_dir )) {
+            mkdir($target_dir, 0777, true);
         }
 
         //Generate name for this photo.
-        $fileName = empty($name) ? sha1(date("Y-m-d~h:i:s")).$extention : $name.$extention;
-        $path = empty($path) ? "" : $path."/";
-        $imageDir = $target_dir . $path . $fileName;
-        $imageUrl = get_uri( $target_dir . $path . $fileName );
+        $fileName = sha1(date("Y-m-d~h:i:s")).$extention;
+        $imageDir = $target_dir ."/". $fileName;
+        $imageUrl = get_uri( $target_dir ."/". $fileName );
 
         if( file_put_contents($imageDir, $imageData) === false ) {
             return false;
