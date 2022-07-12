@@ -215,7 +215,7 @@ class Users_model extends Crud_model {
         $latest = get_array_value($data, "sched_id");
         $previous = get_array_value($data, "prev_sched_id");
 
-        $sql = "UPDATE $jobinfo SET `sched_id`='$latest' WHERE sched_id='$previous'";
+        $sql = "UPDATE $jobinfo SET sched_id=$latest WHERE sched_id=$previous";
         return $this->db->query($sql);
     }
 

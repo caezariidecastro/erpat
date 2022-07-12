@@ -129,7 +129,7 @@ class Schedule extends MY_Controller
             $data->title,
             nl2br($data->desc),
             $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday,
-            $data->date_created,
+            convert_date_utc_to_local($data->date_created),
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             $actions
         );
@@ -261,10 +261,10 @@ class Schedule extends MY_Controller
         $data["sat"] = $this->getDaySched("sat");
         $data["sun"] = $this->getDaySched("sun");
 
-        $data["date_created"] = get_my_local_time();
+        $data["date_created"] = get_current_utc_time();
         $data["created_by"] = $this->login_user->id;
 
-        $saved_id = $this->Schedule_model->save($data, null);
+        $saved_id = $this->Schedule_model->save($data);
 
         if ($saved_id) {            
             $data = array(
