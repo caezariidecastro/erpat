@@ -166,9 +166,9 @@ class Payrolls extends MY_Controller {
             $payroll_data["category"] = $this->input->post('category_id') ? $this->input->post('category_id'):0;
             $payroll_data["account_id"] = $this->input->post('account_id');
             $payroll_data["department"] = $this->input->post('department_id');
-            $payroll_data["start_date"] = convert_date_local_to_utc($this->input->post('start_date'), 'Y-m-d');
-            $payroll_data["end_date"] = convert_date_local_to_utc($this->input->post('end_date'), 'Y-m-d');
-            $payroll_data["pay_date"] = convert_date_local_to_utc($this->input->post('pay_date'), 'Y-m-d');
+            $payroll_data["start_date"] = $this->input->post('start_date');
+            $payroll_data["end_date"] = $this->input->post('end_date');
+            $payroll_data["pay_date"] = $this->input->post('pay_date');
             $payroll_data["timestamp"] = get_current_utc_time();
             $payroll_data["signed_by"] = $this->login_user->id;
             $payroll_data["created_by"] = $this->login_user->id;
@@ -198,9 +198,9 @@ class Payrolls extends MY_Controller {
         $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
 
         if($id) {
-            $view_data['model_info']->start_date = convert_date_utc_to_local($view_data['model_info']->start_date, 'Y-m-d');
-            $view_data['model_info']->end_date = convert_date_utc_to_local($view_data['model_info']->end_date, 'Y-m-d');
-            $view_data['model_info']->pay_date = convert_date_utc_to_local($view_data['model_info']->pay_date, 'Y-m-d');
+            $view_data['model_info']->start_date = $view_data['model_info']->start_date;
+            $view_data['model_info']->end_date = $view_data['model_info']->end_date;
+            $view_data['model_info']->pay_date = $view_data['model_info']->pay_date;
         }
 
         $this->load->view('payrolls/modal_form', $view_data);
@@ -239,7 +239,7 @@ class Payrolls extends MY_Controller {
             $payroll_info = $this->Payrolls_model->get_details($options)->row();
 
             if ($save_id) {
-                echo json_encode(array("success" => true, "data" => $this->_row_data($payroll_id), "id" => $payroll_id, "message" => lang("record_saved")));
+                echo json_encode(array("success" => true, "data" => $this->_row_data($payroll_info), "id" => $payroll_id, "message" => lang("record_saved")));
             } else {
                 echo json_encode(array("success" => false, lang('error_occurred')));
             }
@@ -273,7 +273,7 @@ class Payrolls extends MY_Controller {
             $payroll_info = $this->Payrolls_model->get_details($options)->row();
 
             if ($save_id) {
-                echo json_encode(array("success" => true, "data" => $this->_row_data($payroll_id), "id" => $payroll_id, "message" => lang("record_saved")));
+                echo json_encode(array("success" => true, "data" => $this->_row_data($payroll_info), "id" => $payroll_id, "message" => lang("record_saved")));
             } else {
                 echo json_encode(array("success" => false, lang('error_occurred')));
             }
@@ -344,23 +344,24 @@ class Payrolls extends MY_Controller {
         //absent, late, overbreak, undertime
         foreach($users as $user_id) {
 
+            $job_info = $this->Users_model->get_job_info($user_id);
+
             $attendance = $this->Attendance_model->get_details(array(
                 "user_id" => $user_id,
                 "start_date" => $payroll_info->start_date,
                 "end_date" => $payroll_info->end_date,
-                "login_user_id" => $this->login_user->id, 
-                "access_type" => $this->access_type, 
-                "allowed_members" => $this->allowed_members
+                "access_type" => "all",
             ))->result();
+            //$payslips[] = $attendance;
 
             $attd = (new BioMeet($this, array(
-                "hours_per_day" => $hours_per_day
+              "hours_per_day" => $job_info->hours_per_day
             ), true))->setAttendance($attendance)->calculate();
 
             $payslips[] = array(
                 "payroll" => $payroll_id,
                 "user" => $user_id,
-                //"hourly_rate" => $user_id, //hourly_rate
+                "hourly_rate" => $job_info->rate_per_hour,
                 //"leave_credit" => $user_id, //hourly_rate
 
                 "schedule" => $attd->getTotalSchedule(), //schedule

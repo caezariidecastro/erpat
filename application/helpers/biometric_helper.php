@@ -5,7 +5,7 @@ class BioMeet {
     protected $ci = null;
     protected $on_debug = false;
 
-    protected $hours_per_day = 8.0;
+    protected $hours_per_day = 8;
     protected $attendance = [];
     protected $attd_data = [];
 
@@ -13,8 +13,8 @@ class BioMeet {
         $this->ci = $ci;
         $this->on_debug = $on_debug;
 
-        $this->hours_per_day = isset($rates['hours_per_day']) && is_numeric($rates['hours_per_day'])?
-            $rates['hours_per_day']:$this->hours_per_day;
+        $this->hours_per_day = isset($options['hours_per_day']) && is_numeric($options['hours_per_day'])?
+            $options['hours_per_day']:$this->hours_per_day;
         return $this;
     }
 
@@ -112,9 +112,9 @@ class BioMeet {
             $under = 0;
             
             //Important attendance triggers.
+            $from_time = strtotime($data->in_time);
             $to_time = is_date_exists($data->out_time) ? 
             strtotime($data->out_time) : null;
-            $from_time = strtotime($data->in_time);
 
             //Get the instance of the schedule.
             $cur_sched = $this->ci->Schedule_model->get_details(array("id" => $data->sched_id))->row();
@@ -158,7 +158,7 @@ class BioMeet {
                 $under = convert_seconds_to_hour_decimal( max($sched_out-$to_time, 0) );
                 
                 //Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
-                $sched_hours = convert_seconds_to_hour_decimal( max($sched_end-$sched_in, 0) );
+                $schedule = convert_seconds_to_hour_decimal( max($sched_out-$sched_in, 0) );
 
                 //Get non worked hours: a = x+y
                 $nonworked = convert_number_to_decimal( max(($lates+$under), 0) );
