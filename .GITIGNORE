@@ -51,3 +51,5 @@ files/timeline_files/*
 .env.development.php
 .vscode/settings.json
 temp/*
+
+.DS_Store
