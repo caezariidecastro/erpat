@@ -44,32 +44,30 @@ class MY_Controller extends CI_Controller {
      * Validate a module if currently enabled for this user.
      */
     protected function validate_user_module_permission($module) {
-        if(!is_user_has_module_permission($module, $asbool = false)){
-            if(!$asbool) {
-                redirect("forbidden");
-            }
-        } else {
-            if($asbool) {
-                return true;
-            }
+        if(is_user_has_module_permission($module, $asbool = false)){
+            return true;
         }
-        return false;
+
+        if($asbool) {
+            return false;
+        } else {
+            redirect("forbidden");
+        }
     }
 
     /**
      * Validate user permission if enabled for this sub module.
      */
     protected function validate_user_role_permission($permission, $asbool = false) {
-        if(!user_role_has_permission($permission)){
-            if(!$asbool) {
-                redirect("forbidden");
-            }
-        } else {
-            if($asbool) {
-                return true;
-            }
+        if(user_role_has_permission($permission)){
+            return true;
         }
-        return false;
+
+        if($asbool) {
+            return false;
+        } else {
+            redirect("forbidden");
+        }
     }
 
     /**

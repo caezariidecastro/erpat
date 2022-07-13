@@ -678,6 +678,7 @@ class Team_members extends MY_Controller {
         $view_data['sched_dropdown'] = $this->_get_schedule_dropdown();
 
         $view_data['user_id'] = $user_id;
+        $view_data['payroll_enabled'] = $this->validate_user_role_permission("payroll_enable", true);
         $view_data['job_info'] = $this->Users_model->get_job_info($user_id);
         $view_data['job_info']->job_title = $user_info->job_title;
         $this->load->view("team_members/job_info", $view_data);

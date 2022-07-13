@@ -36,20 +36,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="salary" class=" col-md-2"><?php echo lang('salary'); ?></label>
-                <div class="col-md-10">
-                    <?php
-                    echo form_input(array(
-                        "id" => "salary",
-                        "name" => "salary",
-                        "value" => $job_info->salary ? to_decimal_format($job_info->salary) : "",
-                        "class" => "form-control",
-                        "placeholder" => lang('salary')
-                    ));
-                    ?>
-                </div>
-            </div>
-            <div class="form-group">
                 <label for="salary_term" class=" col-md-2"><?php echo lang('salary_term'); ?></label>
                 <div class="col-md-10">
                     <?php
@@ -63,6 +49,38 @@
                     ?>
                 </div>
             </div>
+            <?php if( $payroll_enabled ) { ?>
+            <div class="form-group">
+                <label for="salary" class=" col-md-2"><?php echo lang('salary'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "salary",
+                        "name" => "salary",
+                        "type" => "number",
+                        "value" => $job_info->salary ? convert_number_to_decimal($job_info->salary) : 0,
+                        "class" => "form-control",
+                        "placeholder" => lang('salary')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="rate_per_hour" class=" col-md-2"><?php echo lang('rate_per_hour'); ?></label>
+                <div class=" col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "rate_per_hour",
+                        "name" => "rate_per_hour",
+                        "type" => "number",
+                        "value" => $job_info->rate_per_hour ? convert_number_to_decimal($job_info->rate_per_hour) : 0,
+                        "class" => "form-control",
+                        "placeholder" => lang('rate_per_hour')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <?php } ?>
             <div class="form-group">
                 <label for="sched_id" class=" col-md-2"><?php echo lang('current_schedule'); ?></label>
                 <div class=" col-md-10">
@@ -78,23 +96,10 @@
                     echo form_input(array(
                         "id" => "hours_per_day",
                         "name" => "hours_per_day",
-                        "value" => $job_info->hours_per_day,
+                        "type" => "number",
+                        "value" => $job_info->hours_per_day ? convert_number_to_decimal($job_info->hours_per_day) : 0,
                         "class" => "form-control",
                         "placeholder" => lang('hours_per_day')
-                    ));
-                    ?>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="rate_per_hour" class=" col-md-2"><?php echo lang('rate_per_hour'); ?></label>
-                <div class=" col-md-10">
-                    <?php
-                    echo form_input(array(
-                        "id" => "rate_per_hour",
-                        "name" => "rate_per_hour",
-                        "value" => $job_info->rate_per_hour,
-                        "class" => "form-control",
-                        "placeholder" => lang('rate_per_hour')
                     ));
                     ?>
                 </div>
@@ -134,6 +139,7 @@
             <h4><?php echo lang('emergency_contact'); ?></h4>
         </div>
         <div class="panel-body">
+            <div></div>
             <div class="form-group">
                 <label for="contact_name" class=" col-md-2"><?php echo lang('contact_name'); ?></label>
                 <div class="col-md-10">
