@@ -45,7 +45,6 @@ class Leave_credits_model extends Crud_model {
 
     function get_balance($options = array()) {
         $leave_credits_table = $this->db->dbprefix('leave_credits');
-        $users_table = $this->db->dbprefix('users');
         $where = "";
 
         $user_id = get_array_value($options, "user_id");

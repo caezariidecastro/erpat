@@ -1,12 +1,12 @@
 <?php
     $payslip = array(
-        "fullname" => "Juan Dela Cruz",
-        "basic_salary" => "P120,000.00",
-        "leave_credit" => "12.5",
+        "fullname" => $payslip->fullname,
+        "basic_salary" => to_currency($payslip->salary),
+        "leave_credit" => convert_number_to_decimal($payslip->leave_credit),
 
-        "job_title" => "Team Leader",
-        "department" => "Software Engineering",
-        "directorate" => "Backend Developer",
+        "job_title" => $payslip->job_title,
+        "department" => $payslip->department,
+        "directorate" => "None",
 
         "earnings" => [
             array(
@@ -51,15 +51,17 @@
 
         "total_earn" => to_currency($summary['total_earn']),
         "total_deduct" => to_currency($summary['total_deduct']),
-        "accountant" => "Maria Quizumbing",
 
         "net_pay" => to_currency($summary['net_pay']),
-        "pay_period" => "June 1-15, 2022",
-        "payment_date" => "June 25, 2022",
+        "pay_period" => $payslip->pay_period,
+        "payment_date" => $payslip->pay_date,
 
         "bank_name" => "",
         "account_name" => "",
         "account_number" => "",
+
+        "accountant_sign" => "",
+        "accountant_name" => $payslip->accountant_name,
     );
 
     if( isset($summary['allowance']) ) {
@@ -174,11 +176,8 @@
     .body-color {
         background-color: #edf5fa;
     }
-
-    .footer-color {
-        background-color: #c2e3ff;
-    }
 </style>
+<?php $footer_color = "#c2e3ff"; ?>
 
 <div class="background-color" style="border: 2px solid grey;">
     
@@ -247,20 +246,24 @@
             <th width="24.7%" style="text-align: center;"><strong style="color: #262626;">Deductions</strong></th>
         </tr>
         <?php foreach($payslip['earnings'] as $earns) { ?>
+            <?php if($earns['value'] != to_currency("0") ) { ?>
             <tr style="color: #454545;">
                 <td><?= $earns['name'] ?></td>
                 <td style="text-align: right;"><?= $earns['value'] ?></td>
                 <td style="text-align: right;">-</td>
             </tr>
+            <?php } ?>
         <?php } ?>
 
         <!-- Allowance, Incentives, 13 Month, Bonus, Adjustment-->
         <?php foreach($payslip['deductions'] as $deducts) { ?>
+            <?php if($deducts['value'] != to_currency("0") ) { ?>
             <tr style="color: #454545;">
                 <td><?= $deducts['name'] ?></td>
                 <td style="text-align: right;">-</td>
                 <td style="text-align: right;"><?= $deducts['value'] ?></td>
             </tr>
+            <?php } ?>
         <?php } ?>
         
         <tr style="color: #242323;">
@@ -272,9 +275,9 @@
 
     <!-- BANK & SUMMARY -->
     <table style="background-color: white;">
-        <tr class="footer-color">
+        <tr style="background-color: <?= $footer_color ?>;">
             <th width="49.5%">
-                <ul style="font-weight: 100;">
+                <ul style="font-weight: 100;" >
                     <li ></li>
                     <li style="line-height: 25px;">
                         Bank Name: <span style="color: #454545;"><?= $payslip['bank_name'] ?></span>
@@ -294,7 +297,7 @@
                         <th width="49.5%" style="border: none;"></th>
                         <th width="49.5%" style="border: none;"></th>
                     </tr>
-                    <tr class="footer-color">
+                    <tr style="background-color: <?= $footer_color ?>;">
                         <td style="border: none; text-align: right; font-size: 20px;">
                             <strong>NET PAY: </strong>
                         </td>
@@ -316,7 +319,7 @@
                             </p>
                         </th>
                     </tr>
-                    <tr class="footer-color">
+                    <tr style="background-color: <?= $footer_color ?>;">
                         <td style="border: none;"></td>
                         <td style="border: none;"></td>
                     </tr>
@@ -336,7 +339,7 @@
                     Certified true and correct:
                 </small>
                 <p style="text-align: center; font-size: 20px;">
-                    <?= $payslip['accountant'] ?>
+                    <?= $payslip['accountant_name'] ?>
                 </p>
                 <p style="text-align: center; font-size: 15px; line-height: 20px; font-weight: 200; border-top: 1px solid grey;">
                     Head, HR/Accounting   

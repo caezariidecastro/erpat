@@ -26,7 +26,7 @@
     </div>
     <?php if( isset($model_info) && isset($model_info->signed_by) && ($this->login_user->is_admin || $model_info->signed_by == $this->login_user->id) ) { ?>
     <div class="form-group">
-        <label for="user_id" class="col-md-3"><?php echo lang('department'); ?></label>
+        <label for="user_id" class="col-md-3"><?php echo lang('employee'); ?></label>
         <div class="col-md-9">
             <?php
             echo form_dropdown("user_id", $user_dropdown, $model_info ? $model_info->signed_by : "", "class='select2 validate-hidden' id='user_id' data-rule-required='true' data-msg-required='".lang("field_required")."'");
@@ -79,6 +79,14 @@
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
             ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="accountant_id" class="col-md-3"><?php echo lang('accountant'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_dropdown("accountant_id", $user_dropdown, $model_info ? $model_info->accountant_id : "", "class='select2 validate-hidden' id='accountant_id' data-rule-required='true' data-msg-required='".lang("field_required")."' ".(isset($model_info->id)?"disabled":""));
             ?>
         </div>
     </div>

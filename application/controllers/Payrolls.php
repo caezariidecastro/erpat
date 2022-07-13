@@ -12,6 +12,7 @@ class Payrolls extends MY_Controller {
 
         $this->load->model("Payrolls_model");
         $this->load->model("Payslips_model");
+        $this->load->model("Leave_credits_model");
         $this->load->model("Accounts_model");
         $this->load->model("Attendance_model");
         $this->load->model("Payment_methods_model");
@@ -171,6 +172,7 @@ class Payrolls extends MY_Controller {
             $payroll_data["pay_date"] = $this->input->post('pay_date');
             $payroll_data["timestamp"] = get_current_utc_time();
             $payroll_data["signed_by"] = $this->login_user->id;
+            $payroll_data["accountant_id"] = $this->input->post('accountant_id');
             $payroll_data["created_by"] = $this->login_user->id;
         }
 
@@ -1016,10 +1018,37 @@ class Payrolls extends MY_Controller {
     }
 
     function preview( $payslip_id = 0 ) {
-        $query = $this->Payslips_model->get_details(array(
+        $payslip = $this->Payslips_model->get_details(array(
             "id" => $payslip_id
-        ))->result();
-        $payslip = $query[0]; //TODO: Optimized
+        ))->row();
+
+        $payroll = $this->Payrolls_model->get_details(array(
+            "id" => $payslip->payroll
+        ))->row();
+        $payslip->pay_date = format_to_custom($payroll->pay_date, "F d, Y");
+        $payslip->pay_period= format_to_custom($payroll->start_date, "F d-").format_to_custom($payroll->end_date, "d Y");
+
+        $user = $this->Users_model->get_details(array(
+            "id" => $payslip->user
+        ))->row();
+        $payslip->fullname = $user->first_name." ".$user->last_name;
+        $payslip->job_title = $user->job_title;
+
+        $leave_credit = $this->Leave_credits_model->get_balance(array(
+            "user_id" => $payslip->user
+        ));
+        $payslip->leave_credit = $leave_credit['balance'];
+
+        $team = $this->Team_model->get_teams($payslip->user)->row();//todo
+        $payslip->department = $team?$team->title:"None";
+
+        $job_info = $this->Users_model->get_job_info($payslip->user);
+        $payslip->salary = $job_info->salary;
+
+        $accountant = $this->Users_model->get_details(array(
+            "id" => $payslip->accountant_id
+        ))->row();
+        $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
 
         $view_data["payslip"] = $payslip;
         $view_data["summary"] = $this->processPayHP( $payslip )->calculate();
@@ -1042,7 +1071,40 @@ class Payrolls extends MY_Controller {
 
     function download_pdf($id = 0, $mode = "download") {
         if ($id) {
-            $view_data["payroll_info"] = $this->Payrolls_model->get_details(array("id" => $id))->row();
+            $payslip = $this->Payslips_model->get_details(array(
+                "id" => $id
+            ))->row();
+    
+            $payroll = $this->Payrolls_model->get_details(array(
+                "id" => $payslip->payroll
+            ))->row();
+            $payslip->pay_date = format_to_custom($payroll->pay_date, "F d, Y");
+            $payslip->pay_period= format_to_custom($payroll->start_date, "F d-").format_to_custom($payroll->end_date, "d Y");
+    
+            $user = $this->Users_model->get_details(array(
+                "id" => $payslip->user
+            ))->row();
+            $payslip->fullname = $user->first_name." ".$user->last_name;
+            $payslip->job_title = $user->job_title;
+    
+            $leave_credit = $this->Leave_credits_model->get_balance(array(
+                "user_id" => $payslip->user
+            ));
+            $payslip->leave_credit = $leave_credit['balance'];
+    
+            $team = $this->Team_model->get_teams($payslip->user)->row();//todo
+            $payslip->department = $team?$team->title:"None";
+    
+            $job_info = $this->Users_model->get_job_info($payslip->user);
+            $payslip->salary = $job_info->salary;
+    
+            $accountant = $this->Users_model->get_details(array(
+                "id" => $payslip->accountant_id
+            ))->row();
+            $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
+    
+            $view_data["payslip"] = $payslip;
+            $view_data["summary"] = $this->processPayHP( $payslip )->calculate();
 
             $this->prepare_payslip_pdf($view_data);
         } else {

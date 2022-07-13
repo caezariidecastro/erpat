@@ -710,3 +710,5 @@ $lang["pay_period"] = "Pay Period";
 
 $lang["lock_payment"] = "Lock Payment";
 $lang["expense_category"] = "Expense Category";
+
+$lang["accountant"] = "Accountant";
