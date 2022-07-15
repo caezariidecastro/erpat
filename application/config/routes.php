@@ -191,6 +191,7 @@ $route["hrs/leaves/(:any)"] = "Leaves/$1";
 
 $route['hrs/department'] = 'Team/department';
 $route["hrs/team/(:any)"] = "Team/$1";
+$route["hrs/team/(:any)/(:any)"] = "Team/$1/$2";
 
 $route['hrs/attendance'] = 'attendance/index';
 $route["hrs/attendance/(:any)"] = "attendance/$1";

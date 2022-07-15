@@ -332,13 +332,8 @@ class Payrolls extends MY_Controller {
             "id" => $payroll_info->department
         ))->row();
 
-        $users = []; //list of users.
-        $lists = explode(",", $department->heads.",".$department->members);
-        for ($i = 0; $i < count($lists); $i++) {
-            if (isset($lists[$i]) && !in_array($lists[$i], $users)) {
-                $users[] = $lists[$i];
-            }
-        }
+        $this->load->helper('utility');
+        $users = get_team_all_unique($department->heads, $department->members);
         
         //Get all the summarized attendance from date focused on in.
         $payslips = [];

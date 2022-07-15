@@ -142,7 +142,8 @@ class Team extends MY_Controller {
             modal_anchor(get_uri("hrs/team/members_list"), $total_members, array("title" => lang('employee'), "data-post-members" => $data->members)),
             $data->date_created,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
-            modal_anchor(get_uri("hrs/team/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_department'), "data-post-id" => $data->id))
+            anchor(get_uri("hrs/team/export_qrcode/".$data->id), "<i class='fa fa-qrcode'></i> ", array("class" => "edit", "target" => "_blank"))
+            .modal_anchor(get_uri("hrs/team/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_department'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_department'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/team/delete"), "data-action" => "delete-confirmation"))
         );
     }
@@ -155,6 +156,68 @@ class Team extends MY_Controller {
     function heads_list() {
         $view_data['team_members'] = $this->Users_model->get_team_members($this->input->post('heads'))->result();
         $this->load->view('team/heads_list', $view_data);
+    }
+
+    function export_qrcode( $team_id = 0) {
+
+        $team_info = $this->Team_model->get_details(array(
+            "id" => $team_id
+        ))->row();
+
+        $this->load->library('pdf');
+        $this->pdf->setPrintHeader(false);
+        $this->pdf->setPrintFooter(false);
+        $this->pdf->SetCellPadding(1);
+        $this->pdf->setImageScale(2.0);
+        $this->pdf->AddPage();
+        $this->pdf->SetFontSize(9);
+
+        $this->load->helper('utility');
+        $users = get_team_all_unique($team_info->heads, $team_info->members);
+
+        $html = "<strong>Department: </strong>".$team_info->title;
+        $this->pdf->writeHTML($html, true, false, true, false, '');
+
+        $style = array(
+            'border' => 2,
+            'vpadding' => '2px',
+            'hpadding' => '2px',
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => array(255,255,255), //array(255,255,255)
+            'module_width' => 1, // width of a single module in points
+            'module_height' => 1 // height of a single module in points
+        );
+
+        $current_col_number = 0;
+
+        $current_width = 10;
+        $incremental_width = 50;
+        
+        $current_height = 20;
+        $incremental_height  = 52;
+
+        for( $i=0; $i<count($users); $i++ ) {
+            // QRCODE,H : QR-CODE Best error correction
+            $this->pdf->write2DBarcode('{"id":"'.$users[$i].'"}', 'QRCODE,H', $current_width , $current_height, 40, 40, $style, 'N');
+            $user_info = $this->Users_model->get_details(array('id'=>$users[$i]))->row();
+            $this->pdf->Text($current_width , $current_height+41, $user_info->first_name." ".$user_info->last_name);
+
+            $current_width += $incremental_width;
+
+            if($current_col_number < 3) {
+                $current_col_number += 1;
+            } else {
+                $current_width = 10;
+                $current_col_number = 0;
+                //add current height
+                $current_height += $incremental_height;
+            }
+        }
+
+        
+
+        $pdf_file_name =  str_replace(" ", "-", $team_info->title) . "-QRcodes.pdf";
+        $this->pdf->Output($pdf_file_name, "I");
     }
 
 }
