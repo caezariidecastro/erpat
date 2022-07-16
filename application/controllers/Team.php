@@ -188,7 +188,7 @@ class Team extends MY_Controller {
             'module_height' => 1 // height of a single module in points
         );
 		
-		$current_page = 1;
+		$current_page = 0;
         $current_col_number = 0;
 		$current_rows = 0;
 
@@ -222,9 +222,9 @@ class Team extends MY_Controller {
 					$current_height = 20;
 					$this->pdf->AddPage();
 					
+                    $current_page += 1;
 					$html = "Page ".$current_page." of ".$team_info->title;
         			$this->pdf->writeHTML($html, true, false, true, false, '');
-					$current_page += 1;
 				}
             }
         }
