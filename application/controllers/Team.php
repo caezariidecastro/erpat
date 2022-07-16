@@ -175,7 +175,7 @@ class Team extends MY_Controller {
         $this->load->helper('utility');
         $users = get_team_all_unique($team_info->heads, $team_info->members);
 
-        $html = "<strong>Department: </strong>".$team_info->title;
+        $html = "Page 1 of ".$team_info->title;
         $this->pdf->writeHTML($html, true, false, true, false, '');
 
         $style = array(
@@ -187,8 +187,10 @@ class Team extends MY_Controller {
             'module_width' => 1, // width of a single module in points
             'module_height' => 1 // height of a single module in points
         );
-
+		
+		$current_page = 1;
         $current_col_number = 0;
+		$current_rows = 0;
 
         $current_width = 10;
         $incremental_width = 50;
@@ -197,24 +199,35 @@ class Team extends MY_Controller {
         $incremental_height  = 52;
 
         for( $i=0; $i<count($users); $i++ ) {
+			if(!$user_info = $this->Users_model->get_details(array('id'=>$users[$i]))->row()) {
+				continue; //skip this, user not found.
+			}
+			
             // QRCODE,H : QR-CODE Best error correction
             $this->pdf->write2DBarcode('{"id":"'.$users[$i].'"}', 'QRCODE,H', $current_width , $current_height, 40, 40, $style, 'N');
-            $user_info = $this->Users_model->get_details(array('id'=>$users[$i]))->row();
             $this->pdf->Text($current_width , $current_height+41, $user_info->first_name." ".$user_info->last_name);
 
             $current_width += $incremental_width;
-
+			$current_rows += 1;
+			
             if($current_col_number < 3) {
                 $current_col_number += 1;
             } else {
                 $current_width = 10;
                 $current_col_number = 0;
-                //add current height
                 $current_height += $incremental_height;
+			
+				if($current_rows >= 20) {
+					$current_rows = 0;
+					$current_height = 20;
+					$this->pdf->AddPage();
+					
+					$html = "Page ".$current_page." of ".$team_info->title;
+        			$this->pdf->writeHTML($html, true, false, true, false, '');
+					$current_page += 1;
+				}
             }
         }
-
-        
 
         $pdf_file_name =  str_replace(" ", "-", $team_info->title) . "-QRcodes.pdf";
         $this->pdf->Output($pdf_file_name, "I");
