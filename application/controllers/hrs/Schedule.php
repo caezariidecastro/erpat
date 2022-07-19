@@ -139,60 +139,53 @@ class Schedule extends MY_Controller
         if($data) {
             $data_modal = $data;
 
-            if($data->mon) {
-                $day = unserialize($data->mon);
-                $data_modal->mon_enable = 1;
-                $data_modal->mon_in = $day['in'];
-                $data_modal->mon_out = $day['out'];
-                $data_modal->mon_text = $day['in']."-".$day['out'];
-            }
+            $days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+            foreach($days as $day) {
+                if($data->$day) {
+                    $day_data = unserialize($data->$day);
 
-            if($data->tue) {
-                $day = unserialize($data->tue);
-                $data_modal->tue_enable = 1;
-                $data_modal->tue_in = $day['in'];
-                $data_modal->tue_out = $day['out'];
-                $data_modal->tue_text = $day['in']."-".$day['out'];
-            }
+                    $lunch_break = 0;
+                    $trackings = ['', '_first', '_lunch', '_second'];
+                    foreach($trackings as $tracking) {
+                        $enable = $day."_enable".$tracking;
+                        if( !empty($tracking) ) {
+                            $data_modal->$enable = $day_data['enabled'.$tracking];
 
-            if($data->wed) {
-                $day = unserialize($data->wed);
-                $data_modal->wed_enable = 1;
-                $data_modal->wed_in = $day['in'];
-                $data_modal->wed_out = $day['out'];
-                $data_modal->wed_text = $day['in']."-".$day['out'];
-            }
+                            if($tracking === "_lunch" && isset($day_data['enabled_lunch']) && isset($day_data['in_lunch']) && isset($day_data['out_lunch'])) {
+                                $in = get_today_date()." ".convert_time_to_24hours_format($day_data['in_lunch']);
+                                if( strpos($day_data['in_lunch'], 'PM') !== false && strpos($day_data['out_lunch'], 'AM') !== false) {
+                                    $out = get_tomorrow_date()." ".convert_time_to_24hours_format($day_data['out_lunch']);
+                                } else {
+                                    $out = get_today_date()." ".convert_time_to_24hours_format($day_data['out_lunch']);
+                                }
+                                $lunch_break += max(strtotime($out) - strtotime($in), 0);
+                            }
+                        } else {
+                            $data_modal->$enable = 1;
+                        }
+                        
+                        $in = $day."_in".$tracking;
+                        $data_modal->$in = $day_data['in'.$tracking];
+    
+                        $out = $day."_out".$tracking;
+                        $data_modal->$out = $day_data['out'.$tracking];
+                    }
+                    
+                    $in = get_today_date()." ".convert_time_to_24hours_format($day_data['in']);
+                    if( strpos($day_data['in'], 'PM') !== false && strpos($day_data['out'], 'AM') !== false) {
+                        $out = get_tomorrow_date()." ".convert_time_to_24hours_format($day_data['out']);
+                    } else {
+                        $out = get_today_date()." ".convert_time_to_24hours_format($day_data['out']);
+                    }
+                    $sched = max(strtotime($out) - strtotime($in), 0);
+                    $sched = max(($sched - $lunch_break), 0);
 
-            if($data->thu) {
-                $day = unserialize($data->thu);
-                $data_modal->thu_enable = 1;
-                $data_modal->thu_in = $day['in'];
-                $data_modal->thu_out = $day['out'];
-                $data_modal->thu_text = $day['in']."-".$day['out'];
-            }
+                    $hours = $day."_hours";
+                    $data_modal->$hours = convert_seconds_to_hour_decimal($sched);
 
-            if($data->fri) {
-                $day = unserialize($data->fri);
-                $data_modal->fri_enable = 1;
-                $data_modal->fri_in = $day['in'];
-                $data_modal->fri_out = $day['out'];
-                $data_modal->fri_text = $day['in']."-".$day['out'];
-            }
-
-            if($data->sat) {
-                $day = unserialize($data->sat);
-                $data_modal->sat_enable = 1;
-                $data_modal->sat_in = $day['in'];
-                $data_modal->sat_out = $day['out'];
-                $data_modal->sat_text = $day['in']."-".$day['out'];
-            }
-
-            if($data->sun) {
-                $day = unserialize($data->sun);
-                $data_modal->sun_enable = 1;
-                $data_modal->sun_in = $day['in'];
-                $data_modal->sun_out = $day['out'];
-                $data_modal->sun_text = $day['in']."-".$day['out'];
+                    $text = $day."_text";
+                    $data_modal->$text = $day_data['in']."-".$day_data['out'];
+                }
             }
 
             return $data_modal;
@@ -227,11 +220,35 @@ class Schedule extends MY_Controller
         $in = $this->input->post($day."_in");
         $out = $this->input->post($day."_out");
 
+        $enabled_first = $this->input->post($day."_enable_first");
+        $in_first = $this->input->post($day."_in_first");
+        $out_first = $this->input->post($day."_out_first");
+
+        $enabled_lunch = $this->input->post($day."_enable_lunch");
+        $in_lunch = $this->input->post($day."_in_lunch");
+        $out_lunch = $this->input->post($day."_out_lunch");
+
+        $enabled_second = $this->input->post($day."_enable_second");
+        $in_second = $this->input->post($day."_in_second");
+        $out_second = $this->input->post($day."_out_second");
+
         if($enabled) {
             return serialize(
                 array(
                     "in" => $in,
                     "out" => $out,
+
+                    "enabled_first" => $enabled_first,
+                    "in_first" => $in_first,
+                    "out_first" => $out_first,
+
+                    "enabled_lunch" => $enabled_lunch,
+                    "in_lunch" => $in_lunch,
+                    "out_lunch" => $out_lunch,
+
+                    "enabled_second" => $enabled_second,
+                    "in_second" => $in_second,
+                    "out_second" => $out_second,
                 )
             );
         } else {

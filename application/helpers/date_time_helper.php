@@ -639,3 +639,63 @@ if (!function_exists('format_to_custom')) {
     
 }
 
+
+if (!function_exists('get_day_name')) {
+
+    function get_day_name($day_short) {
+        
+        switch($day_short) {
+            case "mon":
+                return "monday";
+                break;
+            case "tue":
+                return "tuesday";
+                break;
+            case "wed":
+                return "wednesday";
+                break;
+            case "thu":
+                return "thursday";
+                break;
+            case "fri":
+                return "friday";
+                break;
+            case "sat":
+                return "saturday";
+                break;
+            case "sun":
+                return "sunday";
+                break;
+            default:
+                return "unknown";
+                break;
+        }
+    }
+    
+}
+
+
+if (!function_exists('get_sched_title')) {
+
+    function get_sched_title($key) {
+        
+        switch($key) {
+            case "":
+                return "Regular";
+                break;
+            case "_first":
+                return "1st Break";
+                break;
+            case "_lunch":
+                return "Lunch Break";
+                break;
+            case "_second":
+                return "2nd Break";
+                break;
+            default:
+                return "unknown";
+                break;
+        }
+    }
+    
+}
