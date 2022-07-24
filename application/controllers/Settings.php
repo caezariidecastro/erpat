@@ -99,7 +99,7 @@ class Settings extends MY_Controller {
     }
 
     function save_calendar_settings() {
-        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends");
+        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "breaktime_tracking");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);

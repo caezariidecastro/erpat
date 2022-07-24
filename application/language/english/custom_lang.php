@@ -714,3 +714,4 @@ $lang["expense_category"] = "Expense Category";
 $lang["accountant"] = "Accountant";
 
 $lang["export_qrcode"] = "Export QRCode";
+$lang["breaktime_tracking"] = "Breaktime Tracking";
