@@ -57,11 +57,11 @@
             <li><a role="presentation" href="<?php echo_uri("hrs/team_members/projects_info/" . $user_info->id); ?>" data-target="#tab-projects-info"><?php echo lang('projects'); ?></a></li>
         <?php } ?> 
 
-        <?php if ($show_attendance) { ?>
+        <?php if ($show_attendance && false) { ?>
             <li><a role="presentation" href="<?php echo_uri("hrs/team_members/attendance_info/" . $user_info->id); ?>" data-target="#tab-attendance-info"> <?php echo lang('attendance'); ?></a></li>
         <?php } ?>
 
-        <?php if ($show_overtime) { ?>
+        <?php if ($show_overtime && false) { ?>
             <li><a role="presentation" href="<?php echo_uri("hrs/team_members/overtime_info/" . $user_info->id); ?>" data-target="#tab-overtime-info"> <?php echo lang('overtime'); ?></a></li>
         <?php } ?>
 
