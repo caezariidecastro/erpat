@@ -348,7 +348,7 @@ class Attendance extends MY_Controller {
             $data->out_time ? format_to_time( $data->out_time ) : "-",
             $attd->getTotalDuration(),
             strval($attd->getTotalWork()), strval($attd->getTotalAbsent()), 
-            strval($attd->getTotalLates()), strval($attd->getTotalUndertime()),
+            strval($attd->getTotalLates()), strval($attd->getTotalOverbreak()), strval($attd->getTotalUndertime()),
             $info_link,
             $option_links
         );
@@ -428,6 +428,7 @@ class Attendance extends MY_Controller {
                     $list_temp[$data->user_id][4] += (double)$single[4];
                     $list_temp[$data->user_id][5] += (double)$single[5];
                     $list_temp[$data->user_id][6] += (double)$single[6];
+                    $list_temp[$data->user_id][7] += (double)$single[7];
                 } else {
                     $list_temp[$data->user_id] = array();
                     $list_temp[$data->user_id][0] = $single[0];
@@ -437,6 +438,7 @@ class Attendance extends MY_Controller {
                     $list_temp[$data->user_id][4] = (double)$single[4];
                     $list_temp[$data->user_id][5] = (double)$single[5];
                     $list_temp[$data->user_id][6] = (double)$single[6];
+                    $list_temp[$data->user_id][7] = (double)$single[7];
                 }
             }
         }
@@ -447,6 +449,7 @@ class Attendance extends MY_Controller {
             $item[4] = strval($item[4]);
             $item[5] = strval($item[5]);
             $item[6] = strval($item[6]);
+            $item[7] = strval($item[7]);
             $result[] = $item;
         }
 
@@ -526,6 +529,7 @@ class Attendance extends MY_Controller {
             $worked, 
             $nonworked, 
             $lates, 
+            0, //TODO: Overbreak
             $under,
             $data->in_time,
         );
@@ -577,6 +581,7 @@ class Attendance extends MY_Controller {
                         "", //work total
                         "", //idle total
                         "", //late total
+                        "", //overbreak total
                         "" //under total
                     ];
 
@@ -586,12 +591,13 @@ class Attendance extends MY_Controller {
                 $result[] = [
                     $data->user_id."-b".$data->id,
                     "", //name and department
-                    format_to_custom( $single[7], 'Y-m-d' ), //date
+                    format_to_custom( $single[8], 'Y-m-d' ), //date
                     convert_seconds_to_time_format($single[2]), //duration total
                     $single[3], //work total
                     $single[4], //idle total
                     $single[5], //late total
-                    $single[6] //under total
+                    $single[6], //overbreak total
+                    $single[7] //under total
                 ];
             }
         }

@@ -16,6 +16,7 @@
                 {title: "<?php echo lang("worked"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("idle"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("lates"); ?>", "class": "w5p text-right"},
+                {title: "<?php echo lang("overbreak"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("undertime"); ?>", "class": "w5p text-right"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6],
