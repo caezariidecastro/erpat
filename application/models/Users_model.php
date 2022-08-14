@@ -153,7 +153,7 @@ class Users_model extends Crud_model {
             $custom_field_type = "lead_contacts";
         }
 
-        $teams_lists = ", ( SELECT GROUP_CONCAT($team_table.title) FROM $team_table WHERE FIND_IN_SET($users_table.id, $team_table.heads) OR FIND_IN_SET($users_table.id, $team_table.members) ) as team_list";
+        $teams_lists = ", ( SELECT GROUP_CONCAT($team_table.title) FROM $team_table WHERE $team_table.deleted='0' AND (FIND_IN_SET($users_table.id, $team_table.heads) OR FIND_IN_SET($users_table.id, $team_table.members) ) ) as team_list";
 
         //prepare custom fild binding query
         $custom_fields = get_array_value($options, "custom_fields");
