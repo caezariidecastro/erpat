@@ -337,12 +337,20 @@ class Attendance extends MY_Controller {
             "hours_per_day" => $hours_per_day
         ), true))->addAttendance($data)->calculate();
 
+        $btime = isset($data->break_time)?unserialize($data->break_time):[];
+
         return array(
             get_team_member_profile_link($data->user_id, $user),
             $data->team_list,
             $data->in_time,
             format_to_date($data->in_time),
             format_to_time($data->in_time),
+            isset($btime[0])?format_to_time($btime[0]):"-", 
+            isset($btime[1])?format_to_time($btime[1]):"-", 
+            isset($btime[2])?format_to_time($btime[2]):"-", 
+            isset($btime[3])?format_to_time($btime[3]):"-", 
+            isset($btime[4])?format_to_time($btime[4]):"-", 
+            isset($btime[5])?format_to_time($btime[5]):"-", 
             $data->out_time ? $data->out_time : 0,
             $data->out_time ? format_to_date( $data->out_time ) : "-",
             $data->out_time ? format_to_time( $data->out_time ) : "-",

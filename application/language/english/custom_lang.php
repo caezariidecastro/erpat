@@ -715,3 +715,15 @@ $lang["accountant"] = "Accountant";
 
 $lang["export_qrcode"] = "Export QRCode";
 $lang["breaktime_tracking"] = "Breaktime Tracking";
+
+$lang["break_1st"] = "1ST Break";
+$lang["break_1st_start"] = "1ST Break Start";
+$lang["break_1st_end"] = "1ST Break End";
+
+$lang["break_lunch"] = "LUNCH Break";
+$lang["break_lunch_start"] = "LUNCH Break Start";
+$lang["break_lunch_end"] = "LUNCH Break End";
+
+$lang["break_2nd"] = "2ND Break";
+$lang["break_2nd_start"] = "2ND Break Start";
+$lang["break_2nd_end"] = "2ND Break End";
