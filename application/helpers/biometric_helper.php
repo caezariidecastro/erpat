@@ -169,11 +169,45 @@ class BioMeet {
                 //Current duration of actual
                 $duration = $actual; 
 
+                //BREAKTIME
+                $btime = isset($data->break_time)?unserialize($data->break_time):[];
+
+                //1ST Overbreak 
+                $break_1st_start = isset($btime[0])?strtotime($btime[0]):null;
+                $break_1st_end = isset($btime[1])?strtotime($btime[1]):null;
+                if($break_1st_start && $break_1st_end) {
+                    $break_1st = convert_seconds_to_hour_decimal( max($break_1st_end-$break_1st_start, 0) );
+                    if($break_1st > 0.25) {
+                        $over += ($break_1st-0.25);
+                    }
+                }
+
+                //LUNCH Overbreak 
+                $break_lunch_start = isset($btime[2])?strtotime($btime[2]):null;
+                $break_lunch_end = isset($btime[3])?strtotime($btime[3]):null;
+                if($break_lunch_start && $break_lunch_end) {
+                    $break_lunch = convert_seconds_to_hour_decimal( max($break_lunch_end-$break_lunch_start, 0) );
+                    if($break_lunch > 1.00) {
+                        $over += ($break_lunch-1.00);
+                    }
+                }
+
+                //2ND Overbreak 
+                $break_2nd_start = isset($btime[4])?strtotime($btime[4]):null;
+                $break_2nd_end = isset($btime[5])?strtotime($btime[5]):null;
+                if($break_2nd_start && $break_2nd_end) {
+                    $break_2nd = convert_seconds_to_hour_decimal( max($break_2nd_end-$break_2nd_start, 0) );
+                    if($break_2nd > 0.25) {
+                        $over += ($break_2nd-0.25);
+                    }
+                }
+
                 if($this->on_debug && $actual == 0) {
                     $duration = 'Invalid';
                     $worked = "Invalid";
                     $nonworked = 'Invalid';
                     $lates = 'Invalid';
+                    $over = 'Invalid';
                     $under = 'Invalid';
                 }
             } else {
@@ -181,6 +215,7 @@ class BioMeet {
                     $duration = 'Pending';
                     $worked = 'Pending';
                     $nonworked = 'Pending';
+                    $over = 'Pending';
                     $under = 'Pending';
                 }
             }
