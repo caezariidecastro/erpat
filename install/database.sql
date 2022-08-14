@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `announcements` (
 
 CREATE TABLE IF NOT EXISTS `attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `status` enum('incomplete','pending','approved','rejected','deleted') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'incomplete',
+  `status` enum('incomplete','pending','approved','rejected','clockout') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'incomplete',
   `user_id` int(11) NOT NULL,
   `sched_id` int(11) NULL DEFAULT NULL,
   `in_time` datetime NOT NULL,
@@ -766,7 +766,6 @@ CREATE TABLE IF NOT EXISTS `team_member_job_info` (
   `salary` double NOT NULL,
   `salary_term` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `rate_per_hour` double NOT NULL,
-  `hours_per_day` float NOT NULL,
   `date_of_hire` date DEFAULT NULL,
   `sss` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `tin` varchar(255) COLLATE utf8_unicode_ci NOT NULL,

@@ -330,13 +330,9 @@ class Attendance extends MY_Controller {
         $info_link = $note_link.$sched_link;
 
         //Get job info for computation of total hours.
-        $job_info = $this->Users_model->get_job_info($data->user_id);
-        $hours_per_day = convert_number_to_decimal( (float)$job_info->hours_per_day ); 
+        $attd = (new BioMeet($this, array(), true))->addAttendance($data)->calculate();
 
-        $attd = (new BioMeet($this, array(
-            "hours_per_day" => $hours_per_day
-        ), true))->addAttendance($data)->calculate();
-
+        //Get the break time.
         $btime = isset($data->break_time)?unserialize($data->break_time):[];
 
         return array(
@@ -468,16 +464,10 @@ class Attendance extends MY_Controller {
         $image_url = get_avatar($data->created_by_avatar);
         $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
 
-        //Get job info for computation of total hours.
-        $job_info = $this->Users_model->get_job_info($data->user_id);
-        $hours_per_day = convert_number_to_decimal( (float)$job_info->hours_per_day ); 
-
-
         //Important attendance triggers.
         $to_time = is_date_exists($data->out_time) ? 
             strtotime($data->out_time) : null;
         $from_time = strtotime($data->in_time);
-
 
         //Get the instance of the schedule.
         $cur_sched = $this->Schedule_model->get_details(array("id" => $data->sched_id))->row();
@@ -487,10 +477,11 @@ class Attendance extends MY_Controller {
         $sched_in = $data->in_time;
 
         //Get the current day schedule instance based on in time.
-        $day_name = format_to_custom($data->in_time, 'D');
+        $day_name = format_to_custom($data->in_time, 'D'); $has_sched_in = false;
         if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
             $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
             $sched_in = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
+            $has_sched_in = true;
         }
         $sched_in = strtotime($sched_in);
         
@@ -504,10 +495,11 @@ class Attendance extends MY_Controller {
             $sched_out = $data->out_time;
 
             //Get the current day schedule instance based on in time.
-            $day_name = format_to_custom($data->out_time, 'D');
+            $day_name = format_to_custom($data->out_time, 'D'); $has_sched_out = false;
             if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
                 $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
                 $sched_out = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
+                $has_sched_out = true;
             }
             $sched_out = strtotime($sched_out);
             
@@ -523,6 +515,11 @@ class Attendance extends MY_Controller {
             //Get non worked hours: a = x+y
             $nonworked = convert_number_to_decimal( max(($lates+$under), 0) );
 
+            //Default hours per day
+            $hours_per_day = 8.00;
+            if($has_sched_in && $has_sched_out) {
+                $hours_per_day = convert_number_to_decimal(max($sched_out - $sched_in, 0));
+            }
             //Get the worked hours: b = z-a;
             $worked = convert_number_to_decimal( max(($hours_per_day-$nonworked), 0) );
 

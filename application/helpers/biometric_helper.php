@@ -5,7 +5,8 @@ class BioMeet {
     protected $ci = null;
     protected $on_debug = false;
 
-    protected $hours_per_day = 8;
+    protected $hours_per_day = 8.00;
+    protected $lunch_break = 1.00;
     protected $attendance = [];
     protected $attd_data = [];
 
@@ -98,7 +99,6 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
-    //TODO: Get the overbreak
     public function calculate() {
 
         foreach($this->attendance as $data) {
@@ -124,11 +124,12 @@ class BioMeet {
             $sched_in = $data->in_time;
 
             //Get the current day schedule instance based on in time.
-            $day_name = format_to_custom($data->in_time, 'D');
+            $day_name = format_to_custom($data->in_time, 'D'); $has_sched_in = false; $current_schedule = null;
             if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
                 $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
                 $sched_in = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
-                $schedule += $this->hours_per_day;
+                $has_sched_in = true;
+                $current_schedule = $today_sched;
             }
             $sched_in = strtotime($sched_in);
 
@@ -138,16 +139,17 @@ class BioMeet {
             if( $data->out_time ) {
 
                 //If no schedule make sure to have an actual in and out as official schedule.
-                if( $data->out_time ) {
+                if( !isset($data->sched_id) ) {
                     $sched_day = convert_date_utc_to_local($data->out_time, 'Y-m-d'); //local
                     $sched_out = $data->out_time;
                 }
 
                 //Get the current day schedule instance based on in time.
-                $day_name = format_to_custom($data->out_time, 'D');
+                $day_name = format_to_custom($data->out_time, 'D'); $has_sched_out = false;
                 if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
                     $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
                     $sched_out = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
+                    $has_sched_out = true;
                 }
                 $sched_out = strtotime($sched_out);
 
@@ -157,17 +159,23 @@ class BioMeet {
                 //Get undertime: y = diff_time(sched_end, out_time)
                 $under = convert_seconds_to_hour_decimal( max($sched_out-$to_time, 0) );
                 
-                //Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
-                $schedule = convert_seconds_to_hour_decimal( max($sched_out-$sched_in, 0) );
+                //Override schedule and hours per day according to schedule.
+                if($has_sched_in && $has_sched_out) {
+                    //Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
+                    $schedule = convert_seconds_to_hour_decimal( max($sched_out-$sched_in, 0) );
 
-                //Get non worked hours: a = x+y
-                $nonworked = convert_number_to_decimal( max(($lates+$under), 0) );
+                    //Get the hours per day minus the lunch break.
+                    if(isset($current_schedule) && isset($current_schedule['enabled_lunch']) && isset($current_schedule['in_lunch']) && isset($current_schedule['out_lunch'])) {
+                        $lunch_start_time = convert_time_to_24hours_format( $current_schedule['in_lunch'] ); //local
+                        $lunch_end_time = convert_time_to_24hours_format( $current_schedule['out_lunch'] ); //local
+                        $lunch_start_date = convert_date_local_to_utc(  $sched_day .' '. $lunch_start_time );
+                        $lunch_end_date = convert_date_local_to_utc(  $sched_day .' '. $lunch_end_time );
+                        $this->lunch_break = convert_seconds_to_hour_decimal( max($lunch_end_date-$lunch_start_date, 0) );
+                    }
 
-                //Get the worked hours: b = z-a;
-                $worked = convert_number_to_decimal( max(($this->hours_per_day-$nonworked), 0) );
-
-                //Current duration of actual
-                $duration = $actual; 
+                    //Default hours per day
+                    $this->hours_per_day = $schedule - $this->lunch_break;
+                }
 
                 //BREAKTIME
                 $btime = isset($data->break_time)?unserialize($data->break_time):[];
@@ -201,6 +209,15 @@ class BioMeet {
                         $over += ($break_2nd-0.25);
                     }
                 }
+
+                //Get non worked hours: a = x+y
+                $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
+
+                //Get the worked hours: b = z-a;
+                $worked = convert_number_to_decimal( max(($this->hours_per_day-$nonworked), 0) );
+
+                //Current duration of actual
+                $duration = $actual; 
 
                 if($this->on_debug && $actual == 0) {
                     $duration = 'Invalid';

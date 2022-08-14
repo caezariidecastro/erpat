@@ -351,9 +351,7 @@ class Payrolls extends MY_Controller {
             ))->result();
             //$payslips[] = $attendance;
 
-            $attd = (new BioMeet($this, array(
-              "hours_per_day" => $job_info->hours_per_day
-            ), true))->setAttendance($attendance)->calculate();
+            $attd = (new BioMeet($this, array(), true))->setAttendance($attendance)->calculate();
 
             $payslips[] = array(
                 "payroll" => $payroll_id,

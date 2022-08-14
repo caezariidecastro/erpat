@@ -90,21 +90,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="hours_per_day" class=" col-md-2"><?php echo lang('hours_per_day'); ?></label>
-                <div class=" col-md-10">
-                    <?php
-                    echo form_input(array(
-                        "id" => "hours_per_day",
-                        "name" => "hours_per_day",
-                        "type" => "number",
-                        "value" => $job_info->hours_per_day ? convert_number_to_decimal($job_info->hours_per_day) : 0,
-                        "class" => "form-control",
-                        "placeholder" => lang('hours_per_day')
-                    ));
-                    ?>
-                </div>
-            </div>
-            <div class="form-group">
                 <label for="date_of_hire" class=" col-md-2"><?php echo lang('date_of_hire'); ?></label>
                 <div class="col-md-10">
                     <?php
