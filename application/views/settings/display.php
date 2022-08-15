@@ -61,6 +61,19 @@
                             </div>
                         </div>
                     <?php } ?>
+                    <div class="form-group">
+                        <label for="name_format" class=" col-md-2"><?php echo lang('name_format'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_dropdown(
+                                    "name_format", array(
+                                "firstlast" => "Juan Dela Cruz",
+                                "lastfirst" => "Dela Cruz, Juan"
+                                    ), get_setting('name_format'), "class='select2 mini'"
+                            );
+                            ?>
+                        </div>
+                    </div>
                     <?php /* ?><div class="form-group">
                         <label for="rtl" class=" col-md-2"><?php echo lang('rtl'); ?></label>
                         <div class="col-md-10">

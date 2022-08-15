@@ -77,7 +77,7 @@ class Settings extends MY_Controller {
     }
 
     function save_display_settings() {
-        $settings = array("rows_per_page", "scrollbar", "enable_rich_text_editor", "rtl", "show_theme_color_changer", "default_theme_color", "accepted_file_formats");
+        $settings = array("rows_per_page", "scrollbar", "enable_rich_text_editor", "name_format", "show_theme_color_changer", "default_theme_color", "accepted_file_formats");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);

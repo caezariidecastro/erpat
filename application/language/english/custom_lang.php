@@ -727,3 +727,4 @@ $lang["break_lunch_end"] = "LUNCH Break End";
 $lang["break_2nd"] = "2ND Break";
 $lang["break_2nd_start"] = "2ND Break Start";
 $lang["break_2nd_end"] = "2ND Break End";
+$lang["name_format"] = "Name Format";
