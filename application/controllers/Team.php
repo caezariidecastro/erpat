@@ -31,7 +31,11 @@ class Team extends MY_Controller {
         $members_dropdown = array();
 
         foreach ($team_members as $team_member) {
-            $members_dropdown[] = array("id" => $team_member->id, "text" => $team_member->first_name . " " . $team_member->last_name);
+            $fullname = $team_member->first_name . " " . $team_member->last_name;
+            if(get_setting('name_format') == "lastfirst") {
+                $fullname = $team_member->last_name.", ".$team_member->first_name;
+            }
+            $members_dropdown[] = array("id" => $team_member->id, "text" => $fullname);
         }
 
         $view_data['members_dropdown'] = json_encode($members_dropdown);
@@ -48,7 +52,11 @@ class Team extends MY_Controller {
         $members_dropdown = array();
 
         foreach ($team_members as $team_member) {
-            $members_dropdown[] = array("id" => $team_member->id, "text" => $team_member->first_name . " " . $team_member->last_name);
+            $fullname = $team_member->first_name . " " . $team_member->last_name;
+            if(get_setting('name_format') == "lastfirst") {
+                $fullname = $team_member->last_name.", ".$team_member->first_name;
+            }
+            $members_dropdown[] = array("id" => $team_member->id, "text" => $fullname);
         }
 
         $view_data['members_dropdown'] = json_encode($members_dropdown);
@@ -205,7 +213,11 @@ class Team extends MY_Controller {
 			
             // QRCODE,H : QR-CODE Best error correction
             $this->pdf->write2DBarcode('{"id":"'.$users[$i].'"}', 'QRCODE,H', $current_width , $current_height, 40, 40, $style, 'N');
-            $this->pdf->Text($current_width , $current_height+41, $user_info->first_name." ".$user_info->last_name);
+            $fullname = $user_info->first_name . " " . $user_info->last_name;
+            if(get_setting('name_format') == "lastfirst") {
+                $fullname = $user_info->last_name.", ".$user_info->first_name;
+            }
+            $this->pdf->Text($current_width , $current_height+41, $fullname);
 
             $current_width += $incremental_width;
 			$current_rows += 1;

@@ -11,7 +11,13 @@
                 <div class="media-body w100p">
                     <div class="media-heading clearfix">
                         <div class="pull-left">
-                            <?php echo get_team_member_profile_link($member->id, $member->first_name . " " . $member->last_name); ?>
+                            <?php 
+                                $member_name = $member->first_name . " " . $member->last_name;
+                                if(get_setting('name_format') == "lastfirst") {
+                                    $member_name = $member->last_name . ', ' . $member->first_name;
+                                }
+                                echo get_team_member_profile_link($member->id, $member_name); 
+                            ?>
                         </div>
                         <div class="pull-right pr15">
                             <label class="label label-info"><?php echo $member->job_title; ?></label>

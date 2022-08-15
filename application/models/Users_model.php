@@ -324,7 +324,12 @@ class Users_model extends Crud_model {
             $where .= " AND $users_table.id!=$exclude_user_id";
         }
 
-        $sql = "SELECT CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name, $users_table.last_online, $users_table.id, $users_table.image, $users_table.job_title, $users_table.user_type, $clients_table.company_name
+        $member_name = "CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name";
+        if(get_setting('name_format') == "lastfirst") {
+            $member_name = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS member_name";
+        }
+
+        $sql = "SELECT $member_name, $users_table.last_online, $users_table.id, $users_table.image, $users_table.job_title, $users_table.user_type, $clients_table.company_name
         FROM $users_table
         LEFT JOIN $clients_table ON $clients_table.id = $users_table.client_id AND $clients_table.deleted=0
         WHERE $users_table.deleted=0 $where
@@ -342,7 +347,11 @@ class Users_model extends Crud_model {
 
     function get_team_members_for_select2(){
         $users_table = $this->db->dbprefix('users');
-        $sql = "SELECT $users_table.id, TRIM(CONCAT($users_table.first_name, ' ', $users_table.last_name)) AS user_name
+        $user_name = "TRIM(CONCAT($users_table.first_name, ' ', $users_table.last_name)) AS user_name";
+        if(get_setting('name_format') == "lastfirst") {
+            $user_name = "TRIM(CONCAT($users_table.last_name, ', ', $users_table.first_name)) AS user_name";
+        }
+        $sql = "SELECT $users_table.id, $user_name
         FROM $users_table
         WHERE $users_table.deleted=0 AND $users_table.user_type='staff'
         ORDER BY $users_table.first_name";

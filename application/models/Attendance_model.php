@@ -113,7 +113,12 @@ class Attendance_model extends Crud_model {
 
         $teams_lists = ", (SELECT GROUP_CONCAT($team_table.title) FROM $team_table WHERE FIND_IN_SET($attendnace_table.user_id, $team_table.heads) OR FIND_IN_SET($attendnace_table.user_id, $team_table.members) ) as team_list";
 
-        $sql = "SELECT $attendnace_table.*,  CONCAT($users_table.first_name, ' ',$users_table.last_name) AS created_by_user, $users_table.image as created_by_avatar, $users_table.id as user_id, $users_table.job_title as user_job_title $teams_lists 
+        $created_by_user = "CONCAT($users_table.first_name, ' ',$users_table.last_name) AS created_by_user";
+        if(get_setting('name_format') == "lastfirst") {
+            $created_by_user = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS created_by_user";
+        }
+
+        $sql = "SELECT $attendnace_table.*,  $created_by_user, $users_table.image as created_by_avatar, $users_table.id as user_id, $users_table.job_title as user_job_title $teams_lists 
         FROM $attendnace_table
         LEFT JOIN $users_table ON $users_table.id = $attendnace_table.user_id
         WHERE $attendnace_table.deleted=0 $where
@@ -298,7 +303,12 @@ class Attendance_model extends Crud_model {
             $where .= " AND $users_table.id IN ($allowed_members)";
         }
 
-        $sql = "SELECT CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name, $users_table.last_online, $users_table.image, $users_table.id, $users_table.job_title
+        $member_name = "CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name";
+        if(get_setting('name_format') == "lastfirst") {
+            $member_name = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS member_name";
+        }
+
+        $sql = "SELECT $member_name, $users_table.last_online, $users_table.image, $users_table.id, $users_table.job_title
         FROM $users_table
         WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' AND $users_table.id NOT IN (SELECT user_id from $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='incomplete') $where
         ORDER BY $users_table.first_name DESC";
@@ -322,7 +332,12 @@ class Attendance_model extends Crud_model {
             $where .= " AND $users_table.id IN($where_in_implode)";
         }
 
-        $sql = "SELECT CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name, $users_table.image, $users_table.id, attendance_table.id AS attendance_id, attendance_table.in_time
+        $member_name = "CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name";
+        if(get_setting('name_format') == "lastfirst") {
+            $member_name = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS member_name";
+        }
+
+        $sql = "SELECT $member_name, $users_table.image, $users_table.id, attendance_table.id AS attendance_id, attendance_table.in_time
         FROM $users_table
         LEFT JOIN (SELECT user_id, id, in_time FROM $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='incomplete') AS attendance_table ON attendance_table.user_id=$users_table.id
         WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' $where";
