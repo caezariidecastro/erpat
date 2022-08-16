@@ -219,6 +219,9 @@ $route["lds/deliveries/(:any)"] = "Deliveries/$1";
 $route["lds/warehouses"] = "Warehouses/index";
 $route["lds/warehouses/(:any)"] = "Warehouses/$1";
 
+$route["lds/zones"] = "Zones/index";
+$route["lds/zones/(:any)"] = "Zones/$1";
+
 $route["lds/transfers"] = "Transfers/index";
 $route["lds/transfers/(:any)"] = "Transfers/$1";
 $route["lds/transfers/(:any)/(:any)"] = "Transfers/$1/$2";

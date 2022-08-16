@@ -731,3 +731,11 @@ $lang["name_format"] = "Name Format";
 $lang["rfid_num"] = "RFID Number";
 $lang["set_rfid"] = "Set RFID";
 $lang["rfid_already_in_use"] = "Warning! RFID already in use, please use another one.";
+
+$lang["zone"] = "Zones";
+$lang["submenu_lms_zones"] = "Zones";
+$lang["zone_id"] = "Zone ID";
+$lang["qrcode"] = "QR Code";
+$lang["barcode"] = "Barcode";
+$lang["rfid"] = "RFID Num";
+$lang["add_zone"] = "Add Zone";
