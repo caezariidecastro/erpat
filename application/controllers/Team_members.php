@@ -274,6 +274,44 @@ class Team_members extends MY_Controller {
         $this->load->view('team_members/edit_modal_form', $view_data);
     }
 
+    /* set rfid */
+    function rfid_modal() {
+        $this->validate_user_role_permission("hrs_employee_edit");
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        
+        $id = $this->input->post('id');
+        $options = array(
+            "id" => $id,
+        );
+
+        $view_data['model_info'] = $this->Users_model->get_details($options)->row();
+        $this->load->view('team_members/rfid_modal', $view_data);
+    }
+
+    function update_rfid_num() {
+        if( !$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
+			redirect("forbidden");
+		}
+
+        validate_submitted_data(array(
+            "user_id" => "required|numeric"
+        ));
+
+        $job_data = array(
+            "user_id" => $this->input->post('user_id'),
+            "rfid_num" => $this->input->post('rfid_num'),
+        );
+
+        if ($this->Users_model->save_job_info($job_data)) {
+            echo json_encode(array("success" => true, 'message' => lang('record_updated')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('rfid_already_in_use')));
+        }
+    }
+
     function update_user_form($user_id) {
         $this->validate_user_role_permission("hrs_employee_edit");
 
@@ -458,6 +496,7 @@ class Team_members extends MY_Controller {
         $row_data = array(
             $user_avatar,
             get_team_member_profile_link($data->id, $full_name),
+            $data->rfid_num,
             $show_cotact_info ? $data->email : "",
             $show_cotact_info && $data->phone ? $data->phone : "-",
             $data->job_title,
@@ -473,6 +512,7 @@ class Team_members extends MY_Controller {
         $action_btn = "";
         if (($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_edit")) && $this->login_user->id != $data->id && get_array_value($options, "status") != "deleted") {
             $action_btn = modal_anchor(get_uri("hrs/team_members/edit_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_employee'), "data-post-id" => $data->id));
+            $action_btn .= modal_anchor(get_uri("hrs/team_members/rfid_modal"), "<i class='fa fa-barcode'></i>", array("class" => "edit", "title" => lang('set_rfid'), "data-post-id" => $data->id));
         }
 
         if (($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_delete")) && $this->login_user->id != $data->id) {
@@ -715,6 +755,7 @@ class Team_members extends MY_Controller {
         $job_data = array(
             "user_id" => $user_id,
             "job_idnum" => $this->input->post('job_idnum'),
+            "rfid_num" => $this->input->post('rfid_num'),
             "sched_id" => $this->input->post('sched_id'),
             "salary" => unformat_currency($this->input->post('salary')),
             "salary_term" => $this->input->post('salary_term'),

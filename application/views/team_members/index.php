@@ -45,6 +45,7 @@
             columns: [
                 {title: '', "class": "w25 text-center"},
                 {title: "<?php echo lang("name") ?>", "class": "w15p"},
+                {title: "<?php echo lang("rfid_num") ?>", "class": "w10p"},
                 {visible: visibleContact, title: "<?php echo lang("email") ?>", "class": "w20p"},
                 {visible: visibleContact, title: "<?php echo lang("phone") ?>", "class": "w10p"},
                 {title: "<?php echo lang("job_title") ?>", "class": "w10p"},
@@ -54,8 +55,8 @@
                 {visible: visibleDelete, title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             printColumns: combineCustomFieldsColumns([0, 1, 2, 3, 4], '<?php echo $custom_field_headers; ?>'),
-            xlsColumns: combineCustomFieldsColumns([0, 1, 2, 3, 4], '<?php echo $custom_field_headers; ?>')
-
+            xlsColumns: combineCustomFieldsColumns([0, 1, 2, 3, 4], '<?php echo $custom_field_headers; ?>'),
+            tableRefreshButton: true,
         });
     });
 </script>    

@@ -22,6 +22,21 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="rfid_sticker" class=" col-md-2"><?php echo lang('rfid_num'); ?></label>
+                <div class="col-md-10">
+                    <?php
+                    echo form_input(array(
+                        "id" => "rfid_num",
+                        "name" => "rfid_num",
+                        "value" => $job_info->rfid_num,
+                        "disabled" => true,
+                        "class" => "form-control",
+                        "placeholder" => lang('rfid_num')
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="job_title" class=" col-md-2"><?php echo lang('job_title'); ?></label>
                 <div class="col-md-10">
                     <?php

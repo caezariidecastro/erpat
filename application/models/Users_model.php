@@ -164,7 +164,7 @@ class Users_model extends Crud_model {
 
         //prepare full query string
         $sql = "SELECT $users_table.*,
-            $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term $teams_lists $select_custom_fieds
+            $team_member_job_info_table.rfid_num, $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term $teams_lists $select_custom_fieds
         FROM $users_table
         LEFT JOIN $team_member_job_info_table ON $team_member_job_info_table.user_id=$users_table.id
         LEFT JOIN $clients_table ON $clients_table.id=$users_table.client_id
