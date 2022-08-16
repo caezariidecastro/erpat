@@ -244,9 +244,6 @@ class Expenses extends MY_Controller {
 
             $this->Account_transactions_model->update_expense($id, $data);
         }
-        else{
-            $this->Account_transactions_model->add_expense($account_id, $amount, $save_id);
-        }
 
         if ($save_id) {
             save_custom_fields("expenses", $save_id, $this->login_user->is_admin, $this->login_user->user_type);
