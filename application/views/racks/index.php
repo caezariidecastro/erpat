@@ -36,8 +36,8 @@
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         });
     });
 </script>

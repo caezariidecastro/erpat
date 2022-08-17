@@ -750,3 +750,8 @@ $lang["bay"] = "Bays";
 $lang["submenu_lms_bays"] = "Bays";
 $lang["bay_id"] = "Bay ID";
 $lang["add_bay"] = "Add Bay";
+
+$lang["level"] = "Levels";
+$lang["submenu_lms_levels"] = "Levels";
+$lang["level_id"] = "Level ID";
+$lang["add_level"] = "Add Level";

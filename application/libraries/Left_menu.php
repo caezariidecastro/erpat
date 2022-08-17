@@ -360,6 +360,7 @@ class Left_menu {
                 $sidebar_menu["zones"] = array("name" => "submenu_lms_zones", "url" => "lds/zones", "class" => "fa-circle");
                 $sidebar_menu["racks"] = array("name" => "submenu_lms_racks", "url" => "lds/racks", "class" => "fa-circle");
                 $sidebar_menu["bays"] = array("name" => "submenu_lms_bays", "url" => "lds/bays", "class" => "fa-circle");
+                $sidebar_menu["levels"] = array("name" => "submenu_lms_levels", "url" => "lds/levels", "class" => "fa-circle");
                 $sidebar_menu["lds_transfers"] = array("name" => "submenu_lms_transfers", "url" => "lds/transfers", "class" => "fa-circle");
                 $sidebar_menu["vehicles"] = array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles", "class" => "fa-circle");
                 $sidebar_menu["drivers"] = array("name" => "submenu_lms_drivers", "url" => "lds/drivers", "class" => "fa-circle");
