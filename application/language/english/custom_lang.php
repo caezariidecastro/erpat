@@ -745,3 +745,8 @@ $lang["rack"] = "Racks";
 $lang["submenu_lms_racks"] = "Racks";
 $lang["rack_id"] = "Rack ID";
 $lang["add_rack"] = "Add Rack";
+
+$lang["bay"] = "Bays";
+$lang["submenu_lms_bays"] = "Bays";
+$lang["bay_id"] = "Bay ID";
+$lang["add_bay"] = "Add Bay";

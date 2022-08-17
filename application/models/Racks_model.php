@@ -20,7 +20,7 @@ class Racks_model extends Crud_model {
 
         $warehouse_id = get_array_value($options, "warehouse_id");
         if ($warehouse_id) {
-            $where .= " AND $racks_table.warehouse_id=$warehouse_id";
+            $where .= " AND zones.warehouse_id=$warehouse_id";
         }
 
         $zone_id = get_array_value($options, "zone_id");
