@@ -9,6 +9,17 @@ class Zones extends MY_Controller {
         parent::__construct();
         $this->load->model("Zones_model");
         $this->load->model("Warehouse_model");
+        $this->load->helper("utility");
+    }
+
+    protected function _get_status_select2_data() {
+        $status_select2 = array(
+            array("id" => "", "text"  => "- All -"),
+            array("id" => "active", "text"  => "Active"),
+            array("id" => "inactive", "text"  => "Inactive"),
+        );
+
+        return $status_select2;
     }
 
     protected function _get_warehouse_dropdown_data() {
@@ -41,10 +52,6 @@ class Zones extends MY_Controller {
         $options = array(
             "context" => $type
         );
-
-        if ($type == "event" || $type == "note" || $type == "to_do" || $type == "zones") {
-            $options["user_id"] = $this->login_user->id;
-        }
 
         if ($label_ids) {
             $add_label_option = true;
@@ -99,7 +106,7 @@ class Zones extends MY_Controller {
         }
 
         return array(
-            "Z".str_pad($data->id, 4, '0', STR_PAD_LEFT),
+            get_id_name($data->id, 'Z'),
             $data->warehouse_name,
             $data->qrcode,
             $data->barcode,
@@ -128,6 +135,7 @@ class Zones extends MY_Controller {
             "rfid" => $this->input->post('rfid'),
             "labels" => $this->input->post('labels') ? $this->input->post('labels') : "",
             "remarks" => $this->input->post('remarks'),
+            "status" => $this->input->post('status'),
         );
 
         if(!$id){
@@ -153,6 +161,8 @@ class Zones extends MY_Controller {
         $view_data['model_info'] = $this->Zones_model->get_one($this->input->post('id'));
         $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
         $view_data['label_suggestions'] = $this->make_labels_dropdown("zones", $view_data['model_info']->labels);
+
+        $view_data['status_select2'] = $this->_get_status_select2_data();
 
         $this->load->view('zones/modal_form', $view_data);
     }

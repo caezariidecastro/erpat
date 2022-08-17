@@ -2,7 +2,7 @@
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <div class="form-group">
-        <label for="warehouse_id" class="col-md-3"><?php echo lang('from'); ?></label>
+        <label for="warehouse_id" class="col-md-3"><?php echo lang('warehouse'); ?></label>
         <div class="col-md-9">
             <?php
             echo form_dropdown("warehouse_id", $warehouse_dropdown, $model_info ? $model_info->warehouse_id : "", "class='select2 validate-hidden' id='transferee' data-rule-required='true' data-msg-required='".lang("field_required")."'");
@@ -78,6 +78,26 @@
             ?>
         </div>
     </div>
+    <?php if($model_info->id){?>
+        <div class="form-group">
+            <label for="status" class=" col-md-3"><?php echo lang("status")?></label>
+            <div class="col-md-9" id="invoice_client_selection_wrapper">
+                <?php
+                echo form_input(array(
+                    "id" => "status",
+                    "name" => "status",
+                    "value" => $model_info ? $model_info->status : "",
+                    "class" => "form-control validate-hidden",
+                    "data-rule-required" => "true",
+                    "data-msg-required" => lang('field_required'),
+                    "placeholder" => lang('status')
+                ));
+                ?>
+            </div>
+        </div>
+    <?php }else{?>
+        <input type="hidden" name="status" value="active"/>
+    <?php }?>
 </div>
 
 <div class="modal-footer">
@@ -96,5 +116,7 @@
 
         $('.select2').select2();
         $("#labels").select2({multiple: true, data: <?php echo json_encode($label_suggestions); ?>});
+
+        $("#status").select2({data: <?= json_encode(array_replace($status_select2, array(0 => array("id" => "", "text"  => "-"))))?> });
     });
 </script>
