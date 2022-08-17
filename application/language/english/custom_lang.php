@@ -735,7 +735,13 @@ $lang["rfid_already_in_use"] = "Warning! RFID already in use, please use another
 $lang["zone"] = "Zones";
 $lang["submenu_lms_zones"] = "Zones";
 $lang["zone_id"] = "Zone ID";
+$lang["add_zone"] = "Add Zone";
+
 $lang["qrcode"] = "QR Code";
 $lang["barcode"] = "Barcode";
 $lang["rfid"] = "RFID Num";
-$lang["add_zone"] = "Add Zone";
+
+$lang["rack"] = "Racks";
+$lang["submenu_lms_racks"] = "Racks";
+$lang["rack_id"] = "Rack ID";
+$lang["add_rack"] = "Add Rack";
