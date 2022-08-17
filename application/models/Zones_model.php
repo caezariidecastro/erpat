@@ -23,6 +23,11 @@ class Zones_model extends Crud_model {
             $where .= " AND $zones_table.warehouse_id=$warehouse_id";
         }
 
+        $status = get_array_value($options, "status");
+        if ($status) {
+            $where .= " AND $zones_table.status='$status'";
+        }
+
         $labels = get_array_value($options, "label_id");
         if ($labels) {
             $where .= " AND (FIND_IN_SET('$labels', $zones_table.labels)) ";

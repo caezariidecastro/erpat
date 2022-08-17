@@ -28,6 +28,11 @@ class Racks_model extends Crud_model {
             $where .= " AND $racks_table.zone_id=$zone_id";
         }
 
+        $status = get_array_value($options, "status");
+        if ($status) {
+            $where .= " AND $racks_table.status='$status'";
+        }
+
         $labels = get_array_value($options, "label_id");
         if ($labels) {
             $where .= " AND (FIND_IN_SET('$labels', $racks_table.labels)) ";

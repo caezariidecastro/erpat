@@ -14,7 +14,7 @@ class Zones extends MY_Controller {
 
     protected function _get_status_select2_data() {
         $status_select2 = array(
-            array("id" => "", "text"  => "- All -"),
+            array("id" => "", "text"  => "- Status -"),
             array("id" => "active", "text"  => "Active"),
             array("id" => "inactive", "text"  => "Inactive"),
         );
@@ -83,6 +83,7 @@ class Zones extends MY_Controller {
         $this->validate_user_module_permission("module_lds");
         $view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
         $view_data['zones_labels_dropdown'] = json_encode($this->make_labels_dropdown("zones", "", true));
+        $view_data['status_select2'] = $this->_get_status_select2_data();
         $this->template->rander("zones/index", $view_data);
     }
 
@@ -90,6 +91,7 @@ class Zones extends MY_Controller {
         $list_data = $this->Zones_model->get_details(array(
             'warehouse_id' => $this->input->post('warehouse_select2_filter'),
             'label_id' => $this->input->post('labels_select2_filter'),
+            'status' => $this->input->post('status_select2_filter'),
         ))->result();
         $result = array();
         foreach ($list_data as $data) {

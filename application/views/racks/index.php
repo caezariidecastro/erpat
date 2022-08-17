@@ -20,7 +20,7 @@
             source: '<?php echo_uri("lds/racks/list_data") ?>',
             order: [[0, 'desc']],
             filterDropdown: [
-                {name: "labels_select2_filter", class: "w200", options: <?php echo $racks_labels_dropdown; ?>}, {id: "zone_select2_filter", name: "zone_select2_filter", class: "w200", options: <?php echo json_encode($zone_select2); ?>}, {id: "warehouse_select2_filter", name: "warehouse_select2_filter", class: "w200", options: <?php echo json_encode($warehouse_select2); ?>},
+                {name: "labels_select2_filter", class: "w200", options: <?php echo $racks_labels_dropdown; ?>}, {name: "status_select2_filter", class: "w120", options: <?php echo json_encode($status_select2); ?>}, {id: "zone_select2_filter", name: "zone_select2_filter", class: "w120", options: <?php echo json_encode($zone_select2); ?>}, {id: "warehouse_select2_filter", name: "warehouse_select2_filter", class: "w150", options: <?php echo json_encode($warehouse_select2); ?>},
             ],
             columns: [
                 {title: "<?php echo lang('rack_id') ?> "},
