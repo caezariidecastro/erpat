@@ -231,6 +231,9 @@ $route["lds/bays/(:any)"] = "Bays/$1";
 $route["lds/levels"] = "Levels/index";
 $route["lds/levels/(:any)"] = "Levels/$1";
 
+$route["lds/positions"] = "Positions/index";
+$route["lds/positions/(:any)"] = "Positions/$1";
+
 $route["lds/transfers"] = "Transfers/index";
 $route["lds/transfers/(:any)"] = "Transfers/$1";
 $route["lds/transfers/(:any)/(:any)"] = "Transfers/$1/$2";

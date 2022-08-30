@@ -755,3 +755,8 @@ $lang["level"] = "Levels";
 $lang["submenu_lms_levels"] = "Levels";
 $lang["level_id"] = "Level ID";
 $lang["add_level"] = "Add Level";
+
+$lang["position"] = "Positions";
+$lang["submenu_lms_positions"] = "Positions";
+$lang["position_id"] = "Position ID";
+$lang["add_position"] = "Add Position";
