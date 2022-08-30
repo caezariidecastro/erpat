@@ -760,3 +760,8 @@ $lang["position"] = "Positions";
 $lang["submenu_lms_positions"] = "Positions";
 $lang["position_id"] = "Position ID";
 $lang["add_position"] = "Add Position";
+
+$lang["pallet"] = "Pallets";
+$lang["submenu_lms_pallets"] = "Pallets";
+$lang["pallet_id"] = "Pallet ID";
+$lang["add_pallet"] = "Add Pallet";

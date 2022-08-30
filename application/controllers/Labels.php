@@ -26,7 +26,7 @@ class Labels extends MY_Controller {
             return $this->access_only_allowed_members();
         } else if ($context == "asset_entry" && get_setting("module_ams") == "1" && ($this->login_user->is_admin || get_array_value($permissions, "module_ams"))) {
             return true;
-        } else if ($context == "event" || $context == "note" || $context == "to_do" || $context == "zones" || $context == "racks" || $context == "bays" || $context == "levels" || $context == "positions") {
+        } else if ($context == "event" || $context == "note" || $context == "to_do" || $context == "zones" || $context == "racks" || $context == "bays" || $context == "levels" || $context == "positions" || $context == "pallets") {
             if ($label_id) {
                 //can access only own labels if there has any associated user id with this label
                 $label_info = $this->Labels_model->get_one($label_id);
