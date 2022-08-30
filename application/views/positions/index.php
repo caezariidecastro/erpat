@@ -28,6 +28,7 @@
                 {title: "<?php echo lang('zone') ?> "},
                 {title: "<?php echo lang('rack') ?> "},
                 {title: "<?php echo lang('bay') ?> "},
+                {title: "<?php echo lang('level') ?> "},
                 {title: "<?php echo lang('qrcode') ?>"},
                 {title: "<?php echo lang('barcode') ?>"},
                 {title: "<?php echo lang('rfid') ?>"},
@@ -38,8 +39,8 @@
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
         });
     });
 </script>

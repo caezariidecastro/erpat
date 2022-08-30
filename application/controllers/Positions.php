@@ -191,11 +191,12 @@ class Positions extends MY_Controller {
         }
 
         return array(
-            get_id_name($data->id, 'L'),
+            get_id_name($data->id, 'P'),
             $data->warehouse_name,
             get_id_name($data->zone_id, 'Z'),
             get_id_name($data->rack_id, 'R'),
             get_id_name($data->bay_id, 'B'),
+            get_id_name($data->level_id, 'L'),
             $data->qrcode,
             $data->barcode,
             $data->rfid,
@@ -211,7 +212,7 @@ class Positions extends MY_Controller {
 
     function save() {
         validate_submitted_data(array(
-            "rack_id" => "numeric"
+            "level_id" => "numeric"
         ));
 
         $id = $this->input->post('id');

@@ -188,7 +188,7 @@ class Levels extends MY_Controller {
 
     function save() {
         validate_submitted_data(array(
-            "rack_id" => "numeric"
+            "bay_id" => "numeric"
         ));
 
         $id = $this->input->post('id');
