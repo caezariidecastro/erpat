@@ -50,7 +50,7 @@ class Levels_model extends Crud_model {
 
         $select_labels_data_query = $this->get_labels_data_query();
 
-        $sql = "SELECT $levels_table.*, creator.id as creator_id, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS created_by, warehouses.name AS warehouse_name, racks.zone_id as zone_id, bays.rack_id as rack_id, $select_labels_data_query
+        $sql = "SELECT $levels_table.*, creator.id as creator_id, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS created_by, warehouses.name AS warehouse_name, warehouses.id AS warehouse_id, racks.zone_id as zone_id, bays.rack_id as rack_id, $select_labels_data_query
         FROM $levels_table
         LEFT JOIN users creator ON creator.id = $levels_table.created_by
         LEFT JOIN bays ON bays.id = $levels_table.bay_id

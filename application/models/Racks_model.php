@@ -40,7 +40,7 @@ class Racks_model extends Crud_model {
 
         $select_labels_data_query = $this->get_labels_data_query();
 
-        $sql = "SELECT $racks_table.*, creator.id as creator_id, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS created_by, warehouses.name AS warehouse_name, $select_labels_data_query
+        $sql = "SELECT $racks_table.*, creator.id as creator_id, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS created_by, warehouses.name AS warehouse_name, warehouses.id AS warehouse_id, $select_labels_data_query
         FROM $racks_table
         LEFT JOIN users creator ON creator.id = $racks_table.created_by
         LEFT JOIN zones ON zones.id = $racks_table.zone_id

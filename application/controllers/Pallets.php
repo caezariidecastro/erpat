@@ -15,6 +15,7 @@ class Pallets extends MY_Controller {
         $this->load->model("Levels_model");
         $this->load->model("Positions_model");
 
+        $this->load->helper("warehouse");
         $this->load->helper("utility");
     }
 
@@ -33,7 +34,7 @@ class Pallets extends MY_Controller {
         $zone_dropdown = array('' => '-');
 
         foreach ($zone as $group) {
-            $zone_dropdown[$group->id] = get_id_name($group->id, 'Z');
+            $zone_dropdown[$group->id] = get_warehouse_name($group->warehouse_id)." - ".get_id_name($group->id, 'Z');
         }
         return $zone_dropdown;
     }
@@ -69,11 +70,11 @@ class Pallets extends MY_Controller {
     }
 
     protected function _get_position_dropdown_data() {
-        $position = $this->Positions_model->get_all()->result();
+        $position = $this->Positions_model->get_details()->result();
         $position_dropdown = array('' => '-');
 
         foreach ($position as $group) {
-            $position_dropdown[$group->id] = get_id_name($group->id, 'P');
+            $position_dropdown[$group->id] = get_warehouse_name($group->warehouse_id)." - ". get_id_name($group->zone_id, 'Z')." - ". get_id_name($group->rack_id, 'R') ." - ". get_id_name($group->level_id, 'L') ." - ". get_id_name($group->id, 'P');
         }
         return $position_dropdown;
     }
@@ -93,47 +94,47 @@ class Pallets extends MY_Controller {
         $zone_select2 = array(array('id' => '', 'text'  => '- Zones -'));
 
         foreach ($zones as $group) {
-            $zone_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'Z')) ;
+            $zone_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." - ". get_id_name($group->id, 'Z')) ;
         }
         return $zone_select2;
     }
 
     protected function _get_rack_select2_data() {
-        $racks = $this->Zones_model->get_all()->result();
+        $racks = $this->Racks_model->get_details()->result();
         $rack_select2 = array(array('id' => '', 'text'  => '- Racks -'));
 
         foreach ($racks as $group) {
-            $rack_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'R')) ;
+            $rack_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." - ". get_id_name($group->zone_id, 'Z')." - ". get_id_name($group->id, 'R')) ;
         }
         return $rack_select2;
     }
 
     protected function _get_bay_select2_data() {
-        $bays = $this->Bays_model->get_all()->result();
+        $bays = $this->Bays_model->get_details()->result();
         $bays_select2 = array(array('id' => '', 'text'  => '- Bays -'));
 
         foreach ($bays as $group) {
-            $bays_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'B')) ;
+            $bays_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." - ". get_id_name($group->zone_id, 'Z')." - ". get_id_name($group->rack_id, 'R')." - ". get_id_name($group->id, 'B')) ;
         }
         return $bays_select2;
     }
 
     protected function _get_level_select2_data() {
-        $levels = $this->Levels_model->get_all()->result();
+        $levels = $this->Levels_model->get_details()->result();
         $levels_select2 = array(array('id' => '', 'text'  => '- Levels -'));
 
         foreach ($levels as $group) {
-            $levels_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'L')) ;
+            $levels_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." - ". get_id_name($group->zone_id, 'Z')." - ". get_id_name($group->rack_id, 'R')." - ". get_id_name($group->id, 'L')) ;
         }
         return $levels_select2;
     }
 
     protected function _get_position_select2_data() {
-        $positions = $this->Positions_model->get_all()->result();
+        $positions = $this->Positions_model->get_details()->result();
         $positions_select2 = array(array('id' => '', 'text'  => '- Positions -'));
 
         foreach ($positions as $group) {
-            $positions_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'P')) ;
+            $positions_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." - ". get_id_name($group->zone_id, 'Z')." - ". get_id_name($group->rack_id, 'R') ." - ". get_id_name($group->level_id, 'L') ." - ". get_id_name($group->id, 'P')) ;
         }
         return $positions_select2;
     }
@@ -214,7 +215,7 @@ class Pallets extends MY_Controller {
         }
 
         return array(
-            get_id_name($data->id, 'E'),
+            get_id_name($data->id, 'E', 4),
             $data->warehouse_name,
             get_id_name($data->zone_id, 'Z'),
             get_id_name($data->rack_id, 'R'),
@@ -226,7 +227,7 @@ class Pallets extends MY_Controller {
             $data->rfid,
             $labels,
             $data->remarks,
-            strtoupper($data->status),
+            make_status_view_data($data->status=="active"),
             $data->timestamp,
             get_team_member_profile_link($data->creator_id, $data->created_by),
             modal_anchor(get_uri("lds/pallets/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_pallet'), "data-post-id" => $data->id))
@@ -243,6 +244,7 @@ class Pallets extends MY_Controller {
 
         $data = array(
             "position_id" => $this->input->post('position_id'),
+            "zone_id" => $this->input->post('zone_id'),
             "qrcode" => $this->input->post('qrcode'),
             "barcode" => $this->input->post('barcode'),
             "rfid" => $this->input->post('rfid'),
@@ -273,6 +275,7 @@ class Pallets extends MY_Controller {
 
         $view_data['model_info'] = $this->Pallets_model->get_one($this->input->post('id'));
         $view_data['position_dropdown'] = $this->_get_position_dropdown_data();
+        $view_data['zone_dropdown'] = $this->_get_zone_dropdown_data();
         $view_data['label_suggestions'] = $this->make_labels_dropdown("pallets", $view_data['model_info']->labels);
 
         $view_data['status_select2'] = $this->_get_status_select2_data();

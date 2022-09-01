@@ -55,7 +55,7 @@ class Positions_model extends Crud_model {
 
         $select_labels_data_query = $this->get_labels_data_query();
 
-        $sql = "SELECT $positions_table.*, creator.id as creator_id, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS created_by, warehouses.name AS warehouse_name, racks.zone_id as zone_id, bays.rack_id as rack_id, levels.bay_id as bay_id, $positions_table.level_id as level_id, $select_labels_data_query
+        $sql = "SELECT $positions_table.*, creator.id as creator_id, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS created_by, warehouses.name AS warehouse_name, warehouses.id AS warehouse_id, racks.zone_id as zone_id, bays.rack_id as rack_id, levels.bay_id as bay_id, $positions_table.level_id as level_id, $select_labels_data_query
         FROM $positions_table
         LEFT JOIN users creator ON creator.id = $positions_table.created_by
         LEFT JOIN levels ON levels.id = $positions_table.level_id

@@ -45,7 +45,7 @@ class Bays_model extends Crud_model {
 
         $select_labels_data_query = $this->get_labels_data_query();
 
-        $sql = "SELECT $bays_table.*, creator.id as creator_id, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS created_by, warehouses.name AS warehouse_name, racks.zone_id as zone_id, $select_labels_data_query
+        $sql = "SELECT $bays_table.*, creator.id as creator_id, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS created_by, warehouses.name AS warehouse_name, warehouses.id AS warehouse_id, racks.zone_id as zone_id, $select_labels_data_query
         FROM $bays_table
         LEFT JOIN users creator ON creator.id = $bays_table.created_by
         LEFT JOIN racks ON racks.id = $bays_table.rack_id
