@@ -11,6 +11,7 @@ class Racks extends MY_Controller {
         $this->load->model("Warehouse_model");
         $this->load->model("Zones_model");
 
+        $this->load->helper("warehouse");
         $this->load->helper("utility");
     }
 
@@ -49,7 +50,7 @@ class Racks extends MY_Controller {
         $zone_select2 = array(array('id' => '', 'text'  => '- Zones -'));
 
         foreach ($zones as $group) {
-            $zone_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'Z')) ;
+            $zone_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." - ".get_id_name($group->id, 'Z')) ;
         }
         return $zone_select2;
     }
@@ -131,7 +132,7 @@ class Racks extends MY_Controller {
             $data->rfid,
             $labels,
             $data->remarks,
-            strtoupper($data->status),
+            make_status_view_data($data->status=="active"),
             $data->timestamp,
             get_team_member_profile_link($data->creator_id, $data->created_by),
             modal_anchor(get_uri("lds/racks/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_rack'), "data-post-id" => $data->id))

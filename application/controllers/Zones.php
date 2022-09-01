@@ -116,7 +116,7 @@ class Zones extends MY_Controller {
             $data->rfid,
             $labels,
             $data->remarks,
-            strtoupper($data->status),
+            make_status_view_data($data->status=="active"),
             $data->timestamp,
             get_team_member_profile_link($data->creator_id, $data->created_by),
             modal_anchor(get_uri("lds/zones/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_zone'), "data-post-id" => $data->id))

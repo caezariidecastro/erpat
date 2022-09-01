@@ -2198,3 +2198,12 @@ if (!function_exists('getBearerToken')) {
         return null;
     }
 }
+
+//make labels view data for different contexts
+if (!function_exists("make_status_view_data")) {
+
+    function make_status_view_data($is_active = false) {
+        return "<span class='mt0 label large' style='background-color: ".($is_active?'#46c246':'#ff4f4f').";'>" . ($is_active?'ENABLED':'DISABLED') . "</span> ";;
+    }
+
+}
