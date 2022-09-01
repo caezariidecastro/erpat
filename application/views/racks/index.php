@@ -1,13 +1,33 @@
-<div class="panel panel-default">
-    <div class="page-title clearfix">
-        <div class="title-button-group">
-            <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "racks")); ?>
-            <?php echo modal_anchor(get_uri("lds/racks/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_rack'), array("class" => "btn btn-default", "title" => lang('add_rack'))); ?>
+<div id="page-content" class="clearfix">
+    <div class="mt15">
+        <div class="panel panel-default">
+            <div class="page-title clearfix">
+                <div class="title-button-group">
+                    <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "racks")); ?>
+                    <?php echo modal_anchor(get_uri("lds/racks/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_rack'), array("class" => "btn btn-default", "title" => lang('add_rack'))); ?>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="rack-table" class="display" cellspacing="0" width="100%">            
+                </table>
+            </div>
         </div>
     </div>
-    <div class="table-responsive">
-        <table id="rack-table" class="display" cellspacing="0" width="100%">            
-        </table>
+
+    <div class="mt25 mb25" style="border-top: 1px solid #c1c1c1;">
+        <div id="rack-contain" class="panel panel-default b-t">
+            <ul id="racks-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
+                <li><a role="presentation" href="<?php echo_uri("bays/index"); ?>" data-target="#bays-tab"><?php echo lang('bays'); ?></a></li>
+                <li><a role="presentation" href="<?php echo_uri("levels/index"); ?>" data-target="#levels-tab"><?php echo lang('levels'); ?></a></li>
+                <li><a role="presentation" href="<?php echo_uri("positions/index"); ?>" data-target="#positions-tab"><?php echo lang('positions'); ?></a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade" id="bays-tab"></div>
+                <div role="tabpanel" class="tab-pane fade" id="levels-tab"></div>
+                <div role="tabpanel" class="tab-pane fade" id="positions-tab"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -34,7 +54,20 @@
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            onInitComplete: function () {
+                $('.view_btn').on('click', function() {
+                    
+                    appLoader.show();
+                    var id = $( this ).attr('id');
+
+                    $("#bays-tab").load('<?php echo_uri("bays/index/"); ?>'+id)
+                    $("#levels-tab").load('<?php echo_uri("levels/index/"); ?>'+id)
+                    $("#positions-tab").load('<?php echo_uri("positions/index/"); ?>'+id)
+                    
+                    appLoader.hide();
+                });
+            }
         });
     });
 </script>

@@ -227,12 +227,15 @@ $route["lds/racks/(:any)"] = "Racks/$1";
 
 $route["lds/bays"] = "Bays/index";
 $route["lds/bays/(:any)"] = "Bays/$1";
+$route["lds/bays/(:any)/(:any)"] = "Bays/$1/$2";
 
 $route["lds/levels"] = "Levels/index";
 $route["lds/levels/(:any)"] = "Levels/$1";
+$route["lds/levels/(:any)/(:any)"] = "Levels/$1/$2";
 
 $route["lds/positions"] = "Positions/index";
 $route["lds/positions/(:any)"] = "Positions/$1";
+$route["lds/positions/(:any)/(:any)"] = "Positions/$1/$2";
 
 $route["lds/pallets"] = "Pallets/index";
 $route["lds/pallets/(:any)"] = "Pallets/$1";

@@ -14,6 +14,7 @@ class Positions extends MY_Controller {
         $this->load->model("Bays_model");
         $this->load->model("Levels_model");
 
+        $this->load->helper("warehouse");
         $this->load->helper("utility");
     }
 
@@ -108,11 +109,11 @@ class Positions extends MY_Controller {
     }
 
     protected function _get_level_select2_data() {
-        $levels = $this->Levels_model->get_all()->result();
+        $levels = $this->Levels_model->get_details()->result();
         $levels_select2 = array(array('id' => '', 'text'  => '- Levels -'));
 
         foreach ($levels as $group) {
-            $levels_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'L')) ;
+            $levels_select2[] = array('id' => $group->id, 'text' => get_rack_name($group->rack_id, 'R')." - ".get_bay_name($group->bay_id, 'B')." - ".get_id_name($group->id, 'L')) ;
         }
         return $levels_select2;
     }
@@ -154,24 +155,26 @@ class Positions extends MY_Controller {
         return $labels_dropdown;
     }
 
-    function index(){
+    function index($rack_id = 0) {
         $this->validate_user_module_permission("module_lds");
-        $view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
-        $view_data['zone_select2'] = $this->_get_zone_select2_data();
-        $view_data['rack_select2'] = $this->_get_rack_select2_data();
-        $view_data['bay_select2'] = $this->_get_bay_select2_data();
+        //$view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
+        //$view_data['zone_select2'] = $this->_get_zone_select2_data();
+        //$view_data['rack_select2'] = $this->_get_rack_select2_data();
+        //$view_data['bay_select2'] = $this->_get_bay_select2_data();
         $view_data['level_select2'] = $this->_get_level_select2_data();
         $view_data['status_select2'] = $this->_get_status_select2_data();
         $view_data['positions_labels_dropdown'] = json_encode($this->make_labels_dropdown("positions", "", true));
-        $this->template->rander("positions/index", $view_data);
+        $view_data['rack_id'] = $rack_id;
+        $this->load->view("positions/index", $view_data);
     }
 
-    function list_data(){
+    function list_data($rack_id = 0) {
         $list_data = $this->Positions_model->get_details(array(
-            'warehouse_id' => $this->input->post('warehouse_select2_filter'),
-            'zone_id' => $this->input->post('zone_select2_filter'),
-            'rack_id' => $this->input->post('rack_select2_filter'),
-            'bay_id' => $this->input->post('bay_select2_filter'),
+            //'warehouse_id' => $this->input->post('warehouse_select2_filter'),
+            //'zone_id' => $this->input->post('zone_select2_filter'),
+            //'rack_id' => $this->input->post('rack_select2_filter'),
+            'rack_id' => $rack_id,
+            //'bay_id' => $this->input->post('bay_select2_filter'),
             'level_id' => $this->input->post('level_select2_filter'),
             'status' => $this->input->post('status_select2_filter'),
             'label_id' => $this->input->post('labels_select2_filter'),
@@ -202,7 +205,7 @@ class Positions extends MY_Controller {
             $data->rfid,
             $labels,
             $data->remarks,
-            strtoupper($data->status),
+            make_status_view_data($data->status=="active"),
             $data->timestamp,
             get_team_member_profile_link($data->creator_id, $data->created_by),
             modal_anchor(get_uri("lds/positions/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_position'), "data-post-id" => $data->id))

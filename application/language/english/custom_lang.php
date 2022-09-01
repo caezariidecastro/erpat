@@ -769,3 +769,8 @@ $lang["add_pallet"] = "Add Pallet";
 $lang["lists"] = "Lists";
 $lang["zones"] = "Zones";
 $lang["racks"] = "Racks";
+$lang["bays"] = "Bays";
+$lang["levels"] = "Levels";
+$lang["positions"] = "Positions";
+
+$lang["current_rack"] = "Current Rack";

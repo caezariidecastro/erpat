@@ -112,21 +112,23 @@ class Bays extends MY_Controller {
         return $labels_dropdown;
     }
 
-    function index(){
+    function index($rack_id = 0) {
         $this->validate_user_module_permission("module_lds");
-        $view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
-        $view_data['zone_select2'] = $this->_get_zone_select2_data();
-        $view_data['rack_select2'] = $this->_get_rack_select2_data();
+        //$view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
+        //$view_data['zone_select2'] = $this->_get_zone_select2_data();
+        //$view_data['rack_select2'] = $this->_get_rack_select2_data();
         $view_data['status_select2'] = $this->_get_status_select2_data();
         $view_data['bays_labels_dropdown'] = json_encode($this->make_labels_dropdown("bays", "", true));
-        $this->template->rander("bays/index", $view_data);
+        $view_data['rack_id'] = $rack_id;
+        $this->load->view("bays/index", $view_data);
     }
 
-    function list_data(){
+    function list_data($rack_id = 0) {
         $list_data = $this->Bays_model->get_details(array(
-            'warehouse_id' => $this->input->post('warehouse_select2_filter'),
-            'zone_id' => $this->input->post('zone_select2_filter'),
-            'rack_id' => $this->input->post('rack_select2_filter'),
+            //'warehouse_id' => $this->input->post('warehouse_select2_filter'),
+            //'zone_id' => $this->input->post('zone_select2_filter'),
+            //'rack_id' => $this->input->post('rack_select2_filter'),
+            'rack_id' => $rack_id,
             'status' => $this->input->post('status_select2_filter'),
             'label_id' => $this->input->post('labels_select2_filter'),
         ))->result();
@@ -154,7 +156,7 @@ class Bays extends MY_Controller {
             $data->rfid,
             $labels,
             $data->remarks,
-            strtoupper($data->status),
+            make_status_view_data($data->status=="active"),
             $data->timestamp,
             get_team_member_profile_link($data->creator_id, $data->created_by),
             modal_anchor(get_uri("lds/bays/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_bay'), "data-post-id" => $data->id))

@@ -137,6 +137,7 @@ class Racks extends MY_Controller {
             get_team_member_profile_link($data->creator_id, $data->created_by),
             modal_anchor(get_uri("lds/racks/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_rack'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lds/racks/delete"), "data-action" => "delete-confirmation"))
+            ."<a href='#' id='$data->id' class='view_btn role-row link'><i class='fa fa-eye fa-fw'></i></a>"
         );
     }
 
