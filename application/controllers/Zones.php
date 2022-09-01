@@ -84,8 +84,9 @@ class Zones extends MY_Controller {
         $view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
         $view_data['zones_labels_dropdown'] = json_encode($this->make_labels_dropdown("zones", "", true));
         $view_data['status_select2'] = $this->_get_status_select2_data();
-        $this->template->rander("zones/index", $view_data);
-    }
+        //$this->template->rander("zones/index", $view_data);
+        $this->load->view("zones/index", $view_data);
+    }        
 
     function list_data(){
         $list_data = $this->Zones_model->get_details(array(

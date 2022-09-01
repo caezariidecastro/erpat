@@ -1,16 +1,13 @@
-<div id="page-content" class="p20 clearfix">
-    <div class="panel panel-default">
-        <div class="page-title clearfix">
-            <h1> <?php echo lang('zone'); ?></h1>
-            <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "zones")); ?>
-                <?php echo modal_anchor(get_uri("lds/zones/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_zone'), array("class" => "btn btn-default", "title" => lang('add_zone'))); ?>
-            </div>
+<div class="panel panel-default">
+    <div class="page-title clearfix">
+        <div class="title-button-group">
+            <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "zones")); ?>
+            <?php echo modal_anchor(get_uri("lds/zones/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_zone'), array("class" => "btn btn-default", "title" => lang('add_zone'))); ?>
         </div>
-        <div class="table-responsive">
-            <table id="zone-table" class="display" cellspacing="0" width="100%">            
-            </table>
-        </div>
+    </div>
+    <div class="table-responsive">
+        <table id="zone-table" class="display" cellspacing="0" width="100%">            
+        </table>
     </div>
 </div>
 

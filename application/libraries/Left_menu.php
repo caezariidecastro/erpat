@@ -357,8 +357,6 @@ class Left_menu {
             if (is_user_has_module_permission("module_lds")) {
                 $sidebar_menu["deliveries"] = array("name" => "submenu_lms_delivery", "url" => "lds/deliveries", "class" => "fa-circle");
                 $sidebar_menu["warehouses"] = array("name" => "submenu_lms_warehouse", "url" => "lds/warehouses", "class" => "fa-circle");
-                $sidebar_menu["zones"] = array("name" => "submenu_lms_zones", "url" => "lds/zones", "class" => "fa-circle");
-                $sidebar_menu["racks"] = array("name" => "submenu_lms_racks", "url" => "lds/racks", "class" => "fa-circle");
                 $sidebar_menu["bays"] = array("name" => "submenu_lms_bays", "url" => "lds/bays", "class" => "fa-circle");
                 $sidebar_menu["levels"] = array("name" => "submenu_lms_levels", "url" => "lds/levels", "class" => "fa-circle");
                 $sidebar_menu["positions"] = array("name" => "submenu_lms_positions", "url" => "lds/positions", "class" => "fa-circle");

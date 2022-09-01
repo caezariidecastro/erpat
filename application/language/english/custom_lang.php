@@ -78,7 +78,7 @@ $lang["submenu_sms_coupons"] = "Coupons - Todo!";
 $lang["submenu_sms_stores"] = "Stores";
 
 $lang["submenu_lms_delivery"] = "Delivery";
-$lang["submenu_lms_warehouse"] = "Warehouse";
+$lang["submenu_lms_warehouse"] = "Warehouses";
 $lang["submenu_lms_transfers"] = "Transfer";
 $lang["submenu_lms_vehicles"] = "Vehicles";
 $lang["submenu_lms_drivers"] = "Drivers";
@@ -765,3 +765,7 @@ $lang["pallet"] = "Pallets";
 $lang["submenu_lms_pallets"] = "Pallets";
 $lang["pallet_id"] = "Pallet ID";
 $lang["add_pallet"] = "Add Pallet";
+
+$lang["lists"] = "Lists";
+$lang["zones"] = "Zones";
+$lang["racks"] = "Racks";

@@ -1,16 +1,13 @@
-<div id="page-content" class="p20 clearfix">
-    <div class="panel panel-default">
-        <div class="page-title clearfix">
-            <h1> <?php echo lang('rack'); ?></h1>
-            <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "racks")); ?>
-                <?php echo modal_anchor(get_uri("lds/racks/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_rack'), array("class" => "btn btn-default", "title" => lang('add_rack'))); ?>
-            </div>
+<div class="panel panel-default">
+    <div class="page-title clearfix">
+        <div class="title-button-group">
+            <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "racks")); ?>
+            <?php echo modal_anchor(get_uri("lds/racks/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_rack'), array("class" => "btn btn-default", "title" => lang('add_rack'))); ?>
         </div>
-        <div class="table-responsive">
-            <table id="rack-table" class="display" cellspacing="0" width="100%">            
-            </table>
-        </div>
+    </div>
+    <div class="table-responsive">
+        <table id="rack-table" class="display" cellspacing="0" width="100%">            
+        </table>
     </div>
 </div>
 

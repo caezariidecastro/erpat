@@ -97,7 +97,8 @@ class Racks extends MY_Controller {
         $view_data['zone_select2'] = $this->_get_zone_select2_data();
         $view_data['status_select2'] = $this->_get_status_select2_data();
         $view_data['racks_labels_dropdown'] = json_encode($this->make_labels_dropdown("racks", "", true));
-        $this->template->rander("racks/index", $view_data);
+        //$this->template->rander("racks/index", $view_data);
+        $this->load->view("racks/index", $view_data);
     }
 
     function list_data(){
