@@ -63,7 +63,7 @@
                         <label for="<?= $enabled ?>"><?= get_sched_title($tracking) ?></label>
                     </div>
                 </div>
-                <label for="<?= $day ?>_in<?= $tracking ?>" class=" col-md-1 col-sm-1"><?php echo lang('in'); ?></label>
+                <label for="<?= $day ?>_in<?= $tracking ?>" class=" col-md-1 col-sm-1"><?= $tracking!=''?lang('start'):lang('in'); ?></label>
                 <div class="col-md-3 col-sm-3  form-group">
                     <?php
                     $in_time = $day."_in".$tracking;
@@ -76,7 +76,7 @@
                     ));
                     ?>
                 </div>
-                <label for="<?= $day ?>_out<?= $tracking ?>" class=" col-md-1 col-sm-1"><?php echo lang('out'); ?></label>
+                <label for="<?= $day ?>_out<?= $tracking ?>" class=" col-md-1 col-sm-1"><?= $tracking!=''?lang('end'):lang('out'); ?></label>
                 <div class="col-md-3 col-sm-3 form-group">
                     <?php
                     $out_time = $day."_out".$tracking;

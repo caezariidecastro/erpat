@@ -780,3 +780,6 @@ $lang["positions"] = "Positions";
 $lang["current_rack"] = "Current Rack";
 
 $lang["active_attendance_ongoing"] = "Forbidden! There is an active ongoing attendance for this employee.";
+
+$lang["start"] = "Start";
+$lang["end"] = "End";
