@@ -727,6 +727,10 @@ $lang["break_lunch_end"] = "LUNCH Break End";
 $lang["break_2nd"] = "2ND Break";
 $lang["break_2nd_start"] = "2ND Break Start";
 $lang["break_2nd_end"] = "2ND Break End";
+
+$lang["clocked_in"] = "Clocked IN";
+$lang["clocked_out"] = "Clocked OUT";
+
 $lang["name_format"] = "Name Format";
 $lang["rfid_num"] = "RFID Number";
 $lang["set_rfid"] = "Set RFID";
@@ -774,3 +778,5 @@ $lang["levels"] = "Levels";
 $lang["positions"] = "Positions";
 
 $lang["current_rack"] = "Current Rack";
+
+$lang["active_attendance_ongoing"] = "Forbidden! There is an active ongoing attendance for this employee.";

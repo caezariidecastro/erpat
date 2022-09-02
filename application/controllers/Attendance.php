@@ -65,7 +65,10 @@ class Attendance extends MY_Controller {
         ));
 
         $view_data['time_format_24_hours'] = get_setting("time_format") == "24_hours" ? true : false;
-        $view_data['model_info'] = $this->Attendance_model->get_one($this->input->post('id'));
+        $model_info = $this->Attendance_model->get_one($this->input->post('id'));
+        $model_info->break_time = serialized_breaktime($model_info->break_time, '', false);
+
+        $view_data['model_info'] = $model_info;
         if ($view_data['model_info']->id) {
             $user_id = $view_data['model_info']->user_id;
 
@@ -128,33 +131,114 @@ class Attendance extends MY_Controller {
 
         validate_submitted_data(array(
             "id" => "numeric",
+            "sched_id" => "required",
             "in_date" => "required",
-            "out_date" => "required",
+            //"out_date" => "required",
             "in_time" => "required",
-            "out_time" => "required"
+            //"out_time" => "required"
         ));
 
         //convert to 24hrs time format
         $in_time = $this->input->post('in_time');
+
+        $first_start = $this->input->post('first_start');
+        $first_start_time = $this->input->post('first_start_time');
+        
+        $first_end = $this->input->post('first_end');
+        $first_end_time = $this->input->post('first_end_time');
+
+        $lunch_start = $this->input->post('lunch_start');
+        $lunch_start_time = $this->input->post('lunch_start_time');
+        
+        $lunch_end = $this->input->post('lunch_end');
+        $lunch_end_time = $this->input->post('lunch_end_time');
+
+        $second_start = $this->input->post('second_start');
+        $second_start_time = $this->input->post('second_start_time');
+        
+        $second_end = $this->input->post('second_end');
+        $second_end_time = $this->input->post('second_end_time');
+
         $out_time = $this->input->post('out_time');
 
         if (get_setting("time_format") != "24_hours") {
             $in_time = convert_time_to_24hours_format($in_time);
+            $first_start_time = convert_time_to_24hours_format($first_start_time);
+            $first_end_time = convert_time_to_24hours_format($first_end_time);
+            $lunch_start_time = convert_time_to_24hours_format($lunch_start_time);
+            $lunch_end_time = convert_time_to_24hours_format($lunch_end_time);
+            $second_start_time = convert_time_to_24hours_format($second_start_time);
+            $second_end_time = convert_time_to_24hours_format($second_end_time);
             $out_time = convert_time_to_24hours_format($out_time);
         }
 
         //join date with time
         $in_date_time = $this->input->post('in_date') . " " . $in_time;
+        $first_start_time = $this->input->post('first_start') . " " . $first_start_time;
+        $first_end_time = $this->input->post('first_end') . " " . $first_end_time;
+        $lunch_start_time = $this->input->post('lunch_start') . " " . $lunch_start_time;
+        $lunch_end_time = $this->input->post('lunch_end') . " " . $lunch_end_time;
+        $second_start_time = $this->input->post('second_start') . " " . $second_start_time;
+        $second_end_time = $this->input->post('second_end') . " " . $second_end_time;
         $out_date_time = $this->input->post('out_date') . " " . $out_time;
 
         //add time offset
         $in_date_time = convert_date_local_to_utc($in_date_time);
+        $first_start_time = convert_date_local_to_utc($first_start_time);
+        $first_end_time = convert_date_local_to_utc($first_end_time);
+        $lunch_start_time = convert_date_local_to_utc($lunch_start_time);
+        $lunch_end_time = convert_date_local_to_utc($lunch_end_time);
+        $second_start_time = convert_date_local_to_utc($second_start_time);
+        $second_end_time = convert_date_local_to_utc($second_end_time);
         $out_date_time = convert_date_local_to_utc($out_date_time);
+
+        $break_time = [];
+        if( empty($_POST['first_start']) || empty($_POST['first_start_time']) ) {
+            $break_time[] = null;
+        } else {
+            $break_time[] = $first_start_time;
+        }
+        if( empty($_POST['first_end']) || empty($_POST['first_end_time']) ) {
+            $break_time[] = null;
+        } else {
+            $break_time[] = $first_end_time;
+        }
+        if( empty($_POST['lunch_start']) || empty($_POST['lunch_start_time']) ) {
+            $break_time[] = null;
+        } else {
+            $break_time[] = $lunch_start_time;
+        }
+        if( empty($_POST['lunch_end']) || empty($_POST['lunch_end_time']) ) {
+            $break_time[] = null;
+        } else {
+            $break_time[] = $lunch_end_time;
+        }
+        if( empty($_POST['second_start']) || empty($_POST['second_start_time']) ) {
+            $break_time[] = null;
+        } else {
+            $break_time[] = $second_start_time;
+        }
+        if( empty($_POST['second_end']) || empty($_POST['second_end_time']) ) {
+            $break_time[] = null;
+        } else {
+            $break_time[] = $second_end_time;
+        }
+
+        if( empty($_POST['out_date']) || empty($_POST['out_time']) ) {
+            $out_date_time = null;
+        }
+
+        $all_null = true;
+        for( $i=0; $i<count($break_time); $i++) {
+            if($break_time[$i] !== null) {
+                $all_null = false;
+            }
+        }
 
         $data = array(
             "in_time" => $in_date_time,
             "out_time" => $out_date_time,
-            "status" => "pending",
+            "break_time" => $all_null?NULL:serialize($break_time),
             "note" => $this->input->post('note')
         );
 
@@ -163,8 +247,15 @@ class Attendance extends MY_Controller {
             $info = $this->Attendance_model->get_one($id);
             $user_id = $info->user_id;
         } else {
+            $data["status"] = "pending";
             $user_id = $this->input->post('user_id');
             $data["user_id"] = $user_id;
+
+            $existing = $this->Attendance_model->current_clock_in_record($user_id);
+            if($existing) {
+                echo json_encode(array("success" => false, 'message' => lang('active_attendance_ongoing')));
+                return;
+            }
         }
 
         if ($sched_id) {
@@ -333,7 +424,7 @@ class Attendance extends MY_Controller {
         $attd = (new BioMeet($this, array(), true))->addAttendance($data)->calculate();
 
         //Get the break time.
-        $btime = isset($data->break_time)?unserialize($data->break_time):[];
+        $btime = serialized_breaktime($data->break_time, '-');
 
         return array(
             get_team_member_profile_link($data->user_id, $user),
@@ -341,12 +432,7 @@ class Attendance extends MY_Controller {
             $data->in_time,
             format_to_date($data->in_time),
             format_to_time($data->in_time),
-            isset($btime[0])?format_to_time($btime[0]):"-", 
-            isset($btime[1])?format_to_time($btime[1]):"-", 
-            isset($btime[2])?format_to_time($btime[2]):"-", 
-            isset($btime[3])?format_to_time($btime[3]):"-", 
-            isset($btime[4])?format_to_time($btime[4]):"-", 
-            isset($btime[5])?format_to_time($btime[5]):"-", 
+            $btime[0],$btime[1],$btime[2],$btime[3],$btime[4],$btime[5],
             $data->out_time ? $data->out_time : 0,
             $data->out_time ? format_to_date( $data->out_time ) : "-",
             $data->out_time ? format_to_time( $data->out_time ) : "-",

@@ -2207,3 +2207,23 @@ if (!function_exists("make_status_view_data")) {
     }
 
 }
+
+if (!function_exists("serialized_breaktime")) {
+    function serialized_breaktime($breaktime_object, $default = '', $convert_to_local = true) {
+
+        $ci = get_instance();
+        $ci->load->helper('date_time');
+
+        //Deserialized data else set to default.
+        $current = isset($breaktime_object)?unserialize($breaktime_object):[null,null,null,null,null,null];
+
+        $current[0] = isset($current[0])?format_to_time($current[0], $convert_to_local):$default;
+        $current[1] = isset($current[1])?format_to_time($current[1], $convert_to_local):$default;
+        $current[2] = isset($current[2])?format_to_time($current[2], $convert_to_local):$default;
+        $current[3] = isset($current[3])?format_to_time($current[3], $convert_to_local):$default;
+        $current[4] = isset($current[4])?format_to_time($current[4], $convert_to_local):$default;
+        $current[5] = isset($current[5])?format_to_time($current[5], $convert_to_local):$default;
+
+        return $current;
+    }
+}

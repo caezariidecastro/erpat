@@ -23,7 +23,7 @@ class Attendance_model extends Crud_model {
         $attendnace_table = $this->db->dbprefix('attendance');
         $sql = "SELECT $attendnace_table.*
         FROM $attendnace_table
-        WHERE $attendnace_table.deleted=0 AND $attendnace_table.user_id=$user_id AND $attendnace_table.status='incomplete'";
+        WHERE $attendnace_table.deleted=0 AND $attendnace_table.user_id=$user_id AND $attendnace_table.out_time IS NULL";
         $result = $this->db->query($sql);
         if ($result->num_rows()) {
             return $result->row();

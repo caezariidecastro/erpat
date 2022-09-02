@@ -21,16 +21,18 @@
         </div>
 
         <label for="current_schedule" class=" col-md-3 col-sm-3"><?php echo lang('current_schedule'); ?></label>
-        <div class="col-md-9 col-sm-9 form-group">
+        <div class="col-md-6 col-sm-6 form-group">
             <div class="form-group">
                 <?php
-                    echo form_dropdown("sched_id", $sched_dropdown, $model_info->sched_id, "class='select2 validate-hidden' id='sched_id' ". "'");
+                    echo form_dropdown("sched_id", $sched_dropdown, $model_info->sched_id, "class='select2 validate-hidden' id='sched_id' required'");
                 ?>
             </div>
         </div>
+    </div>
 
-        <label for="in_date" class=" col-md-3 col-sm-3"><?php echo lang('in_date'); ?></label>
-        <div class="col-md-4 col-sm-4 form-group">
+    <div class="clearfix">
+        <label for="clocked_in" class=" col-md-4 col-12"><?php echo lang('clocked_in'); ?></label>
+        <div class="col-md-4 col-6 form-group">
             <?php
             $in_time = (is_date_exists($model_info->in_time)) ? convert_date_utc_to_local($model_info->in_time) : "";
 
@@ -52,8 +54,7 @@
             ));
             ?>
         </div>
-        <label for="in_time" class=" col-md-2 col-sm-2"><?php echo lang('in_time'); ?></label>
-        <div class=" col-md-3 col-sm-3  form-group">
+        <div class=" col-md-4 col-sm-4  form-group">
             <?php
             echo form_input(array(
                 "id" => "in_time",
@@ -69,8 +70,227 @@
     </div>
 
     <div class="clearfix">
-        <label for="out_date" class=" col-md-3 col-sm-3"><?php echo lang('out_date'); ?></label>
-        <div class=" col-md-4 col-sm-4 form-group">
+        <label for="break_1st_start" class=" col-md-4 col-12"><?php echo lang('break_1st_start'); ?></label>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            $first_start = is_date_exists($model_info->break_time[0]) ? convert_date_utc_to_local($model_info->break_time[0]) : "";
+
+            if ($time_format_24_hours) {
+                $first_start_time = $first_start ? date("H:i", strtotime($first_start)) : "";
+            } else {
+                $first_start_time = $first_start ? convert_time_to_12hours_format(date("H:i:s", strtotime($first_start))) : "";
+            }
+
+            echo form_input(array(
+                "id" => "first_start",
+                "name" => "first_start",
+                "value" => $model_info->break_time[0] ? date("Y-m-d", strtotime($model_info->break_time[0])) : "",
+                "class" => "form-control",
+                "placeholder" => lang('date'),
+                "autocomplete" => "off",
+                "data-rule-greaterThanOrEqual" => "#in_date",
+                "data-msg-greaterThanOrEqual" => lang("end_date_must_be_equal_or_greater_than_start_date")
+            ));
+            ?>
+        </div>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            echo form_input(array(
+                "id" => "first_start_time",
+                "name" => "first_start_time",
+                "value" => $first_start_time,
+                "class" => "form-control",
+                "placeholder" => lang('time'),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="clearfix">
+        <label for="break_1st_end" class=" col-md-4 col-12"><?php echo lang('break_1st_end'); ?></label>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            $first_end = is_date_exists($model_info->break_time[1]) ? convert_date_utc_to_local($model_info->break_time[1]) : "";
+
+            if ($time_format_24_hours) {
+                $first_end_time = $first_end ? date("H:i", strtotime($first_end)) : "";
+            } else {
+                $first_end_time = $first_end ? convert_time_to_12hours_format(date("H:i:s", strtotime($first_end))) : "";
+            }
+
+            echo form_input(array(
+                "id" => "first_end",
+                "name" => "first_end",
+                "value" => $first_end ? date("Y-m-d", strtotime($first_end)) : "",
+                "class" => "form-control",
+                "placeholder" => lang('date'),
+                "autocomplete" => "off",
+                "data-rule-greaterThanOrEqual" => "#in_date",
+                "data-msg-greaterThanOrEqual" => lang("end_date_must_be_equal_or_greater_than_start_date")
+            ));
+            ?>
+        </div>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            echo form_input(array(
+                "id" => "first_end_time",
+                "name" => "first_end_time",
+                "value" => $first_end_time,
+                "class" => "form-control",
+                "placeholder" => lang('time'),
+            ));
+            ?>
+        </div>
+    </div>
+
+    <div class="clearfix">
+        <label for="break_lunch_start" class=" col-md-4 col-12"><?php echo lang('break_lunch_start'); ?></label>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            $lunch_start = is_date_exists($model_info->break_time[2]) ? convert_date_utc_to_local($model_info->break_time[2]) : "";
+
+            if ($time_format_24_hours) {
+                $lunch_start_time = $lunch_start ? date("H:i", strtotime($lunch_start)) : "";
+            } else {
+                $lunch_start_time = $lunch_start ? convert_time_to_12hours_format(date("H:i:s", strtotime($lunch_start))) : "";
+            }
+
+            echo form_input(array(
+                "id" => "lunch_start",
+                "name" => "lunch_start",
+                "value" => $lunch_start ? date("Y-m-d", strtotime($lunch_start)) : "",
+                "class" => "form-control",
+                "placeholder" => lang('date'),
+                "autocomplete" => "off",
+                "data-rule-greaterThanOrEqual" => "#in_date",
+                "data-msg-greaterThanOrEqual" => lang("end_date_must_be_equal_or_greater_than_start_date")
+            ));
+            ?>
+        </div>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            echo form_input(array(
+                "id" => "lunch_start_time",
+                "name" => "lunch_start_time",
+                "value" => $lunch_start_time,
+                "class" => "form-control",
+                "placeholder" => lang('time'),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="clearfix">
+        <label for="break_lunch_end" class=" col-md-4 col-12"><?php echo lang('break_lunch_end'); ?></label>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            $lunch_end = is_date_exists($model_info->break_time[3]) ? convert_date_utc_to_local($model_info->break_time[3]) : "";
+
+            if ($time_format_24_hours) {
+                $lunch_end_time = $lunch_end ? date("H:i", strtotime($lunch_end)) : "";
+            } else {
+                $lunch_end_time = $lunch_end ? convert_time_to_12hours_format(date("H:i:s", strtotime($lunch_end))) : "";
+            }
+
+            echo form_input(array(
+                "id" => "lunch_end",
+                "name" => "lunch_end",
+                "value" => $lunch_end ? date("Y-m-d", strtotime($lunch_end)) : "",
+                "class" => "form-control",
+                "placeholder" => lang('date'),
+                "autocomplete" => "off",
+                "data-rule-greaterThanOrEqual" => "#in_date",
+                "data-msg-greaterThanOrEqual" => lang("end_date_must_be_equal_or_greater_than_start_date")
+            ));
+            ?>
+        </div>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            echo form_input(array(
+                "id" => "lunch_end_time",
+                "name" => "lunch_end_time",
+                "value" => $lunch_end_time,
+                "class" => "form-control",
+                "placeholder" => lang('time'),
+            ));
+            ?>
+        </div>
+    </div>
+
+    <div class="clearfix">
+        <label for="break_2nd_start" class=" col-md-4 col-12"><?php echo lang('break_2nd_start'); ?></label>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            $second_start = is_date_exists($model_info->break_time[4]) ? convert_date_utc_to_local($model_info->break_time[4]) : "";
+
+            if ($time_format_24_hours) {
+                $second_start_time = $second_start ? date("H:i", strtotime($second_start)) : "";
+            } else {
+                $second_start_time = $second_start ? convert_time_to_12hours_format(date("H:i:s", strtotime($second_start))) : "";
+            }
+
+            echo form_input(array(
+                "id" => "second_start",
+                "name" => "second_start",
+                "value" => $second_start ? date("Y-m-d", strtotime($second_start)) : "",
+                "class" => "form-control",
+                "placeholder" => lang('date'),
+                "autocomplete" => "off",
+                "data-rule-greaterThanOrEqual" => "#in_date",
+                "data-msg-greaterThanOrEqual" => lang("end_date_must_be_equal_or_greater_than_start_date")
+            ));
+            ?>
+        </div>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            echo form_input(array(
+                "id" => "second_start_time",
+                "name" => "second_start_time",
+                "value" => $second_start_time,
+                "class" => "form-control",
+                "placeholder" => lang('time'),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="clearfix">
+        <label for="break_2nd_end" class=" col-md-4 col-12"><?php echo lang('break_2nd_end'); ?></label>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            $second_end = is_date_exists($model_info->break_time[5]) ? convert_date_utc_to_local($model_info->break_time[5]) : "";
+
+            if ($time_format_24_hours) {
+                $second_end_time = $second_end ? date("H:i", strtotime($second_end)) : "";
+            } else {
+                $second_end_time = $second_end ? convert_time_to_12hours_format(date("H:i:s", strtotime($second_end))) : "";
+            }
+
+            echo form_input(array(
+                "id" => "second_end",
+                "name" => "second_end",
+                "value" => $second_end ? date("Y-m-d", strtotime($second_end)) : "",
+                "class" => "form-control",
+                "placeholder" => lang('date'),
+                "autocomplete" => "off",
+                "data-rule-greaterThanOrEqual" => "#in_date",
+                "data-msg-greaterThanOrEqual" => lang("end_date_must_be_equal_or_greater_than_start_date")
+            ));
+            ?>
+        </div>
+        <div class=" col-md-4 col-6 form-group">
+            <?php
+            echo form_input(array(
+                "id" => "second_end_time",
+                "name" => "second_end_time",
+                "value" => $second_end_time,
+                "class" => "form-control",
+                "placeholder" => lang('time'),
+            ));
+            ?>
+        </div>
+    </div>
+
+    <div class="clearfix">
+        <label for="clocked_out" class=" col-md-4 col-12"><?php echo lang('clocked_out'); ?></label>
+        <div class=" col-md-4 col-6 form-group">
             <?php
             $out_time = is_date_exists($model_info->out_time) ? convert_date_utc_to_local($model_info->out_time) : "";
 
@@ -87,15 +307,14 @@
                 "class" => "form-control",
                 "placeholder" => lang('out_date'),
                 "autocomplete" => "off",
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
+                //"data-rule-required" => true,
+                //"data-msg-required" => lang("field_required"),
                 "data-rule-greaterThanOrEqual" => "#in_date",
                 "data-msg-greaterThanOrEqual" => lang("end_date_must_be_equal_or_greater_than_start_date")
             ));
             ?>
         </div>
-        <label for="out_time" class=" col-md-2 col-sm-2"><?php echo lang('out_time'); ?></label>
-        <div class=" col-md-3 col-sm-3 form-group">
+        <div class=" col-md-4 col-6 form-group">
             <?php
             echo form_input(array(
                 "id" => "out_time",
@@ -103,12 +322,13 @@
                 "value" => $out_time_value,
                 "class" => "form-control",
                 "placeholder" => lang('out_time'),
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
+                //"data-rule-required" => true,
+                //"data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>
     </div>
+
     <div class="form-group">
         <label for="note" class=" col-md-3"><?php echo lang('note'); ?></label>
         <div class=" col-md-9">
@@ -142,9 +362,9 @@
         if (!$("#attendance_user_id").length) {
             $("#attendance_user_id").select2();
         }
-        setDatePicker("#in_date, #out_date");
+        setDatePicker("#in_date, #first_start, #first_end, #lunch_start, #lunch_end, #second_start, #second_end, #out_date");
 
-        setTimePicker("#in_time, #out_time");
+        setTimePicker("#in_time, #first_start_time, #first_end_time, #lunch_start_time, #lunch_end_time, #second_start_time, #second_end_time, #out_time");
 
         $("#name").focus();
 
