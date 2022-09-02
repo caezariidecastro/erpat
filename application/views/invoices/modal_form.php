@@ -49,46 +49,37 @@
             </div>
         </div>
 
-        <?php if (($client_id || $consumer_id) && !$project_id) { ?>
-            <input type="hidden" name="invoice_client_id" value="<?= $client_id ? $client_id : $consumer_id; ?>" />
-        <?php } else { ?>
-            <!-- <input type="hidden" id="invoice_consumer_id" name="invoice_consumer_id" value="" /> //Client side checking -->
-            <div class="form-group">
-                <label for="invoice_client_id" class=" col-md-3" id="invoice_client_id_label"><?= lang("bill_to") ?></label>
-                <div class="col-md-9" id="invoice_client_selection_wrapper">
-                    <?php
-                    echo form_input(array(
-                        "id" => "invoice_client_id",
-                        "name" => "invoice_client_id",
-                        "value" => $model_info->client_id ? $model_info->client_id : $model_info->consumer_id,
-                        "class" => "form-control",
-                        "data-rule-required" => "true",
-                        "data-msg-required" => lang('field_required'),
-                        "placeholder" => lang('bill_to')
-                    ));
-                    ?>
-                </div>
+        <div class="form-group">
+            <label for="invoice_client_id" class=" col-md-3" id="invoice_client_id_label"><?= lang("bill_to") ?></label>
+            <div class="col-md-9" id="invoice_client_selection_wrapper">
+                <?php
+                echo form_input(array(
+                    "id" => "invoice_client_id",
+                    "name" => "invoice_client_id",
+                    "value" => $model_info->client_id ? $model_info->client_id : $model_info->consumer_id,
+                    "class" => "form-control",
+                    "data-rule-required" => "true",
+                    "data-msg-required" => lang('field_required'),
+                    "placeholder" => lang('bill_to')
+                ));
+                ?>
             </div>
-        <?php } ?>
-        
-        <?php if ($project_id) { ?>
-            <input type="hidden" name="invoice_project_id" value="<?php echo $project_id; ?>" />
-        <?php } else { ?>
-            <div id="invoice_project_id_wrapper" class="form-group <?= !$model_info->consumer_id ? '' : 'hide'?>">
-                <label for="invoice_project_id" class=" col-md-3"><?php echo lang('project'); ?></label>
-                <div class="col-md-9" id="invoice-porject-dropdown-section">
-                    <?php
-                    echo form_input(array(
-                        "id" => "invoice_project_id",
-                        "name" => "invoice_project_id",
-                        "value" => $model_info->project_id,
-                        "class" => "form-control",
-                        "placeholder" => lang('project')
-                    ));
-                    ?>
-                </div>
+        </div>
+
+        <div id="invoice_project_id_wrapper" class="form-group <?= !$model_info->consumer_id ? '' : 'hide'?>">
+            <label for="invoice_project_id" class=" col-md-3"><?php echo lang('project'); ?></label>
+            <div class="col-md-9" id="invoice-porject-dropdown-section">
+                <?php
+                echo form_input(array(
+                    "id" => "invoice_project_id",
+                    "name" => "invoice_project_id",
+                    "value" => $model_info->project_id,
+                    "class" => "form-control",
+                    "placeholder" => lang('project')
+                ));
+                ?>
             </div>
-        <?php } ?>
+        </div>
 
         <div class="form-group">
             <label for="tax_id" class=" col-md-3"><?php echo lang('tax'); ?></label>
