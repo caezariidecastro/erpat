@@ -23,7 +23,7 @@
                             </div>
                             <div class="pull-left file-upload btn btn-default btn-xs">
                                 <span>...</span>
-                                <input id="site_logo_file" class="cropbox-upload upload" name="site_logo_file" type="file" data-height="40" data-width="175" data-preview-container="#site-logo-preview" data-input-field="#site_logo" />
+                                <input id="site_logo_file" class="cropbox-upload upload" name="site_logo_file" type="file" data-height="150" data-width="375" data-preview-container="#site-logo-preview" data-input-field="#site_logo" />
                             </div>
                             <input type="hidden" id="site_logo" name="site_logo" value=""  />
                         </div>
