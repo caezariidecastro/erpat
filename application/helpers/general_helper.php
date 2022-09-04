@@ -2209,7 +2209,7 @@ if (!function_exists("make_status_view_data")) {
 }
 
 if (!function_exists("serialized_breaktime")) {
-    function serialized_breaktime($breaktime_object, $default = '', $convert_to_local = true) {
+    function serialized_breaktime($breaktime_object, $default = '', $convert_to_local = true, $totime = true) {
 
         $ci = get_instance();
         $ci->load->helper('date_time');
@@ -2217,13 +2217,34 @@ if (!function_exists("serialized_breaktime")) {
         //Deserialized data else set to default.
         $current = isset($breaktime_object)?unserialize($breaktime_object):[null,null,null,null,null,null];
 
-        $current[0] = isset($current[0])?format_to_time($current[0], $convert_to_local):$default;
-        $current[1] = isset($current[1])?format_to_time($current[1], $convert_to_local):$default;
-        $current[2] = isset($current[2])?format_to_time($current[2], $convert_to_local):$default;
-        $current[3] = isset($current[3])?format_to_time($current[3], $convert_to_local):$default;
-        $current[4] = isset($current[4])?format_to_time($current[4], $convert_to_local):$default;
-        $current[5] = isset($current[5])?format_to_time($current[5], $convert_to_local):$default;
+        if($totime) {
+            $current[0] = isset($current[0])?format_to_time($current[0], $convert_to_local):$default;
+            $current[1] = isset($current[1])?format_to_time($current[1], $convert_to_local):$default;
+            $current[2] = isset($current[2])?format_to_time($current[2], $convert_to_local):$default;
+            $current[3] = isset($current[3])?format_to_time($current[3], $convert_to_local):$default;
+            $current[4] = isset($current[4])?format_to_time($current[4], $convert_to_local):$default;
+            $current[5] = isset($current[5])?format_to_time($current[5], $convert_to_local):$default;
+        } else {
+            $current[0] = isset($current[0])?$current[0]:$default;
+            $current[1] = isset($current[1])?$current[1]:$default;
+            $current[2] = isset($current[2])?$current[2]:$default;
+            $current[3] = isset($current[3])?$current[3]:$default;
+            $current[4] = isset($current[4])?$current[4]:$default;
+            $current[5] = isset($current[5])?$current[5]:$default;
+        }
 
         return $current;
     }
+}
+
+if (!function_exists("contain_str")) {
+
+    function contain_str($haystack, $needle) {
+        if (strpos($haystack, $needle) !== false) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

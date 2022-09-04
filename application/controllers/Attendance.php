@@ -66,7 +66,7 @@ class Attendance extends MY_Controller {
 
         $view_data['time_format_24_hours'] = get_setting("time_format") == "24_hours" ? true : false;
         $model_info = $this->Attendance_model->get_one($this->input->post('id'));
-        $model_info->break_time = serialized_breaktime($model_info->break_time, '', false);
+        $model_info->break_time = serialized_breaktime($model_info->break_time, '', false, false);
 
         $view_data['model_info'] = $model_info;
         if ($view_data['model_info']->id) {
@@ -131,7 +131,7 @@ class Attendance extends MY_Controller {
 
         validate_submitted_data(array(
             "id" => "numeric",
-            "sched_id" => "required",
+            //"sched_id" => "required",
             "in_date" => "required",
             //"out_date" => "required",
             "in_time" => "required",
@@ -437,8 +437,11 @@ class Attendance extends MY_Controller {
             $data->out_time ? format_to_date( $data->out_time ) : "-",
             $data->out_time ? format_to_time( $data->out_time ) : "-",
             $attd->getTotalDuration(),
-            strval($attd->getTotalWork()), strval($attd->getTotalAbsent()), 
-            strval($attd->getTotalLates()), strval($attd->getTotalOverbreak()), strval($attd->getTotalUndertime()),
+            strval($attd->getTotalWork()), 
+            strval($attd->getTotalAbsent()), 
+            strval($attd->getTotalLates()), 
+            strval($attd->getTotalOverbreak()), 
+            strval($attd->getTotalUndertime()),
             $info_link,
             $option_links
         );

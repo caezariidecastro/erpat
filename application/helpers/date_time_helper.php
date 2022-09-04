@@ -627,7 +627,11 @@ if (!function_exists('last_online_text')) {
 
 if (!function_exists('format_to_custom')) {
 
-    function format_to_custom($datetime, $format = "Y-m-d H:i:s", $totime = false) {
+    function format_to_custom($datetime, $format = "Y-m-d H:i:s", $totime = false,  $convert_to_local = true) {
+        if ($convert_to_local) {
+            $datetime = convert_date_utc_to_local($datetime);
+        }
+
         $date = new DateTime($datetime);
 
         if($totime) {
