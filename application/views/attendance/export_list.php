@@ -28,7 +28,8 @@
             //     {column: 5, dataType: 'number'},
             //     {column: 6, dataType: 'number'},
             //     {column: 7, dataType: 'number'}
-            // ]
+            // ],
+            tableRefreshButton: true,
         });
     });
 </script>

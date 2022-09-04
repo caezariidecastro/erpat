@@ -12,7 +12,8 @@
                 {title: "<?php echo lang("users"); ?>"},
                 {title: "<?php echo lang("status"); ?>", class: "w300"},
                 {title: "<?php echo lang("clock_in_out"); ?>", class: "text-center w200"}
-            ]
+            ],
+            tableRefreshButton: true,
         });
     });
 </script>

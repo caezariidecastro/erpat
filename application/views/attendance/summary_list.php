@@ -27,7 +27,8 @@
                 {column: 4, dataType: 'number'},
                 {column: 5, dataType: 'number'},
                 {column: 6, dataType: 'number'}
-            ]
+            ],
+            tableRefreshButton: true,
         });
     });
 </script>

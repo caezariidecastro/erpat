@@ -111,7 +111,7 @@ class Attendance_model extends Crud_model {
             $where .= " AND $attendnace_table.status = 'incomplete'";
         }
 
-        $teams_lists = ", (SELECT GROUP_CONCAT($team_table.title) FROM $team_table WHERE FIND_IN_SET($attendnace_table.user_id, $team_table.heads) OR FIND_IN_SET($attendnace_table.user_id, $team_table.members) ) as team_list";
+        $teams_lists = ", (SELECT GROUP_CONCAT($team_table.title) FROM $team_table WHERE deleted='0' AND (FIND_IN_SET($attendnace_table.user_id, $team_table.heads) OR FIND_IN_SET($attendnace_table.user_id, $team_table.members)) ) as team_list";
 
         $created_by_user = "CONCAT($users_table.first_name, ' ',$users_table.last_name) AS created_by_user";
         if(get_setting('name_format') == "lastfirst") {
