@@ -223,6 +223,13 @@ class BioMeet {
                 //worked, Get the worked hours: b = z-a;
                 $worked = convert_number_to_decimal( max(($this->hours_per_day-$nonworked), 0) );
 
+                //TODO: Add pre and post OT as regular pay.
+                $pre_ot = convert_seconds_to_hour_decimal( max($sched_in-$from_time, 0) );
+                $worked += $pre_ot<1 ? $pre_ot:1;
+
+                $post_ot = convert_seconds_to_hour_decimal( max($to_time-$sched_out, 3600) );
+                $worked += $post_ot<1 ? $post_ot:1;
+
                 //idle, Get non worked hours: a = x+y
                 $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
 
