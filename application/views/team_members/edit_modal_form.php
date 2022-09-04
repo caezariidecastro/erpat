@@ -48,7 +48,14 @@
                 ?>
             </div>
         </div>
-        
+        <div class="form-group">
+            <label for="schedule" class="col-md-3"><?php echo lang('schedule'); ?></label>
+            <div class="col-md-9">
+                <?php
+                echo form_dropdown("schedule", $schedule_dropdown, array($model_info->sched_id), "class='select2 validate-hidden' id='user-schedule'");
+                ?>
+            </div>
+        </div>
         <div class="form-group">
             <label for="role" class="col-md-3"><?php echo lang('role'); ?></label>
             <div class="col-md-9">

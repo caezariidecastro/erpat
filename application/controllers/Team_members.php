@@ -246,6 +246,8 @@ class Team_members extends MY_Controller {
             "id" => "numeric"
         ));
 
+        $view_data['schedule_dropdown'] = $this->_get_schedule_dropdown();
+
         $view_data['role_dropdown'] = $this->_get_roles_dropdown();
         
         $view_data['status_dropdown'] = $this->get_all_usertypes(false);
@@ -371,6 +373,12 @@ class Team_members extends MY_Controller {
         $data = $this->_make_row($data, $custom_fields);
 
         if ($user_info_updated) {
+            $job_sched_data = array(
+                "user_id" => $user_id,
+                "sched_id" => $this->input->post('schedule')
+            );
+            $this->Users_model->save_job_info($job_sched_data);
+
             echo json_encode(array("success" => true, "id" => $user_id, "data" => $data, 'message' => lang('record_updated')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
@@ -500,7 +508,8 @@ class Team_members extends MY_Controller {
             $show_cotact_info ? $data->email : "",
             $show_cotact_info && $data->phone ? $data->phone : "-",
             $data->job_title,
-            $data->team_list,
+            $data->team_list?$data->team_list:"-",
+            $data->sched_name?$data->sched_name:"-",
             last_online_text($data->last_online)
         );
 

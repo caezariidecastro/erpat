@@ -73,6 +73,7 @@ class Users_model extends Crud_model {
     function get_details($options = array()) {
         $users_table = $this->db->dbprefix('users');
         $team_table = $this->db->dbprefix('team');
+        $schedule_table = $this->db->dbprefix('schedule');
         $team_member_job_info_table = $this->db->dbprefix('team_member_job_info');
         $clients_table = $this->db->dbprefix('clients');
 
@@ -163,10 +164,11 @@ class Users_model extends Crud_model {
 
 
         //prepare full query string
-        $sql = "SELECT $users_table.*,
+        $sql = "SELECT $users_table.*, $schedule_table.id as sched_id, $schedule_table.title as sched_name,
             $team_member_job_info_table.rfid_num, $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term $teams_lists $select_custom_fieds
         FROM $users_table
         LEFT JOIN $team_member_job_info_table ON $team_member_job_info_table.user_id=$users_table.id
+        LEFT JOIN $schedule_table ON $schedule_table.id=$team_member_job_info_table.sched_id
         LEFT JOIN $clients_table ON $clients_table.id=$users_table.client_id
         $join_custom_fieds    
         WHERE $where
