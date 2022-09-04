@@ -76,6 +76,7 @@ class Users_model extends Crud_model {
         $schedule_table = $this->db->dbprefix('schedule');
         $team_member_job_info_table = $this->db->dbprefix('team_member_job_info');
         $clients_table = $this->db->dbprefix('clients');
+        $teams_table = $this->db->dbprefix('team');
 
         $where = "";
         $id = get_array_value($options, "id");
@@ -153,6 +154,12 @@ class Users_model extends Crud_model {
         }
         $select_labels_data_query = $this->get_labels_data_query();
 
+        $teams_ids = "( SELECT GROUP_CONCAT($team_table.id) FROM $team_table WHERE $team_table.deleted='0' AND (FIND_IN_SET($users_table.id, $team_table.heads) OR FIND_IN_SET($users_table.id, $team_table.members) ) )";
+        $department_id = get_array_value($options, "department_id");
+        if($department_id){
+            $where .= " AND FIND_IN_SET('$department_id', $teams_ids) ";
+        }
+        
         $custom_field_type = "team_members";
         if ($user_type === "client") {
             $custom_field_type = "client_contacts";
@@ -170,8 +177,8 @@ class Users_model extends Crud_model {
 
 
         //prepare full query string
-        $sql = "SELECT $users_table.*, $schedule_table.id as sched_id, $schedule_table.title as sched_name, $select_labels_data_query,
-            $team_member_job_info_table.rfid_num, $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term $teams_lists $select_custom_fieds
+        $sql = "SELECT $users_table.*, $schedule_table.id as sched_id, $schedule_table.title as sched_name, $select_labels_data_query, 
+            $team_member_job_info_table.rfid_num, $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term $teams_lists  $select_custom_fieds
         FROM $users_table
         LEFT JOIN $team_member_job_info_table ON $team_member_job_info_table.user_id=$users_table.id
         LEFT JOIN $schedule_table ON $schedule_table.id=$team_member_job_info_table.sched_id

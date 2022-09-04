@@ -43,6 +43,7 @@
             filterDropdown: [
                 {name: "status", class: "text-center w150", options: <?php echo $usertype_dropdown; ?>},
                 {name: "label_id", class: "text-center w200", options: <?php echo $users_labels_dropdown; ?>},
+                {id: "department_select2_filter", name: "department_select2_filter", class: "w200", options: <?php echo json_encode($department_select2); ?>}
             ],
             columns: [
                 {title: '', "class": "w25 text-center"},

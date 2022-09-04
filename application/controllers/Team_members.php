@@ -17,6 +17,17 @@ class Team_members extends MY_Controller {
         $this->load->model("General_files_model");
     }
 
+    protected function _get_team_select2_data() {
+        $teams = $this->Team_model->get_details()->result();
+        $team_select2 = array(array('id' => '', 'text'  => '- Departments -'));
+
+        foreach($teams as $team){
+            $team_select2[] = array('id' => $team->id, 'text'  => $team->title);
+        }
+
+        return $team_select2;
+    }
+
     private function can_view_team_members_contact_info() {
         if ($this->login_user->user_type == "staff") {
             if ($this->login_user->is_admin) {
@@ -145,6 +156,7 @@ class Team_members extends MY_Controller {
 
         $view_data["usertype_dropdown"] = json_encode( $this->get_all_usertypes() );
         $view_data['users_labels_dropdown'] = json_encode($this->make_labels_dropdown("users", "", true));
+        $view_data['department_select2'] = $this->_get_team_select2_data();
 
         $this->template->rander("team_members/index", $view_data);
     }
@@ -505,6 +517,7 @@ class Team_members extends MY_Controller {
         $options = array(
             "status" => $filter_user,
             "label_id" => $this->input->post('label_id'),
+            'department_id' => $this->input->post('department_select2_filter'),
             "user_type" => $type_of_user,
             "custom_fields" => $custom_fields
         );
