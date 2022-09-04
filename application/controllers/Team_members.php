@@ -94,6 +94,43 @@ class Team_members extends MY_Controller {
         return $usertypes_dropdown;
     }
 
+    protected function make_labels_dropdown($type = "", $label_ids = "", $is_filter = false) {
+        if (!$type) {
+            show_404();
+        }
+
+        $labels_dropdown = $is_filter ? array(array("id" => "", "text" => "- " . lang("label") . " -")) : array();
+
+        $options = array(
+            "context" => $type
+        );
+
+        if ($label_ids) {
+            $add_label_option = true;
+
+            //check if any string is exists, 
+            //if so, not include this parameter
+            $explode_ids = explode(',', $label_ids);
+            foreach ($explode_ids as $label_id) {
+                if (!is_int($label_id)) {
+                    $add_label_option = false;
+                    break;
+                }
+            }
+
+            if ($add_label_option) {
+                $options["label_ids"] = $label_ids; //to edit labels where have access of others
+            }
+        }
+
+        $labels = $this->Labels_model->get_details($options)->result();
+        foreach ($labels as $label) {
+            $labels_dropdown[] = array("id" => $label->id, "text" => $label->title);
+        }
+
+        return $labels_dropdown;
+    }
+
     public function index() {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
@@ -107,6 +144,7 @@ class Team_members extends MY_Controller {
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
 
         $view_data["usertype_dropdown"] = json_encode( $this->get_all_usertypes() );
+        $view_data['users_labels_dropdown'] = json_encode($this->make_labels_dropdown("users", "", true));
 
         $this->template->rander("team_members/index", $view_data);
     }
@@ -252,6 +290,8 @@ class Team_members extends MY_Controller {
         
         $view_data['status_dropdown'] = $this->get_all_usertypes(false);
 
+        $view_data['label_suggestions'] = $this->make_labels_dropdown("users", $view_data['model_info']->labels);
+
         $id = $this->input->post('id');
         $options = array(
             "id" => $id,
@@ -335,6 +375,7 @@ class Team_members extends MY_Controller {
             "access_syntry" => $this->input->post('syntry'),
             "access_galyon" => $this->input->post('galyon'),
             "status" => $this->input->post('status'),
+            "labels" => $this->input->post('labels') ? $this->input->post('labels') : "",
         );
         if( $this->input->post('role') == "admin") {
             $user_data["is_admin"] = "1";
@@ -463,6 +504,7 @@ class Team_members extends MY_Controller {
 
         $options = array(
             "status" => $filter_user,
+            "label_id" => $this->input->post('label_id'),
             "user_type" => $type_of_user,
             "custom_fields" => $custom_fields
         );
@@ -501,12 +543,18 @@ class Team_members extends MY_Controller {
         //check contact info view permissions
         $show_cotact_info = $this->can_view_team_members_contact_info();
 
+        $labels = "";
+        if ($data->labels_list) {
+            $labels = make_labels_view_data($data->labels_list, true);
+        }
+
         $row_data = array(
             $user_avatar,
             get_team_member_profile_link($data->id, $full_name),
             $data->rfid_num,
             $show_cotact_info ? $data->email : "",
             $show_cotact_info && $data->phone ? $data->phone : "-",
+            $labels,
             $data->job_title,
             $data->team_list?$data->team_list:"-",
             $data->sched_name?$data->sched_name:"-",

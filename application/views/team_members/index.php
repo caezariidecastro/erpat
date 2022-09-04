@@ -7,6 +7,7 @@
                     <button type="button" class="btn btn-default btn-sm active mr-1"  title="<?php echo lang('list_view'); ?>"><i class="fa fa-bars"></i></button>
                     <?php echo anchor(get_uri("hrs/employee/view"), "<i class='fa fa-th-large'></i>", array("class" => "btn btn-default btn-sm")); ?>
                 </div> 
+                <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "users")); ?>
                 <?php
                 if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_invite")) {
                     echo modal_anchor(get_uri("hrs/team_members/invitation_modal"), "<i class='fa fa-envelope-o'></i> " . lang('send_invitation'), array("class" => "btn btn-default", "title" => lang('send_invitation')));
@@ -40,7 +41,8 @@
             source: '<?php echo_uri("hrs/team_members/list_data/staff") ?>',
             order: [[1, "asc"]],
             filterDropdown: [
-                {name: "status", class: "text-center w150", options: <?php echo $usertype_dropdown; ?>}
+                {name: "status", class: "text-center w150", options: <?php echo $usertype_dropdown; ?>},
+                {name: "label_id", class: "text-center w200", options: <?php echo $users_labels_dropdown; ?>},
             ],
             columns: [
                 {title: '', "class": "w25 text-center"},
@@ -48,6 +50,7 @@
                 {title: "<?php echo lang("rfid_num") ?>", "class": "w10p"},
                 {visible: visibleContact, title: "<?php echo lang("email") ?>", "class": "w20p"},
                 {visible: visibleContact, title: "<?php echo lang("phone") ?>", "class": "w10p"},
+                {title: "<?php echo lang("labels") ?>", "class": "w10p"},
                 {title: "<?php echo lang("job_title") ?>", "class": "w10p"},
                 {title: "<?php echo lang("department") ?>"},
                 {title: "<?php echo lang("schedule") ?>"},

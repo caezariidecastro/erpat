@@ -74,6 +74,21 @@
             </div>
         </div>
         <div class="form-group">
+            <label for="labels" class=" col-md-3"><?php echo lang('labels'); ?></label>
+            <div class="col-md-9">
+                <?php
+                echo form_input(array(
+                    "id" => "labels",
+                    "name" => "labels",
+                    "value" => $model_info ? $model_info->labels : "",
+                    "class" => "form-control",
+                    "placeholder" => lang('labels'),
+                    "autofocus" => true,
+                ));
+                ?>
+            </div>
+        </div>
+        <div class="form-group">
             <label for="disable_login" class="col-md-2"><?php echo lang('disable_login'); ?></label>
             <input id="jq_login" name="login" type="hidden" value="<?= $model_info->disable_login ?>"/>
             <div class="col-md-10">
@@ -161,6 +176,8 @@
                 $("#user-role-help-block").addClass("hide");
             }
         });
+
+        $("#labels").select2({multiple: true, data: <?php echo json_encode($label_suggestions); ?>});
 
         $("#ajaxModalTitle").text("Edit user");
     });
