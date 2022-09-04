@@ -139,9 +139,9 @@ class Team extends MY_Controller {
     /* prepare a row of team list table */
 
     private function _make_row($data) {
-        $member_count = empty($data->members[0]) ? '0' : count(explode(",", $data->members));
+        $member_count = $this->Users_model->get_actual_active($data->members);
         $total_members = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $member_count . "</span>";
-        $head_count = empty($data->heads[0]) ? '0' : count(explode(",", $data->heads));
+        $head_count = $this->Users_model->get_actual_active($data->heads);
         $total_heads = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $head_count . "</span>";
         return array(
             $data->title,
@@ -182,8 +182,8 @@ class Team extends MY_Controller {
 
         $this->load->helper('utility');
         $users = get_team_all_unique($team_info->heads, $team_info->members);
-
-        $html = "Page 1 of ".$team_info->title;
+        $total_pages = ceil(count($users)/20); //20 items per page
+        $html = "Page 1 of $total_pages for ".$team_info->title;
         $this->pdf->writeHTML($html, true, false, true, false, '');
 
         $style = array(
@@ -207,7 +207,10 @@ class Team extends MY_Controller {
         $incremental_height  = 52;
 
         for( $i=0; $i<count($users); $i++ ) {
-			if(!$user_info = $this->Users_model->get_details(array('id'=>$users[$i]))->row()) {
+			if(!$user_info = $this->Users_model->get_details(array(
+                'id'=>$users[$i],
+                'status'=>'active'
+                ))->row()) {
 				continue; //skip this, user not found.
 			}
 			

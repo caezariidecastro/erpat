@@ -398,4 +398,13 @@ class Users_model extends Crud_model {
 
         return false;
     }
+
+    function get_actual_active($user_ids = "") {
+        $users_table = $this->db->dbprefix('users');
+
+        $sql = "SELECT COUNT(id) AS total_active
+        FROM $users_table
+        WHERE $users_table.deleted='0' AND $users_table.status='active' AND FIND_IN_SET($users_table.id, '$user_ids')";
+        return $this->db->query($sql)->row()->total_active;
+    }
 }
