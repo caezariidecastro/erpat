@@ -157,6 +157,7 @@ class Team_members extends MY_Controller {
         $view_data["usertype_dropdown"] = json_encode( $this->get_all_usertypes() );
         $view_data['users_labels_dropdown'] = json_encode($this->make_labels_dropdown("users", "", true));
         $view_data['department_select2'] = $this->_get_team_select2_data();
+        $view_data['schedule_select2'] = $this->_get_schedule_select2_data();
 
         $this->template->rander("team_members/index", $view_data);
     }
@@ -518,6 +519,7 @@ class Team_members extends MY_Controller {
             "status" => $filter_user,
             "label_id" => $this->input->post('label_id'),
             'department_id' => $this->input->post('department_select2_filter'),
+            'sched_id' => $this->input->post('schedule_select2_filter'),
             "user_type" => $type_of_user,
             "custom_fields" => $custom_fields
         );
@@ -808,6 +810,17 @@ class Team_members extends MY_Controller {
             $sched_dropdown[$item->id] = $item->title;
         }
         return $sched_dropdown;
+    }
+
+    private function _get_schedule_select2_data() {
+        $schedules = $this->Schedule_model->get_details()->result();
+        $schedule_select2 = array(array('id' => '', 'text'  => '- Schedule -'));
+
+        foreach($schedules as $schedule){
+            $schedule_select2[] = array('id' => $schedule->id, 'text'  => $schedule->title);
+        }
+
+        return $schedule_select2;
     }
 
     //save job information of a team member

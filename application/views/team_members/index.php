@@ -41,9 +41,10 @@
             source: '<?php echo_uri("hrs/team_members/list_data/staff") ?>',
             order: [[1, "asc"]],
             filterDropdown: [
-                {name: "status", class: "text-center w150", options: <?php echo $usertype_dropdown; ?>},
-                {name: "label_id", class: "text-center w200", options: <?php echo $users_labels_dropdown; ?>},
-                {id: "department_select2_filter", name: "department_select2_filter", class: "w200", options: <?php echo json_encode($department_select2); ?>}
+                {name: "status", class: "text-center w100", options: <?php echo $usertype_dropdown; ?>},
+                {name: "label_id", class: "text-center w100", options: <?php echo $users_labels_dropdown; ?>},
+                {id: "schedule_select2_filter", name: "schedule_select2_filter", class: "w150", options: <?php echo json_encode($schedule_select2); ?>},
+                {id: "department_select2_filter", name: "department_select2_filter", class: "w150", options: <?php echo json_encode($department_select2); ?>}
             ],
             columns: [
                 {title: '', "class": "w25 text-center"},

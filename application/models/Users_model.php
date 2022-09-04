@@ -159,6 +159,11 @@ class Users_model extends Crud_model {
         if($department_id){
             $where .= " AND FIND_IN_SET('$department_id', $teams_ids) ";
         }
+
+        $sched_id = get_array_value($options, "sched_id");
+        if ($sched_id) {
+            $where .= " AND $schedule_table.id=$sched_id ";
+        }
         
         $custom_field_type = "team_members";
         if ($user_type === "client") {
