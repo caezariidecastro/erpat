@@ -146,7 +146,7 @@ class Estimates extends MY_Controller {
 
         validate_submitted_data(array(
             "id" => "numeric",
-            "estimate_client_id" => "required|numeric",
+            "estimate_client_id" => "numeric",
             "estimate_date" => "required",
             "valid_until" => "required",
             "estimate_request_id" => "numeric"
@@ -157,15 +157,20 @@ class Estimates extends MY_Controller {
         $id = $this->input->post('id');
 
         $estimate_data = array(
-            "client_id" => $type == "product" ? 0 : $client_id,
-            "consumer_id" => $type == "product" ? $client_id : 0,
             "estimate_date" => $this->input->post('estimate_date'),
             "valid_until" => $this->input->post('valid_until'),
             "tax_id" => $this->input->post('tax_id') ? $this->input->post('tax_id') : 0,
             "tax_id2" => $this->input->post('tax_id2') ? $this->input->post('tax_id2') : 0,
             "note" => $this->input->post('estimate_note'),
-            "type" => $this->input->post('type'),
         );
+
+        if($client_id) {
+            if($type == "product") {
+                $estimate_data['consumer_id'] = $client_id;
+            } else {
+                $estimate_data['client_id'] = $client_id;
+            }
+        }
 
         $is_clone = $this->input->post('is_clone');
         $estimate_request_id = $this->input->post('estimate_request_id');
@@ -388,7 +393,6 @@ class Estimates extends MY_Controller {
             $estimate_url,
             $client,
             $data->estimate_date,
-            ucwords($data->type),
             format_to_date($data->estimate_date, false),
             to_currency($data->estimate_value, $data->currency_symbol),
             $this->_get_estimate_status_label($data),
@@ -458,6 +462,7 @@ class Estimates extends MY_Controller {
                 $view_data["can_create_projects"] = $this->can_create_projects();
 
                 $view_data["estimate_id"] = $estimate_id;
+                $view_data["is_admin"] = $this->login_user->is_admin?true:false;
 
                 $this->template->rander("estimates/view", $view_data);
             } else {

@@ -32,7 +32,6 @@
                 {title: "<?php echo lang("estimate") ?>", "class": "w15p"},
                 {title: "<?php echo lang("owner") ?>", "class": "text-center w20p"},
                 { visible: false, searchable: false },
-                {title: "<?php echo lang("type") ?>", "class": "text-center w10p"},
                 {title: "<?php echo lang("estimate_date") ?>", "iDataSort": 2, "class": "w15p"},
                 {title: "<?php echo lang("amount") ?>", "class": "text-center w15p"},
                 {title: "<?php echo lang("status") ?>", "class": "text-center w10p"}

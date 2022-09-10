@@ -19,8 +19,9 @@
 
                         <!--don't show status changing option for leads-->
                         <?php
-                        if (!$client_info->is_lead) {
-                            $send_to_client_lang = $estimate_info->consumer_id ? lang('send_to_consumer') : lang('send_to_client');
+                        $send_to_client_lang = $estimate_info->consumer_id ? lang('send_to_consumer') : lang('send_to_client');
+
+                        if (!$is_admin && !$client_info->is_lead) {
                             if ($estimate_status == "draft") {
                                 ?>
                                 <li role="presentation"><?php echo modal_anchor(get_uri("estimates/send_estimate_modal_form/" . $estimate_info->id), "<i class='fa fa-send'></i> " . $send_to_client_lang, array("title" => $send_to_client_lang, "data-post-id" => $estimate_info->id, "role" => "menuitem", "tabindex" => "-1")); ?> </li>
@@ -34,6 +35,14 @@
                                 <li role="presentation"><?php echo ajax_anchor(get_uri("estimates/update_estimate_status/" . $estimate_info->id . "/accepted"), "<i class='fa fa-check-circle'></i> " . lang('mark_as_accepted'), array("data-reload-on-success" => "1")); ?> </li>
                                 <?php
                             }
+                        }  
+                        
+                        if($is_admin) {
+                        ?>
+                            <li role="presentation"><?php echo modal_anchor(get_uri("estimates/send_estimate_modal_form/" . $estimate_info->id), "<i class='fa fa-send'></i> " . $send_to_client_lang, array("title" => $send_to_client_lang, "data-post-id" => $estimate_info->id, "role" => "menuitem", "tabindex" => "-1")); ?> </li>
+                            <li role="presentation"><?php echo ajax_anchor(get_uri("estimates/update_estimate_status/" . $estimate_info->id . "/accepted"), "<i class='fa fa-check-circle'></i> " . lang('mark_as_accepted'), array("data-reload-on-success" => "1")); ?> </li>
+                            <li role="presentation"><?php echo ajax_anchor(get_uri("estimates/update_estimate_status/" . $estimate_info->id . "/declined"), "<i class='fa fa-times-circle-o'></i> " . lang('mark_as_declined'), array("data-reload-on-success" => "1")); ?> </li>
+                        <?php
                         }
                         ?>
 
@@ -41,7 +50,7 @@
                             <li role="presentation"><?php echo modal_anchor(get_uri("estimates/send_estimate_modal_form/" . $estimate_info->id), "<i class='fa fa-send'></i> " . lang('send_to_lead'), array("title" => lang('send_to_lead'), "data-post-id" => $estimate_info->id, "data-post-is_lead" => true, "role" => "menuitem", "tabindex" => "-1")); ?> </li>
                         <?php } ?>
 
-                        <?php if ($estimate_status == "accepted") { ?>
+                        <?php if ($is_admin || $estimate_status == "accepted") { ?>
                             <li role="presentation" class="divider"></li>
                             <?php if ($can_create_projects && !$estimate_info->project_id) { ?>
                                 <li role="presentation"><?php echo modal_anchor(get_uri("projects/modal_form"), "<i class='fa fa-plus'></i> " . lang('create_project'), array("data-post-estimate_id" => $estimate_info->id, "title" => lang('create_project'), "data-post-client_id" => $estimate_info->client_id)); ?> </li>
@@ -52,7 +61,8 @@
                         <?php } ?>
                     </ul>
                 </span>
-                <?php echo modal_anchor(get_uri("estimates/". ($estimate_info->consumer_id ? "product_modal_form" : "item_modal_form")), "<i class='fa fa-plus-circle'></i> " . ($estimate_info->consumer_id ? lang('add_product') : lang('add_service')), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-estimate_id" => $estimate_info->id)); ?>
+                <?php echo modal_anchor(get_uri("estimates/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-estimate_id" => $estimate_info->id)); ?>
+                <?php echo modal_anchor(get_uri("estimates/product_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_product'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-estimate_id" => $estimate_info->id)); ?>
             </div>
         </div>
         <div id="estimate-status-bar">

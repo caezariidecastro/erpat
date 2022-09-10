@@ -789,3 +789,5 @@ $lang["invoice_warranty"] = "Invoice Warranty";
 
 $lang["enable_terms"] = "Enable Terms";
 $lang["enable_warranty"] = "Enable Warranty";
+
+$lang["estimate_id"] = "Estimate ID";

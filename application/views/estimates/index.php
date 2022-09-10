@@ -41,10 +41,9 @@
             dateRangeType: dateRange,
             filterDropdown: [{name: "status", class: "w150", options: <?php $this->load->view("estimates/estimate_statuses_dropdown"); ?>}],
             columns: [
-                {title: "<?php echo lang("estimate") ?> ", "class": "w15p"},
-                {title: "<?php echo lang("client") ?>"},
+                {title: "<?php echo lang("estimate_id") ?> ", "class": "w15p"},
+                {title: "<?php echo lang("estimate_to") ?>"},
                 {visible: false, searchable: false},
-                {title: "<?php echo lang("type") ?>"},
                 {title: "<?php echo lang("estimate_date") ?>", "iDataSort": 2, "class": "w20p"},
                 {title: "<?php echo lang("amount") ?>", "class": "text-right w20p"},
                 {title: "<?php echo lang("status") ?>", "class": "text-center"}
@@ -53,7 +52,7 @@
             ],
             printColumns: combineCustomFieldsColumns([0, 1, 3, 4, 5], '<?php echo $custom_field_headers; ?>'),
             xlsColumns: combineCustomFieldsColumns([0, 1, 3, 4, 5], '<?php echo $custom_field_headers; ?>'),
-            summation: [{column: 5, dataType: 'currency', currencySymbol: AppHelper.settings.currencySymbol}]
+            summation: [{column: 4, dataType: 'currency', currencySymbol: AppHelper.settings.currencySymbol}]
         });
     };
 

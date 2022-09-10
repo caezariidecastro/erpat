@@ -4,7 +4,7 @@
             <span class="fa fa-bars"></span>
         </button>
 
-        <a class="navbar-brand" href="<?php echo_uri('dashboard'); ?>"><img src="<?php echo get_logo_url(); ?>" /></a>
+        <a class="navbar-brand" href="<?php echo_uri('request_estimate'); ?>"><img src="<?php echo get_logo_url(); ?>" style="height: -webkit-fill-available; width: auto;"/></a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
 

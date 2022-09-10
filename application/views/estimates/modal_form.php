@@ -46,6 +46,21 @@
             ?>
         </div>
     </div>
+    <?php if (!$client_id) { ?>
+    <div class="form-group">
+        <label for="type" class=" col-md-3"><?php echo lang('type'); ?></label>
+        <div class="col-md-9">
+            <label for="service" class="mr10">
+                <input id="service" name="type" type="radio" <?= !$model_info->type ? "checked" : ($model_info->type == "service" ? "checked" : "") ?> value="service"/>
+                Client
+            </label>
+            <label for="product" class="">
+                <input id="product" name="type" type="radio" <?= $model_info->type == "product" ? "checked" : "" ?> value="product"/>
+                Customer
+            </label>
+        </div>
+    </div>
+    <?php } ?>
     <?php if ($client_id) { ?>
         <input type="hidden" name="estimate_client_id" value="<?php echo $client_id; ?>" />
     <?php } else if(!$model_info->consumer_id) { ?>
@@ -113,19 +128,6 @@
                 "data-rich-text-editor" => true
             ));
             ?>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="type" class=" col-md-3"><?php echo lang('type'); ?></label>
-        <div class="col-md-9">
-            <label for="service" class="mr10">
-                <input id="service" name="type" type="radio" <?= !$model_info->type ? "checked" : ($model_info->type == "service" ? "checked" : "") ?> value="service"/>
-                Service
-            </label>
-            <label for="product" class="">
-                <input id="product" name="type" type="radio" <?= $model_info->type == "product" ? "checked" : "" ?> value="product"/>
-                Product
-            </label>
         </div>
     </div>
 

@@ -1176,7 +1176,7 @@ if (!function_exists('prepare_estimate_pdf')) {
             }
 
             $estimate_info = get_array_value($estimate_data, "estimate_info");
-            $pdf_file_name = lang("estimate") . "-$estimate_info->id.pdf";
+            $pdf_file_name = get_estimate_id($estimate_info->id).".pdf";
 
             if ($mode === "download") {
                 $ci->pdf->Output($pdf_file_name, "D");
