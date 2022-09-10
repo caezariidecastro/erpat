@@ -55,11 +55,6 @@
 
 
 </div>
-<style type="text/css">
-    .datatable-tools:first-child {
-        display:  none;
-    }
-</style>
 
 <script type="text/javascript">
     $(document).ready(function () {
