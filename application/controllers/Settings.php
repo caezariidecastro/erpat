@@ -312,13 +312,13 @@ class Settings extends MY_Controller {
     }
 
     function save_invoice_settings() {
-        $settings = array("allow_partial_invoice_payment_from_clients", "invoice_color", "invoice_footer", "send_bcc_to", "invoice_prefix", "invoice_style", "invoice_logo", "send_invoice_due_pre_reminder", "send_invoice_due_after_reminder", "send_recurring_invoice_reminder_before_creation", "default_due_date_after_billing_date", "initial_number_of_the_invoice", "client_can_pay_invoice_without_login");
+        $settings = array("allow_partial_invoice_payment_from_clients", "invoice_color", "invoice_footer", "invoice_terms", "invoice_warranty", "send_bcc_to", "invoice_prefix", "invoice_style", "invoice_logo", "send_invoice_due_pre_reminder", "send_invoice_due_after_reminder", "send_recurring_invoice_reminder_before_creation", "default_due_date_after_billing_date", "initial_number_of_the_invoice", "client_can_pay_invoice_without_login");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);
             $saveable = true;
 
-            if ($setting == "invoice_footer") {
+            if ($setting == "invoice_footer" || $setting == "invoice_terms" || $setting == "invoice_warranty") {
                 $value = decode_ajax_post_data($value);
             } else if ($setting === "invoice_logo" && $value) {
                 $value = str_replace("~", ":", $value);

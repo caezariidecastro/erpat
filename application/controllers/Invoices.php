@@ -238,6 +238,9 @@ class Invoices extends MY_Controller {
         $files_data = move_files_from_temp_dir_to_permanent_dir($target_path, "invoice");
         $new_files = unserialize($files_data);
 
+        $enable_terms = $this->input->post('enable_terms') ? 1 : 0;
+        $enable_warranty = $this->input->post('enable_warranty') ? 1 : 0;
+
         $recurring = $this->input->post('recurring') ? 1 : 0;
         $bill_date = $this->input->post('invoice_bill_date');
         $repeat_every = $this->input->post('repeat_every');
@@ -263,6 +266,8 @@ class Invoices extends MY_Controller {
             "tax_id" => $this->input->post('tax_id') ? $this->input->post('tax_id') : 0,
             "tax_id2" => $this->input->post('tax_id2') ? $this->input->post('tax_id2') : 0,
             "tax_id3" => $this->input->post('tax_id3') ? $this->input->post('tax_id3') : 0,
+            "enable_terms" => $enable_terms,
+            "enable_warranty" => $enable_warranty,
             "recurring" => $recurring,
             "repeat_every" => $repeat_every ? $repeat_every : 0,
             "repeat_type" => $repeat_type ? $repeat_type : NULL,

@@ -783,3 +783,9 @@ $lang["active_attendance_ongoing"] = "Forbidden! There is an active ongoing atte
 
 $lang["start"] = "Start";
 $lang["end"] = "End";
+
+$lang["invoice_terms"] = "Invoice Terms";
+$lang["invoice_warranty"] = "Invoice Warranty";
+
+$lang["enable_terms"] = "Enable Terms";
+$lang["enable_warranty"] = "Enable Warranty";

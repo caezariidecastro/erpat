@@ -105,6 +105,22 @@
                 ?>
             </div>
         </div>
+
+        <div class="form-group">
+            <label for="enable_terms" class=" col-md-3"><?php echo lang('enable_terms'); ?></label>
+            <div class=" col-md-3">
+                <?php
+                echo form_checkbox("enable_terms", "1", $model_info->enable_terms ? true : false, "id='enable_terms'");
+                ?>                       
+            </div>
+            <label for="enable_warranty" class=" col-md-3"><?php echo lang('enable_warranty'); ?></label>
+            <div class=" col-md-3">
+                <?php
+                echo form_checkbox("enable_warranty", "1", $model_info->enable_warranty ? true : false, "id='enable_warranty'");
+                ?>                       
+            </div>
+        </div>      
+
         <div class="form-group">
             <label for="invoice_recurring" class=" col-md-3"><?php echo lang('recurring'); ?>  <span class="help" data-toggle="tooltip" title="<?php echo lang('cron_job_required'); ?>"><i class="fa fa-question-circle"></i></span></label>
             <div class=" col-md-9">

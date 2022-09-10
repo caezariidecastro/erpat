@@ -938,7 +938,7 @@ if (!function_exists('prepare_invoice_pdf')) {
             }
 
             $invoice_info = get_array_value($invoice_data, "invoice_info");
-            $pdf_file_name = lang("invoice") . "-" . $invoice_info->id . ".pdf";
+            $pdf_file_name = get_invoice_id($invoice_info->id) . ".pdf";
 
             if ($mode === "download") {
                 $ci->pdf->Output($pdf_file_name, "D");
@@ -1203,7 +1203,7 @@ if (!function_exists('prepare_estimate_pdf')) {
 if (!function_exists('get_invoice_id')) {
 
     function get_invoice_id($invoice_id) {
-        $prefix = get_setting("payroll_prefix");
+        $prefix = get_setting("invoice_prefix");
         $prefix = $prefix ? $prefix : strtoupper(lang("invoice")) . " #";
         return $prefix . $invoice_id;
     }
