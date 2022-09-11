@@ -794,3 +794,6 @@ $lang["enable_warranty"] = "Enable Warranty";
 $lang["estimate_id"] = "Estimate ID";
 
 $lang["return_order"] = "Return Order";
+
+$lang["bulk_add"] = "Bulk Add";
+$lang["export_barcode"] = "Export Barcodes";

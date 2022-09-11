@@ -239,6 +239,7 @@ $route["lds/positions/(:any)/(:any)"] = "Positions/$1/$2";
 
 $route["lds/pallets"] = "Pallets/index";
 $route["lds/pallets/(:any)"] = "Pallets/$1";
+$route["lds/pallets/(:any)/(:any)"] = "Pallets/$1/$2";
 
 $route["lds/transfers"] = "Transfers/index";
 $route["lds/transfers/(:any)"] = "Transfers/$1";

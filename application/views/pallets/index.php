@@ -5,6 +5,8 @@
             <div class="title-button-group">
                 <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "pallets")); ?>
                 <?php echo modal_anchor(get_uri("lds/pallets/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_pallet'), array("class" => "btn btn-default", "title" => lang('add_pallet'))); ?>
+                <?php //echo modal_anchor(get_uri("lds/pallets/bulk_add"), "<i class='fa fa-plus-circle'></i> " . lang('bulk_add'), array("class" => "btn btn-default", "title" => lang('bulk_add'))); ?>
+                <?php //echo anchor(get_uri("pallets/export_barcode"), "<i class='fa fa-plus-circle'></i> " . lang('export_barcode'), array("class" => "btn btn-default", "title" => lang('export_barcode'), "target"=>"_blank")); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -30,16 +32,16 @@
                 {id: "warehouse_select2_filter", name: "warehouse_select2_filter", class: "w150", options: <?php echo json_encode($warehouse_select2); ?>},
             ],
             columns: [
-                {title: "<?php echo lang('pallet_id') ?> "},
+                {title: "<?php echo lang('pallet_id') ?> ", "class": "text-center w100"},
+                {title: "<?php echo lang('qrcode') ?>", "class": "text-center w100"},
+                {title: "<?php echo lang('barcode') ?>", "class": "text-center w100"},
+                {title: "<?php echo lang('rfid') ?>"},
                 {title: "<?php echo lang('warehouse') ?> "},
                 {title: "<?php echo lang('zone') ?> "},
                 {title: "<?php echo lang('rack') ?> "},
                 {title: "<?php echo lang('bay') ?> "},
                 {title: "<?php echo lang('level') ?> "},
                 {title: "<?php echo lang('position') ?> "},
-                {title: "<?php echo lang('qrcode') ?>"},
-                {title: "<?php echo lang('barcode') ?>"},
-                {title: "<?php echo lang('rfid') ?>"},
                 {title: "<?php echo lang('labels') ?>"},
                 {title: "<?php echo lang('remarks') ?>"},
                 {title: "<?php echo lang('status') ?>"},

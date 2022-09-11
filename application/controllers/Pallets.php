@@ -213,18 +213,50 @@ class Pallets extends MY_Controller {
         if ($data->labels_list) {
             $labels = make_labels_view_data($data->labels_list, true);
         }
+        $pallet_name = get_id_name($data->id, date("Y", strtotime($data->timestamp)).'-T', 4);
+
+        require_once APPPATH."third_party/tcpdf/tcpdf_barcodes_2d.php";
+        
+        $qrid = !empty($data->qrcode)?$data->qrcode:$pallet_name;
+        $qrcodeobj = new TCPDF2DBarcode($qrid, 'QRCODE,H');
+        $qr_png_data = $qrcodeobj->getBarcodePngData();
+        $qr_base64 = "data:image/png;base64,".base64_encode($qr_png_data);
+        $qrcode = '<a href="'.$qr_base64.'" download="qrcode-'.$qrid.'.png"><img src="' . $qr_base64 . '" width="75" height="75"/></a>';
+
+        require_once APPPATH."third_party/tcpdf/tcpdf_barcodes_1d.php";
+
+        $bcode = !empty($data->barcode)?$data->barcode:$pallet_name;
+        $style = array(
+            'position' => '',
+            'align' => 'C',
+            'stretch' => false,
+            'fitwidth' => true,
+            'cellfitalign' => '',
+            'border' => true,
+            'hpadding' => 'auto',
+            'vpadding' => 'auto',
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => false, //array(255,255,255), can html background.
+            'text' => true,
+            'font' => 'helvetica',
+            'fontsize' => 10,
+            'stretchtext' => 10,
+            'module_height' => 2
+        );
+        $barcodeobj = new TCPDFBarcode($bcode, 'C39E+');
+        $bar_png_data = $barcodeobj->getBarcodePngData(1,70);
+        $bar_base64 = "data:image/png;base64,".base64_encode($bar_png_data);
+        $barcode = '<a href="'.$bar_base64.'" download="barcode-'.$bcode.'.png"><img src="' . $bar_base64 . '" /></a>';
 
         return array(
-            get_id_name($data->id, 'E', 4),
+            $pallet_name,
+            $qrcode, $barcode, $data->rfid,
             $data->warehouse_name,
             get_id_name($data->zone_id, 'Z'),
             get_id_name($data->rack_id, 'R'),
             get_id_name($data->bay_id, 'B'),
             get_id_name($data->level_id, 'L'),
             get_id_name($data->position_id, 'P'),
-            $data->qrcode,
-            $data->barcode,
-            $data->rfid,
             $labels,
             $data->remarks,
             make_status_view_data($data->status=="active"),
@@ -295,5 +327,74 @@ class Pallets extends MY_Controller {
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
+    }
+
+    function export_barcode( $team_id = 0) {
+
+        $this->load->library('pdf');
+        $this->pdf->setPrintHeader(false);
+        $this->pdf->setPrintFooter(false);
+        $this->pdf->SetCellPadding(1);
+        $this->pdf->setImageScale(2.0);
+        $this->pdf->AddPage();
+        $this->pdf->SetFontSize(9);
+
+        $this->load->helper('utility');
+        $this->pdf->SetAutoPageBreak(TRUE, 0);
+
+        //Get the list of ids.
+        $pallet_lists = ["2022-DO-E0001", "2022-DO-E0002", "2022-DO-E0003", "2022-DO-E0004", "2022-DO-E0005", "2022-DO-E0004", "2022-DO-E0005"];
+
+        $current_height = 15;
+        $incremental_height  = 70;
+
+        $current_page = 1;
+		$current_rows = 0;
+
+        for( $i=0; $i<count($pallet_lists); $i++ ) {
+            
+            if($current_rows <= 4) {
+                $current_rows += 1;
+            } else {
+                $this->pdf->AddPage();
+                $current_page += 1;
+                $current_height += 10;
+            }
+
+            $styles = array(
+                'border' => 2,
+                'vpadding' => '2px',
+                'hpadding' => '2px',
+                'fgcolor' => array(0,0,0),
+                'bgcolor' => array(255,255,255), //array(255,255,255)
+                'module_width' => 1, // width of a single module in points
+                'module_height' => 1, // height of a single module in points,
+            );
+            $this->pdf->write2DBarcode($pallet_lists[$i], 'QRCODE,H', 17 , $current_height, 40, 40, $styles, 'N');
+    
+            $style = array(
+                'position' => '',
+                'align' => 'C',
+                'stretch' => false,
+                'fitwidth' => true,
+                'cellfitalign' => '',
+                'border' => true,
+                'hpadding' => 'auto',
+                'vpadding' => 'auto',
+                'fgcolor' => array(0,0,0),
+                'bgcolor' => false, //array(255,255,255), can html background.
+                'text' => true,
+                'font' => 'helvetica',
+                'fontsize' => 10,
+                'stretchtext' => 10,
+                'module_height' => 2
+            );
+            $this->pdf->write1DBarcode($pallet_lists[$i], 'C39E+', 69, $current_height, '', 40, 0.45, $style, 'N');
+
+            $current_height += $incremental_height;
+        }
+
+        $pdf_file_name =  "ExportPalletCode.pdf";
+        $this->pdf->Output($pdf_file_name, "I");
     }
 }
