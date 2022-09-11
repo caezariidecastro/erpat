@@ -396,6 +396,7 @@ $lang["cost"] = "Cost";
 
 // Production & Inventory > Purchases
 $lang["purchases"] = "Purchases";
+$lang["purchase_order"] = "Purchase Order";
 $lang["purchase_orders"] = "Purchase Orders";
 $lang["purchase_returns"] = "Purchase Returns";
 $lang["add_purchase"] = "Add purchase";
@@ -791,3 +792,5 @@ $lang["enable_terms"] = "Enable Terms";
 $lang["enable_warranty"] = "Enable Warranty";
 
 $lang["estimate_id"] = "Estimate ID";
+
+$lang["return_order"] = "Return Order";

@@ -1,4 +1,4 @@
-<div><b><?php echo lang("bill_to"); ?></b></div>
+<div><b><?php echo lang("supplier"); ?></b></div>
 <div style="line-height: 2px; border-bottom: 1px solid #f2f2f2;"> </div>
 <div style="line-height: 3px;"> </div>
 <strong><?php echo $purchase_order_info->vendor_name; ?> </strong>

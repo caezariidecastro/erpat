@@ -1205,7 +1205,7 @@ if (!function_exists('get_invoice_id')) {
     function get_invoice_id($invoice_id) {
         $prefix = get_setting("invoice_prefix");
         $prefix = $prefix ? $prefix : strtoupper(lang("invoice")) . " #";
-        return $prefix . $invoice_id;
+        return get_id_name($invoice_id, $prefix, 4);
     }
 
 }
@@ -1221,7 +1221,7 @@ if (!function_exists('get_expense_id')) {
     function get_expense_id($expense_id) {
         $prefix = get_setting("expense_prefix");
         $prefix = $prefix ? $prefix : strtoupper(lang("expense")) . " #";
-        return $prefix . $expense_id;
+        return get_id_name($expense_id, $prefix, 4);
     }
 
 }
@@ -1229,7 +1229,7 @@ if (!function_exists('get_expense_id')) {
 if (!function_exists('get_purchase_order_id')) {
 
     function get_purchase_order_id($purchase_order_id) {
-        return lang("purchase")." #" . $purchase_order_id;
+        return get_id_name($purchase_order_id,  lang("purchase_order")." #", 4);
     }
 
 }
@@ -1237,7 +1237,7 @@ if (!function_exists('get_purchase_order_id')) {
 if (!function_exists('get_purchase_return_id')) {
 
     function get_purchase_return_id($purchase_return_id) {
-        return strtoupper(lang("return"))." #" . $purchase_return_id;
+        return get_id_name($purchase_return_id, lang("return_order")." #", 4);
     }
 
 }
@@ -1245,7 +1245,7 @@ if (!function_exists('get_purchase_return_id')) {
 if (!function_exists('get_payroll_id')) {
 
     function get_payroll_id($id) {
-        return strtoupper(lang("payroll"))." #" . $id;
+        return get_id_name($id, lang("payroll")." #", 4);
     }
 
 }
@@ -1253,7 +1253,7 @@ if (!function_exists('get_payroll_id')) {
 if (!function_exists('get_incentive_id')) {
 
     function get_incentive_id($id) {
-        return strtoupper(lang("incentive"))." #" . $id;
+        return get_id_name($id, lang("incentive")." #", 4);
     }
 
 }
@@ -1269,7 +1269,7 @@ if (!function_exists('get_estimate_id')) {
     function get_estimate_id($estimate_id) {
         $prefix = get_setting("estimate_prefix");
         $prefix = $prefix ? $prefix : strtoupper(lang("estimate")) . " #";
-        return $prefix . $estimate_id;
+        return get_id_name($estimate_id, $prefix, 4);
     }
 
 }
@@ -1285,7 +1285,7 @@ if (!function_exists('get_ticket_id')) {
     function get_ticket_id($ticket_id) {
         $prefix = get_setting("ticket_prefix");
         $prefix = $prefix ? $prefix : lang("ticket") . " #";
-        return $prefix . $ticket_id;
+        return get_id_name($ticket_id, $prefix, 4);
     }
 
 }
@@ -2247,4 +2247,13 @@ if (!function_exists("contain_str")) {
         return false;
     }
 
+}
+
+if (!function_exists('get_id_name')) {
+    function get_id_name($id, $prefix = "", $zeros = 2) {
+        if($id) {
+            return $prefix.str_pad($id, $zeros, '0', STR_PAD_LEFT);
+        }
+        return "-";
+    }
 }
