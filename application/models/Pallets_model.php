@@ -58,6 +58,13 @@ class Pallets_model extends Crud_model {
             $where .= " AND (FIND_IN_SET('$labels', $pallets_table.labels)) ";
         }
 
+        $paginate = "";
+        $limit = get_array_value($options, "limit");
+        $page = get_array_value($options, "page");
+        if($limit && $page) {
+            $paginate = "LIMIT $page,$limit";
+        }
+
         $select_labels_data_query = $this->get_labels_data_query();
 
         $sql = "SELECT $pallets_table.*, creator.id as creator_id, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS created_by, warehouses.name AS warehouse_name, warehouses.id AS warehouse_id, zones.id as zone_id, bays.rack_id as rack_id, levels.bay_id as bay_id, positions.level_id as level_id, $pallets_table.position_id as position_id, $select_labels_data_query
@@ -69,7 +76,7 @@ class Pallets_model extends Crud_model {
         LEFT JOIN racks ON racks.id = bays.rack_id
         LEFT JOIN zones ON zones.id = racks.zone_id OR zones.id = $pallets_table.zone_id
         LEFT JOIN warehouses ON warehouses.id = zones.warehouse_id 
-        WHERE $pallets_table.deleted=0 $where";
+        WHERE $pallets_table.deleted=0 $where $paginate";
         return $this->db->query($sql);
     }
 
