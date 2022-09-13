@@ -84,8 +84,8 @@ class Services extends MY_Controller {
         $category_dropdown = array('' => '-');
 
         foreach ($Services_categories as $item) {
-            if(!empty($item->uuid)) {
-                $category_dropdown[$item->uuid] = $item->title;
+            if(!empty($item->id)) {
+                $category_dropdown[$item->id] = $item->title;
             }
         }
         return $category_dropdown;
@@ -96,7 +96,7 @@ class Services extends MY_Controller {
         $category_select2 = array(array('id' => '', 'text'  => '- Categories -'));
 
         foreach ($Services_categories as $group) {
-            $category_select2[] = array('id' => $group->uuid, 'text' => $group->title) ;
+            $category_select2[] = array('id' => $group->id, 'text' => $group->title) ;
         }
         return $category_select2;
     }
@@ -116,7 +116,7 @@ class Services extends MY_Controller {
     function modal_form() {
         $this->validate_access_to_items();
 
-        $view_data['model_info'] = $this->Services_model->get_one($this->input->post('uuid'), true);
+        $view_data['model_info'] = $this->Services_model->get_one($this->input->post('id'));
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
         $view_data['label_suggestions'] = $this->make_labels_dropdown("services", $view_data['model_info']->labels);
 
@@ -134,7 +134,6 @@ class Services extends MY_Controller {
         $id = $this->input->post('id');
 
         $item_data = array(
-            "uuid" => $this->uuid->v4(),
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
             "category_id" => $this->input->post('category'),
@@ -214,7 +213,6 @@ class Services extends MY_Controller {
         }
 
         return array(
-            //$data->uuid,
             $data->title,
             nl2br($data->description),
             $data->category_name ? $data->category_name : "Uncategorized",
@@ -231,7 +229,6 @@ class Services extends MY_Controller {
                 array(
                     "class" => "edit", "title" => lang('edit_item'), 
                     "data-post-id" => $data->id,
-                    "data-post-uuid" => $data->uuid
                 )
             )
             . js_anchor("<i class='fa fa-times fa-fw'></i>", 

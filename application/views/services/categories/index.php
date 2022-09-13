@@ -9,7 +9,6 @@
             source: '<?php echo_uri("services_categories/list_data") ?>',
             order: [[0, 'desc']],
             columns: [
-                {title: "<?php echo lang('uuid') ?> ", "class": "w15p"},
                 {title: "<?php echo lang('title') ?> ", "class": "w15p"},
                 {title: "<?php echo lang('description') ?>", "class": "w100"},
                 {title: "<?php echo lang('status') ?>", "class": "text-center"},

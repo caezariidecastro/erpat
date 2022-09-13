@@ -7,7 +7,6 @@ class Services_categories extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->library("Uuid");
         $this->load->model("Services_categories_model");
     }
 
@@ -27,7 +26,7 @@ class Services_categories extends MY_Controller {
     private function _make_row($data) {
         $status = $data->active == 1 ? "<small class='label label-success'>Active</small>" : "<small class='label label-danger'>Inactive</small>";
         return array(
-            $data->uuid,
+            $data->id,
             $data->title,
             nl2br($data->description),
             $status,
@@ -53,7 +52,6 @@ class Services_categories extends MY_Controller {
         );
 
         if(!$id){
-            $data["uuid"] = $this->uuid->v4();
             $data["created_by"] = $this->login_user->id;
         } else {
             $data["active"] = $this->input->post('active');

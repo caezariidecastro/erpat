@@ -35,7 +35,7 @@ class Services_model extends Crud_model {
         $sql = "SELECT $services_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, cat.title AS category_name, $select_labels_data_query 
         FROM $services_table
         LEFT JOIN users ON users.id = $services_table.created_by
-        LEFT JOIN services_categories cat ON cat.uuid = $services_table.category_id
+        LEFT JOIN services_categories cat ON cat.id = $services_table.category_id
         WHERE $services_table.deleted=0 $where";
         return $this->db->query($sql);
     }
