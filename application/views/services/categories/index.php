@@ -9,13 +9,13 @@
             source: '<?php echo_uri("services_categories/list_data") ?>',
             order: [[0, 'desc']],
             columns: [
-                {title: "<?php echo lang('title') ?> ", "class": "w15p"},
-                {title: "<?php echo lang('description') ?>", "class": "w100"},
-                {title: "<?php echo lang('status') ?>", "class": "text-center"},
-                {title: "<?php echo lang('created_at') ?>", "class": "w15p"},
-                {title: "<?php echo lang('updated_at') ?>", "class": "w15p"},
-                {title: "<?php echo lang('created_by') ?>", "class": "w10p"},
-                {title: "<i class='fa fa-bars'></i>", "class": "text-center option w10p"}
+                {title: "<?php echo lang('title') ?> ", "class": "w150"},
+                {title: "<?php echo lang('description') ?>"},
+                {title: "<?php echo lang('status') ?>", "class": "text-center w50"},
+                {title: "<?php echo lang('created_at') ?>", "class": "text-center w100"},
+                {title: "<?php echo lang('updated_at') ?>", "class": "text-center w100"},
+                {title: "<?php echo lang('created_by') ?>", "class": "text-center w100"},
+                {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3],
             xlsColumns: [0, 1, 2, 3]
