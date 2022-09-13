@@ -20,8 +20,19 @@ class Services_model extends Crud_model {
         if ($category) {
             $where .= " AND $services_table.category_id='$category'";
         }
+        
+        $labels = get_array_value($options, "labels");
+        if ($labels) {
+            $where .= " AND (FIND_IN_SET('$labels', $services_table.labels)) ";
+        }
+        $status = get_array_value($options, "status");
+        if ($status) {
+            $where .= " AND $services_table.status='$status'";
+        }
 
-        $sql = "SELECT $services_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, cat.title AS category_name
+        $select_labels_data_query = $this->get_labels_data_query();
+
+        $sql = "SELECT $services_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, cat.title AS category_name, $select_labels_data_query 
         FROM $services_table
         LEFT JOIN users ON users.id = $services_table.created_by
         LEFT JOIN services_categories cat ON cat.uuid = $services_table.category_id

@@ -83,6 +83,21 @@
             ?>
         </div>
     </div>
+    <div class="form-group">
+        <label for="labels" class=" col-md-3"><?php echo lang('labels'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "labels",
+                "name" => "labels",
+                "value" => $model_info ? $model_info->labels : "",
+                "class" => "form-control",
+                "placeholder" => lang('labels'),
+                "autofocus" => true,
+            ));
+            ?>
+        </div>
+    </div>
     <?php if ($model_info->id) { ?>
     <div class="form-group">
         <label for="active" class="col-md-3"><?php echo lang('active_inactive'); ?></label>
@@ -111,5 +126,6 @@
 
         $('#active').select2();
         $('#category').select2();
+        $("#labels").select2({multiple: true, data: <?php echo json_encode($label_suggestions); ?>});
     });
 </script>

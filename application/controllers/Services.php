@@ -14,6 +14,53 @@ class Services extends MY_Controller {
         $this->load->model("Services_categories_model");
     }
 
+    protected function _get_status_select2_data() {
+        $status_select2 = array(
+            array("id" => "", "text"  => "- Status -"),
+            array("id" => "active", "text"  => "Active"),
+            array("id" => "inactive", "text"  => "Inactive"),
+        );
+
+        return $status_select2;
+    }
+
+    protected function make_labels_dropdown($type = "", $label_ids = "", $is_filter = false) {
+        if (!$type) {
+            show_404();
+        }
+
+        $labels_dropdown = $is_filter ? array(array("id" => "", "text" => "- " . lang("label") . " -")) : array();
+
+        $options = array(
+            "context" => $type
+        );
+
+        if ($label_ids) {
+            $add_label_option = true;
+
+            //check if any string is exists, 
+            //if so, not include this parameter
+            $explode_ids = explode(',', $label_ids);
+            foreach ($explode_ids as $label_id) {
+                if (!is_int($label_id)) {
+                    $add_label_option = false;
+                    break;
+                }
+            }
+
+            if ($add_label_option) {
+                $options["label_ids"] = $label_ids; //to edit labels where have access of others
+            }
+        }
+
+        $labels = $this->Labels_model->get_details($options)->result();
+        foreach ($labels as $label) {
+            $labels_dropdown[] = array("id" => $label->id, "text" => $label->title);
+        }
+
+        return $labels_dropdown;
+    }
+
     protected function validate_access_to_items() {
         $access_invoice = $this->get_access_info("invoice");
         $access_estimate = $this->get_access_info("estimate");
@@ -59,6 +106,8 @@ class Services extends MY_Controller {
         $this->validate_user_module_permission("module_pms");
         $this->validate_access_to_items();
 
+        $view_data['services_labels_dropdown'] = json_encode($this->make_labels_dropdown("services", "", true));
+        $view_data['status_select2'] = $this->_get_status_select2_data();
         $view_data['category_select2'] = $this->_get_category_select2_data();
         $this->template->rander("services/index", $view_data);
     }
@@ -69,6 +118,7 @@ class Services extends MY_Controller {
 
         $view_data['model_info'] = $this->Services_model->get_one($this->input->post('uuid'), true);
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
+        $view_data['label_suggestions'] = $this->make_labels_dropdown("services", $view_data['model_info']->labels);
 
         $this->load->view('services/modal_form', $view_data);
     }
@@ -90,6 +140,7 @@ class Services extends MY_Controller {
             "category_id" => $this->input->post('category'),
             "unit_type" => $this->input->post('unit_type'),
             "rate" => unformat_currency($this->input->post('item_rate')),
+            "labels" => $this->input->post('labels') ? $this->input->post('labels') : "",
             "created_at" => get_current_utc_time()
         );
 
@@ -141,7 +192,9 @@ class Services extends MY_Controller {
         $this->validate_access_to_items();
 
         $list_data = $this->Services_model->get_details(array(
-            'category' => $this->input->post('category_select2_filter')
+            'category' => $this->input->post('category_select2_filter'),
+            'labels' => $this->input->post('labels_select2_filter'),
+            'status' => $this->input->post('status_select2_filter')
         ))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -155,13 +208,19 @@ class Services extends MY_Controller {
         $type = $data->unit_type ? $data->unit_type : "";
         $status = $data->active == 1 ? "<small class='label label-success'>Active</small>" : "<small class='label label-danger'>Inactive</small>";
 
+        $labels = "";
+        if ($data->labels_list) {
+            $labels = make_labels_view_data($data->labels_list, true);
+        }
+
         return array(
-            $data->uuid,
+            //$data->uuid,
             $data->title,
             nl2br($data->description),
             $data->category_name ? $data->category_name : "Uncategorized",
             $type,
             $data->rate,
+            $labels,
             $status,
             $data->created_at,
             $data->updated_at,
