@@ -19,9 +19,9 @@ class Estimates extends MY_Controller {
     }
 
     private function _get_consumer_select2_data() {
-        $consumers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
+        $customers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
         $consumer_list = array(array("id" => "", "text" => "-"));
-        foreach ($consumers as $value) {
+        foreach ($customers as $value) {
             $consumer_list[] = array("id" => $value->id, "text" => trim($value->first_name . " " . $value->last_name));
         }
         return $consumer_list;

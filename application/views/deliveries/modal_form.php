@@ -190,7 +190,7 @@
 
         $('#consumer').select2().change(function(e){
             $.ajax({
-                url: "<?php echo get_uri("consumers/get_consumer"); ?>",
+                url: "<?php echo get_uri("customer/get_consumer"); ?>",
                 data: {id: e.val},
                 cache: false,
                 type: 'POST',

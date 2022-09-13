@@ -361,7 +361,6 @@ class Left_menu {
                 $sidebar_menu["lds_transfers"] = array("name" => "submenu_lms_transfers", "url" => "lds/transfers", "class" => "fa-circle");
                 $sidebar_menu["vehicles"] = array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles", "class" => "fa-circle");
                 $sidebar_menu["drivers"] = array("name" => "submenu_lms_drivers", "url" => "lds/drivers", "class" => "fa-circle");
-                $sidebar_menu["consumers"] = array("name" => "submenu_lms_consumers", "url" => "lds/consumers", "class" => "fa-circle");
             }
 
             if (is_user_has_module_permission("module_sms")) { //TODO: POS, giftcard, coupons

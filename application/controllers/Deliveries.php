@@ -10,7 +10,6 @@ class Deliveries extends MY_Controller {
         $this->load->model("Deliveries_model");
         $this->load->model("Inventory_model");
         $this->load->model("Vehicles_model");
-        $this->load->model("Consumers_model");
         $this->load->model("Invoices_model");
     }
 
@@ -25,10 +24,10 @@ class Deliveries extends MY_Controller {
     }
 
     protected function _get_consumer_dropdown_data() {
-        $Consumers = $this->Consumers_model->get_all()->result();
+        $customers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
         $consumer_dropdown = array('' => '-');
 
-        foreach ($Consumers as $consumer) {
+        foreach ($customers as $consumer) {
             $consumer_dropdown[$consumer->id] = "$consumer->first_name $consumer->last_name";
         }
         return $consumer_dropdown;

@@ -82,7 +82,7 @@
         </div>
     <?php } else if($model_info->consumer_id) { ?>
         <div class="form-group">
-            <label for="estimate_client_id" class=" col-md-3" id="estimate_client_id_label"><?php echo lang('consumer'); ?></label>
+            <label for="estimate_client_id" class=" col-md-3" id="estimate_client_id_label"><?php echo lang('customer'); ?></label>
             <div class="col-md-9" id="estimate_client_selection_wrapper">
                 <?php
                 echo form_input(array(
@@ -92,7 +92,7 @@
                     "class" => "form-control",
                     "data-rule-required" => "true",
                     "data-msg-required" => lang('field_required'),
-                    "placeholder" => lang('consumer')
+                    "placeholder" => lang('customer')
                 ));
                 ?>
             </div>
@@ -178,13 +178,13 @@
 
         $("#product").click(function(){
             $('#estimate_client_id').select2("destroy");
-            $("#estimate_client_id_label").html("Consumer");
-            $("#estimate_client_id").attr("placeholder", "Consumer");
+            $("#estimate_client_id_label").html("Customer");
+            $("#estimate_client_id").attr("placeholder", "Customer");
             $("#estimate_client_id").hide();
             appLoader.show({container: "#estimate_client_selection_wrapper", css:"left: 7%; bottom: -30px;"});
 
             $.ajax({
-                url: "<?php echo get_uri("lds/consumers/get_consumer_select2_data") ?>",
+                url: "<?php echo get_uri("sms/customer/get_customer_select2_data") ?>",
                 dataType: "json",
                 success: function (result) {
                     $("#estimate_client_id").show().val("");

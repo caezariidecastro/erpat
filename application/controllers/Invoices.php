@@ -37,8 +37,8 @@ class Invoices extends MY_Controller {
     private function _get_customer_select2_data() {
         $customer_list = array(array("id" => "", "text" => "-"));
 
-        $consumers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
-        foreach ($consumers as $value) {
+        $customers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
+        foreach ($customers as $value) {
             $customer_list[] = array("id" => "user-".$value->id, "text" => "Customer: ".trim($value->first_name . " " . $value->last_name));
         }
 
@@ -51,9 +51,9 @@ class Invoices extends MY_Controller {
     }
 
     private function _get_consumer_select2_data() {
-        $consumers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
+        $customers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
         $consumer_list = array(array("id" => "", "text" => "-"));
-        foreach ($consumers as $value) {
+        foreach ($customers as $value) {
             $consumer_list[] = array("id" => $value->id, "text" => trim($value->first_name . " " . $value->last_name));
         }
         return $consumer_list;

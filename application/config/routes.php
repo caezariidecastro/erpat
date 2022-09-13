@@ -76,7 +76,9 @@ $route['fas/payrolls/(:any)/(:any)'] = 'payrolls/$1/$2';
 $route["sms/sales-matrix"] = "sales_matrix/index";
 
 // Customers
-$route['sms/customers'] = 'customers/index';
+$route["sms/customers"] = "Customers/index";
+$route["sms/customers/(:any)"] = "Customers/$1";
+$route["sms/customers/(:any)/(:any)"] = "Customers/$1/$2";
 
 // All Projects
 $route['pms/all_projects'] = 'projects/all_projects';
@@ -256,10 +258,6 @@ $route["lds/vehicles/(:any)"] = "Vehicles/$1";
 
 $route["lds/drivers"] = "Drivers/index";
 $route["lds/drivers/(:any)"] = "Drivers/$1";
-
-$route["lds/consumers"] = "Consumers/index";
-$route["lds/consumers/(:any)"] = "Consumers/$1";
-$route["lds/Consumers/(:any)"] = "Consumers/$1";
 
 // MCS Controller 
 $route["mcs"] = "leads/index";

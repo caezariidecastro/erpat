@@ -82,7 +82,6 @@ $lang["submenu_lms_warehouse"] = "Warehouses";
 $lang["submenu_lms_transfers"] = "Transfer";
 $lang["submenu_lms_vehicles"] = "Vehicles";
 $lang["submenu_lms_drivers"] = "Drivers";
-$lang["submenu_lms_consumers"] = "Consumers";
 $lang["passengers"] = "Passengers";
 
 $lang["submenu_mcs_leads"] = "Leads";
@@ -242,7 +241,6 @@ $lang["duplicate_item_error"] = "Item is already at the selected warehouse";
 $lang["delivery"] = "Delivery";
 $lang["add_delivery"] = "Add delivery";
 $lang["edit_delivery"] = "Edit delivery";
-$lang["consumer"] = "Consumer";
 $lang["vehicle"] = "Vehicle";
 
 $lang["edit_team_member"] = "Edit user";
@@ -298,8 +296,7 @@ $lang["payroll"] = "Payroll";
 $lang["add_payroll"] = "Add payroll";
 $lang["edit_payroll"] = "Edit payroll";
 
-// Logistics & Distribution > Consumers
-$lang["consumers"] = "Consumers";
+// Logistics & Distribution
 $lang["add_consumer"] = "Add consumer";
 $lang["edit_consumer"] = "Edit consumer";
 $lang["first_name"] = "First name";

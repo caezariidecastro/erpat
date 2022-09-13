@@ -7,7 +7,6 @@ class Customers extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model("Customers_model");
         $this->load->model("Email_templates_model");
     }
 
@@ -17,7 +16,9 @@ class Customers extends MY_Controller {
     }
 
     function list_data(){
-        $list_data = $this->Customers_model->get_details()->result();
+        $list_data = $this->Users_model->get_details(array(
+            "user_type" => "customer"
+        ))->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -37,7 +38,7 @@ class Customers extends MY_Controller {
             $data->zip,
             $data->country,
             $data->created_at,
-            $data->created_by ? get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")) : "",
+            $data->updated_at,
             modal_anchor(get_uri("customers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_customer'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("customers/delete"), "data-action" => "delete-confirmation"))
         );
@@ -100,8 +101,10 @@ class Customers extends MY_Controller {
 
         $customer_id = $this->Users_model->save($customer_data, $id);
         if ($customer_id) {
-            $options = array("id" => $customer_id);
-            $customer_info = $this->Customers_model->get_details($options)->row();
+            $customer_info = $this->Users_model->get_details(array(
+                "id" => $customer_id,
+                "user_type" => "customer"
+            ))->row();
             echo json_encode(array("success" => true, "id" => $customer_info->id, "data" => $this->_make_row($customer_info), 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
@@ -113,7 +116,7 @@ class Customers extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Customers_model->get_one($this->input->post('id'));
+        $view_data['model_info'] = $this->Users_model->get_one($this->input->post('id'));
 
         $this->load->view('customers/modal_form', $view_data);
     }
@@ -125,7 +128,7 @@ class Customers extends MY_Controller {
         
         $id = $this->input->post('id');
         
-        if ($this->Customers_model->delete($id)) {
+        if ($this->Users_model->delete($id)) {
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -133,11 +136,24 @@ class Customers extends MY_Controller {
     }
 
     function get_customer() {
-        $customer_info = $this->Customers_model->get_details(array("id" => $this->input->post('id')))->row();
+        $customer_info = $this->Users_model->get_details(array(
+            "id" => $this->input->post('id'),
+            "user_type" => "customer"
+        ))->row();
+
         if ($customer_info) {
             echo json_encode(array("success" => true, "customer_info" => $customer_info));
         } else {
             echo json_encode(array("success" => false));
         }
+    }
+
+    function get_customer_select2_data() {
+        $customers = $this->Users_model->get_details(array("user_type" => "customer"))->result();
+        $consumer_list = array(array("id" => "", "text" => "-"));
+        foreach ($customers as $key => $value) {
+            $consumer_list[] = array("id" => $value->id, "text" => trim($value->first_name . " " . $value->last_name));
+        }
+        echo json_encode($consumer_list);
     }
 }

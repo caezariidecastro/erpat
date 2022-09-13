@@ -29,7 +29,7 @@
                 {title: "<?php echo lang('zip') ?>"},
                 {title: "<?php echo lang('country') ?>"},
                 {title: "<?php echo lang('created_on') ?>"},
-                {title: "<?php echo lang('created_by') ?>"},
+                {title: "<?php echo lang('updated_at') ?>"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
