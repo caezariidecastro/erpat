@@ -5,6 +5,9 @@ if (!defined('BASEPATH'))
 
 class Pallets extends MY_Controller {
 
+    protected $max_row_per_ajax = 500;
+    protected $max_item_pdf_export = 102;
+
     function __construct() {
         parent::__construct();
         $this->load->model("Pallets_model");
@@ -99,6 +102,20 @@ class Pallets extends MY_Controller {
         return $zone_select2;
     }
 
+    protected function _get_page_select2_data() {
+        $page_select2 = array();
+
+        $pages = $this->Pallets_model->get_total_pages($this->max_row_per_ajax);
+        $current = 1;
+        
+        for($i=0; $i < $pages; $i++) {
+            $page_select2[] = array('id' => $current, 'text'  => 'Page '.$current);
+            $current += 1;
+        }
+
+        return $page_select2;
+    }
+
     protected function _get_rack_select2_data() {
         $racks = $this->Racks_model->get_details()->result();
         $rack_select2 = array(array('id' => '', 'text'  => '- Racks -'));
@@ -186,6 +203,7 @@ class Pallets extends MY_Controller {
         $view_data['position_select2'] = $this->_get_position_select2_data();
         $view_data['status_select2'] = $this->_get_status_select2_data();
         $view_data['pallets_labels_dropdown'] = json_encode($this->make_labels_dropdown("pallets", "", true));
+        $view_data['pages_labels_dropdown'] = $this->_get_page_select2_data();
         $this->template->rander("pallets/index", $view_data);
     }
 
@@ -199,7 +217,10 @@ class Pallets extends MY_Controller {
             'position_id' => $this->input->post('position_select2_filter'),
             'status' => $this->input->post('status_select2_filter'),
             'label_id' => $this->input->post('labels_select2_filter'),
+            "limit" => $this->max_row_per_ajax,
+            "page" => max($this->input->post('pages_labels_dropdown')-1, 0)*$this->max_row_per_ajax
         ))->result();
+
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -215,12 +236,11 @@ class Pallets extends MY_Controller {
         }
         $pallet_name = get_id_name($data->id, date("Y", strtotime($data->timestamp)).'-T', 4);
         
-        $qrid = !empty($data->qrcode)?$data->qrcode:$pallet_name;
         $bcode = !empty($data->barcode)?$data->barcode:$pallet_name;
 
         return array(
             $pallet_name,
-            get_qrcode_image($qrid, true), 
+            get_qrcode_image($data->id, 'pallets', 'view', true), 
             get_barcode_image($bcode, true, 1,70), 
             $data->rfid,
             $data->warehouse_name,
@@ -352,17 +372,12 @@ class Pallets extends MY_Controller {
 
         $pallet_lists = [];
         $lists = $this->Pallets_model->get_details(array(
-            "limit" => 102,
-            "page" => max($page-1, 0)*102
+            "limit" => $this->max_item_pdf_export,
+            "page" => max($page-1, 0)*$this->max_item_pdf_export
         ))->result();
         foreach($lists as $item) {
-            $pallet_lists[] = get_id_name($item->id, date("Y", strtotime($item->timestamp)).'-T', 4);;
+            $pallet_lists[] = $item;
         }
-
-        // $pallet_lists = ["2022-T0000"];
-        // for($i=1; $i<150; $i++) {
-        //     $pallet_lists[] = "2022-".get_id_name($i, "T", 4);
-        // }
         
         $total = 0;
         $current = [];

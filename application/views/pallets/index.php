@@ -22,6 +22,7 @@
             source: '<?php echo_uri("lds/pallets/list_data") ?>',
             order: [[0, 'desc']],
             filterDropdown: [
+                {name: "pages_labels_dropdown", class: "w100", options: <?php echo json_encode($pages_labels_dropdown); ?>}, 
                 {name: "labels_select2_filter", class: "w150", options: <?php echo $pallets_labels_dropdown; ?>}, 
                 {name: "status_select2_filter", class: "w100", options: <?php echo json_encode($status_select2); ?>}, 
                 {id: "position_select2_filter", name: "position_select2_filter", class: "w100", options: <?php echo json_encode($position_select2); ?>}, 

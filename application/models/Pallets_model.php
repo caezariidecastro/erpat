@@ -9,6 +9,14 @@ class Pallets_model extends Crud_model {
         parent::__construct($this->table);
     }
 
+    function get_total_pages($limit = 0) {
+        $pallets_table = $this->db->dbprefix('pallets');
+        $sql = "SELECT id 
+        FROM $pallets_table
+        WHERE $pallets_table.deleted=0";
+        return ceil($this->db->query($sql)->num_rows()/$limit);
+    }
+
     function get_details($options = array()) {
         $pallets_table = $this->db->dbprefix('pallets');
         $where = "";
@@ -63,6 +71,8 @@ class Pallets_model extends Crud_model {
         $page = get_array_value($options, "page");
         if($limit && $page) {
             $paginate = "LIMIT $page,$limit";
+        } else if($limit) {
+            $paginate = "LIMIT 0,$limit";
         }
 
         $select_labels_data_query = $this->get_labels_data_query();
