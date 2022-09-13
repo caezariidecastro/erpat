@@ -26,7 +26,6 @@ class Services_categories extends MY_Controller {
     private function _make_row($data) {
         $status = $data->active == 1 ? "<small class='label label-success'>Active</small>" : "<small class='label label-danger'>Inactive</small>";
         return array(
-            $data->id,
             $data->title,
             nl2br($data->description),
             $status,
