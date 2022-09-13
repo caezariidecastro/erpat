@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 class Pallets extends MY_Controller {
 
-    protected $max_row_per_ajax = 500;
+    protected $max_row_per_ajax = 250;
     protected $max_item_pdf_export = 102;
 
     function __construct() {
@@ -154,6 +154,18 @@ class Pallets extends MY_Controller {
             $positions_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." - ". get_id_name($group->zone_id, 'Z')." - ". get_id_name($group->rack_id, 'R') ." - ". get_id_name($group->level_id, 'L') ." - ". get_id_name($group->id, 'P')) ;
         }
         return $positions_select2;
+    }
+
+    protected function _get_label_dropdown_data() {
+        $labels = $this->Labels_model->get_details(array(
+            "context" => "pallets"
+        ))->result();
+        $label_dropdown = array('' => '-');
+
+        foreach ($labels as $item) {
+            $label_dropdown[$item->id] = $item->title;
+        }
+        return $label_dropdown;
     }
 
     protected function make_labels_dropdown($type = "", $label_ids = "", $is_filter = false) {
@@ -341,10 +353,22 @@ class Pallets extends MY_Controller {
         ));
 
         $view_data['zone_dropdown'] = $this->_get_zone_dropdown_data();
-        $view_data['label_suggestions'] = $this->make_labels_dropdown("pallets", $view_data['model_info']->labels);
+        $view_data['label_suggestions'] = $this->make_labels_dropdown("pallets");
         $view_data['status_select2'] = $this->_get_status_select2_data();
 
         $this->load->view('pallets/bulk_modal_form', $view_data);
+    }
+
+    function export_modal_form() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $view_data['zone_dropdown'] = $this->_get_zone_dropdown_data();
+        $view_data['label_dropdown'] = $this->_get_label_dropdown_data();
+        $view_data['status_select2'] = $this->_get_status_select2_data();
+
+        $this->load->view('pallets/export_modal_form', $view_data);
     }
 
     function delete() {
@@ -361,6 +385,20 @@ class Pallets extends MY_Controller {
         }
     }
 
+    function prepare_export() {
+        $zone_id = $this->input->post('zone_id');
+        $label_id = $this->input->post('label_id');
+        $status = $this->input->post('status');
+        $query = "?zone_id=$zone_id&label_id=$label_id&status=$status";
+        $pages = $this->Pallets_model->get_total_pages($this->max_item_pdf_export, array(
+            "zone_id" => $zone_id,
+            "label_id" => $label_id,
+            "status" => $status,
+        ));
+
+        echo json_encode(array("success" => true, "data" => $query, "pages" => $pages,  'message' => lang('record_saved')));
+    }
+
     function export_barcode( $page = 1) {
 
         $this->load->library('pdf');
@@ -373,7 +411,10 @@ class Pallets extends MY_Controller {
         $pallet_lists = [];
         $lists = $this->Pallets_model->get_details(array(
             "limit" => $this->max_item_pdf_export,
-            "page" => max($page-1, 0)*$this->max_item_pdf_export
+            "page" => max($page-1, 0)*$this->max_item_pdf_export,
+            "zone_id" => $this->input->get('zone_id'),
+            "label_id" => $this->input->get('label_id'),
+            "status" => $this->input->get('status'),
         ))->result();
         foreach($lists as $item) {
             $pallet_lists[] = $item;
@@ -400,5 +441,6 @@ class Pallets extends MY_Controller {
 
         $pdf_file_name =  "ExportPalletCode.pdf";
         $this->pdf->Output($pdf_file_name, "I");
+        echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
     }
 }

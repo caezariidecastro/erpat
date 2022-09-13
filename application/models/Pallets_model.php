@@ -9,11 +9,34 @@ class Pallets_model extends Crud_model {
         parent::__construct($this->table);
     }
 
-    function get_total_pages($limit = 0) {
+    function get_total_pages($limit = 0, $options = array()) {
         $pallets_table = $this->db->dbprefix('pallets');
-        $sql = "SELECT id 
+        $where = "$pallets_table.deleted=0";
+
+        $zone_id = get_array_value($options, "zone_id");
+        if ($zone_id) {
+            $where .= " AND ($pallets_table.zone_id=$zone_id or racks.zone_id=$zone_id)";
+        }
+
+        $label_id = get_array_value($options, "label_id");
+        if ($label_id) {
+            $where .= " AND (FIND_IN_SET('$label_id', $pallets_table.labels)) ";
+        }
+
+        $status = get_array_value($options, "status");
+        if ($status) {
+            $where .= " AND $pallets_table.status='$status'";
+        }
+
+        $sql = "SELECT $pallets_table.id 
         FROM $pallets_table
-        WHERE $pallets_table.deleted=0";
+            LEFT JOIN positions ON positions.id = $pallets_table.position_id
+            LEFT JOIN levels ON levels.id = positions.level_id
+            LEFT JOIN bays ON bays.id = levels.bay_id
+            LEFT JOIN racks ON racks.id = bays.rack_id
+            LEFT JOIN zones ON zones.id = racks.zone_id OR zones.id = $pallets_table.zone_id
+            LEFT JOIN warehouses ON warehouses.id = zones.warehouse_id 
+        WHERE $where";
         return ceil($this->db->query($sql)->num_rows()/$limit);
     }
 
@@ -33,7 +56,7 @@ class Pallets_model extends Crud_model {
 
         $zone_id = get_array_value($options, "zone_id");
         if ($zone_id) {
-            $where .= " AND racks.zone_id=$zone_id";
+            $where .= " AND ($pallets_table.zone_id=$zone_id or racks.zone_id=$zone_id)";
         }
 
         $rack_id = get_array_value($options, "rack_id");
