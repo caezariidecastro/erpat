@@ -217,7 +217,7 @@ class Pallets extends MY_Controller {
         
         $qrid = !empty($data->qrcode)?$data->qrcode:$pallet_name;
         $bcode = !empty($data->barcode)?$data->barcode:$pallet_name;
-        
+
         return array(
             $pallet_name,
             get_qrcode_image($qrid, true), 
@@ -237,6 +237,34 @@ class Pallets extends MY_Controller {
             modal_anchor(get_uri("lds/pallets/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_pallet'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lds/pallets/delete"), "data-action" => "delete-confirmation"))
         );
+    }
+
+    function save_bulk() {
+        validate_submitted_data(array(
+            "total" => "required|numeric"
+        ));
+
+        $success = 0;
+        for($i=0; $i < (int)$this->input->post('total'); $i++) {
+            $data = array(
+                "zone_id" => $this->input->post('zone_id'),
+                "labels" => $this->input->post('labels') ? $this->input->post('labels') : "",
+                "remarks" => $this->input->post('remarks'),
+                "status" => $this->input->post('status'),
+                "timestamp" => get_current_utc_time(),
+                "created_by" => $this->login_user->id
+            );
+
+            if ( $saved_id = $this->Pallets_model->save($data) ) {
+                $success += 1;
+            }
+        }
+        
+        if($success > 0) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
     }
 
     function save() {
@@ -285,6 +313,18 @@ class Pallets extends MY_Controller {
         $view_data['status_select2'] = $this->_get_status_select2_data();
 
         $this->load->view('pallets/modal_form', $view_data);
+    }
+
+    function bulk_modal_form() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $view_data['zone_dropdown'] = $this->_get_zone_dropdown_data();
+        $view_data['label_suggestions'] = $this->make_labels_dropdown("pallets", $view_data['model_info']->labels);
+        $view_data['status_select2'] = $this->_get_status_select2_data();
+
+        $this->load->view('pallets/bulk_modal_form', $view_data);
     }
 
     function delete() {

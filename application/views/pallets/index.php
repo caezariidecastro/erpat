@@ -5,7 +5,7 @@
             <div class="title-button-group">
                 <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "pallets")); ?>
                 <?php echo anchor(get_uri("pallets/export_barcode"), "<i class='fa fa-file'></i> " . lang('export_barcode'), array("class" => "btn btn-default", "title" => lang('export_barcode'), "target"=>"_blank")); ?>
-                <?php //echo modal_anchor(get_uri("lds/pallets/bulk_add"), "<i class='fa fa-plus-circle'></i> " . lang('bulk_add'), array("class" => "btn btn-default", "title" => lang('bulk_add'))); ?>
+                <?php echo modal_anchor(get_uri("lds/pallets/bulk_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('bulk_add'), array("class" => "btn btn-default", "title" => lang('bulk_add'))); ?>
                 <?php echo modal_anchor(get_uri("lds/pallets/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_pallet'), array("class" => "btn btn-default", "title" => lang('add_pallet'))); ?>
             </div>
         </div>

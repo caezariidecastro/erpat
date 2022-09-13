@@ -229,10 +229,10 @@ if ( ! function_exists('form_input'))
 	 * @param	mixed
 	 * @return	string
 	 */
-	function form_input($data = '', $value = '', $extra = '')
+	function form_input($data = '', $value = '', $extra = '', $type = 'text')
 	{
 		$defaults = array(
-			'type' => 'text',
+			'type' => $type,
 			'name' => is_array($data) ? '' : $data,
 			'value' => $value
 		);
