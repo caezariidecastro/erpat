@@ -27,7 +27,7 @@ class Team extends MY_Controller {
             "id" => "numeric"
         ));
         
-        $team_members = $this->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"))->result();
+        $team_members = $this->Users_model->get_all_where(array("deleted" => 0, "status" => "active", "user_type" => "staff"))->result();
         $members_dropdown = array();
 
         foreach ($team_members as $team_member) {
