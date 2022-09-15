@@ -17,7 +17,7 @@
     $(document).ready(function () {
         $("#holiday-table").appTable({
             source: '<?php echo_uri("hrs/holidays/list_data") ?>',
-            dateRangeType: "monthly",
+            dateRangeType: "yearly",//TODO: Add filter by month.
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('title') ?> ", "class": "w20p"},
