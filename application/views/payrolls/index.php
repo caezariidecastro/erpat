@@ -47,6 +47,7 @@
                 {title: "<?php echo lang('start_date') ?>"},
                 {title: "<?php echo lang('end_date') ?>"},
                 {title: "<?php echo lang('payment_date') ?>"},
+                {title: "<?php echo lang('schedule_hours') ?>"},
 
                 {title: "<?php echo lang('account') ?>"},
 

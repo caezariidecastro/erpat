@@ -794,3 +794,4 @@ $lang["return_order"] = "Return Order";
 
 $lang["bulk_add"] = "Bulk Add";
 $lang["export_barcode"] = "Export Barcodes";
+$lang["schedule_hours"] = "Schedule Hours";

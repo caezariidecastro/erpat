@@ -35,23 +35,6 @@
     </div>
     <?php } ?>
     <div class="form-group">
-        <label for="pay_date" class=" col-md-3"><?php echo lang('pay_date'); ?></label>
-        <div class="col-md-9">
-            <?php
-            echo form_input(array(
-                "id" => "pay_date",
-                "name" => "pay_date",
-                "value" => $model_info->pay_date ? $model_info->pay_date : '',
-                "class" => "form-control recurring_element",
-                "placeholder" => lang('pay_date'),
-                "autocomplete" => "off",
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
-            ));
-            ?>
-        </div>
-    </div>
-    <div class="form-group">
         <label for="start_date" class=" col-md-3"><?php echo lang('pay_period'); ?></label>
         <div class="col-md-5">
             <?php
@@ -75,6 +58,40 @@
                 "value" => $model_info->end_date ? $model_info->end_date : '',
                 "class" => "form-control recurring_element",
                 "placeholder" => lang('end_date'),
+                "autocomplete" => "off",
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="schedule_hours" class=" col-md-3"><?php echo lang('schedule_hours'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "sched_hours",
+                "name" => "sched_hours",
+                "value" => $model_info->sched_hours ? $model_info->sched_hours : '',
+                "class" => "form-control",
+                "type" => "number",
+                "placeholder" => lang('schedule_hours'),
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="pay_date" class=" col-md-3"><?php echo lang('pay_date'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_input(array(
+                "id" => "pay_date",
+                "name" => "pay_date",
+                "value" => $model_info->pay_date ? $model_info->pay_date : '',
+                "class" => "form-control recurring_element",
+                "placeholder" => lang('pay_date'),
                 "autocomplete" => "off",
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),

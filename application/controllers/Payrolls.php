@@ -144,6 +144,7 @@ class Payrolls extends MY_Controller {
             $data->start_date,
             $data->end_date,
             $data->pay_date,
+            $data->sched_hours,
             $data->account_name,
             $data->total_payslip,
             $this->get_labeled_status($data->status),
@@ -170,6 +171,7 @@ class Payrolls extends MY_Controller {
             $payroll_data["start_date"] = $this->input->post('start_date');
             $payroll_data["end_date"] = $this->input->post('end_date');
             $payroll_data["pay_date"] = $this->input->post('pay_date');
+            $payroll_data["sched_hours"] = $this->input->post('sched_hours');
             $payroll_data["timestamp"] = get_current_utc_time();
             $payroll_data["signed_by"] = $this->login_user->id;
             $payroll_data["accountant_id"] = $this->input->post('accountant_id');
@@ -321,7 +323,6 @@ class Payrolls extends MY_Controller {
 
     function mark_as_ongoing( $payroll_id = 0 ) {
 
-        //TODO: Generate Payslips
         //Get payroll instance
         $payroll_info = $this->Payrolls_model->get_details(array(
             "id" => $payroll_id
@@ -360,7 +361,7 @@ class Payrolls extends MY_Controller {
                 "hourly_rate" => $job_info->rate_per_hour,
                 //"leave_credit" => $user_id, //hourly_rate
 
-                "schedule" => $attd->getTotalSchedule(), //schedule
+                "schedule" => $payroll_info->sched_hours,//$attd->getTotalSchedule(), //schedule
                 "worked" => $attd->getTotalWork(), //work
                 "absent" => $attd->getTotalAbsent(), //absent
                 "lates" => $attd->getTotalLates(), //lates
