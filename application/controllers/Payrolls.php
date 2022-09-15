@@ -335,11 +335,13 @@ class Payrolls extends MY_Controller {
         $this->load->helper('utility');
         $users = get_team_all_unique($department->heads, $department->members);
         
-        //Get all the summarized attendance from date focused on in.
-        $payslips = [];
         //schedule hours for this date.
         //absent, late, overbreak, undertime
         foreach($users as $user_id) {
+
+            if(!$this->Users_model->is_user_active($user_id)) {
+                continue;
+            }
 
             $job_info = $this->Users_model->get_job_info($user_id);
 
@@ -349,11 +351,10 @@ class Payrolls extends MY_Controller {
                 "end_date" => $payroll_info->end_date,
                 "access_type" => "all",
             ))->result();
-            //$payslips[] = $attendance;
 
             $attd = (new BioMeet($this, array(), true))->setAttendance($attendance)->calculate();
 
-            $payslips[] = array(
+            $payslip = array(
                 "payroll" => $payroll_id,
                 "user" => $user_id,
                 "hourly_rate" => $job_info->rate_per_hour,
@@ -375,10 +376,8 @@ class Payrolls extends MY_Controller {
                 //"sss_loan" => 000, //sss_loan
                 //"hdmf_loan" => 000, //hdmf_loan
             );
-        }
 
-        //To create a payslip for that user in a list.
-        foreach($payslips as $payslip) {
+            //To create a payslip for that user in a list.
             $this->Payslips_model->save( $payslip );
         }
 

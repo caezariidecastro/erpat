@@ -194,6 +194,21 @@ class Users_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function is_user_active($user_id) {
+        $users_table = $this->db->dbprefix('users');
+
+        $sql = "SELECT $users_table.email FROM $users_table   
+        WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' AND $users_table.id=$user_id";
+
+        $result = $this->db->query($sql);
+
+        if ($result->num_rows()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     function is_email_exists($email, $id = 0) {
         $users_table = $this->db->dbprefix('users');
 
