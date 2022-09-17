@@ -23,4 +23,14 @@ class Taxes_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function get_weekly_raw_default() {
+        return [
+            array(1, 0, 4808, 0, 0),
+            array(2, 4808, 7691, 0, 0.20),
+            array(3, 7692, 15384, 576.92, 0.25),
+            array(4, 15385, 38461, 2500, 0.30),
+            array(5, 38462, 153845, 9423.08, 0.32),
+            array(6, 153846, 999999999, 46346.15, 0.35),
+        ];
+    }
 }

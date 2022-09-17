@@ -25,6 +25,62 @@ class Taxes extends MY_Controller {
         $this->load->view('taxes/modal_form', $view_data);
     }
 
+    function table_modal_form() {
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $view_data['model_info'] = $this->Taxes_model->get_one($this->input->post('id'));
+        $this->load->view('taxes/table_modal_form', $view_data);
+    }
+
+    function list_weekly() {
+        $result = $this->Settings_model->get_setting("weekly_tax_table", "payroll");
+        if($result) {
+            $result = unserialize($result);
+        } else {
+            $result = $this->Taxes_model->get_weekly_raw_default();
+        }
+
+        $current = [];
+        foreach($result as $item) {
+            $current[] = array(
+                $item[0], "Level ".$item[0], 
+                cell_input("weekly_tax_level_".$item[0]."_starts_at", $item[1], "number"), 
+                cell_input("weekly_tax_level_".$item[0]."_not_over", $item[2], "number"), 
+                cell_input("weekly_tax_level_".$item[0]."_amount", $item[3], "number"), 
+                cell_input("weekly_tax_level_".$item[0]."_rate", $item[4], "number"), 
+            );
+        }
+        echo json_encode(array("data" => $current));
+    }
+
+    function save_weekly_tax() {
+
+        // validate_submitted_data(array(
+        //     "percentage" => "required"
+        // ));
+
+        $weekly_tax_table = array();
+        for($i=1; $i<=6; $i++) {
+            $weekly_tax_table[] = array(
+                $i,
+                $this->input->post('weekly_tax_level_'.$i.'_starts_at'),
+                $this->input->post('weekly_tax_level_'.$i.'_not_over'),
+                $this->input->post('weekly_tax_level_'.$i.'_amount'),
+                $this->input->post('weekly_tax_level_'.$i.'_rate')
+            );
+        }
+
+        $save_id = $this->Settings_model->save_setting("weekly_tax_table", serialize($weekly_tax_table), "payroll");
+        if ($save_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     function save() {
 
         validate_submitted_data(array(
