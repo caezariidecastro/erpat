@@ -2296,3 +2296,10 @@ if (!function_exists('get_user_deductions')) {
         return $data;
     }
 }
+
+if (!function_exists('get_monthly_salary')) {
+    function get_monthly_salary($hourly_rate, $hours_per_day = 8.0, $days_per_year = 261) {
+        $monthly_salary = $hourly_rate * $hours_per_day * ($days_per_year/12);
+        return to_currency($monthly_salary);
+    }
+}
