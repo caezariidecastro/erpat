@@ -2260,7 +2260,7 @@ if (!function_exists('get_id_name')) {
 
 if (!function_exists('cell_input')) {
     function cell_input($key, $val = "", $type = "text") {
-        return "<input type='$type' name='$key' value='$val' style='text-align: right;'/>";
+        return "<input type='$type' name='$key' value='$val' style='text-align: right; border: 1px solid #d2d2d2; padding: 5px;'/>";
     }
 }
 
