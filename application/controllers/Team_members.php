@@ -811,10 +811,10 @@ class Team_members extends MY_Controller {
         foreach($results as $item) {
             $data[] = array(
                 $item[0],
-                cell_input("weekly_".$item[0], $item[1], "number"),
-                cell_input("biweekly_".$item[0], $item[2], "number"),
-                cell_input("monthly_".$item[0], $item[3], "number"),
-                cell_input("annually_".$item[0], $item[4], "number"),
+                cell_input("daily_".$item[0], $item[1], "number"),
+                cell_input("weekly_".$item[0], $item[2], "number"),
+                cell_input("biweekly_".$item[0], $item[3], "number"),
+                cell_input("monthly_".$item[0], $item[4], "number"),
             );
         }
 
@@ -834,10 +834,10 @@ class Team_members extends MY_Controller {
         foreach($lists as $item) {
             $result[] = array(
                 $item, 
+                $this->input->post("daily_".$item),
                 $this->input->post("weekly_".$item),
                 $this->input->post("biweekly_".$item),
                 $this->input->post("monthly_".$item),
-                $this->input->post("annually_".$item),
             );
         }
         $result = serialize($result);

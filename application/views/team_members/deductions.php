@@ -45,10 +45,10 @@
             order: [[1, "desc"]],
             columns: [
                 {title: '<?php echo lang("name"); ?>'},
+                {title: '<?php echo lang("daily"); ?>', "class": "text-right"},
                 {title: '<?php echo lang("weekly"); ?>', "class": "text-right"},
                 {title: '<?php echo lang("biweekly"); ?>', "class": "text-right"},
                 {title: '<?php echo lang("monthly"); ?>', "class": "text-right"},
-                {title: '<?php echo lang("annually"); ?>', "class": "text-right"}
             ]
         });
     });
