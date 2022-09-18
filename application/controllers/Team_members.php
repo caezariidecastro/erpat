@@ -749,6 +749,7 @@ class Team_members extends MY_Controller {
                     $hide_send_message_button = false;
                 }
                 $view_data['hide_send_message_button'] = $hide_send_message_button;
+                $view_data['payroll_enabled'] = $this->validate_user_role_permission("payroll_enable", true);
 
                 $this->template->rander("team_members/view", $view_data);
             } else {

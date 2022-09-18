@@ -1103,3 +1103,14 @@ if (!function_exists('total_contacts_widget')) {
     }
 
 }
+
+if (!function_exists('get_user_job_offer')) {
+
+    function get_user_job_offer($user_id = 0) {
+        $ci = get_instance();
+        $job = $ci->Users_model->get_job_info($user_id);
+        $view_data["job_info"] = $job;
+        return $ci->load->view("widgets/job_offer", $view_data, $return_as_data);
+    }
+
+}

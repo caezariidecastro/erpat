@@ -9,10 +9,10 @@
         <div class="col-md-6 text-center cover-widget">
             <div class="row p20">
                 <?php
-                    //if ($show_projects_count && $show_total_hours_worked && $show_total_project_hours) {
-                        count_project_status_widget($user_info->id);
+                    if ($this->login_user->id == $user_info->id || ($payroll_enabled && $show_total_hours_worked) ) {
+                        get_user_job_offer($user_info->id);
                         count_total_time_widget($user_info->id);
-                    //}                
+                    }                
                 ?> 
             </div>
         </div>
@@ -32,8 +32,7 @@
         <?php if ($show_general_info) { ?>
             <li><a  role="presentation" href="<?php echo_uri("hrs/team_members/social_links/" . $user_info->id); ?>" data-target="#tab-social-links"> <?php echo lang('social_links'); ?></a></li>
         <?php } ?>
-
-        <?php if ($show_job_info) { ?>
+        <?php if ($payroll_enabled) { ?>
             <li><a  role="presentation" href="<?php echo_uri("hrs/team_members/deductions/" . $user_info->id); ?>" data-target="#tab-deductions-info"> <?php echo lang('deductions'); ?></a></li>
         <?php } ?>
 

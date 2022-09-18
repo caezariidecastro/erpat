@@ -50,6 +50,7 @@
                     ?>
                 </div>
             </div>
+            <?php if( $payroll_enabled ) { ?>
             <div class="form-group">
                 <label for="salary_term" class=" col-md-2"><?php echo lang('salary_term'); ?></label>
                 <div class="col-md-10">
@@ -64,7 +65,6 @@
                     ?>
                 </div>
             </div>
-            <?php if( $payroll_enabled ) { ?>
             <div class="form-group">
                 <label for="salary" class=" col-md-2"><?php echo lang('monthly_salary')." <br>Based on Hourly Rate: <br><strong>".get_monthly_salary($job_info->rate_per_hour)."</strong>"; ?></label>
                 <div class="col-md-10">
