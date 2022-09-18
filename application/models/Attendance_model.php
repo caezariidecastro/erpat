@@ -89,6 +89,11 @@ class Attendance_model extends Crud_model {
             $where .= " AND $attendnace_table.user_id=$user_id";
         }
 
+        $active_only = get_array_value($options, "active_only");
+        if ($active_only) {
+            $where .= " AND $users_table.status='active'";
+        }
+
         $access_type = get_array_value($options, "access_type");
 
         if (!$id && $access_type !== "all") {

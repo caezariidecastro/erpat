@@ -356,7 +356,8 @@ class Attendance extends MY_Controller {
             "login_user_id" => $this->login_user->id, 
             "user_id" => $user_id, 
             "access_type" => $this->access_type, 
-            "allowed_members" => $this->allowed_members
+            "allowed_members" => $this->allowed_members,
+            "active_only" => true, 
         );
         $list_data = $this->Attendance_model->get_details($options)->result();
 
@@ -476,16 +477,16 @@ class Attendance extends MY_Controller {
     //get members query options
     private function _get_members_query_options($type = "") {
         if ($this->access_type === "all") {
-            $where = array("user_type" => "staff");
+            $where = array("status" => "active", "user_type" => "staff");
         } else {
             if (!count($this->allowed_members) && $type != "data") {
-                $where = array("user_type" => "nothing"); //don't show any users in dropdown
+                $where = array("status" => "active", "user_type" => "nothing"); //don't show any users in dropdown
             } else {
                 //add login user in dropdown list
                 $allowed_members = $this->allowed_members;
                 $allowed_members[] = $this->login_user->id;
 
-                $where = array("user_type" => "staff", "where_in" => ($type == "data") ? $allowed_members : array("id" => $allowed_members));
+                $where = array("status" => "active", "user_type" => "staff", "where_in" => ($type == "data") ? $allowed_members : array("id" => $allowed_members));
             }
         }
 
