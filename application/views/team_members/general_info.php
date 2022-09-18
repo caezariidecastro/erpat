@@ -7,7 +7,7 @@
         <div class="panel-body">
             <div class="form-group">
                 <label for="first_name" class=" col-md-2"><?php echo lang('first_name'); ?></label>
-                <div class=" col-md-10">
+                <div class=" col-md-4">
                     <?php
                     echo form_input(array(
                         "id" => "first_name",
@@ -20,10 +20,8 @@
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
                 <label for="last_name" class=" col-md-2"><?php echo lang('last_name'); ?></label>
-                <div class=" col-md-10">
+                <div class=" col-md-4">
                     <?php
                     echo form_input(array(
                         "id" => "last_name",
@@ -53,7 +51,7 @@
             </div>
             <div class="form-group">
                 <label for="city" class=" col-md-2"><?php echo lang('city'); ?></label>
-                <div class=" col-md-10">
+                <div class=" col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "city",
@@ -64,10 +62,8 @@
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="state" class=" col-md-2"><?php echo lang('state'); ?></label>
-                <div class=" col-md-10">
+                <label for="state" class=" col-md-1"><?php echo lang('state'); ?></label>
+                <div class=" col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "state",
@@ -78,10 +74,8 @@
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="country" class=" col-md-2"><?php echo lang('country'); ?></label>
-                <div class=" col-md-10">
+                <label for="country" class=" col-md-1"><?php echo lang('country'); ?></label>
+                <div class=" col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "country",
@@ -92,10 +86,8 @@
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="zip" class=" col-md-2"><?php echo lang('zip'); ?></label>
-                <div class=" col-md-10">
+                <label for="zip" class=" col-md-1"><?php echo lang('zip'); ?></label>
+                <div class=" col-md-1">
                     <?php
                     echo form_input(array(
                         "id" => "zip",
@@ -123,7 +115,7 @@
             </div>
             <div class="form-group">
                 <label for="phone" class=" col-md-2"><?php echo lang('phone'); ?></label>
-                <div class=" col-md-10">
+                <div class=" col-md-4">
                     <?php
                     echo form_input(array(
                         "id" => "phone",
@@ -134,10 +126,8 @@
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
                 <label for="alternative_phone" class=" col-md-2"><?php echo lang('alternative_phone'); ?></label>
-                <div class=" col-md-10">
+                <div class=" col-md-4">
                     <?php
                     echo form_input(array(
                         "id" => "alternative_phone",
@@ -164,23 +154,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="dob" class=" col-md-2"><?php echo lang('date_of_birth'); ?></label>
-                <div class=" col-md-10">
-                    <?php
-                    echo form_input(array(
-                        "id" => "dob",
-                        "name" => "dob",
-                        "value" => $user_info->dob,
-                        "class" => "form-control",
-                        "placeholder" => lang('date_of_birth'),
-                        "autocomplete" => "off"
-                    ));
-                    ?>
-                </div>
-            </div>
-            <div class="form-group">
                 <label for="ssn" class=" col-md-2"><?php echo "Blood Type";//lang('ssn'); ?></label>
-                <div class=" col-md-10">
+                <div class=" col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "ssn",
@@ -191,10 +166,8 @@
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="gender" class=" col-md-2"><?php echo lang('gender'); ?></label>
-                <div class=" col-md-10">
+                <label for="gender" class=" col-md-1"><?php echo lang('gender'); ?></label>
+                <div class=" col-md-3">
                     <?php
                     echo form_radio(array(
                         "id" => "gender_male",
@@ -208,6 +181,19 @@
                             ), "female", ($user_info->gender === "female") ? true : false);
                     ?>
                     <label for="gender_female" class=""><?php echo lang('female'); ?></label>
+                </div>
+                <label for="dob" class=" col-md-1"><?php echo lang('date_of_birth'); ?></label>
+                <div class=" col-md-2">
+                    <?php
+                    echo form_input(array(
+                        "id" => "dob",
+                        "name" => "dob",
+                        "value" => $user_info->dob,
+                        "class" => "form-control",
+                        "placeholder" => lang('date_of_birth'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
                 </div>
             </div>
 

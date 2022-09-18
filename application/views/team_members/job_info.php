@@ -8,8 +8,20 @@
         </div>
         <div class="panel-body">
             <div class="form-group">
+                <label for="job_title" class=" col-md-2"><?php echo lang('job_title'); ?></label>
+                <div class="col-md-2">
+                    <?php
+                    echo form_input(array(
+                        "id" => "job_title",
+                        "name" => "job_title",
+                        "value" => $job_info->job_title,
+                        "class" => "form-control",
+                        "placeholder" => lang('job_title')
+                    ));
+                    ?>
+                </div>
                 <label for="job_idnum" class=" col-md-2"><?php echo lang('job_idnum'); ?></label>
-                <div class="col-md-10">
+                <div class="col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "job_idnum",
@@ -20,10 +32,8 @@
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
                 <label for="rfid_sticker" class=" col-md-2"><?php echo lang('rfid_num'); ?></label>
-                <div class="col-md-10">
+                <div class="col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "rfid_num",
@@ -36,38 +46,10 @@
                     ?>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="job_title" class=" col-md-2"><?php echo lang('job_title'); ?></label>
-                <div class="col-md-10">
-                    <?php
-                    echo form_input(array(
-                        "id" => "job_title",
-                        "name" => "job_title",
-                        "value" => $job_info->job_title,
-                        "class" => "form-control",
-                        "placeholder" => lang('job_title')
-                    ));
-                    ?>
-                </div>
-            </div>
             <?php if( $payroll_enabled ) { ?>
             <div class="form-group">
-                <label for="salary_term" class=" col-md-2"><?php echo lang('salary_term'); ?></label>
-                <div class="col-md-10">
-                    <?php
-                    echo form_input(array(
-                        "id" => "salary_term",
-                        "name" => "salary_term",
-                        "value" => $job_info->salary_term,
-                        "class" => "form-control",
-                        "placeholder" => lang('salary_term')
-                    ));
-                    ?>
-                </div>
-            </div>
-            <div class="form-group">
                 <label for="salary" class=" col-md-2"><?php echo lang('monthly_salary')." <br>Based on Hourly Rate: <br><strong>".get_monthly_salary($job_info->rate_per_hour)."</strong>"; ?></label>
-                <div class="col-md-10">
+                <div class="col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "salary",
@@ -79,10 +61,8 @@
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
                 <label for="rate_per_hour" class=" col-md-2"><?php echo lang('rate_per_hour'); ?></label>
-                <div class=" col-md-10">
+                <div class=" col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "rate_per_hour",
@@ -94,19 +74,28 @@
                     ));
                     ?>
                 </div>
+                <label for="salary_term" class=" col-md-2"><?php echo lang('salary_term'); ?></label>
+                <div class="col-md-2">
+                    <?= form_dropdown(
+                        "salary_term", array(
+                        "" => "- ".lang("select")." - ",
+                        "daily" => lang("daily"),
+                        "weekly" => lang("weekly"),
+                        "biweekly" => lang("biweekly"),
+                        "monthly" => lang("monthly"),
+                    ), $job_info->salary_term, "class='select2 mini'"); ?>
+                </div>
             </div>
             <?php } ?>
             <div class="form-group">
                 <label for="sched_id" class=" col-md-2"><?php echo lang('current_schedule'); ?></label>
-                <div class=" col-md-10">
+                <div class=" col-md-4">
                     <?php
                     echo form_dropdown("sched_id", $sched_dropdown, $job_info->sched_id, "class='select2 validate-hidden' id='sched_id' ". "'");
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
                 <label for="date_of_hire" class=" col-md-2"><?php echo lang('date_of_hire'); ?></label>
-                <div class="col-md-10">
+                <div class="col-md-4">
                     <?php
                     echo form_input(array(
                         "id" => "date_of_hire",
@@ -142,7 +131,7 @@
             <div></div>
             <div class="form-group">
                 <label for="contact_name" class=" col-md-2"><?php echo lang('contact_name'); ?></label>
-                <div class="col-md-10">
+                <div class="col-md-5">
                     <?php
                     echo form_input(array(
                         "id" => "contact_name",
@@ -150,6 +139,19 @@
                         "value" => $job_info->contact_name,
                         "class" => "form-control",
                         "placeholder" => lang('contact_name'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+                <label for="contact_phone" class=" col-md-2"><?php echo lang('contact_phone'); ?></label>
+                <div class="col-md-3">
+                    <?php
+                    echo form_input(array(
+                        "id" => "contact_phone",
+                        "name" => "contact_phone",
+                        "value" => $job_info->contact_phone,
+                        "class" => "form-control",
+                        "placeholder" => lang('contact_phone'),
                         "autocomplete" => "off"
                     ));
                     ?>
@@ -169,29 +171,27 @@
                     ?>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="contact_phone" class=" col-md-2"><?php echo lang('contact_phone'); ?></label>
-                <div class="col-md-10">
-                    <?php
-                    echo form_input(array(
-                        "id" => "contact_phone",
-                        "name" => "contact_phone",
-                        "value" => $job_info->contact_phone,
-                        "class" => "form-control",
-                        "placeholder" => lang('contact_phone'),
-                        "autocomplete" => "off"
-                    ));
-                    ?>
-                </div>
-            </div>
         </div>
         <div class="panel-default panel-heading">
             <h4><?php echo lang('contributions'); ?></h4>
         </div>
         <div class="panel-body">
             <div class="form-group">
+                <label for="tin" class=" col-md-2"><?php echo lang('tin'); ?></label>
+                <div class="col-md-4">
+                    <?php
+                    echo form_input(array(
+                        "id" => "tin",
+                        "name" => "tin",
+                        "value" => $job_info->tin,
+                        "class" => "form-control",
+                        "placeholder" => lang('tin'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
                 <label for="sss" class=" col-md-2"><?php echo lang('sss'); ?></label>
-                <div class="col-md-10">
+                <div class="col-md-4">
                     <?php
                     echo form_input(array(
                         "id" => "sss",
@@ -205,23 +205,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="tin" class=" col-md-2"><?php echo lang('tin'); ?></label>
-                <div class="col-md-10">
-                    <?php
-                    echo form_input(array(
-                        "id" => "tin",
-                        "name" => "tin",
-                        "value" => $job_info->tin,
-                        "class" => "form-control",
-                        "placeholder" => lang('tin'),
-                        "autocomplete" => "off"
-                    ));
-                    ?>
-                </div>
-            </div>
-            <div class="form-group">
                 <label for="pag_ibig" class=" col-md-2"><?php echo lang('pag_ibig'); ?></label>
-                <div class="col-md-10">
+                <div class="col-md-4">
                     <?php
                     echo form_input(array(
                         "id" => "pag_ibig",
@@ -233,10 +218,8 @@
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
                 <label for="phil_health" class=" col-md-2"><?php echo lang('phil_health'); ?></label>
-                <div class="col-md-10">
+                <div class="col-md-4">
                     <?php
                     echo form_input(array(
                         "id" => "phil_health",

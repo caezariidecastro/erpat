@@ -807,3 +807,4 @@ $lang["hdmf"] = "HDMF";
 $lang["deductions"] = "Deductions";
 $lang["biweekly"] = "Bi-Weekly";
 $lang["annually"] = "Annually";
+$lang["select"] = "Select";
