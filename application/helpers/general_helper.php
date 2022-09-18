@@ -2263,3 +2263,36 @@ if (!function_exists('cell_input')) {
         return "<input type='$type' name='$key' value='$val' style='text-align: right;'/>";
     }
 }
+
+if (!function_exists('get_user_deductions')) {
+    function get_user_deductions($user_id) {
+        $ci = get_instance();
+        $result = $ci->Settings_model->get_setting("user_".$user_id."_deductions", "user");
+        if($result) {
+            $results = unserialize($result);
+        } else {
+            $results = [
+                array("sss_contri", 0.00, 0.00, 0.00, 0.00),
+                array("pagibig_contri", 0.00, 0.00, 0.00, 0.00),
+                array("philhealth_contri", 0.00, 0.00, 0.00, 0.00),
+                array("hmo_contri", 0.00, 0.00, 0.00, 0.00),
+                array("company_loan", 0.00, 0.00, 0.00, 0.00),
+                array("sss_loan", 0.00, 0.00, 0.00, 0.00),
+                array("hdmf_loan", 0.00, 0.00, 0.00, 0.00),
+            ];
+        }
+
+        $data = [];
+        foreach($results as $item) {
+            $data[] = array(
+                $item[0],
+                cell_input("daily_".$item[0], $item[1], "number"),
+                cell_input("weekly_".$item[0], $item[2], "number"),
+                cell_input("biweekly_".$item[0], $item[3], "number"),
+                cell_input("monthly_".$item[0], $item[4], "number"),
+            );
+        }
+
+        return $data;
+    }
+}
