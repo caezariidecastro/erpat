@@ -800,3 +800,10 @@ $lang["starts_at"] = "Starts At";
 $lang["not_over"] = "Not Over";
 $lang["save_changes"] = "Save Changes";
 $lang["weekly_tax_table"] = "Weekly Tax Table";
+$lang["unique_id"] = "Unique ID";
+$lang["loans"] = "Loans";
+$lang["hdmf"] = "HDMF";
+
+$lang["deductions"] = "Deductions";
+$lang["biweekly"] = "Bi-Weekly";
+$lang["annually"] = "Annualy";

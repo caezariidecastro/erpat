@@ -21,6 +21,25 @@ class Settings_model extends Crud_model {
         }
     }
 
+    function get_group_setting($options) {
+        $setting_table = $this->table;
+
+        $where = "";
+        $type = get_array_value($options, "type");
+        if ($type) {
+            $where .= " AND $setting_table.type='$type'";
+        }
+        $user_id = get_array_value($options, "user_id");
+        if ($user_id) {
+            $where .= " AND $setting_table.setting_name LIKE '%user_{$user_id}_%'";
+        }
+
+        $sql = "SELECT $setting_table.*
+        FROM $setting_table
+        WHERE $setting_table.deleted=0 $where";
+        return $this->db->query($sql)->result();
+    }
+
     function save_setting($setting_name, $setting_value, $type = false) {
         $fields = array(
             'setting_name' => $setting_name,

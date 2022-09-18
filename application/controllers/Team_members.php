@@ -782,6 +782,70 @@ class Team_members extends MY_Controller {
         echo Phpqr::generate($qrdata, false);
     }
 
+    function deductions($user_id) {
+        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
+			redirect("forbidden");
+		}
+        $view_data['user_id'] = $user_id;
+
+        $this->load->view("team_members/deductions", $view_data);
+    }
+
+    function list_deductions($user_id) {
+        $result = $this->Settings_model->get_setting("user_".$user_id."_deductions", "user");
+        if($result) {
+            $results = unserialize($result);
+        } else {
+            $results = [
+                array("sss_contri", 0.00, 0.00, 0.00, 0.00),
+                array("pagibig_contri", 0.00, 0.00, 0.00, 0.00),
+                array("philhealth_contri", 0.00, 0.00, 0.00, 0.00),
+                array("hmo_contri", 0.00, 0.00, 0.00, 0.00),
+                array("company_loan", 0.00, 0.00, 0.00, 0.00),
+                array("sss_loan", 0.00, 0.00, 0.00, 0.00),
+                array("hdmf_loan", 0.00, 0.00, 0.00, 0.00),
+            ];
+        }
+
+        $data = [];
+        foreach($results as $item) {
+            $data[] = array(
+                $item[0],
+                cell_input("weekly_".$item[0], $item[1], "number"),
+                cell_input("biweekly_".$item[0], $item[2], "number"),
+                cell_input("monthly_".$item[0], $item[3], "number"),
+                cell_input("annually_".$item[0], $item[4], "number"),
+            );
+        }
+
+        echo json_encode(array("data" => $data));
+    }
+
+    function save_deductions_info() {
+        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
+			redirect("forbidden");
+		}
+
+        $user_id = $this->input->post("user_id");
+        $prefix = "user_".$user_id."_";
+
+        $result = array();
+        $lists = ["sss_contri","pagibig_contri","philhealth_contri","hmo_contri","company_loan","sss_loan","hdmf_loan"];
+        foreach($lists as $item) {
+            $result[] = array(
+                $item, 
+                $this->input->post("weekly_".$item),
+                $this->input->post("biweekly_".$item),
+                $this->input->post("monthly_".$item),
+                $this->input->post("annually_".$item),
+            );
+        }
+        $result = serialize($result);
+
+        $saved = $this->Settings_model->save_setting($prefix."deductions", $result, "user");
+        echo json_encode(array("success" => $saved, 'message' => lang('record_updated')));
+    }
+
     //show the job information of a team member
     function job_info($user_id) {
         if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {

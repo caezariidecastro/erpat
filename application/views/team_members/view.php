@@ -34,6 +34,10 @@
         <?php } ?>
 
         <?php if ($show_job_info) { ?>
+            <li><a  role="presentation" href="<?php echo_uri("hrs/team_members/deductions/" . $user_info->id); ?>" data-target="#tab-deductions-info"> <?php echo lang('deductions'); ?></a></li>
+        <?php } ?>
+
+        <?php if ($show_job_info) { ?>
             <li><a  role="presentation" href="<?php echo_uri("hrs/team_members/job_info/" . $user_info->id); ?>" data-target="#tab-job-info"> <?php echo lang('job_info'); ?></a></li>
         <?php } ?>
 
@@ -81,6 +85,7 @@
         <div role="tabpanel" class="tab-pane fade" id="tab-general-info"></div>
         <div role="tabpanel" class="tab-pane fade" id="tab-files"></div>
         <div role="tabpanel" class="tab-pane fade" id="tab-social-links"></div>
+        <div role="tabpanel" class="tab-pane fade" id="tab-deductions-info"></div>
         <div role="tabpanel" class="tab-pane fade" id="tab-job-info"></div>
         <div role="tabpanel" class="tab-pane fade" id="tab-account-settings"></div>
         <div role="tabpanel" class="tab-pane fade" id="tab-my-preferences"></div>
