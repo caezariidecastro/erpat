@@ -808,3 +808,5 @@ $lang["deductions"] = "Deductions";
 $lang["biweekly"] = "Bi-Weekly";
 $lang["annually"] = "Annually";
 $lang["select"] = "Select";
+
+$lang["tax_table"] = "Tax Table";

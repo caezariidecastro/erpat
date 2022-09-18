@@ -52,6 +52,7 @@
                 {title: "<?php echo lang('account') ?>"},
 
                 {title: "<?php echo lang('total_payslips') ?>", "class": "text-right"},
+                {title: "<?php echo lang('tax_table') ?>",},
                 {title: "<?php echo lang('status') ?>", "class": "text-center"},
 
                 {title: "<?php echo lang('note') ?>"}, //remarks

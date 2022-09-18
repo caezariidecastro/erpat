@@ -147,6 +147,7 @@ class Payrolls extends MY_Controller {
             $data->sched_hours,
             $data->account_name,
             $data->total_payslip,
+            strtoupper($data->tax_table),
             $this->get_labeled_status($data->status),
             $data->remarks,
             get_team_member_profile_link($data->signed_by, $data->signee_name, array("target" => "_blank")),
@@ -174,6 +175,7 @@ class Payrolls extends MY_Controller {
             $payroll_data["sched_hours"] = $this->input->post('sched_hours');
             $payroll_data["timestamp"] = get_current_utc_time();
             $payroll_data["signed_by"] = $this->login_user->id;
+            $payroll_data["tax_table"] = $this->input->post('tax_table');
             $payroll_data["accountant_id"] = $this->input->post('accountant_id');
             $payroll_data["created_by"] = $this->login_user->id;
         }
@@ -199,7 +201,7 @@ class Payrolls extends MY_Controller {
         $view_data['account_dropdown'] = array("" => "-") + $this->Accounts_model->get_dropdown_list(array("name"), "id", array("deleted" => 0));
         $view_data['department_dropdown'] = array("" => "-") + $this->Team_model->get_dropdown_list(array("title"), "id", array("deleted" => 0));
         $view_data['model_info'] = $id ? $this->Payrolls_model->get_details(array("id" => $id))->row() : "";
-        $view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        $view_data['user_dropdown'] = array("" => "- ".lang("accountant")." -") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"), "- ".lang("accountant")." -");
 
         if($id) {
             $view_data['model_info']->start_date = $view_data['model_info']->start_date;

@@ -66,8 +66,22 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="schedule_hours" class=" col-md-3"><?php echo lang('schedule_hours'); ?></label>
-        <div class="col-md-9">
+        <label for="pay_date" class=" col-md-3"><?php echo lang('pay_date'); ?></label>
+        <div class="col-md-5">
+            <?php
+            echo form_input(array(
+                "id" => "pay_date",
+                "name" => "pay_date",
+                "value" => $model_info->pay_date ? $model_info->pay_date : '',
+                "class" => "form-control recurring_element",
+                "placeholder" => lang('pay_date'),
+                "autocomplete" => "off",
+                "data-rule-required" => true,
+                "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+        <div class="col-md-4">
             <?php
             echo form_input(array(
                 "id" => "sched_hours",
@@ -83,25 +97,18 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="pay_date" class=" col-md-3"><?php echo lang('pay_date'); ?></label>
-        <div class="col-md-9">
-            <?php
-            echo form_input(array(
-                "id" => "pay_date",
-                "name" => "pay_date",
-                "value" => $model_info->pay_date ? $model_info->pay_date : '',
-                "class" => "form-control recurring_element",
-                "placeholder" => lang('pay_date'),
-                "autocomplete" => "off",
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
-            ));
-            ?>
+        <label for="tax_table" class=" col-md-3"><?php echo lang('tax_table'); ?></label>
+        <div class="col-md-4">
+            <?= form_dropdown(
+                "tax_table", array(
+                "" => "- ".lang("select")." - ",
+                "daily" => lang("daily"),
+                "weekly" => lang("weekly"),
+                "biweekly" => lang("biweekly"),
+                "monthly" => lang("monthly"),
+            ), $job_info->tax_table, "class='select2 mini'"); ?>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="accountant_id" class="col-md-3"><?php echo lang('accountant'); ?></label>
-        <div class="col-md-9">
+        <div class="col-md-5">
             <?php
             echo form_dropdown("accountant_id", $user_dropdown, $model_info ? $model_info->accountant_id : "", "class='select2 validate-hidden' id='accountant_id' data-rule-required='true' data-msg-required='".lang("field_required")."' ".(isset($model_info->id)?"disabled":""));
             ?>
