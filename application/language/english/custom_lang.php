@@ -817,3 +817,7 @@ $lang["biometric_logs"] = "Biometric Logs";
 $lang["earnings"] = "Earnings";
 $lang["preview_payslip"] = "Preview Payslip";
 $lang["total_adjustother"] = "Adjust / Other";
+
+$lang["daily_tax_table"] = "Daily Tax Table";
+$lang["biweekly_tax_table"] = "Biweekly Tax Table";
+$lang["monthly_tax_table"] = "Monthly Tax Table";

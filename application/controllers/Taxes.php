@@ -35,6 +35,52 @@ class Taxes extends MY_Controller {
         $this->load->view('taxes/table_modal_form', $view_data);
     }
 
+    function list_daily() {
+        $result = $this->Settings_model->get_setting("daily_tax_table", "payroll");
+        if($result) {
+            $result = unserialize($result);
+        } else {
+            $result = $this->Taxes_model->get_daily_raw_default();
+        }
+
+        $current = [];
+        foreach($result as $item) {
+            $current[] = array(
+                $item[0], "Level ".$item[0], 
+                cell_input("daily_tax_level_".$item[0]."_starts_at", $item[1], "number"), 
+                cell_input("daily_tax_level_".$item[0]."_not_over", $item[2], "number"), 
+                cell_input("daily_tax_level_".$item[0]."_amount", $item[3], "number"), 
+                cell_input("daily_tax_level_".$item[0]."_rate", $item[4], "number"), 
+            );
+        }
+        echo json_encode(array("data" => $current));
+    }
+
+    function save_daily_tax() {
+
+        // validate_submitted_data(array(
+        //     "percentage" => "required"
+        // ));
+
+        $daily_tax_table = array();
+        for($i=1; $i<=6; $i++) {
+            $daily_tax_table[] = array(
+                $i,
+                $this->input->post('daily_tax_level_'.$i.'_starts_at'),
+                $this->input->post('daily_tax_level_'.$i.'_not_over'),
+                $this->input->post('daily_tax_level_'.$i.'_amount'),
+                $this->input->post('daily_tax_level_'.$i.'_rate')
+            );
+        }
+
+        $save_id = $this->Settings_model->save_setting("daily_tax_table", serialize($daily_tax_table), "payroll");
+        if ($save_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     function list_weekly() {
         $result = $this->Settings_model->get_setting("weekly_tax_table", "payroll");
         if($result) {
@@ -74,6 +120,98 @@ class Taxes extends MY_Controller {
         }
 
         $save_id = $this->Settings_model->save_setting("weekly_tax_table", serialize($weekly_tax_table), "payroll");
+        if ($save_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function list_biweekly() {
+        $result = $this->Settings_model->get_setting("biweekly_tax_table", "payroll");
+        if($result) {
+            $result = unserialize($result);
+        } else {
+            $result = $this->Taxes_model->get_biweekly_raw_default();
+        }
+
+        $current = [];
+        foreach($result as $item) {
+            $current[] = array(
+                $item[0], "Level ".$item[0], 
+                cell_input("biweekly_tax_level_".$item[0]."_starts_at", $item[1], "number"), 
+                cell_input("biweekly_tax_level_".$item[0]."_not_over", $item[2], "number"), 
+                cell_input("biweekly_tax_level_".$item[0]."_amount", $item[3], "number"), 
+                cell_input("biweekly_tax_level_".$item[0]."_rate", $item[4], "number"), 
+            );
+        }
+        echo json_encode(array("data" => $current));
+    }
+
+    function save_biweekly_tax() {
+
+        // validate_submitted_data(array(
+        //     "percentage" => "required"
+        // ));
+
+        $biweekly_tax_table = array();
+        for($i=1; $i<=6; $i++) {
+            $biweekly_tax_table[] = array(
+                $i,
+                $this->input->post('biweekly_tax_level_'.$i.'_starts_at'),
+                $this->input->post('biweekly_tax_level_'.$i.'_not_over'),
+                $this->input->post('biweekly_tax_level_'.$i.'_amount'),
+                $this->input->post('biweekly_tax_level_'.$i.'_rate')
+            );
+        }
+
+        $save_id = $this->Settings_model->save_setting("biweekly_tax_table", serialize($biweekly_tax_table), "payroll");
+        if ($save_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function list_monthly() {
+        $result = $this->Settings_model->get_setting("monthly_tax_table", "payroll");
+        if($result) {
+            $result = unserialize($result);
+        } else {
+            $result = $this->Taxes_model->get_monthly_raw_default();
+        }
+
+        $current = [];
+        foreach($result as $item) {
+            $current[] = array(
+                $item[0], "Level ".$item[0], 
+                cell_input("monthly_tax_level_".$item[0]."_starts_at", $item[1], "number"), 
+                cell_input("monthly_tax_level_".$item[0]."_not_over", $item[2], "number"), 
+                cell_input("monthly_tax_level_".$item[0]."_amount", $item[3], "number"), 
+                cell_input("monthly_tax_level_".$item[0]."_rate", $item[4], "number"), 
+            );
+        }
+        echo json_encode(array("data" => $current));
+    }
+
+    function save_monthly_tax() {
+
+        // validate_submitted_data(array(
+        //     "percentage" => "required"
+        // ));
+
+        $monthly_tax_table = array();
+        for($i=1; $i<=6; $i++) {
+            $monthly_tax_table[] = array(
+                $i,
+                $this->input->post('monthly_tax_level_'.$i.'_starts_at'),
+                $this->input->post('monthly_tax_level_'.$i.'_not_over'),
+                $this->input->post('monthly_tax_level_'.$i.'_amount'),
+                $this->input->post('monthly_tax_level_'.$i.'_rate')
+            );
+        }
+
+        $save_id = $this->Settings_model->save_setting("monthly_tax_table", serialize($monthly_tax_table), "payroll");
         if ($save_id) {
             echo json_encode(array("success" => true, 'message' => lang('record_saved')));
         } else {
