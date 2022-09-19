@@ -41,14 +41,16 @@ class Payrolls_model extends Crud_model {
         $sql = "SELECT {$this->table}.*, 
         TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, 
         TRIM(CONCAT(signee.first_name, ' ', signee.last_name)) AS signee_name, 
+        TRIM(CONCAT(accountant.first_name, ' ', accountant.last_name)) AS accountant_name, 
         department.title AS department_name, 
         (SELECT count(id) FROM payslips WHERE payslips.payroll = {$this->table}.id AND deleted=0) AS total_payslip,
         acct.name AS account_name 
         FROM {$this->table}
-        LEFT JOIN users creator ON creator.id = {$this->table}.created_by
-        LEFT JOIN users signee ON signee.id = {$this->table}.signed_by
-        LEFT JOIN team department ON department.id = {$this->table}.department
         LEFT JOIN accounts acct ON acct.id = {$this->table}.account_id
+        LEFT JOIN team department ON department.id = {$this->table}.department
+        LEFT JOIN users creator ON creator.id = {$this->table}.created_by
+        LEFT JOIN users accountant ON accountant.id = {$this->table}.accountant_id
+        LEFT JOIN users signee ON signee.id = {$this->table}.signed_by
         WHERE {$this->table}.deleted=0 $where";
         return $this->db->query($sql);
     }

@@ -326,6 +326,7 @@ class PayHP {
 
             "total_earn" => $this->totalAdditionals(),
             "total_deduct" => $this->totalDeductions(),
+            "total_adjustother" => $this->otherDeductions(),
 
             "net_taxable" => $this->netTaxable(),
             "tax_due" => $this->taxDue(),

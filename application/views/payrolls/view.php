@@ -33,19 +33,23 @@
             </div>
 
             <div class="clearfix b-t b-info">
-                <div class="col-md-12 mt20 mb20" style="text-align: center;">
+                <div class="col-md-12 mt20 mb20" style="text-align: left;">
                     <div class="row mb15">
                         <div class="col-md-3"> 
                             <h6>DEPARTMENT</h6><input id="fullname" type="text" name="fullname" value="<?= $department ?>" style="text-align: center;" disabled></input>
+                            <h6>CREATED BY</h6><input id="fullname" type="text" name="fullname" value="<?= $payroll_info->creator_name ?>" style="text-align: center;" disabled></input>
                         </div>
                         <div class="col-md-3"> 
-                            <h6>START DATE</h6><input name="job_title" value="<?= $start_date ?>" style="text-align: center;" disabled></input>
+                            <h6>OFFICER</h6><input id="fullname" type="text" name="fullname" value="<?= $payroll_info->signee_name ?>" style="text-align: center;" disabled></input>
+                            <h6>ACCOUNTANT</h6><input id="fullname" type="text" name="fullname" value="<?= $payroll_info->accountant_name ?>" style="text-align: center;" disabled></input>
                         </div>
                         <div class="col-md-3"> 
-                            <h6>END DATE</h6><input name="department" value="<?= $end_date ?>" style="text-align: center;" disabled></input>
+                            <h6>START DATE</h6><input name="job_title" value="<?= $payroll_info->start_date ?>" style="text-align: center;" disabled></input>
+                            <h6>END DATE</h6><input name="department" value="<?= $payroll_info->end_date ?>" style="text-align: center;" disabled></input>
                         </div>
                         <div class="col-md-3"> 
-                            <h6>PAYMENT DATE</h6><input name="monthly_salary" value="<?= $pay_date ?>" style="text-align: center;" disabled></input>
+                            <h6>SCHED HOURS</h6><input id="fullname" type="text" name="fullname" value="<?= $payroll_info->sched_hours ?>" style="text-align: center;" disabled></input>
+                            <h6>PAYMENT DATE</h6><input name="monthly_salary" value="<?= $payroll_info->pay_date ?>" style="text-align: center;" disabled></input>
                         </div>
                     </div>  
                 </div>

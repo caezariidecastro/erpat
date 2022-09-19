@@ -36,7 +36,7 @@ class Payslips_model extends Crud_model {
         TRIM(CONCAT(employee.first_name, ' ', employee.last_name)) AS employee_name, 
         TRIM(CONCAT(signee.first_name, ' ', signee.last_name)) AS signee_name, 
 
-        job_info.salary AS salary_amount,
+        IF(job_info.salary, job_info.salary, {$this->table}.hourly_rate * 8 * (261/12))  AS salary_amount,
         employee.job_title,
 
         {$this->table}.hourly_rate AS hourly_rate,

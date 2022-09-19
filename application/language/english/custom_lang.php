@@ -816,3 +816,4 @@ $lang["employee_info"] = "Employee Info";
 $lang["biometric_logs"] = "Biometric Logs";
 $lang["earnings"] = "Earnings";
 $lang["preview_payslip"] = "Preview Payslip";
+$lang["total_adjustother"] = "Adjust / Other";

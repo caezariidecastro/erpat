@@ -27,10 +27,10 @@
                 <h6>NAME</h6><input id="fullname" type="text" name="fullname" value="<?= $fullname ?>" class="input-detail" disabled></input>
             </div>
             <div class="col-md-6"> 
-                <h6>TITLE</h6><input name="job_title" value="<?= $job_title ?>" class="input-detail" disabled></input>
+                <h6>DEPARTMENT</h6><input name="department" value="<?= $department ?>" class="input-detail" disabled></input>
             </div>
             <div class="col-md-6"> 
-                <h6>DEPARTMENT</h6><input name="department" value="<?= $department ?>" class="input-detail" disabled></input>
+                <h6>TITLE</h6><input name="job_title" value="<?= $job_title ?>" class="input-detail" disabled></input>
             </div>
             <div class="col-md-6"> 
                 <h6>MONTHLY SALARY</h6><input name="monthly_salary" value="<?= $salary ?>" class="input-detail" disabled></input>
@@ -429,7 +429,7 @@
                 dataType: "json",
                 success: function (result) {
                     appLoader.hide();
-                    $('#<?= $payslip_id ?>').click();
+                    $('#payslip-table').dataTable()._fnAjaxUpdate();
                 }
             });
         });
