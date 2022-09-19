@@ -152,6 +152,7 @@ class Users_model extends Crud_model {
         if ($labels) {
             $where .= " AND (FIND_IN_SET('$labels', $users_table.labels)) ";
         }
+        $this->use_table("users");
         $select_labels_data_query = $this->get_labels_data_query();
 
         $teams_ids = "( SELECT GROUP_CONCAT($team_table.id) FROM $team_table WHERE $team_table.deleted='0' AND (FIND_IN_SET($users_table.id, $team_table.heads) OR FIND_IN_SET($users_table.id, $team_table.members) ) )";
@@ -182,8 +183,7 @@ class Users_model extends Crud_model {
 
 
         //prepare full query string
-        $sql = "SELECT $users_table.*, $schedule_table.id as sched_id, $schedule_table.title as sched_name, $select_labels_data_query, 
-            $team_member_job_info_table.rfid_num, $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term $teams_lists  $select_custom_fieds
+        $sql = "SELECT $users_table.*, $schedule_table.id as sched_id, $schedule_table.title as sched_name, $select_labels_data_query, $team_member_job_info_table.rfid_num, $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term $teams_lists  $select_custom_fieds
         FROM $users_table
         LEFT JOIN $team_member_job_info_table ON $team_member_job_info_table.user_id=$users_table.id
         LEFT JOIN $schedule_table ON $schedule_table.id=$team_member_job_info_table.sched_id

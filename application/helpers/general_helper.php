@@ -2265,7 +2265,7 @@ if (!function_exists('cell_input')) {
 }
 
 if (!function_exists('get_user_deductions')) {
-    function get_user_deductions($user_id) {
+    function get_user_deductions($user_id, $is_raw = false) {
         $ci = get_instance();
         $result = $ci->Settings_model->get_setting("user_".$user_id."_deductions", "user");
         if($result) {
@@ -2284,13 +2284,24 @@ if (!function_exists('get_user_deductions')) {
 
         $data = [];
         foreach($results as $item) {
-            $data[] = array(
-                $item[0],
-                cell_input("daily_".$item[0], $item[1], "number"),
-                cell_input("weekly_".$item[0], $item[2], "number"),
-                cell_input("biweekly_".$item[0], $item[3], "number"),
-                cell_input("monthly_".$item[0], $item[4], "number"),
-            );
+            if( $is_raw ) {
+                $data[] = array(
+                    $item[0],
+                    $item[1],
+                    $item[2],
+                    $item[3],
+                    $item[4],
+                );
+            } else {
+                $data[] = array(
+                    $item[0],
+                    cell_input("daily_".$item[0], $item[1], "number"),
+                    cell_input("weekly_".$item[0], $item[2], "number"),
+                    cell_input("biweekly_".$item[0], $item[3], "number"),
+                    cell_input("monthly_".$item[0], $item[4], "number"),
+                );
+            }
+            
         }
 
         return $data;
@@ -2301,5 +2312,25 @@ if (!function_exists('get_monthly_salary')) {
     function get_monthly_salary($hourly_rate, $hours_per_day = 8.0, $days_per_year = 261) {
         $monthly_salary = $hourly_rate * $hours_per_day * ($days_per_year/12);
         return to_currency($monthly_salary);
+    }
+}
+
+if (!function_exists('get_deduct_val')) {
+    function get_deduct_val($deductions, $key, $target = "daily") {
+        $value = 0;
+        foreach($deductions as $item) {
+            if($item[0] === $key) {
+                if($target === "daily") {
+                    $value = $item[1];
+                } else if($target === "weekly") {
+                    $value = $item[2];
+                } else if($target === "biweekly") {
+                    $value = $item[3];
+                } else if($target === "monthly") {
+                    $value = $item[4];
+                }
+            }
+        }
+        return $value;
     }
 }

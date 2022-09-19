@@ -9,6 +9,7 @@ class Payrolls extends MY_Controller {
         parent::__construct();
         $this->load->helper('payhp');
         $this->load->helper("biometric");
+        $this->load->helper('utility');
 
         $this->load->model("Payrolls_model");
         $this->load->model("Payslips_model");
@@ -323,6 +324,77 @@ class Payrolls extends MY_Controller {
         }
     }
 
+    protected function generate_payslip($payroll_info, $user_id = 0) {
+        $attendance = $this->Attendance_model->get_details(array(
+            "user_id" => $user_id,
+            "start_date" => $payroll_info->start_date,
+            "end_date" => $payroll_info->end_date,
+            "access_type" => "all",
+        ))->result();
+        $attd = (new BioMeet($this, array(), true))->setAttendance($attendance)->calculate();
+
+        $deductions = get_user_deductions($user_id, true);
+        $job_info = $this->Users_model->get_job_info($user_id);
+
+        $payslip = $this->Payslips_model->get_one_where(array(
+            'user' => $user_id,
+            'payroll' => $payroll_info->id,
+        ));
+        $payslip_id = 0;
+        if($payslip) {
+            $payslip_id = $payslip->id;
+        }
+
+        return array(
+            "id" => $payslip_id,
+            "payroll" => $payroll_info->id,
+            "user" => $user_id,
+            "hourly_rate" => $job_info->rate_per_hour,
+            //"leave_credit" => $user_id, //hourly_rate
+
+            "schedule" => $payroll_info->sched_hours,//$attd->getTotalSchedule(), //schedule
+            "worked" => $attd->getTotalWork(), //work
+            "absent" => $attd->getTotalAbsent(), //absent
+            "lates" => $attd->getTotalLates(), //lates
+            "overbreak" => $attd->getTotalOverbreak(), //overbreak
+            "undertime" => $attd->getTotalUndertime(), //undertime
+
+            //tin?
+            "sss" => get_deduct_val($deductions, "sss_contri", $payroll_info->tax_table),
+            "pagibig" => get_deduct_val($deductions, "pagibig_contri", $payroll_info->tax_table),
+            "phealth" => get_deduct_val($deductions, "philhealth_contri", $payroll_info->tax_table),
+            "hmo" => get_deduct_val($deductions, "hmo_contri", $payroll_info->tax_table),
+
+            "com_loan" => get_deduct_val($deductions, "company_loan", $payroll_info->tax_table),
+            "sss_loan" => get_deduct_val($deductions, "sss_loan", $payroll_info->tax_table),
+            "hdmf_loan" => get_deduct_val($deductions, "hdmf_loan", $payroll_info->tax_table),
+        );
+    }
+
+    function recalculate( $payroll_id = 0 ) {
+
+        //Get payroll instance
+        $payroll_info = $this->Payrolls_model->get_details(array(
+            "id" => $payroll_id
+        ))->row();
+
+        //Get all the users within a department id ng payroll 
+        $department = $this->Team_model->get_details(array(
+            "id" => $payroll_info->department
+        ))->row();
+
+        $payslips = $this->Payslips_model->get_details(array(
+            "payroll_id" => $payroll_id
+        ))->result();
+            
+        foreach($payslips as $current) {
+            $payslip = $this->generate_payslip($payroll_info, $current->user);
+            $this->Payslips_model->update_where( $payslip, array("id"=>$current->id) );
+        }
+
+        echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+    }
+
     function mark_as_ongoing( $payroll_id = 0 ) {
 
         //Get payroll instance
@@ -335,7 +407,6 @@ class Payrolls extends MY_Controller {
             "id" => $payroll_info->department
         ))->row();
 
-        $this->load->helper('utility');
         $users = get_team_all_unique($department->heads, $department->members);
         
         //schedule hours for this date.
@@ -345,43 +416,10 @@ class Payrolls extends MY_Controller {
             if(!$this->Users_model->is_user_active($user_id)) {
                 continue;
             }
-
-            $job_info = $this->Users_model->get_job_info($user_id);
-
-            $attendance = $this->Attendance_model->get_details(array(
-                "user_id" => $user_id,
-                "start_date" => $payroll_info->start_date,
-                "end_date" => $payroll_info->end_date,
-                "access_type" => "all",
-            ))->result();
-
-            $attd = (new BioMeet($this, array(), true))->setAttendance($attendance)->calculate();
-
-            $payslip = array(
-                "payroll" => $payroll_id,
-                "user" => $user_id,
-                "hourly_rate" => $job_info->rate_per_hour,
-                //"leave_credit" => $user_id, //hourly_rate
-
-                "schedule" => $payroll_info->sched_hours,//$attd->getTotalSchedule(), //schedule
-                "worked" => $attd->getTotalWork(), //work
-                "absent" => $attd->getTotalAbsent(), //absent
-                "lates" => $attd->getTotalLates(), //lates
-                "overbreak" => $attd->getTotalOverbreak(), //overbreak
-                "undertime" => $attd->getTotalUndertime(), //undertime
-
-                //"sss" => 000, //absent
-                //"pagibig" => 000, //lates
-                //"overbreak" => 000, //overbreak
-                //"undertime" => 000, //undertime
-
-                //"com_loan" => 000, //com_loan
-                //"sss_loan" => 000, //sss_loan
-                //"hdmf_loan" => 000, //hdmf_loan
-            );
+            $payslip = $this->generate_payslip($payroll_info, $user_id);
 
             //To create a payslip for that user in a list.
-            $this->Payslips_model->save( $payslip );
+            $this->Payslips_model->save( $payslip, $payslip->id );
         }
 
         $payroll_data["status"] = "ongoing";
@@ -564,24 +602,22 @@ class Payrolls extends MY_Controller {
         $delete = "";
         
         if($data->signed_by && !$data->cancelled_by) {
-            $view = "<li role='presentation'>".modal_anchor(get_uri("payrolls/preview/".$data->id), "<i class='fa fa-eye'></i> " . lang('view_pdf'), array("class" => "btn btn-default", "title" => lang('lock_payment'), "data-post-payroll_id" => $data->id))."</i>";
-            $pdf = "<li role='presentation'>" . anchor(get_uri("fas/payrolls/download_pdf/".$data->id), "<i class='fa fa-download'></i>  &nbsp" . lang('download_pdf'), array("title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
+            $view = '<li role="presentation">' . modal_anchor(get_uri("payrolls/preview/".$data->id), "<i class='fa fa-eye'></i> ". lang('view_pdf'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none;", "title" => lang('preview_payslip'), "data-post-payroll_id" => $data->id)) . '</li>';
 
-            $cancel = '<li role="presentation">' . js_anchor("<i class='fa fa-exclamation fa-fw'></i>" . lang('cancel'), array("class" => "update", "data-action-url" => get_uri("fas/payrolls/cancel_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
+            $pdf = "<li role='presentation'>" . anchor(get_uri("fas/payrolls/download_pdf/".$data->id), "<i class='fa fa-download'></i>  &nbsp" . lang('download_pdf'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none;", "title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
+
+            $cancel = '<li role="presentation">' . js_anchor("<i class='fa fa-exclamation fa-fw'></i>" . lang('cancel'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none;", "class" => "update", "data-action-url" => get_uri("fas/payrolls/cancel_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
         } else if(!$data->signed_by && !$data->cancelled_by) {
-            $signe = '<li role="presentation">' . js_anchor("<i class='fa fa-paw fa-fw'></i>" . lang('approve'), array("class" => "update", "data-action-url" => get_uri("fas/payrolls/approve_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
+            $signe = '<li role="presentation">' . js_anchor("<i class='fa fa-paw fa-fw'></i>" . lang('approve'), array("class" => "update", "style" => "border-radius: 0; width: -webkit-fill-available; border: none;", "data-action-url" => get_uri("fas/payrolls/approve_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
 
-            $override = "<li role='presentation'><a href='#' id='$data->id' name='override' class='override_btn role-row link'><span class='fa fa-check'></span>   &nbsp" . lang('override') . "</a></i>";
+            $override = "<li role='presentation'><a href='#' id='$data->id' name='override' class='override_btn role-row link' style='border-radius: 0; width: -webkit-fill-available; border: none';><span class='fa fa-check'></span>   &nbsp" . lang('override') . "</a></i>";
         }
         
-        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => "  &nbsp".lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/payrolls/delete_payslip"), "data-action" => "delete-confirmation")) . '</li>';
+        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => "  &nbsp".lang('delete'), "class" => "delete", "style"=>"border-radius: 0; width: -webkit-fill-available; border: none;", "data-id" => $data->id, "data-action-url" => get_uri("fas/payrolls/delete_payslip"), "data-action" => "delete-confirmation")) . '</li>';
 
-        $actions = '<style> 
-                    .dropdown-menu li a { width: 10px; padding: 3px 7px; } 
-                    .dropdown-menu li { margin-bottom: 5px; } 
-                    .dropdown-menu li:hover { background-color: #d9d9d9; } 
-                    </style>
-                    <span class="dropdown inline-block">
+        $preview = "<a href='#' id='$data->id' name='preview' class='override_btn role-row link'>".get_payslip_id($data->id, $data->payroll)."</a>";
+
+        $actions = '<span class="dropdown inline-block" style="position: relative; right: 0; margin-top: 0;">
                         <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
                             <i class="fa fa-cogs"></i>&nbsp;
                             <span class="caret"></span>
@@ -590,19 +626,13 @@ class Payrolls extends MY_Controller {
                     </span>';
 
         return array(
-            anchor(get_uri("payrolls/preview/" . $data->id), get_payslip_id($data->id, $data->payroll)), //payslip_id
+            $preview,//anchor(get_uri("payrolls/preview/" . $data->id), ), //payslip_id
             get_team_member_profile_link($data->user, $data->employee_name, array("target" => "_blank")), //user link
 
-            $data->department_name, //department
-
-            $data->sched_hour, //schedule_hour
-            $data->work_hour, //work_hour
-            $data->idle_hour, //absent,lates,under
-
-            to_currency( $summary['basic_pay'] ), 
+            $data->work_hour, //work_hour            
             to_currency( $summary['gross_pay'] ), 
-            to_currency( $summary['net_pay'] ), 
             to_currency( $summary['tax_due'] ),  
+            to_currency( $summary['net_pay'] ), 
 
             $this->get_payslip_status($data), //net_pay
             $actions
@@ -864,7 +894,7 @@ class Payrolls extends MY_Controller {
             )
         ];
 
-        $view_data["summary_general"] = [
+        $view_data["summary_additionals"] = [
             array(
                 "key" => "overtimePay",
                 "value" => to_currency($summary['overtime_pay'])
@@ -876,7 +906,10 @@ class Payrolls extends MY_Controller {
             array(
                 "key" => "specialPay",
                 "value" => to_currency($summary['special_pay'])
-            ),
+            )
+        ];
+
+        $view_data["summary_deductions"] = [
             array(
                 "key" => "unwork_deductions",
                 "value" => to_currency($summary['unwork_deduction'])
@@ -967,7 +1000,7 @@ class Payrolls extends MY_Controller {
             $this->Payslips_model->save($payslip_data, $payslip_id);
         }
         
-        echo json_encode(array("success"=>true));
+        echo json_encode(array("success"=>true, "tab"=>"summary"));
     }
 
     function cancel_payslip( $id ) {

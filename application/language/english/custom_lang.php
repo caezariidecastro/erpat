@@ -810,3 +810,9 @@ $lang["annually"] = "Annually";
 $lang["select"] = "Select";
 
 $lang["tax_table"] = "Tax Table";
+$lang["recalculate"] = "Recalculate";
+$lang["select_a_payslip"] = "Select a Payslip";
+$lang["employee_info"] = "Employee Info";
+$lang["biometric_logs"] = "Biometric Logs";
+$lang["earnings"] = "Earnings";
+$lang["preview_payslip"] = "Preview Payslip";
