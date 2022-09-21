@@ -821,3 +821,4 @@ $lang["total_adjustother"] = "Adjust / Other";
 $lang["daily_tax_table"] = "Daily Tax Table";
 $lang["biweekly_tax_table"] = "Biweekly Tax Table";
 $lang["monthly_tax_table"] = "Monthly Tax Table";
+$lang["loan"] = "Loan";

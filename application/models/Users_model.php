@@ -439,7 +439,16 @@ class Users_model extends Crud_model {
 
         $sql = "SELECT COUNT(id) AS total_active
         FROM $users_table
-        WHERE $users_table.deleted='0' AND $users_table.status='active' AND FIND_IN_SET($users_table.id, '$user_ids')";
+        WHERE $users_table.deleted='0' AND $users_table.status='active' AND $users_table.user_type='staff' AND FIND_IN_SET($users_table.id, '$user_ids')";
         return $this->db->query($sql)->row()->total_active;
+    }
+
+    function get_all_active() {
+        $users = $this->db->dbprefix('users');
+
+        $sql = "SELECT {$users}.id, CONCAT($users.first_name, ' ',$users.last_name) AS user_name
+        FROM $users 
+        WHERE {$users}.deleted=0 AND {$users}.status='active' AND {$users}.user_type='staff'";
+        return $this->db->query($sql)->result();
     }
 }

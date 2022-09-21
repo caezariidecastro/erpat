@@ -2259,8 +2259,9 @@ if (!function_exists('get_id_name')) {
 }
 
 if (!function_exists('cell_input')) {
-    function cell_input($key, $val = "", $type = "text") {
-        return "<input type='$type' name='$key' value='$val' style='text-align: right; border: 1px solid #d2d2d2; padding: 5px;'/>";
+    function cell_input($key, $val = "", $type = "text", $class="", $disabled = false) {
+        $disabled = $disabled?"disabled":"";
+        return "<input type='$type' id='$key' name='$key' value='$val' class='cell_input $class' $disabled style='text-align: right; border: 1px solid #d2d2d2; padding: 5px;'/>";
     }
 }
 
@@ -2332,5 +2333,25 @@ if (!function_exists('get_deduct_val')) {
             }
         }
         return $value;
+    }
+}
+
+if (!function_exists('get_contribution_by_category')) {
+    function get_contribution_by_category($object, $target = "daily") {
+        $data = array();
+        foreach($object as $item) {
+            if($target == "daily") {
+                $data[$item[0]] = $item[1];
+            } else if($target == "weekly") {
+                $data[$item[0]] = $item[2];
+            } else if($target == "biweekly") {
+                $data[$item[0]] = $item[3];
+            } else if($target == "monthly") {
+                $data[$item[0]] = $item[4];
+            } else {
+                $data[$item[0]] = 0;
+            }
+        }
+        return $data;
     }
 }

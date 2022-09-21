@@ -5,7 +5,7 @@ class Payrolls_model extends Crud_model {
     private $table = null;
 
     function __construct() {
-        $this->table = 'payrolls';
+        $this->table = $this->db->dbprefix('payrolls');
         parent::__construct($this->table);
     }
 
@@ -53,6 +53,15 @@ class Payrolls_model extends Crud_model {
         LEFT JOIN users signee ON signee.id = {$this->table}.signed_by
         WHERE {$this->table}.deleted=0 $where";
         return $this->db->query($sql);
+    }
+
+    function get_contribution_lists() {
+        $users = $this->db->dbprefix('users');
+
+        $sql = "SELECT {$users}.id, {$users}.first_name, {$users}.last_name, 
+
+        WHERE {$users}.deleted=0 AND {$users}.status='active'";
+        return $this->db->query($sql)->result();
     }
 
 }

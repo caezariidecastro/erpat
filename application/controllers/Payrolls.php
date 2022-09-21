@@ -319,6 +319,86 @@ class Payrolls extends MY_Controller {
         }
     }
 
+    function contributions() {
+        $view_data['category_select2'] = [
+            //array('id' => 'daily', 'text'  => '- Daily -'),
+            array('id' => 'weekly', 'text'  => '- Weekly -'),
+            //array('id' => 'biweekly', 'text'  => '- Biweekly -'),
+            //array('id' => 'monthly', 'text'  => '- Monthly -')
+        ];
+        $this->load->view('payrolls/contributions', $view_data);
+    }
+
+    function contribution_lists() {
+        $lists = array();
+        $actives = $this->Users_model->get_all_active();
+        $filter = $this->input->post('category_select2_filter');
+        $filter = $filter?$filter:"weekly"; //Temp: should be daily
+        foreach($actives as $user) {
+            $deductions = get_user_deductions($user->id, true);
+            $contribution = get_contribution_by_category($deductions, $filter);
+            $lists[] = [
+                $user->id,
+                get_team_member_profile_link($user->id, $user->user_name),
+                cell_input('sss_contri_'.$user->id, $contribution['sss_contri'], 'text', 'cell-class cell-class-'.$user->id, true),
+                cell_input('pagibig_contri_'.$user->id, $contribution['pagibig_contri'], 'text', 'cell-class cell-class-'.$user->id, true),
+                cell_input('philhealth_contri_'.$user->id, $contribution['philhealth_contri'], 'text', 'cell-class cell-class-'.$user->id, true),
+                cell_input('hmo_contri_'.$user->id, $contribution['hmo_contri'], 'text', 'cell-class cell-class-'.$user->id, true),
+                cell_input('company_loan_'.$user->id, $contribution['company_loan'], 'text', 'cell-class cell-class-'.$user->id, true),
+                cell_input('sss_loan_'.$user->id, $contribution['sss_loan'], 'text', 'cell-class cell-class-'.$user->id, true),
+                cell_input('hdmf_loan_'.$user->id, $contribution['hdmf_loan'], 'text', 'cell-class cell-class-'.$user->id, true),
+
+                js_anchor("<i class='fa fa-pencil fa-fw'></i>", array('id' => "edit-".$user->id, 'name' => $user->id, 'title' => lang('edit'), "class" => "cell-edit", "style"=>"padding: 3px; border-radius: 50%; background-color: #eaeaea; border: 1px solid;")).
+                js_anchor("<i class='fa fa-save fa-fw'></i>", array('id' => "save-".$user->id, 'name' => $user->id, 'title' => lang('save'), "class" => "cell-save hide", "style"=>"padding: 3px; border-radius: 50%; background-color: #eaeaea; border: 1px solid;"))
+            ];
+        }
+        echo json_encode(array("data"=>$lists));
+    }
+
+    function save_weekly() {
+        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
+			redirect("forbidden");
+		}
+
+        $user_id = $this->input->post('user_id');
+        $deductions = get_user_deductions($user_id, true);
+        $data = $deductions;
+
+        for($i=0; $i<count($data); $i++) {
+            if($data[$i][0] == "sss_contri") {
+                $data[$i][2] = $this->input->post('sss_contri');
+            }
+            if($data[$i][0] == "pagibig_contri") {
+                $data[$i][2] = $this->input->post('pagibig_contri');
+            }
+            if($data[$i][0] == "philhealth_contri") {
+                $data[$i][2] = $this->input->post('philhealth_contri');
+            }
+            if($data[$i][0] == "hmo_contri") {
+                $data[$i][2] = $this->input->post('hmo_contri');
+            }
+            if($data[$i][0] == "company_loan") {
+                $data[$i][2] = $this->input->post('company_loan');
+            }
+            if($data[$i][0] == "sss_loan") {
+                $data[$i][2] = $this->input->post('sss_loan');
+            }
+            if($data[$i][0] == "hdmf_loan") {
+                $data[$i][2] = $this->input->post('hdmf_loan');
+            }
+        }
+
+        //Save now
+        $prefix = "user_".$user_id."_";
+        $result = serialize($data);
+
+        if($saved = $this->Settings_model->save_setting($prefix."deductions", $result, "user")) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }        
+    }
+
     protected function generate_payslip($payroll_info, $user_id = 0) {
         $attendance = $this->Attendance_model->get_details(array(
             "user_id" => $user_id,

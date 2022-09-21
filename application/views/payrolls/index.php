@@ -4,10 +4,7 @@
         <ul id="payrolls-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
             <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("payrolls"); ?></h4></li>
             <li><a id="monthly-expenses-button"  role="presentation" class="active" href="javascript:;" data-target="#payrolls-list"><?php echo lang("entries"); ?></a></li>
-            <?php /* ?>
-            <li><a role="presentation" href="<?php echo_uri("payrolls/paylips_index/"); ?>" data-target="#payslips-list"><?php echo lang('payslips'); ?></a></li>
-            <li><a role="presentation" href="<?php echo_uri("payroll_categories/index/"); ?>" data-target="#payroll-categories"><?php echo lang('categories'); ?></a></li>
-            <?php */ ?>
+            <li><a role="presentation" href="<?php echo_uri("payrolls/contributions/"); ?>" data-target="#contributions-list"><?php echo lang('contributions'); ?></a></li>
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
                     <?php //if ($can_edit_payrolls) { ?>
@@ -24,8 +21,8 @@
                     </table>
                 </div>
             </div>
-            <!-- <div role="tabpanel" class="tab-pane fade" id="payslips-list"></div>
-            <div role="tabpanel" class="tab-pane fade" id="payroll-categories"></div> -->
+            <div role="tabpanel" class="tab-pane fade" id="contributions-list"></div>
+            <!-- <div role="tabpanel" class="tab-pane fade" id="payroll-categories"></div> -->
         </div>
     </div>
 </div>
