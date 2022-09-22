@@ -399,6 +399,67 @@ class Payrolls extends MY_Controller {
         }        
     }
 
+    function contribution_modal_form() {
+        $view_data['user_id'] = $this->input->post('user_id'); //Todo
+        
+        $this->load->view('payrolls/contribution_modal_form', $view_data);
+    }
+
+    function save_auto_contribution() {
+        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
+			redirect("forbidden");
+		}
+
+        $success = 0; $failed = 0;
+
+        $actives = $this->Users_model->get_all_active();
+        foreach($actives as $user) {
+            $deductions = get_user_deductions($user->id, true);
+            $data = $deductions;
+
+            $hourly_rate = get_hourly_rate($user->id, false);
+            $monthly_salary = get_monthly_salary($hourly_rate, 8, 313, false);
+
+            for($i=0; $i<count($data); $i++) {
+                if($data[$i][0] == "sss_contri") {
+                    $data[$i][2] = get_sss_contribution($monthly_salary, false)/4;
+                }
+                if($data[$i][0] == "pagibig_contri") {
+                    $data[$i][2] = convert_number_to_decimal((200/2)/2); //weekly
+                }
+                if($data[$i][0] == "philhealth_contri") {
+                    
+                    $data[$i][2] = convert_number_to_decimal(($monthly_salary*0.04)/4, 4); //weekly
+                }
+                if($data[$i][0] == "hmo_contri") {
+                    $data[$i][2] = $data[$i][2];
+                }
+                if($data[$i][0] == "company_loan") {
+                    $data[$i][2] = $data[$i][2];
+                }
+                if($data[$i][0] == "sss_loan") {
+                    $data[$i][2] = $data[$i][2];
+                }
+                if($data[$i][0] == "hdmf_loan") {
+                    $data[$i][2] = $data[$i][2];
+                }
+            }
+
+            //Save now
+            $prefix = "user_".$user->id."_";
+            $result = serialize($data);
+
+            if($saved = $this->Settings_model->save_setting($prefix."deductions", $result, "user")) {
+                $success += 1;
+            } else {
+                $error += 1;
+            }
+        }
+        $total = $success + $failed;
+
+        echo json_encode(array("success" => true, 'message' => lang('record_saved').". $success out of {$total}."));
+    }
+
     protected function generate_payslip($payroll_info, $user_id = 0) {
         $attendance = $this->Attendance_model->get_details(array(
             "user_id" => $user_id,

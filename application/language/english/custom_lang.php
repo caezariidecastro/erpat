@@ -822,3 +822,5 @@ $lang["daily_tax_table"] = "Daily Tax Table";
 $lang["biweekly_tax_table"] = "Biweekly Tax Table";
 $lang["monthly_tax_table"] = "Monthly Tax Table";
 $lang["loan"] = "Loan";
+$lang["add_autocontri_button"] = "Automate Contributions";
+$lang["execute"] = "Execute";

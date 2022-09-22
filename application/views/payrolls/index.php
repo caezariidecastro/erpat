@@ -8,7 +8,8 @@
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
                     <?php //if ($can_edit_payrolls) { ?>
-                        <?php echo modal_anchor(get_uri("fas/payrolls/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payroll'), array("class" => "btn btn-default", "title" => lang('add_payroll'), "id" => "add_payrolls_button")); ?>
+                        <?php echo modal_anchor(get_uri("payrolls/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payroll'), array("class" => "btn btn-default", "title" => lang('add_payroll'), "id" => "add_payrolls_button")); ?>
+                        <?php echo modal_anchor(get_uri("payrolls/contribution_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_autocontri_button'), array("class" => "btn btn-default", "title" => lang('add_autocontri_button'), "id" => "add_autocontri_button")); ?>
                     <?php //} ?>
                 </div>
             </div>
@@ -65,8 +66,8 @@
         });
 
         setInterval(function(){
-            $("#payrolls-tabs").find("li.active").text() == "Entries" ? $('#add_payrolls_button').show() : $('#add_payrolls_button').hide()
-            //$("#payrolls-tabs").find("li.active").text() == "Payslips" ? $('#add_payslips_button').show() : $('#add_payslips_button').hide()
+            $("#payrolls-tabs").find("li.active").text() == "Entries" ? $('#add_payrolls_button').show() : $('#add_autocontri_button').hide()
+            $("#payrolls-tabs").find("li.active").text() == "Contributions" ? $('#add_autocontri_button').show() : $('#add_payrolls_button').hide()
         }, 200)
     });
 </script>

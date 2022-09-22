@@ -2309,10 +2309,28 @@ if (!function_exists('get_user_deductions')) {
     }
 }
 
+if (!function_exists('get_hourly_rate')) {
+    function get_hourly_rate($user_id, $to_currency = true) {
+        $ci = get_instance();
+        $job_info = $ci->Users_model->get_job_info($user_id);
+        $hourly_rate = $job_info?$job_info->rate_per_hour:0;
+
+        if($job_info && $to_currency) {
+            return to_currency($hourly_rate);
+        } else {
+            return $hourly_rate;
+        }
+    }
+}
+
 if (!function_exists('get_monthly_salary')) {
-    function get_monthly_salary($hourly_rate, $hours_per_day = 8.0, $days_per_year = 261) {
-        $monthly_salary = $hourly_rate * $hours_per_day * ($days_per_year/12);
-        return to_currency($monthly_salary);
+    function get_monthly_salary($hourly_rate, $hours_per_day = 8.0, $days_per_year = 261, $to_currency = true) {
+        $monthly_salary = ($hourly_rate * $hours_per_day) * ($days_per_year/12);
+        if($to_currency) {
+            return to_currency($monthly_salary);
+        } else {
+            return $monthly_salary;
+        }
     }
 }
 
@@ -2353,5 +2371,140 @@ if (!function_exists('get_contribution_by_category')) {
             }
         }
         return $data;
+    }
+}
+
+if (!function_exists('get_sss_contribution')) {
+    function get_sss_contribution($monthly_salary, $to_currency = true) {
+        
+        $current = 0;
+        switch ($monthly_salary) {
+            case $monthly_salary >= 5750 && $monthly_salary < 6250:
+                $current = 315.0;
+                break;
+            case $monthly_salary >= 6250 && $monthly_salary < 6750:
+                $current = 337.5;
+                break;
+            case $monthly_salary >= 6750 && $monthly_salary < 7250:
+                $current = 360.0;
+                break;
+            case $monthly_salary >= 7250 && $monthly_salary < 7750:
+                $current = 382.5;
+                break;
+            case $monthly_salary >= 7750 && $monthly_salary < 8250:
+                $current = 405.0;
+                break;
+            case $monthly_salary >= 8250 && $monthly_salary < 8750:
+                $current = 427.5;
+                break;
+            case $monthly_salary >= 8750 && $monthly_salary < 9250:
+                $current = 450.0;
+                break;
+
+            case $monthly_salary >= 9250 && $monthly_salary < 10250:
+                $current = 472.5;
+                break;
+            case $monthly_salary >= 10250 && $monthly_salary < 10750:
+                $current = 495.0;
+                break;
+            case $monthly_salary >= 10750 && $monthly_salary < 11250:
+                $current = 517.5;
+                break;
+            case $monthly_salary >= 11250 && $monthly_salary < 11750:
+                $current = 540.0;
+                break;
+            case $monthly_salary >= 11750 && $monthly_salary < 12250:
+                $current = 562.5;
+                break;
+            case $monthly_salary >= 12250 && $monthly_salary < 12750:
+                $current = 585.0;
+                break;
+            case $monthly_salary >= 12750 && $monthly_salary < 13250:
+                $current = 607.5;
+                break;
+
+            case $monthly_salary >= 13250 && $monthly_salary < 13750:
+                $current = 630.0;
+                break;
+            case $monthly_salary >= 13750 && $monthly_salary < 14250:
+                $current = 652.5;
+                break;
+            case $monthly_salary >= 14250 && $monthly_salary < 14750:
+                $current = 675.0;
+                break;
+            case $monthly_salary >= 14750 && $monthly_salary < 15250:
+                $current = 697.5;
+                break;
+            case $monthly_salary >= 15250 && $monthly_salary < 16250:
+                $current = 720.0;
+                break;
+            case $monthly_salary >= 16250 && $monthly_salary < 16750:
+                $current = 742.5;
+                break;
+            case $monthly_salary >= 16750 && $monthly_salary < 17250:
+                $current = 765.0;
+                break;
+
+            case $monthly_salary >= 17250 && $monthly_salary < 17750:
+                $current = 787.5;
+                break;
+            case $monthly_salary >= 17750 && $monthly_salary < 18250:
+                $current = 810.0;
+                break;
+            case $monthly_salary >= 18250 && $monthly_salary < 18750:
+                $current = 832.5;
+                break;
+            case $monthly_salary >= 18750 && $monthly_salary < 19250:
+                $current = 855.0;
+                break;
+            case $monthly_salary >= 19250 && $monthly_salary < 19750:
+                $current = 877.5;
+                break;
+            case $monthly_salary >= 19750 && $monthly_salary < 20250:
+                $current = 900.0;
+                break;
+            case $monthly_salary >= 20250 && $monthly_salary < 20750:
+                $current = 922.5;
+                break;
+
+            case $monthly_salary >= 20750 && $monthly_salary < 21250:
+                $current = 945.0;
+                break;
+            case $monthly_salary >= 21250 && $monthly_salary < 21750:
+                $current = 967.5;
+                break;
+            case $monthly_salary >= 21750 && $monthly_salary < 22250:
+                $current = 990.0;
+                break;
+            case $monthly_salary >= 22250 && $monthly_salary < 22750:
+                $current = 1012.5;
+                break;
+            case $monthly_salary >= 22750 && $monthly_salary < 23250:
+                $current = 1035.0;
+                break;
+            case $monthly_salary >= 23250 && $monthly_salary < 23750:
+                $current = 1057.5;
+                break;
+            case $monthly_salary >= 23750 && $monthly_salary < 24250:
+                $current = 1080.0;
+                break;
+            case $monthly_salary >= 24250 && $monthly_salary < 24750:
+                $current = 1102.5;
+                break;
+
+            case $monthly_salary >= 24750:
+                $current = 1125.0;
+                break;
+
+            default:
+                $current = 0;
+                break;
+        }
+
+        if($to_currency) {
+            return to_currency($current);
+        } else {
+            return $current;
+        }
     }
 }

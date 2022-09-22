@@ -31,9 +31,9 @@
                 {title: "<?= lang('sss')." ".lang('loan') ?>", "class": "text-right w100"},
                 {title: "<?= lang('hdmf')." ".lang('loan') ?>", "class": "text-right w100"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}
-            ],rowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            ],
+            rowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 const dataId = aData[0];
-                console.log(dataId);
             }, onInitComplete() {
                 var table = $('#contribution-table').DataTable();
                 $('#contribution-table tbody').on( 'click', 'tr', function () {
