@@ -878,7 +878,6 @@ class Team_members extends MY_Controller {
         $job_data = array(
             "user_id" => $user_id,
             "job_idnum" => $this->input->post('job_idnum'),
-            "rfid_num" => $this->input->post('rfid_num'),
             "sched_id" => $this->input->post('sched_id'),
             "salary" => unformat_currency($this->input->post('salary')),
             "salary_term" => $this->input->post('salary_term'),
@@ -893,6 +892,10 @@ class Team_members extends MY_Controller {
             "contact_phone" => $this->input->post('contact_phone'),
             "signiture_url" => $this->input->post('signiture_url')
         );
+
+        if($this->input->post('rfid_num')) {
+           $job_data['"rfid_num"'] = $this->input->post('rfid_num');
+        }
 
         //we'll save the job title in users table
         $user_data = array(
