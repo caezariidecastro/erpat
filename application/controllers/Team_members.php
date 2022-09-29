@@ -572,6 +572,7 @@ class Team_members extends MY_Controller {
 
         $row_data = array(
             $user_avatar,
+            $data->job_idnum,
             get_team_member_profile_link($data->id, $full_name),
             $data->rfid_num,
             $show_cotact_info ? $data->email : "",

@@ -48,6 +48,7 @@
             ],
             columns: [
                 {title: '', "class": "w25 text-center"},
+                {title: "<?php echo lang("id") ?>", "class": "w10p"},
                 {title: "<?php echo lang("name") ?>", "class": "w15p"},
                 {title: "<?php echo lang("rfid_num") ?>", "class": "w10p"},
                 {visible: visibleContact, title: "<?php echo lang("email") ?>", "class": "w20p"},
