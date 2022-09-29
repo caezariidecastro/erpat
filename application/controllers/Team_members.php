@@ -384,9 +384,6 @@ class Team_members extends MY_Controller {
             "last_name" => $this->input->post('last_name'),
             "job_title" => $this->input->post('job_title'),
             "disable_login" => $this->input->post('login'),
-            "access_erpat" => $this->input->post('erpat'),
-            "access_syntry" => $this->input->post('syntry'),
-            "access_galyon" => $this->input->post('galyon'),
             "status" => $this->input->post('status'),
             "labels" => $this->input->post('labels') ? $this->input->post('labels') : "",
         );
@@ -396,6 +393,16 @@ class Team_members extends MY_Controller {
         } else {
             $user_data["is_admin"] = "0";
             $user_data["role_id"] = $this->input->post('role');
+        }
+
+        if($access_erpat = $this->input->post('erpat')) {
+            $user_data["access_erpat"] = $access_erpat;
+        }
+        if($access_syntry = $this->input->post('syntry')) {
+            $user_data["access_syntry"] = $access_syntry;
+        }
+        if($access_galyon = $this->input->post('galyon')) {
+            $user_data["access_galyon"] = $access_galyon;
         }
 
         $status_dropdown = $this->input->post('status_dropdown');
