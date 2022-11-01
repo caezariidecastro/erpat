@@ -250,12 +250,6 @@ class Attendance extends MY_Controller {
             $data["status"] = "pending";
             $user_id = $this->input->post('user_id');
             $data["user_id"] = $user_id;
-
-            $existing = $this->Attendance_model->current_clock_in_record($user_id);
-            if($existing) {
-                echo json_encode(array("success" => false, 'message' => lang('active_attendance_ongoing')));
-                return;
-            }
         }
 
         if ($sched_id) {
