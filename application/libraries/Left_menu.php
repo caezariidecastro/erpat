@@ -288,7 +288,7 @@ class Left_menu {
 
             // Start: Module permissions workaround
             if (is_user_has_module_permission("module_hrs")) {
-                if ($this->ci->login_user->is_admin || get_array_value($this->ci->login_user->permissions, "hide_team_members_list") != "1") {
+                if ($this->ci->login_user->is_admin || get_array_value($this->ci->login_user->permissions, "hide_team_members_list") != true) {
                     $sidebar_menu["employee"] = array("name" => "submenu_hrm_employee", "url" => "hrs/employee", "class" => "fa-circle");
                 }
                 
