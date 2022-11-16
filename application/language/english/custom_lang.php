@@ -824,3 +824,5 @@ $lang["monthly_tax_table"] = "Monthly Tax Table";
 $lang["loan"] = "Loan";
 $lang["add_autocontri_button"] = "Automate Contributions";
 $lang["execute"] = "Execute";
+
+$lang["no_permission"] = "You dont have permission on such action.";

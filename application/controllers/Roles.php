@@ -84,6 +84,8 @@ class Roles extends MY_Controller {
             array("attendance", "Coming Soon", "Default: Attendance", "Access", "dropdown"),
             array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
             array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
+
+            array("can_update_account", "New!", "HR Employee", "Update account and password.", null),
         ];
     }
 

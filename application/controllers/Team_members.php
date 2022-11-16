@@ -684,7 +684,7 @@ class Team_members extends MY_Controller {
                 $view_data['show_general_info'] = $can_update_team_members_info;
                 $view_data['show_job_info'] = false;
 
-                $view_data['show_account_settings'] = false;
+                $view_data['show_account_settings'] = user_role_has_permission('can_update_account');
 
                 $show_attendance = false;
                 $show_leave = false;
@@ -698,10 +698,8 @@ class Team_members extends MY_Controller {
                     $show_attendance = true;
                     $show_leave = true;
                     $view_data['show_job_info'] = true;
-                    $view_data['show_account_settings'] = true;
                 } else {
                     $view_data['show_job_info'] = true;
-                    $view_data['show_account_settings'] = true;
 
                     //none admin users but who has access to this team member's attendance and leave can access this info
                     $access_timecard = $this->get_access_info("attendance");
@@ -1011,7 +1009,9 @@ class Team_members extends MY_Controller {
 
     //show account settings of a team member
     function account_settings($user_id) {
-        $this->only_admin_or_own_or_permission($user_id);
+        if( !user_role_has_permission('can_update_account') ) {
+            redirect("forbidden");
+        }
 
         $view_data['user_info'] = $this->Users_model->get_one($user_id);
         if ($view_data['user_info']->is_admin) {
@@ -1096,7 +1096,10 @@ class Team_members extends MY_Controller {
 
     //save account settings of a team member
     function save_account_settings($user_id) {
-        $this->only_admin_or_own_or_permission($user_id);
+        if( !user_role_has_permission('can_update_account') ) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit();
+        }
 
         if ($this->Users_model->is_email_exists($this->input->post('email'), $user_id)) {
             echo json_encode(array("success" => false, 'message' => lang('duplicate_email')));

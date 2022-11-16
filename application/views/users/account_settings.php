@@ -83,16 +83,6 @@
                 </div>
             
                 <div class="form-group">
-                    <label for="disable_login" class="col-md-2"><?php echo lang('disable_login'); ?></label>
-                    <div class="col-md-10">
-                        <?php
-                        echo form_checkbox("disable_login", "1", $user_info->disable_login ? true : false, "id='disable_login' class='ml15'");
-                        ?>
-                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->disable_login ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_login_help_message"); ?></span>
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label for="access_erpat" class="col-md-2"><?php echo lang('access_erpat'); ?></label>
                     <div class="col-md-10">
                         <?php
@@ -113,6 +103,16 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="access_galyon" class="col-md-2"><?php echo lang('access_galyon'); ?></label>
+                    <div class="col-md-10">
+                        <?php
+                        echo form_checkbox("access_galyon", "1", $user_info->access_galyon ? true : false, "id='access_galyon' class='ml15'");
+                        ?>
+                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_galyon ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="access_madage" class="col-md-2"><?php echo lang('access_madage'); ?></label>
                     <div class="col-md-10">
                         <?php
@@ -123,12 +123,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="access_galyon" class="col-md-2"><?php echo lang('access_galyon'); ?></label>
+                    <label for="disable_login" class="col-md-2"><?php echo lang('disable_login'); ?></label>
                     <div class="col-md-10">
                         <?php
-                        echo form_checkbox("access_galyon", "1", $user_info->access_galyon ? true : false, "id='access_galyon' class='ml15'");
+                        echo form_checkbox("disable_login", "1", $user_info->disable_login ? true : false, "id='disable_login' class='ml15'");
                         ?>
-                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_galyon ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->disable_login ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_login_help_message"); ?></span>
                     </div>
                 </div>
 
