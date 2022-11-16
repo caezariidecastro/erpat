@@ -2309,6 +2309,20 @@ if (!function_exists('get_user_deductions')) {
     }
 }
 
+if (!function_exists('get_monthly_salary')) {
+    function get_monthly_salary($user_id, $to_currency = true) {
+        $ci = get_instance();
+        $job_info = $ci->Users_model->get_job_info($user_id);
+        $monthly_salary = $job_info?$job_info->salary:0;
+
+        if($job_info && $to_currency) {
+            return to_currency($monthly_salary);
+        } else {
+            return $monthly_salary;
+        }
+    }
+}
+
 if (!function_exists('get_hourly_rate')) {
     function get_hourly_rate($user_id, $to_currency = true) {
         $ci = get_instance();
@@ -2323,8 +2337,19 @@ if (!function_exists('get_hourly_rate')) {
     }
 }
 
-if (!function_exists('get_monthly_salary')) {
-    function get_monthly_salary($hourly_rate, $hours_per_day = 8.0, $days_per_year = 261, $to_currency = true) {
+if (!function_exists('get_hourly_from_monthly')) {
+    function get_hourly_from_monthly($monthly_salary, $hours_per_day = 8.0, $days_per_year = 260, $to_currency = true) {
+        $hourly_rate = ($monthly_salary / ($days_per_year/12)) / $hours_per_day ;
+        if($to_currency) {
+            return to_currency($hourly_rate);
+        } else {
+            return $hourly_rate;
+        }
+    }
+}
+
+if (!function_exists('get_monthly_from_hourly')) {
+    function get_monthly_from_hourly($hourly_rate, $hours_per_day = 8.0, $days_per_year = 260, $to_currency = true) {
         $monthly_salary = ($hourly_rate * $hours_per_day) * ($days_per_year/12);
         if($to_currency) {
             return to_currency($monthly_salary);

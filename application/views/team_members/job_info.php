@@ -48,7 +48,7 @@
             </div>
             <?php if( $payroll_enabled ) { ?>
             <div class="form-group">
-                <label for="salary" class=" col-md-2"><?php echo lang('monthly_salary')." <br>Based on Hourly Rate: <br><strong>".get_monthly_salary($job_info->rate_per_hour)."</strong>"; ?></label>
+                <label for="salary" class=" col-md-2"><?php echo lang('monthly_salary')." <br>Based on Hourly Rate: <br><strong>".get_monthly_from_hourly($job_info->rate_per_hour)."</strong>"; ?></label>
                 <div class="col-md-2">
                     <?php
                     echo form_input(array(

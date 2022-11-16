@@ -5,6 +5,7 @@ class BioMeet {
     protected $ci = null;
     protected $on_debug = false;
 
+    protected $sched_hours = 87.00;
     protected $hours_per_day = 8.00;
     protected $lunch_break = 1.00;
     protected $attendance = [];
@@ -19,24 +20,29 @@ class BioMeet {
         return $this;
     }
 
+    function setSchedHour( $hours ) {
+        $this->sched_hours = $hours;
+        return $this;
+    }
+
     function setAttendance( $attd_list ) {
         $this->attendance = $attd_list;
         return $this;
     }
-
+    
     function addAttendance( $attd_obj ) {
         $this->attendance[] = $attd_obj;
         return $this;
     }
 
     public function getTotalSchedule() {
-        $total = 0;
-        foreach($this->attd_data as $data) {
-            if( is_numeric($data['schedule']) ) {
-                $total += $data['schedule'];
-            }
-        }
-        return convert_number_to_decimal($total);
+        // $total = 0;
+        // foreach($this->attd_data as $data) {
+        //     if( is_numeric($data['schedule']) ) {
+        //         $total += $data['schedule'];
+        //     }
+        // }
+        return convert_number_to_decimal($this->sched_hours);
     }
 
     public function getTotalDuration() {
@@ -60,7 +66,7 @@ class BioMeet {
     }
 
     public function getTotalAbsent() {
-        $total = 0;
+        $total = max($this->sched_hours - $this->getTotalWork(), 0);
         foreach($this->attd_data as $data) {
             if( is_numeric($data['absent']) ) {
                 $total += $data['absent'];

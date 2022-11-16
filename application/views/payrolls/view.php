@@ -113,14 +113,14 @@
                 //{id: "department_select2_filter", name: "department_select2_filter", class: "w200", options: <?php //echo json_encode($department_select2); ?>},
             //],
             columns: [
-                {title: '<?php echo lang("payslip_id") ?>'},
+                {title: '<?php echo lang("payslip_id") ?>', "class": "w10p"},
                 {title: '<?php echo lang("employee") ?>', "class": "w15p", "iDataSort": 1},
-                {title: '<?php echo lang("work_hour") ?>'},
+                {title: '<?php echo lang("work_hour") ?>', "class": "text-right w10p"},
                 {title: '<?php echo lang("gross_pay") ?>', "class": "text-right w10p"},
                 {title: '<?php echo lang("tax_due") ?>', "class": "text-right w10p"},
-                {title: '<?php echo lang("net_pay") ?>', "class": "text-right w10p"},
+                {title: '<?php echo lang("net_pay") ?>'},
                 {title: '<?php echo lang("status") ?>'},
-                {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100", visible: optionVisibility}
+                {title: '<i class="fa fa-bars"></i>', "class": "text-center option w10p", visible: optionVisibility}
             ],
             summation: [
                 {column: 2, dataType: 'number'},

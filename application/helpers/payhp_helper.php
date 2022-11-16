@@ -84,7 +84,7 @@ class PayHP {
         $this->restday_rate = isset($rates['restday_rate']) && is_numeric($rates['restday_rate'])?$rates['restday_rate']:$this->restday_rate;
         $this->legalhd_rate = isset($rates['legalhd_rate']) && is_numeric($rates['legalhd_rate'])?$rates['legalhd_rate']:$this->legalhd_rate;
         $this->spclhd_rate = isset($rates['spclhd_rate']) && is_numeric($rates['spclhd_rate'])?$rates['spclhd_rate']:$this->spclhd_rate;
-        $this->expected_compensation = $this->expected_compensation;
+        $this->expected_compensation = $expected_compensation;
         return $this;
     }
 
@@ -324,7 +324,7 @@ class PayHP {
             "nightdiff_pay" => $this->nightdiffPay(),
             "special_pay" => $this->specialPay(),
 
-            "total_earn" => $this->totalAdditionals(),
+            "total_earn" => $this->totalEarnings(),
             "total_deduct" => $this->totalDeductions(),
             "total_adjustother" => $this->otherDeductions(),
 
@@ -342,7 +342,11 @@ class PayHP {
     }
 
     function basicPay() {
-        return $this->sched_hour * $this->hourly_rate;
+        if($this->expected_compensation > 0) {
+            return $this->expected_compensation;
+        } else {
+            return $this->sched_hour * $this->hourly_rate;
+        }        
     }
 
     //Optional
@@ -449,8 +453,7 @@ class PayHP {
         $this->tax_on_train_range = 0.00;
         $this->rate_in_excess = 0.00;
 
-        $current_compensation = $this->expected_compensation > 0? 
-            $this->expected_compensation : $this->basicPay();
+        $current_compensation = $this->netTaxable();
 
         switch(true) {
             case $current_compensation <=  10417.00: //1
@@ -473,7 +476,7 @@ class PayHP {
                 break;
             case $current_compensation > 33333.00 && $current_compensation <= 83333.00: //4
                 $this->compensation_level = 4;
-                $this->train_range = 333333.00;
+                $this->train_range = 33333.00;
                 $this->tax_on_train_range = 5416.67;
                 $this->rate_in_excess = 0.30;
                 break;
@@ -493,15 +496,14 @@ class PayHP {
                 break;
         }
 
-        $in_excess_of_range = $this->netTaxable() - $this->train_range;
+        $in_excess_of_range = $current_compensation - $this->train_range;
         $tax_of_in_excess = $in_excess_of_range * $this->rate_in_excess;
         $tax_due = $tax_of_in_excess + $this->tax_on_train_range;
-        $tax_due = $tax_due > 0 ? $tax_due : 0; 
 
         return max($tax_due, 0); //tax due
     }
 
-    function totalAdditionals() {
+    function totalEarnings() {
         return $this->basicPay() + $this->ptoPay() + $this->overtimePay() + $this->nightdiffPay() + $this->specialPay() + $this->taxableAdditional() + $this->nontaxAdditional();
     }
 
@@ -510,6 +512,6 @@ class PayHP {
     }
 
     function netPay() {
-        return $this->totalAdditionals() - $this->totalDeductions();
+        return $this->totalEarnings() - $this->totalDeductions();
     }
 }

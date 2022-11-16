@@ -418,7 +418,7 @@ class Payrolls extends MY_Controller {
             $data = $deductions;
 
             $hourly_rate = get_hourly_rate($user->id, false);
-            $monthly_salary = get_monthly_salary($hourly_rate, 8, 313, false);
+            $monthly_salary = get_monthly_from_hourly($hourly_rate, 8, 260, false);
 
             for($i=0; $i<count($data); $i++) {
                 if($data[$i][0] == "sss_contri") {
@@ -472,7 +472,10 @@ class Payrolls extends MY_Controller {
             "end_date" => $payroll_info->end_date,
             "access_type" => "all",
         ))->result();
-        $attd = (new BioMeet($this, array(), true))->setAttendance($attendance)->calculate();
+        $attd = (new BioMeet($this, array(), true))
+            ->setSchedHour($payroll_info->sched_hours)
+            ->setAttendance($attendance)
+            ->calculate();
 
         $deductions = get_user_deductions($user_id, true);
         $job_info = $this->Users_model->get_job_info($user_id);
@@ -772,7 +775,7 @@ class Payrolls extends MY_Controller {
             $data->work_hour, //work_hour            
             to_currency( $summary['gross_pay'] ), 
             to_currency( $summary['tax_due'] ),  
-            to_currency( $summary['net_pay'] ), 
+            "<strong ".($summary['net_pay']<=0?"style='color: red;'":"").">".to_currency( $summary['net_pay'] )."</strong>", 
 
             $this->get_payslip_status($data), //net_pay
             $actions
@@ -780,7 +783,8 @@ class Payrolls extends MY_Controller {
     }
 
     protected function processPayHP( $data ) {
-        return (new PayHP($data->hourly_rate, array(), 0))
+        $monthly_salary = get_monthly_from_hourly($data->hourly_rate, 8, 260, false) / 2;
+        return (new PayHP($data->hourly_rate, array(), $monthly_salary))
             ->addEarnings('allowance', $data->allowance)
             ->addEarnings('incentive', $data->incentive)
             ->addEarnings('bonus', $data->bonus_month)
