@@ -1018,6 +1018,8 @@ class Team_members extends MY_Controller {
             $view_data['user_info']->role_id = "admin";
         }
         $view_data['role_dropdown'] = $this->_get_roles_dropdown();
+
+        $view_data['show_account_access'] = $this->access_only_specific('team_member_update_permission', $user_id);
         $this->load->view("users/account_settings", $view_data);
     }
 
@@ -1109,7 +1111,7 @@ class Team_members extends MY_Controller {
             "email" => $this->input->post('email')
         );
 
-        if ($this->login_user->id != $user_id && $this->validate_user_role_permission('team_member_update_permission_all', true)) {
+        if ($this->login_user->id != $user_id && $this->access_only_specific('team_member_update_permission', $user_id) ) {
             //only admin user has permission to update team member's role
             //but admin user can't update his/her own role 
             $role = $this->input->post('role');

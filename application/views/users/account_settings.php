@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <?php if ($user_info->id !== $this->login_user->id && $user_info->user_type === "staff" ) { ?>
+            <?php if ($user_info->id !== $this->login_user->id && $user_info->user_type === "staff" && $show_account_access ) { ?>
                 <div class="form-group">
                     <label for="role" class=" col-md-2"><?php echo lang('role'); ?></label>
                     <div class=" col-md-10">

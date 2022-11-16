@@ -179,6 +179,18 @@ class MY_Controller extends CI_Controller {
         }
     }
 
+    //team_member_update_permission
+    protected function access_only_specific($specific_access, $specific_id = 0) {
+        $access_info = $this->get_access_info($specific_access);
+        if($access_info->access_type == "all") {
+            return true;
+        } else if(in_array($specific_id, $access_info->allowed_members)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //access only allowed team members or client contacts 
     protected function access_only_allowed_members_or_client_contact($client_id) {
 
