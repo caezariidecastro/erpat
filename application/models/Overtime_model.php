@@ -13,7 +13,7 @@ class Overtime_model extends Crud_model {
         $now = get_current_utc_time();
         $sql = "UPDATE overtime SET end_time = '$now', notes='System Clockout' 
             WHERE end_time IS NULL 
-                AND TIME_TO_SEC(TIMEDIFF('$now', start_time)) / 3600 >= 6";
+                AND TIME_TO_SEC(TIMEDIFF('$now', start_time)) / 3600 >= 12";
         $this->db->query($sql);
     }
 

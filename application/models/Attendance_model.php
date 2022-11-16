@@ -15,7 +15,7 @@ class Attendance_model extends Crud_model {
         $now = get_current_utc_time();
         $sql = "UPDATE attendance SET out_time=in_time, status='clockout', note='System Clockout' 
             WHERE (status='incomplete' OR out_time = NULL) 
-                AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 >= 12";
+                AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 >= 20";
         $this->db->query($sql);
     }
 
