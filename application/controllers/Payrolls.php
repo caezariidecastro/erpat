@@ -323,8 +323,8 @@ class Payrolls extends MY_Controller {
         $view_data['category_select2'] = [
             //array('id' => 'daily', 'text'  => '- Daily -'),
             array('id' => 'weekly', 'text'  => '- Weekly -'),
-            //array('id' => 'biweekly', 'text'  => '- Biweekly -'),
-            //array('id' => 'monthly', 'text'  => '- Monthly -')
+            array('id' => 'biweekly', 'text'  => '- Biweekly -'),
+            array('id' => 'monthly', 'text'  => '- Monthly -')
         ];
         $this->load->view('payrolls/contributions', $view_data);
     }
@@ -406,7 +406,7 @@ class Payrolls extends MY_Controller {
     }
 
     function save_auto_contribution() {
-        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
+        if(!$this->login_user->is_admin && !user_role_has_permission("can_update_contribution") ) {
 			redirect("forbidden");
 		}
 
@@ -422,14 +422,19 @@ class Payrolls extends MY_Controller {
 
             for($i=0; $i<count($data); $i++) {
                 if($data[$i][0] == "sss_contri") {
-                    $data[$i][2] = get_sss_contribution($monthly_salary, false)/4;
+                    $data[$i][2] = get_sss_contribution($monthly_salary, false)/4; //weekly
+                    $data[$i][3] = get_sss_contribution($monthly_salary, false)/2; //biweekly
+                    $data[$i][4] = get_sss_contribution($monthly_salary, false); //monthly
                 }
                 if($data[$i][0] == "pagibig_contri") {
                     $data[$i][2] = convert_number_to_decimal((200/2)/2); //weekly
+                    $data[$i][3] = convert_number_to_decimal((200/2)); //biweekly
+                    $data[$i][4] = convert_number_to_decimal((200)); //monthly
                 }
                 if($data[$i][0] == "philhealth_contri") {
-                    
-                    $data[$i][2] = convert_number_to_decimal(($monthly_salary*0.04)/4, 4); //weekly
+                    $data[$i][2] = convert_number_to_decimal(($monthly_salary*0.04)/4); //weekly
+                    $data[$i][3] = convert_number_to_decimal(($monthly_salary*0.04)/2); //biweekly
+                    $data[$i][4] = convert_number_to_decimal(($monthly_salary*0.04)); //monthly
                 }
                 if($data[$i][0] == "hmo_contri") {
                     $data[$i][2] = $data[$i][2];

@@ -86,6 +86,7 @@ class Roles extends MY_Controller {
             array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
 
             array("can_update_account", "New!", "HR Employee", "Update account and password.", null),
+            array("can_update_contribution", "New!", "Payroll", "Able to update contributions.", null),
         ];
     }
 
