@@ -51,40 +51,46 @@
                 {title: '<?php echo lang("actions"); ?>'},
                 {title: '<?php echo lang("changes"); ?>'},
             ], onInitComplete: function () {
-                $("#leave_specific_dropdown, #attendance_specific_dropdown, #timesheet_manage_permission_specific_dropdown,  #team_member_update_permission_specific_dropdown, #message_permission_specific_dropdown").select2({
-                    multiple: true,
-                    formatResult: teamAndMemberSelect2Format,
-                    formatSelection: teamAndMemberSelect2Format,
-                    data: <?php echo ($members_and_teams_dropdown); ?>
-                });
+                setTimeout(() => {
+                    $("#leave_specific_dropdown, #attendance_specific_dropdown, #timesheet_manage_permission_specific_dropdown,  #team_member_update_permission_specific_dropdown, #message_permission_specific_dropdown").select2({
+                        multiple: true,
+                        formatResult: teamAndMemberSelect2Format,
+                        formatSelection: teamAndMemberSelect2Format,
+                        data: <?php echo ($members_and_teams_dropdown); ?>
+                    });
 
-                $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-toggle="tooltip"]').tooltip();
 
-                var selectors = ["leave", "attendance", "timesheet", "team_member_update", "ticket", "message_permission", "team_member_update_permission", "timesheet_manage_permission"];
-                $.each(selectors, function (index, element) {
-                    var id = element+"_specific_dropdown"; 
-                    var val = $('#'+element).val();
+                    var selectors = ["leave", "attendance", "timesheet", "team_member_update", "ticket", "message_permission", "team_member_update_permission", "timesheet_manage_permission"];
+                    $.each(selectors, function (index, element) {
+                        var id = element+"_specific_dropdown"; 
+                        var val = $('#'+element).val();
 
-                    if( val != 'specific') {
-                        $('#'+id).addClass('hide');
-                    }
-                });
-
-                $('.toggle_specific').change(function() {
-                    var id = $( this ).attr('id');
-                    if( $( this ).val() == 'specific' ) {
-                        if( $('#'+id+'_specific_dropdown').hasClass('hide') ) {
-                            $('#'+id+'_specific_dropdown').removeClass('hide');
+                        if( val != 'specific') {
+                            $('#'+id).addClass('hide');
                         }
-                    } else {
-                        $('#'+id+'_specific_dropdown').addClass('hide');
-                    }
-                });
+                    });
 
-                $("#ticket_specific_dropdown").select2({
-                    multiple: true,
-                    data: <?php echo ($ticket_types_dropdown); ?>
-                });
+                    $('.toggle_specific').change(function() {
+                        var id = $( this ).attr('id');
+                        if( $( this ).val() == 'specific' ) {
+                            if( $('#'+id+'_specific_dropdown').hasClass('hide') ) {
+                                $('#'+id+'_specific_dropdown').removeClass('hide');
+                            }
+                        } else {
+                            $('#'+id+'_specific_dropdown').addClass('hide');
+                        }
+                    });
+
+                    $("#ticket_specific_dropdown").select2({
+                        multiple: true,
+                        data: <?php echo ($ticket_types_dropdown); ?>
+                    });
+
+                    $(".select2").select2();
+                    
+                    console.log("Permissions loaded!");
+                }, 5000);
             }
         });
 
