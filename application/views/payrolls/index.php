@@ -66,8 +66,8 @@
         });
 
         setInterval(function(){
-            $("#payrolls-tabs").find("li.active").text() == "Entries" ? $('#add_payrolls_button').show() : $('#add_autocontri_button').hide()
-            $("#payrolls-tabs").find("li.active").text() == "Contributions" ? $('#add_autocontri_button').show() : $('#add_payrolls_button').hide()
+            $("#payrolls-tabs").find("li.active").text() == "Entries" ? $('#add_payrolls_button').show() : $('#add_payrolls_button').hide()
+            $("#payrolls-tabs").find("li.active").text() == "Contributions" ? $('#add_autocontri_button').show() : $('#add_autocontri_button').hide()
         }, 200)
     });
 </script>
