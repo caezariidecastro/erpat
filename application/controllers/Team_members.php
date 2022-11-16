@@ -188,7 +188,7 @@ class Team_members extends MY_Controller {
     /* save new member */
 
     function add_team_member() {
-        if(!$this->login_user->is_admin || (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission")) ) {
+        if(!$this->login_user->is_admin && !$this->access_only_specific("team_member_update_permission") ) {
 			redirect("forbidden");
 		}
 
