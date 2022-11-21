@@ -896,7 +896,10 @@ class Team_members extends MY_Controller {
             "contact_name" => $this->input->post('contact_name'),
             "contact_address" => $this->input->post('contact_address'),
             "contact_phone" => $this->input->post('contact_phone'),
-            "signiture_url" => $this->input->post('signiture_url')
+            "signiture_url" => $this->input->post('signiture_url'),
+            "bank_name" => $this->input->post('bank_name'),
+            "bank_account" => $this->input->post('bank_account'),
+            "bank_number" => $this->input->post('bank_number')
         );
 
         if($this->input->post('rfid_num')) {

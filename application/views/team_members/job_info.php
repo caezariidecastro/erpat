@@ -233,6 +233,55 @@
                 </div>
             </div>
         </div>
+        <div class="panel-default panel-heading">
+            <h4><?php echo lang('bank_details'); ?></h4>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="bank_name" class=" col-md-2"><?php echo lang('bank_name'); ?></label>
+                <div class="col-md-4">
+                    <?php
+                    echo form_input(array(
+                        "id" => "bank_name",
+                        "name" => "bank_name",
+                        "value" => $job_info->bank_name,
+                        "class" => "form-control",
+                        "placeholder" => lang('bank_name'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+                <label for="bank_account" class=" col-md-2"><?php echo lang('bank_account'); ?></label>
+                <div class="col-md-4">
+                    <?php
+                    echo form_input(array(
+                        "id" => "bank_account",
+                        "name" => "bank_account",
+                        "value" => $job_info->bank_account,
+                        "class" => "form-control",
+                        "placeholder" => lang('bank_account'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-6"></div>
+                <label for="bank_number" class=" col-md-2"><?php echo lang('bank_number'); ?></label>
+                <div class="col-md-4">
+                    <?php
+                    echo form_input(array(
+                        "id" => "bank_number",
+                        "name" => "bank_number",
+                        "value" => $job_info->bank_number,
+                        "class" => "form-control",
+                        "placeholder" => lang('bank_number'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
+                </div>
+            </div>
+        </div>
         <div class="panel-footer">
             <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
         </div>

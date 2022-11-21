@@ -828,3 +828,7 @@ $lang["execute"] = "Execute";
 $lang["no_permission"] = "You dont have permission on such action.";
 
 $lang["attendance_calc_mode"] = "Attd Calc. Mode";
+$lang["bank_details"] = "Bank Details";
+$lang["bank_name"] = "Bank Name";
+$lang["bank_account"] = "Account Name";
+$lang["bank_number"] = "Account Number";
