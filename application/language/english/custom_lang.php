@@ -826,3 +826,5 @@ $lang["add_autocontri_button"] = "Automate Contributions";
 $lang["execute"] = "Execute";
 
 $lang["no_permission"] = "You dont have permission on such action.";
+
+$lang["attendance_calc_mode"] = "Attd Calc. Mode";

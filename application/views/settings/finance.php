@@ -78,6 +78,19 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="attendance_calc_mode" class=" col-md-2"><?php echo lang('attendance_calc_mode'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_dropdown(
+                                    "attendance_calc_mode", array(
+                                "simple" => "Simple",
+                                "complex" => "Complex",
+                                    ), get_setting('attendance_calc_mode'), "class='select2 mini'"
+                            );
+                            ?>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
