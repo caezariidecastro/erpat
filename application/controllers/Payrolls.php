@@ -1270,10 +1270,11 @@ class Payrolls extends MY_Controller {
             $job_info = $this->Users_model->get_job_info($payslip->user);
             $payslip->salary = $job_info->salary;
     
-            $accountant = $this->Users_model->get_details(array(
-                "id" => $payslip->accountant_id
-            ))->row();
+            $accountant = $this->Users_model->get_baseinfo($payroll->accountant_id);
             $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
+            //TODO: Get the signiture
+
+            $payslip->{unworked_deductions} = max($payslip->absent, 0);
     
             $view_data["payslip"] = $payslip;
             $view_data["summary"] = $this->processPayHP( $payslip )->calculate();

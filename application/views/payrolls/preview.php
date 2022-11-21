@@ -56,6 +56,9 @@
         "pay_period" => $payslip->pay_period,
         "payment_date" => $payslip->pay_date,
 
+        "unwork_hours" => convert_number_to_decimal($payslip->absent),
+        "unwork_deductions" => to_currency($summary['unwork_deduction']),
+
         "bank_name" => "",
         "account_name" => "",
         "account_number" => "",
@@ -230,7 +233,7 @@
                         Department: <span style="color: #454545;"><?= $payslip['department'] ?></span>
                     </li>
                     <li style="line-height: 25px;">
-                        Directorate: <span style="color: #454545;"><?= $payslip['directorate'] ?></span>
+                        Unworked: <span style="color: #454545;">(<?= $payslip['unwork_hours'] ?> hrs) <?= $payslip['unwork_deductions'] ?></span>
                     </li>
                     <li></li>
                 </ul>
