@@ -1216,6 +1216,9 @@ class Payrolls extends MY_Controller {
 
         $job_info = $this->Users_model->get_job_info($payslip->user);
         $payslip->salary = $job_info->salary;
+        $payslip->bank_name = $job_info->bank_name;
+        $payslip->bank_account = $job_info->bank_account;
+        $payslip->bank_number = $job_info->bank_number;
 
         $accountant = $this->Users_model->get_baseinfo($payroll->accountant_id);
         $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
@@ -1267,6 +1270,9 @@ class Payrolls extends MY_Controller {
     
             $job_info = $this->Users_model->get_job_info($payslip->user);
             $payslip->salary = $job_info->salary;
+            $payslip->bank_name = $job_info->bank_name;
+            $payslip->bank_account = $job_info->bank_account;
+            $payslip->bank_number = $job_info->bank_number;
     
             $accountant = $this->Users_model->get_baseinfo($payroll->accountant_id);
             $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;

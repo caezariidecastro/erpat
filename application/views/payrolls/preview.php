@@ -59,9 +59,9 @@
         "unwork_hours" => convert_number_to_decimal($payslip->absent),
         "unwork_deductions" => to_currency($summary['unwork_deduction']),
 
-        "bank_name" => "",
-        "account_name" => "",
-        "account_number" => "",
+        "bank_name" => $payslip->bank_name,
+        "account_name" => $payslip->bank_account,
+        "account_number" => $payslip->bank_number,
 
         "accountant_sign" => "",
         "accountant_name" => $payslip->accountant_name,
