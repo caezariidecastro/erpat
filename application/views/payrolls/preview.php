@@ -53,6 +53,7 @@
         "total_deduct" => to_currency($summary['total_deduct']),
 
         "net_pay" => to_currency($summary['net_pay']),
+        "amount_in_words" => $payslip->amount_in_words,
         "pay_period" => $payslip->pay_period,
         "payment_date" => $payslip->pay_date,
 
@@ -157,7 +158,7 @@
     }
 
     tr:nth-child(even) {
-        background-color: #ebf3fa;
+        /* background-color: #ebf3fa; */
     }
 
     ul { 
@@ -282,13 +283,13 @@
             <th width="49.5%">
                 <ul style="font-weight: 100;" >
                     <li ></li>
-                    <li style="line-height: 25px;">
+                    <li style="line-height: 35px;">
                         Bank Name: <span style="color: #454545;"><?= $payslip['bank_name'] ?></span>
                     </li>
-                    <li style="line-height: 25px;">
+                    <li style="line-height: 35px;">
                         Account Name: <span style="color: #454545;"><?= $payslip['account_name'] ?></span>
                     </li>
-                    <li style="line-height: 25px;">
+                    <li style="line-height: 35px;">
                         Account Number: <span style="color: #454545;"><?= $payslip['account_number'] ?></span>
                     </li>
                     <li ></li>
@@ -311,14 +312,23 @@
                 </table>
                 <table >
                     <tr>
+                        <th width="100%" style="border: none;">
+                            <p style="text-align: center; font-size: 14px; line-height: 14px; font-style: italic; font-weight: 100;">
+                                <span style="color: #454545;"><?= $payslip['amount_in_words'] ?></span>
+                            </p>
+                        </th>
+                    </tr>
+                </table>
+                <table >
+                    <tr>
                         <th width="49.5%" style="border: none;">
                             <p style="text-align: center; font-size: 15px; line-height: 15px;">
-                                Pay Period: <span style="color: #454545;"><?= $payslip['pay_period'] ?></span>
+                                Pay Period: <span style="color: #454545; font-weight: 100;"><?= $payslip['pay_period'] ?></span>
                             </p>
                         </th>
                         <th width="49.5%" style="border: none;">
                             <p style="text-align: center; font-size: 15px; line-height: 15px;">
-                                Payment Date: <span style="color: #454545;"><?= $payslip['payment_date'] ?></span>
+                                Payment Date: <span style="color: #454545; font-weight: 100;"><?= $payslip['payment_date'] ?></span>
                             </p>
                         </th>
                     </tr>
@@ -335,7 +345,7 @@
     <table style="background-color: white;">
         <tr>
             <th width="49.5%">
-                <p style="text-align: center; color: grey; font-size: 30px;">CONFIDENTIAL</p>
+                <p style="text-align: center; color: #ff6f6f; font-size: 2em;">CONFIDENTIAL</p>
             </th>
             <th width="49.5%">
                 <small style="text-align: left;">
