@@ -70,6 +70,13 @@ class Events extends MY_Controller {
 
         $view_data["can_share_events"] = $this->can_share_events();
 
+        $event_options = array(
+            array("id" => 'have_participants', "text" => "Have Participants"),
+            array("id" => 'with_tickets', "text" => "With Tickets"),
+            array("id" => 'include_raffles', "text" => "Include Raffles")
+        );
+        $view_data['event_options'] = json_encode($event_options);
+
         //prepare label suggestion dropdown
         $view_data['label_suggestions'] = $this->make_labels_dropdown("event", $model_info->labels);
 
@@ -124,7 +131,7 @@ class Events extends MY_Controller {
             "end_date" => $this->input->post('end_date'),
             "start_time" => $start_time,
             "end_time" => $end_time,
-            "location" => $this->input->post('location'),
+            "location" => $this->input->post('event_option'),
             "labels" => $this->input->post('labels'),
             "color" => $this->input->post('color'),
             "created_by" => $this->login_user->id,

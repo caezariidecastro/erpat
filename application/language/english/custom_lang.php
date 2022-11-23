@@ -832,3 +832,5 @@ $lang["bank_details"] = "Bank Details";
 $lang["bank_name"] = "Bank Name";
 $lang["bank_account"] = "Account Name";
 $lang["bank_number"] = "Account Number";
+$lang["clients_only"] = "Clients Only";
+$lang["event_option"] = "Event Option";

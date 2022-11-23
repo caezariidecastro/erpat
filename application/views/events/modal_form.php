@@ -116,19 +116,12 @@
     </div>
 
     <div class="form-group">
-        <label for="location" class=" col-md-3"><?php echo lang('location'); ?></label>
-        <div class=" col-md-9">
-            <?php
-            echo form_input(array(
-                "id" => "location",
-                "name" => "location",
-                "value" => $model_info->location,
-                "class" => "form-control",
-                "placeholder" => lang('location'),
-            ));
-            ?>
+        <label for="event_option" class=" col-md-3"><?php echo lang('event_option'); ?></label>
+        <div class="col-md-9">
+              <input type="text" value="<?php echo $model_info->location; ?>" name="event_option" id="event_option_dropdown" class="w100p validate-hidden"  placeholder="<?php echo lang('event_option'); ?>"  />    
         </div>
     </div>
+
     <div class="form-group">
         <label for="event_labels" class=" col-md-3"><?php echo lang('labels'); ?></label>
         <div class=" col-md-9">
@@ -196,6 +189,18 @@
                         <label for="share_with_all"><?php echo lang("all_team_members"); ?></label>
                     </div>
 
+                    <div>
+                        <?php
+                        echo form_radio(array(
+                            "id" => "share_with_clients_only",
+                            "name" => "share_with",
+                            "value" => "clients_only",
+                            "class" => "toggle_specific",
+                                ), $model_info->share_with, ($model_info->share_with === "clients_only") ? true : false);
+                        ?>
+                        <label for="share_with_clients_only"><?php echo lang("clients_only"); ?></label>
+                    </div>
+
                     <div class="form-group mb0">
                         <?php
                         echo form_radio(array(
@@ -203,11 +208,11 @@
                             "name" => "share_with",
                             "value" => "specific",
                             "class" => "toggle_specific",
-                                ), $model_info->share_with, ($model_info->share_with && $model_info->share_with != "all" && $model_info->share_with_specific != "contact") ? true : false);
+                                ), $model_info->share_with, ($model_info->share_with && $model_info->share_with != "all" && $model_info->share_with != "clients_only" && $model_info->share_with_specific != "contact") ? true : false);
                         ?>
                         <label for="share_with_specific_radio_button"><?php echo lang("specific_members_and_teams"); ?>:</label>
                         <div class="specific_dropdown" style="display: none;">
-                            <input type="text" value="<?php echo ($model_info->share_with && $model_info->share_with != "all" && $model_info->share_with_specific != "contact") ? $model_info->share_with : ""; ?>" name="share_with_specific" id="share_with_specific" class="w100p validate-hidden"  data-rule-required="true" data-msg-required="<?php echo lang('field_required'); ?>" placeholder="<?php echo lang('choose_members_and_or_teams'); ?>"  />
+                            <input type="text" value="<?php echo ($model_info->share_with && $model_info->share_with != "all" && $model_info->share_with != "clients_only" && $model_info->share_with_specific != "contact") ? $model_info->share_with : ""; ?>" name="share_with_specific" id="share_with_specific" class="w100p validate-hidden"  data-rule-required="true" data-msg-required="<?php echo lang('field_required'); ?>" placeholder="<?php echo lang('choose_members_and_or_teams'); ?>"  />
                         </div>
                     </div>
 
@@ -218,11 +223,11 @@
                             "name" => "share_with",
                             "value" => "specific_client_contacts",
                             "class" => "toggle_specific",
-                                ), $model_info->share_with, ($model_info->share_with && $model_info->share_with != "all" && $model_info->share_with_specific != "member" && $model_info->share_with_specific != "team") ? true : false);
+                                ), $model_info->share_with, ($model_info->share_with && $model_info->share_with != "all" && $model_info->share_with != "clients_only" && $model_info->share_with_specific != "member" && $model_info->share_with_specific != "team") ? true : false);
                         ?>
                         <label for="share_with_client_contact_radio_button"><?php echo lang("specific_client_contacts"); ?>:</label>
                         <div class="specific_dropdown" style="display: none;">
-                            <input type="text" value="<?php echo ($model_info->share_with && $model_info->share_with != "all" && $model_info->share_with_specific != "member") ? $model_info->share_with : ""; ?>" name="share_with_specific_client_contact" id="share_with_specific_client_contact" class="w100p validate-hidden"  data-rule-required="true" data-msg-required="<?php echo lang('field_required'); ?>" placeholder="<?php echo lang('choose_client_contacts'); ?>"  />
+                            <input type="text" value="<?php echo ($model_info->share_with && $model_info->share_with != "all" && $model_info->share_with != "clients_only" && $model_info->share_with_specific != "member") ? $model_info->share_with : ""; ?>" name="share_with_specific_client_contact" id="share_with_specific_client_contact" class="w100p validate-hidden"  data-rule-required="true" data-msg-required="<?php echo lang('field_required'); ?>" placeholder="<?php echo lang('choose_client_contacts'); ?>"  />
                         </div>
                     </div>
 
@@ -411,6 +416,11 @@
         });
 
         $('[data-toggle="tooltip"]').tooltip();
+
+        $("#event_option_dropdown").select2({
+            multiple: true,
+            data: <?php echo ($event_options); ?>
+        });
 
     });
 </script>
