@@ -114,6 +114,19 @@
                             ?>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="auto_clockout" class=" col-md-2"><?php echo lang('auto_clockout'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_dropdown(
+                                "auto_clockout", array(
+                                "0" => lang("no"),
+                                "1" => lang("yes")
+                                ), get_setting('auto_clockout'), "class='select2 mini'"
+                            );
+                            ?>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
