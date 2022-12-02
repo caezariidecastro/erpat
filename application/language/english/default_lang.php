@@ -334,7 +334,7 @@ $lang["invoice_id"] = "Invoice ID";
 $lang["payments"] = "Payments";
 $lang["invoice_sent_message"] = "The invoice has been sent!";
 $lang["attached"] = "Attached";
-$lang["vat_number"] = "VAT Number";
+$lang["vat_number"] = "TIN Number";
 $lang["invite_an_user"] = "Invite an user for %s"; // Invite an user for {company name}
 $lang["unit_type"] = "Unit type";
 
