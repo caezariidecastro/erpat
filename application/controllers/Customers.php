@@ -93,7 +93,7 @@ class Customers extends MY_Controller {
 
             $customer_data["disable_login"] = 1;
             $customer_data["password"] = password_hash($password, PASSWORD_DEFAULT);
-            $customer_data["created_at"] = date('Y-m-d H:i:s');
+            $customer_data["created_at"] = get_current_utc_time();
             $customer_data["created_by"] = $this->login_user->id;
 
             $this->email($first_name, $last_name, $email, $password);
@@ -102,8 +102,7 @@ class Customers extends MY_Controller {
         $customer_id = $this->Users_model->save($customer_data, $id);
         if ($customer_id) {
             $customer_info = $this->Users_model->get_details(array(
-                "id" => $customer_id,
-                "user_type" => "customer"
+                "id" => $customer_id
             ))->row();
             echo json_encode(array("success" => true, "id" => $customer_info->id, "data" => $this->_make_row($customer_info), 'message' => lang('record_saved')));
         } else {
