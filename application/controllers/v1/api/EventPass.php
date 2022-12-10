@@ -5,18 +5,19 @@ if (!defined('BASEPATH'))
 
 class EventPass extends CI_Controller {
 
-    function __construct() {
-        parent::__construct();
+	function __construct() {
+       	parent::__construct();
         $this->load->library('encryption');
         header('Content-Type: application/json');
         header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization,Basic");
+        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization, Basic");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         $method = $_SERVER['REQUEST_METHOD'];
         if ($method == "OPTIONS") {
             die();
         }
-        $this->load->model("EventPass_model");
+		
+		$this->load->model("EventPass_model");
         $this->load->model("Users_model");
     }
 
@@ -43,9 +44,9 @@ class EventPass extends CI_Controller {
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
         send_app_mail($email, $email_template->subject, $message);
     }
-
+	
     public function reserve() {
-
+		
         $first_name = $this->input->post('first_name');
         $last_name = $this->input->post('last_name');
         $phone = $this->input->post('phone');
@@ -130,7 +131,7 @@ class EventPass extends CI_Controller {
                 "qrbase64" => "test"
             )));
         } else {
-            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            echo json_encode(array("success" => false, 'message' => 'Contact technical support.'));
         }
     }
 }
