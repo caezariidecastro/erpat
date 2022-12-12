@@ -31,9 +31,10 @@ class EventPass extends CI_Controller {
         echo json_encode($consumer_list);
     }
 
-    private function email($first_name, $last_name, $email, $phone, $seats, $remarks){
+    private function email($reference_id, $first_name, $last_name, $email, $phone, $seats, $remarks){
         $email_template = $this->Email_templates_model->get_final_template("event_pass");
 
+        $parser_data["REFERENCE_ID"] = $reference_id;
         $parser_data["SIGNATURE"] = $email_template->signature;
         $parser_data["FIRST_NAME"] = $first_name;
         $parser_data["LAST_NAME"] = $last_name;
@@ -111,10 +112,11 @@ class EventPass extends CI_Controller {
                 "user_id" => $cur_user->id,
                 "event_id" => $event_id
             ))->row();
+
             //save if not found
             if(!$current_pass) {
                 $this->EventPass_model->save($epass_data);
-                $this->email($first_name, $last_name, $email, $phone, $seats, $remarks);
+                $this->email(strtoupper($epass_data['uuid']), $first_name, $last_name, $email, $phone, $seats, $remarks);
             }
 
             //get again for processing

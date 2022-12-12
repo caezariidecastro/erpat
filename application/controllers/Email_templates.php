@@ -127,6 +127,7 @@ class Email_templates extends MY_Controller {
         $email_template = $this->Email_templates_model->get_final_template( $template_name );
 
         $parser_data["SIGNATURE"] = $email_template->signature;
+        $parser_data["REFERENCE_ID"] = strtoupper("82e7ec97-7337-477d-9f6e-0ab72b1a570e");
         $parser_data["FIRST_NAME"] = "Juan";
         $parser_data["LAST_NAME"] = "Dela Cruz";
         $parser_data["PHONE_NUMBER"] = "639 123 456 7890";
