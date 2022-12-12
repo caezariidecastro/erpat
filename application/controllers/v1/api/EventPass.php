@@ -19,6 +19,7 @@ class EventPass extends CI_Controller {
 		
 		$this->load->model("EventPass_model");
         $this->load->model("Users_model");
+        $this->load->model("Email_templates_model");
     }
 
     function get_customer_select2_data() {
@@ -30,15 +31,15 @@ class EventPass extends CI_Controller {
         echo json_encode($consumer_list);
     }
 
-    private function email($first_name, $last_name, $email, $password){
-        $email_template = $this->Email_templates_model->get_final_template("login_info");
+    private function email($first_name, $last_name, $email, $phone, $seats, $remarks){
+        $email_template = $this->Email_templates_model->get_final_template("event_pass");
 
         $parser_data["SIGNATURE"] = $email_template->signature;
-        $parser_data["USER_FIRST_NAME"] = $first_name;
-        $parser_data["USER_LAST_NAME"] = $last_name;
-        $parser_data["USER_LOGIN_EMAIL"] = $email;
-        $parser_data["USER_LOGIN_PASSWORD"] = $password;
-        $parser_data["DASHBOARD_URL"] = base_url();
+        $parser_data["FIRST_NAME"] = $first_name;
+        $parser_data["LAST_NAME"] = $last_name;
+        $parser_data["PHONE_NUMBER"] = $phone;
+        $parser_data["TOTAL_SEATS"] = $seats;
+        $parser_data["REMARKS"] = $remarks;
         $parser_data["LOGO_URL"] = get_logo_url();
 
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
@@ -87,7 +88,6 @@ class EventPass extends CI_Controller {
             $user_data["password"] = password_hash($password, PASSWORD_DEFAULT);
             $user_data["created_at"] = get_current_utc_time();
 
-            //$this->email($first_name, $last_name, $email, $password);
             $this->Users_model->save($user_data);
         }
 
@@ -114,6 +114,7 @@ class EventPass extends CI_Controller {
             //save if not found
             if(!$current_pass) {
                 $this->EventPass_model->save($epass_data);
+                $this->email($first_name, $last_name, $email, $phone, $seats, $remarks);
             }
 
             //get again for processing

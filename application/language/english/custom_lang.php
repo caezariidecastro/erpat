@@ -835,3 +835,5 @@ $lang["bank_number"] = "Account Number";
 $lang["clients_only"] = "Clients Only";
 $lang["event_option"] = "Event Option";
 $lang["auto_clockout"] = "Auto Clockout";
+
+$lang["event_pass"] = "Event Ticket";

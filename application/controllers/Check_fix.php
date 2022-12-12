@@ -11,6 +11,7 @@ class Check_fix extends MY_Controller
         $this->load->model("Settings_model");
         $this->load->model("Users_model");
         $this->load->model("Expense_categories_model");
+        $this->load->model("EventPass_model");
     }
 
     public function index()
@@ -25,6 +26,7 @@ class Check_fix extends MY_Controller
         //Execute all fixing here.
         $user_uuid = $this->add_uuid_to_users();
         $secured = $this->secure_expense_defaults();
+        $emails = $this->generate_new_email_templates();
 
         $utc_datetime = get_current_utc_time();
         $this->Settings_model->save_setting("last_check_fix", $utc_datetime);
@@ -33,9 +35,10 @@ class Check_fix extends MY_Controller
             "current"=>format_to_datetime($utc_datetime),
             "data" => array(
                 "user_uuid" => $user_uuid,
-                "expense_default" => $secured
+                "expense_default" => $secured,
+                "email_templates" =>$emails
             ),
-            "message"=>"Added $user_uuid users UUID and secured $secured expense categories."
+            "message"=>"Added $user_uuid users UUID, secured $secured expense categories, and $emails email templates updated."
         ));
     }
 
@@ -58,5 +61,13 @@ class Check_fix extends MY_Controller
         }
 
         return count($expense_categories);
+    }
+
+    protected function generate_new_email_templates() {    
+        $total = 0;    
+        if($this->EventPass_model->save_email()) {
+            $total += 1;
+        }
+        return $total;
     }
 }

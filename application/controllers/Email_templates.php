@@ -8,7 +8,7 @@ class Email_templates extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
-        $this->load->model("Email_templates_model");
+        $this->load->model('Email_templates_model');
     }
 
     private function _templates() {
@@ -20,6 +20,7 @@ class Email_templates extends MY_Controller {
                 "new_client_greetings" => array("CONTACT_FIRST_NAME", "CONTACT_LAST_NAME", "COMPANY_NAME", "DASHBOARD_URL", "CONTACT_LOGIN_EMAIL", "CONTACT_LOGIN_PASSWORD", "LOGO_URL", "SIGNATURE"),
                 "client_contact_invitation" => array("INVITATION_SENT_BY", "INVITATION_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
                 "verify_email" => array("VERIFY_EMAIL_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
+                "event_pass" => array("VERIFY_EMAIL_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
             ),
             "project" => array(
                 "project_task_deadline_reminder" => array("APP_TITLE", "DEADLINE", "SIGNATURE", "TASKS_LIST", "LOGO_URL"),
