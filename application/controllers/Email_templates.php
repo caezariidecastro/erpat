@@ -115,6 +115,30 @@ class Email_templates extends MY_Controller {
         }
     }
 
+    function test_email() {
+        validate_submitted_data(array(
+            "email" => "required",
+            "template_name" => "required"
+        ));
+
+        $email = $this->input->post('email');
+        $template_name = $this->input->post('template_name');
+
+        $email_template = $this->Email_templates_model->get_final_template( $template_name );
+
+        $parser_data["SIGNATURE"] = $email_template->signature;
+        $parser_data["FIRST_NAME"] = "Juan";
+        $parser_data["LAST_NAME"] = "Dela Cruz";
+        $parser_data["PHONE_NUMBER"] = "639 123 456 7890";
+        $parser_data["TOTAL_SEATS"] = 3;
+        $parser_data["REMARKS"] = "Me, Myself, and I";
+        $parser_data["LOGO_URL"] = get_logo_url();
+
+        $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
+        $sent = send_app_mail($email, $email_template->subject, $message);
+        echo json_encode( array("success"=>$sent, "message"=>lang('test_email_sent').$email ) );
+    }
+
     /* load template edit form */
 
     function form($template_name = "") {

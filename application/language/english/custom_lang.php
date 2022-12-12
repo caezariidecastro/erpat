@@ -837,3 +837,6 @@ $lang["event_option"] = "Event Option";
 $lang["auto_clockout"] = "Auto Clockout";
 
 $lang["event_pass"] = "Event Ticket";
+$lang["test_email"] = "Test Email";
+
+$lang["test_email_sent"] = "The template preview was sent to the email: ";
