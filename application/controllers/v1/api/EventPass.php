@@ -31,7 +31,7 @@ class EventPass extends CI_Controller {
         echo json_encode($consumer_list);
     }
 
-    private function email($reference_id, $first_name, $last_name, $email, $phone, $seats, $remarks){
+    private function email($reference_id, $first_name, $last_name, $email, $phone, $seats, $group, $remarks){
         $email_template = $this->Email_templates_model->get_final_template("event_pass");
 
         $parser_data["REFERENCE_ID"] = $reference_id;
@@ -40,6 +40,7 @@ class EventPass extends CI_Controller {
         $parser_data["LAST_NAME"] = $last_name;
         $parser_data["PHONE_NUMBER"] = $phone;
         $parser_data["TOTAL_SEATS"] = $seats;
+        $parser_data["GROUP_NAME"] = $group;
         $parser_data["REMARKS"] = $remarks;
         $parser_data["LOGO_URL"] = get_logo_url();
 
@@ -49,16 +50,18 @@ class EventPass extends CI_Controller {
 	
     public function reserve() {
 		
+        $event_id = $this->input->post('event_id');
         $first_name = $this->input->post('first_name');
         $last_name = $this->input->post('last_name');
         $phone = $this->input->post('phone');
-        $email = $this->input->post('email');
+        $email = $this->input->post('email')."";
         $seats = $this->input->post('seat');
+        $group = $this->input->post('group');
         $vcode = $this->input->post('vcode');
         $remarks = $this->input->post('remarks');
 
-        if(empty($first_name) || empty($last_name) || empty($phone) || empty($email) || empty($seats)) {
-            echo json_encode(array("success"=>false, "message"=>"Please complete all required fieldss."));
+        if(empty($event_id) || empty($first_name) || empty($last_name) || empty($phone) || empty($email) || empty($seats) || empty($group)) {
+            echo json_encode(array("success"=>false, "message"=>"Please complete all required fields."));
             exit;
         }
 
@@ -82,59 +85,51 @@ class EventPass extends CI_Controller {
             "user_type" => 'customer',
         );
 
-        
-        if ($this->Users_model->is_email_exists($email) === false) {
+        if (!$cur_user = $this->Users_model->is_email_exists($email)) {
             $user_data["uuid"] = $this->uuid->v4();
             $user_data["disable_login"] = 1;
             $user_data["password"] = password_hash($password, PASSWORD_DEFAULT);
             $user_data["created_at"] = get_current_utc_time();
 
-            $this->Users_model->save($user_data);
+            $user_id = $this->Users_model->save($user_data);
+            $cur_user = $this->Users_model->get_one($user_id);
         }
 
-        //TODO: Get the event id.
-        $event_id = 0;
+        $epass_data = array(
+            "uuid" => $this->uuid->v4(),
+            "event_id" => $event_id,
+            "user_id" => $cur_user->id,
+            "seats" => $seats,
+            "group_name" => $group,
+            "remarks" => $remarks,
+            "timestamp" => get_current_utc_time()
+        );
 
-        //Check if customer email is registered.
-        $cur_user = $this->Users_model->get_details(array("search" => $email))->row();
-        if($cur_user) {
-            $epass_data = array(
-                "uuid" => $this->uuid->v4(),
-                "event_id" => $event_id,
-                "user_id" => $cur_user->id,
-                "seats" => $seats,
-                "remarks" => $remarks,
-                "timestamp" => get_current_utc_time()
-            );
+        //Check if there is already reserve a seat.
+        $current_pass = $this->EventPass_model->get_details(array(
+            "user_id" => $cur_user->id,
+            "event_id" => $event_id
+        ));
 
-            //Check if there is already reserve a seat.
-            $current_pass = $this->EventPass_model->get_details(array(
-                "user_id" => $cur_user->id,
-                "event_id" => $event_id
-            ))->row();
+        //save if not found
+        if(!$current_pass) {
+            $this->EventPass_model->save($epass_data);
 
-            //save if not found
-            if(!$current_pass) {
-                $this->EventPass_model->save($epass_data);
-                $this->email(strtoupper($epass_data['uuid']), $first_name, $last_name, $email, $phone, $seats, $remarks);
-            }
-
-            //get again for processing
-            $latest_pass = $this->EventPass_model->get_details(array(
-                "user_id" => $cur_user->id,
-                "event_id" => $event_id
-            ))->row();
-
-            //TODO: Send email about ticket reservation.
-
-            echo json_encode(array("success" => true, 'data' => array(
-                "uuid" => $latest_pass->uuid,
-                "existing" => $current_pass?true:false,
-                "pass" => $latest_pass,
-                "qrbase64" => "test"
-            )));
-        } else {
-            echo json_encode(array("success" => false, 'message' => 'Contact technical support.'));
+            //Email as new ticket pass. TODO: Update
+            $this->email(strtoupper($epass_data['uuid']), $first_name, $last_name, $email, $phone, $seats, $group, $remarks);
         }
+        
+        //get again for processing
+        $latest_pass = $this->EventPass_model->get_details(array(
+            "user_id" => $cur_user->id,
+            "event_id" => $event_id
+        ));
+
+        echo json_encode(array("success" => true, 'data' => array(
+            "uuid" => $latest_pass->uuid,
+            "existing" => $current_pass?true:false,
+            "pass" => $latest_pass,
+            "qrbase64" => "test" //TODO!
+        )));
     }
 }

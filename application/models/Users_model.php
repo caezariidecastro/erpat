@@ -213,7 +213,7 @@ class Users_model extends Crud_model {
         $users_table = $this->db->dbprefix('users');
 
         $sql = "SELECT $users_table.* FROM $users_table   
-        WHERE $users_table.deleted=0 AND $users_table.email='$email' AND $users_table.user_type!='lead'";
+        WHERE $users_table.deleted=0 AND $users_table.email LIKE '$email' AND $users_table.user_type!='lead'";
 
         $result = $this->db->query($sql);
 
