@@ -9,6 +9,7 @@ class Email_templates extends MY_Controller {
         parent::__construct();
         $this->access_only_admin();
         $this->load->model('Email_templates_model');
+        $this->load->helper('utility');
     }
 
     private function _templates() {
@@ -126,8 +127,13 @@ class Email_templates extends MY_Controller {
 
         $email_template = $this->Email_templates_model->get_final_template( $template_name );
 
+        $qr_code = "data:image/png;base64,".get_qrcode_image(123, 'event_pass', 'verify', false, 120);
+        $saved_url = save_base_64_image($qr_code, get_setting("event_epass_path"));
+
         $parser_data["SIGNATURE"] = $email_template->signature;
         $parser_data["REFERENCE_ID"] = strtoupper("82e7ec97-7337-477d-9f6e-0ab72b1a570e");
+        $parser_data["QR_CODE"] = $saved_url;
+        $parser_data["GROUP_NAME"] = "VIEWER";
         $parser_data["FIRST_NAME"] = "Juan";
         $parser_data["LAST_NAME"] = "Dela Cruz";
         $parser_data["PHONE_NUMBER"] = "639 123 456 7890";
@@ -136,10 +142,13 @@ class Email_templates extends MY_Controller {
         $parser_data["LOGO_URL"] = get_logo_url();
 
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
-        $sent = send_app_mail($email, $email_template->subject, $message);
+        $sent = send_app_mail($email, $email_template->subject, $message, array(
+            "attachments" => array(array("file_path" => $saved_url)), 
+            //"cc" => $cc, 
+            "bcc" => "admin@brilliantskinessentialsinc.com"
+        ));
         echo json_encode( array("success"=>$sent, "message"=>lang('test_email_sent').$email ) );
     }
-
     /* load template edit form */
 
     function form($template_name = "") {

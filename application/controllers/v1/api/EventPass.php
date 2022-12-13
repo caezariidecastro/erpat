@@ -20,6 +20,8 @@ class EventPass extends CI_Controller {
 		$this->load->model("EventPass_model");
         $this->load->model("Users_model");
         $this->load->model("Email_templates_model");
+
+        $this->load->helper('utility');
     }
 
     function get_customer_select2_data() {
@@ -31,7 +33,7 @@ class EventPass extends CI_Controller {
         echo json_encode($consumer_list);
     }
 
-    private function email($reference_id, $first_name, $last_name, $email, $phone, $seats, $group, $remarks){
+    private function email($reference_id, $first_name, $last_name, $email, $phone, $seats, $group, $qrcode, $remarks){
         $email_template = $this->Email_templates_model->get_final_template("event_pass");
 
         $parser_data["REFERENCE_ID"] = $reference_id;
@@ -41,6 +43,7 @@ class EventPass extends CI_Controller {
         $parser_data["PHONE_NUMBER"] = $phone;
         $parser_data["TOTAL_SEATS"] = $seats;
         $parser_data["GROUP_NAME"] = $group;
+        $parser_data["QR_CODE"] = $qrcode;
         $parser_data["REMARKS"] = $remarks;
         $parser_data["LOGO_URL"] = get_logo_url();
 
@@ -54,7 +57,7 @@ class EventPass extends CI_Controller {
         $first_name = $this->input->post('first_name');
         $last_name = $this->input->post('last_name');
         $phone = $this->input->post('phone');
-        $email = $this->input->post('email')."";
+        $email = $this->input->post('email');
         $seats = $this->input->post('seat');
         $group = $this->input->post('group');
         $vcode = $this->input->post('vcode');
@@ -113,10 +116,11 @@ class EventPass extends CI_Controller {
 
         //save if not found
         if(!$current_pass) {
-            $this->EventPass_model->save($epass_data);
+            $epass_id = $this->EventPass_model->save($epass_data);
 
-            //Email as new ticket pass. TODO: Update
-            $this->email(strtoupper($epass_data['uuid']), $first_name, $last_name, $email, $phone, $seats, $group, $remarks);
+            $qr_code = get_qrcode_image($epass_id, 'event_pass', 'verify', false, 120);
+            $saved_url = save_base_64_image($qr_code, get_setting("event_epass_path"));
+            $this->email(strtoupper($epass_data['uuid']), $first_name, $last_name, $email, $phone, $seats, strtoupper($group), $saved_url, $remarks);
         }
         
         //get again for processing
@@ -125,11 +129,14 @@ class EventPass extends CI_Controller {
             "event_id" => $event_id
         ));
 
+        $qr_code = get_qrcode_image($latest_pass->id, 'event_pass', 'verify', false, 120);
+        $saved_url = save_base_64_image($qr_code, get_setting("event_epass_path"));
+
         echo json_encode(array("success" => true, 'data' => array(
             "uuid" => $latest_pass->uuid,
             "existing" => $current_pass?true:false,
             "pass" => $latest_pass,
-            "qrbase64" => "test" //TODO!
+            "qrbase64" => $saved_url
         )));
     }
 }

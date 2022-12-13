@@ -29,6 +29,7 @@ application/logs/*
 files/general/*
 files/products_images/*
 files/stores_images/*
+files/epass_qrcodes/*
 files/profile_images/*
 files/project_files/*
 files/system/*

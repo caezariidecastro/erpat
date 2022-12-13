@@ -63,6 +63,7 @@ $config['index_page'] = '';
 $config['temp_file_path'] = 'files/temp/';
 $config['profile_image_path'] = 'files/profile_images/';
 $config['store_image_path'] = 'files/stores_images/';
+$config['event_epass_path'] = 'files/epass_qrcodes/';
 $config['product_image_path'] = 'files/products_images/';
 $config['barcode_image_path'] = 'files/barcode_images/';
 $config['timeline_file_path'] = 'files/timeline_files/';
