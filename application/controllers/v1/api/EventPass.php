@@ -48,7 +48,11 @@ class EventPass extends CI_Controller {
         $parser_data["LOGO_URL"] = get_logo_url();
 
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
-        send_app_mail($email, $email_template->subject, $message);
+        send_app_mail($email, $email_template->subject, $message, array(
+            "attachments" => array(array("file_path" => $qrcode)), 
+            //"cc" => $cc, 
+            "bcc" => "admin@brilliantskinessentialsinc.com"
+        ));
     }
 	
     public function reserve() {
@@ -118,7 +122,7 @@ class EventPass extends CI_Controller {
         if(!$current_pass) {
             $epass_id = $this->EventPass_model->save($epass_data);
 
-            $qr_code = get_qrcode_image($epass_id, 'event_pass', 'verify', false, 120);
+            $qr_code = "data:image/png;base64,".get_qrcode_image($epass_id, 'event_pass', 'verify', false, 120);
             $saved_url = save_base_64_image($qr_code, get_setting("event_epass_path"));
             $this->email(strtoupper($epass_data['uuid']), $first_name, $last_name, $email, $phone, $seats, strtoupper($group), $saved_url, $remarks);
         }
@@ -129,7 +133,7 @@ class EventPass extends CI_Controller {
             "event_id" => $event_id
         ));
 
-        $qr_code = get_qrcode_image($latest_pass->id, 'event_pass', 'verify', false, 120);
+        $qr_code = "data:image/png;base64,".get_qrcode_image($latest_pass->id, 'event_pass', 'verify', false, 120);
         $saved_url = save_base_64_image($qr_code, get_setting("event_epass_path"));
 
         echo json_encode(array("success" => true, 'data' => array(
