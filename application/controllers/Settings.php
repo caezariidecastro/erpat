@@ -632,6 +632,7 @@ class Settings extends MY_Controller {
            'estimate_request' => 'Sales Marketing',
 
            'lead' => 'Marketing',
+           'epass' => 'Marketing',
 
            'productions' => 'Productions',
            'billofmaterials' => 'Productions',
@@ -720,7 +721,7 @@ class Settings extends MY_Controller {
         "module_mes", 
             "module_productions", "module_billofmaterials", "module_rawmaterials", "module_inventory", "module_products", "module_purchases", "module_returns", "module_supplier",
         "module_mcs", 
-            "module_lead",
+            "module_lead", "module_epass",
         "module_lds", 
             "module_delivery", "module_warehouse", "module_item_transfer", "module_vehicles", "module_driver", "module_consumer",
         "module_sms", 

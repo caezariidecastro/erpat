@@ -10,7 +10,7 @@ class EventPass_model extends Crud_model {
         $this->load->model('Email_templates_model');
     }
 
-    function get_details($options = array()) {
+    function get_details($options = array(), $lists = false) {
         $event_pass_table = $this->db->dbprefix('event_pass');
         $where = " WHERE $event_pass_table.deleted=0 ";
 
@@ -29,13 +29,18 @@ class EventPass_model extends Crud_model {
             $where .= " AND $event_pass_table.event_id = $event_id";
         }
 
-        $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name
+        $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, events.title as event_name, seat_assign as assign
         FROM $event_pass_table 
             LEFT JOIN users ON users.id = $event_pass_table.user_id
+            LEFT JOIN events ON events.id = $event_pass_table.event_id
         $where";
         $result = $this->db->query($sql);
 
         if($result->num_rows()) {
+            if($lists) {
+                return $result;
+            }
+
             return $result->row();
         } else {
             return false;
@@ -68,5 +73,13 @@ class EventPass_model extends Crud_model {
         );
 
         return $this->Email_templates_model->save($data, $template->id);
+    }
+
+    function approve($id) {
+        return true;
+    }
+
+    function cancel($id) {
+        return true;
     }
 }

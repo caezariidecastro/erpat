@@ -840,3 +840,19 @@ $lang["event_pass"] = "Event Ticket";
 $lang["test_email"] = "Test Email";
 
 $lang["test_email_sent"] = "The template preview was sent to the email: ";
+
+$lang["epass"] = "Event Pass";
+$lang["reference_id"] = "Reference ID";
+$lang["event_name"] = "Event Name";
+$lang["full_name"] = "Fullname";
+$lang["seats_requested"] = "Seat Requested";
+$lang["group_name"] = "Group Name";
+$lang["virtual_id"] = "Virtual ID";
+$lang["seats_assignment"] = "Seat Assignment";
+
+$lang["ticket_approval"] = "ePass Approval";
+
+$lang["record_approved"] = "The current record was approved.";
+$lang["record_cannot_be_approved"] = "The current record cannot be approve.";
+$lang["record_cancelled"] = "The current record was cancelled.";
+$lang["record_cannot_be_cancelled"] = "The current record cannot be cancel.";

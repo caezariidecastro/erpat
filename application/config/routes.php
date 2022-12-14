@@ -271,6 +271,11 @@ $route['mcs/lead_status/(:any)'] = 'lead_status/$1';
 $route['mcs/lead_source'] = 'lead_source/index';
 $route['mcs/lead_source/(:any)'] = 'lead_source/$1';
 
+$route["mcs"] = "eventpass/index";
+$route['mcs/epass'] = 'eventpass/index';
+$route['mcs/epass/(:any)'] = 'eventpass/$1';
+$route['mcs/epass/(:any)/(:any)'] = 'eventpass/$1/$2';
+
 
 // MES Controller 
 $route["mes"] = "ManufacturingOrders/index";

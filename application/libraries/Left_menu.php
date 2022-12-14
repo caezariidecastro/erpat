@@ -9,6 +9,7 @@ class Left_menu {
 
     public function __construct() {
         $this->ci = & get_instance();
+        $this->ci->load->helper('role');
     }
 
     function get_available_items($type = "default") {
@@ -352,6 +353,10 @@ class Left_menu {
                 $sidebar_menu["lead_status"] = array("name" => "submenu_mcs_status", "url" => "mcs/lead_status", "class" => "fa-circle");
                 $sidebar_menu["lead_source"] = array("name" => "submenu_mcs_source", "url" => "mcs/lead_source", "class" => "fa-circle");
                 $sidebar_menu["pages"] = array("name" => "pages", "url" => "pages", "class" => "fa-circle");
+            }
+
+            if( check_module_enabled("module_epass") ) {
+                $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
             }
 
             if (is_user_has_module_permission("module_lds")) {
