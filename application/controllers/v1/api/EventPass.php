@@ -49,7 +49,10 @@ class EventPass extends CI_Controller {
 
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
         send_app_mail($email, $email_template->subject, $message, array(
-            "attachments" => array(array("file_path" => $qrcode)), 
+            "attachments" => array(
+                array("file_path" => $qrcode),
+                array("file_path" => "https://brilliantskinessentialsinc.com/files/timeline_files/note_file639977518db2e-pinakamakinang2022.png"),
+            ), 
             //"cc" => $cc, 
             "bcc" => "admin@brilliantskinessentialsinc.com"
         ));
@@ -133,14 +136,10 @@ class EventPass extends CI_Controller {
             "event_id" => $event_id
         ));
 
-        $qr_code = "data:image/png;base64,".get_qrcode_image($latest_pass->id, 'event_pass', 'verify', false, 120);
-        $saved_url = save_base_64_image($qr_code, get_setting("event_epass_path"));
-
         echo json_encode(array("success" => true, 'data' => array(
             "uuid" => $latest_pass->uuid,
             "existing" => $current_pass?true:false,
-            "pass" => $latest_pass,
-            "qrbase64" => $saved_url
+            "pass" => $latest_pass
         )));
     }
 }

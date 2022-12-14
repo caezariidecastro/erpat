@@ -143,7 +143,9 @@ class Email_templates extends MY_Controller {
 
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
         $sent = send_app_mail($email, $email_template->subject, $message, array(
-            "attachments" => array(array("file_path" => $saved_url)), 
+            "attachments" => array(
+                array("file_path" => $saved_url)
+            ), 
             //"cc" => $cc, 
             "bcc" => "admin@brilliantskinessentialsinc.com"
         ));
