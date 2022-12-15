@@ -65,8 +65,8 @@ class EventPass extends MY_Controller {
             $data->assign,
             $this->get_labeled_status($data->status),
             convert_date_utc_to_local($data->timestamp),
-            modal_anchor(get_uri("eventpass/modal_form"), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("eventpass/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("EventPass/modal_form"), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("EventPass/delete"), "data-action" => "delete-confirmation"))
         );
     }
 

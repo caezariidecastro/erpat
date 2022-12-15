@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("eventpass/approve"), array("id" => "epass-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("EventPass/approve"), array("id" => "epass-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <div class="form-group">
@@ -102,8 +102,8 @@
 </div>
 
 <div class="modal-footer">
-    <!-- <button type="submit" class="btn btn-danger"><span class="fa fa-times-circle"></span> <?php //echo lang('cancel'); ?></button>
-    <button type="submit" class="btn btn-success"><span class="fa fa-check-circle "></span> <?php //echo lang('approve'); ?></button> -->
+    <button type="submit" class="btn btn-danger" disabled><span class="fa fa-times-circle"></span> <?php echo lang('cancel'); ?></button>
+    <button type="submit" class="btn btn-success" disabled><span class="fa fa-check-circle "></span> <?php echo lang('approve'); ?></button>
 </div>
 
 <?php echo form_close(); ?>

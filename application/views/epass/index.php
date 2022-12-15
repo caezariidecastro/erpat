@@ -18,7 +18,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#todo-table").appTable({
-            source: '<?php echo_uri("eventpass/list_data") ?>',
+            source: '<?php echo_uri("EventPass/list_data") ?>',
             order: [[1, 'desc']],
             columns: [
                 {visible: false, searchable: false},
@@ -41,6 +41,7 @@
                 {text: '<?php echo lang("approved") ?>', name: "status", value: "approved", isChecked: false},
                 {text: '<?php echo lang("cancelled") ?>', name: "status", value: "cancelled", isChecked: false}
             ],
+            tableRefreshButton: true,
             // printColumns: [2, 4],
             // xlsColumns: [2, 4],
         });
