@@ -80,6 +80,11 @@ class EventPass extends CI_Controller {
             exit;
         }
 
+        if(($group == "user" || $group == "viewer") AND (int)$seats > 1) {
+            echo json_encode(array("success"=>false, "message"=>"The User/Viewer is required to have individual ticket, please enter '1' on seat."));
+            exit;
+        }
+
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $emailErr = "Invalid email format";
             echo json_encode(array("success"=>false, "message"=>"Email address is invalid."));
