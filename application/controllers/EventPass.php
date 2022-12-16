@@ -42,6 +42,12 @@ class EventPass extends MY_Controller {
         $this->template->rander("epass/index");
     }
 
+    function view(){
+        //$this->validate_user_module_permission("module_ams");
+        $view_data['test'] = "";
+        $this->load->view("epass/view", $view_data);
+    }
+
     function list_data(){
         $list_data = $this->EventPass_model->get_details(array(), true)->result();
         $result = array();

@@ -275,6 +275,17 @@ $route['mcs/epass'] = 'EventPass/index';
 $route['mcs/epass/(:any)'] = 'EventPass/$1';
 $route['mcs/epass/(:any)/(:any)'] = 'EventPass/$1/$2';
 
+$route['mcs/epass_area'] = 'Epass_Area/index';
+$route['mcs/epass_area/(:any)'] = 'Epass_Area/$1';
+$route['mcs/epass_area/(:any)/(:any)'] = 'Epass_Area/$1/$2';
+
+$route['mcs/epass_block'] = 'Epass_Block/index';
+$route['mcs/epass_block/(:any)'] = 'Epass_Block/$1';
+$route['mcs/epass_block/(:any)/(:any)'] = 'Epass_Block/$1/$2';
+
+$route['mcs/epass_seat'] = 'Epass_Seat/index';
+$route['mcs/epass_seat/(:any)'] = 'Epass_Seat/$1';
+$route['mcs/epass_seat/(:any)/(:any)'] = 'Epass_Seat/$1/$2';
 
 // MES Controller 
 $route["mes"] = "ManufacturingOrders/index";

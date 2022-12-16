@@ -856,3 +856,19 @@ $lang["record_approved"] = "The current record was approved.";
 $lang["record_cannot_be_approved"] = "The current record cannot be approve.";
 $lang["record_cancelled"] = "The current record was cancelled.";
 $lang["record_cannot_be_cancelled"] = "The current record cannot be cancel.";
+
+$lang["area"] = "Area";
+$lang["block"] = "Block";
+$lang["seat"] = "Seat";
+
+$lang["area_name"] = "Area Name";
+$lang["block_name"] = "Block Name";
+$lang["seat_name"] = "Seat Name";
+
+$lang["add_area"] = "Add Area";
+$lang["add_block"] = "Add Block";
+$lang["add_seat"] = "Add Seat";
+
+$lang["select_area"] = "Select Area";
+$lang["select_block"] = "Select Block";
+$lang["select_seat"] = "Select Seat";

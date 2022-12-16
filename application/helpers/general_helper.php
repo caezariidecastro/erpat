@@ -681,13 +681,13 @@ if (!function_exists('to_url')) {
  */
 if (!function_exists('validate_submitted_data')) {
 
-    function validate_submitted_data($fields = array()) {
+    function validate_submitted_data($fields = array(), $returnAsBool = false) {
         $ci = get_instance();
         foreach ($fields as $field_name => $requirement) {
             $ci->form_validation->set_rules($field_name, $field_name, $requirement);
         }
 
-        if ($ci->form_validation->run() == FALSE) {
+        if ($ci->form_validation->run() == FALSE && $returnAsBool == FALSE) {
             if (ENVIRONMENT === 'production') {
                 $message = lang('something_went_wrong');
             } else {
@@ -695,6 +695,8 @@ if (!function_exists('validate_submitted_data')) {
             }
             echo json_encode(array("success" => false, 'message' => $message));
             exit();
+        } else {
+            
         }
     }
 
