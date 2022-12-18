@@ -34,11 +34,18 @@ class EventPass_model extends Crud_model {
             $where .= " AND $event_pass_table.status = '$status'";
         }
 
-        $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, events.title as event_name, (SELECT group_concat(TRIM(CONCAT(areas.area_name, ' (', blocks.block_name, ') #', epass_seat.id)) SEPARATOR '\n') FROM epass_seat INNER JOIN epass_block as blocks ON blocks.id = epass_seat.block_id INNER JOIN epass_area as areas ON areas.id = blocks.area_id AND areas.event_id = $event_pass_table.event_id WHERE epass_seat.deleted = '0' AND FIND_IN_SET(epass_seat.id, $event_pass_table.seat_assign)) as assign
+        $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, events.title as event_name, group_concat(TRIM(CONCAT(seats.area_name, ' (', seats.block_name, ') ', seats.seat_name)) SEPARATOR '\n') as assign
         FROM $event_pass_table 
+            LEFT JOIN (
+                SELECT epass_seat.id as id, epass_seat.seat_name as seat_name, epass_area.event_id as event_id, epass_area.area_name as area_name, epass_block.block_name as block_name
+                FROM epass_seat
+                    INNER JOIN epass_block ON epass_block.id = epass_seat.block_id 
+                    INNER JOIN epass_area ON epass_area.id = epass_block.area_id
+                WHERE epass_seat.deleted = '0' 
+            ) as seats ON seats.event_id =  $event_pass_table.event_id AND FIND_IN_SET(seats.id, $event_pass_table.seat_assign)
             LEFT JOIN users ON users.id = $event_pass_table.user_id
             LEFT JOIN events ON events.id = $event_pass_table.event_id
-        $where";
+        $where GROUP BY $event_pass_table.uuid";
 
         return $this->db->query($sql);
     }

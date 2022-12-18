@@ -23,11 +23,12 @@ class EPass_area_model extends Crud_model {
             $where .= " AND $epass_area_table.event_id = $event_id";
         }
 
-        $sql = "SELECT $epass_area_table.*, events.title as event_name, (SELECT COUNT(id) 
-        FROM epass_block WHERE epass_block.area_id = $epass_area_table.id AND epass_block.deleted = '0') as `blocks`, (SELECT COUNT(epass_seat.id) 
-        FROM epass_seat INNER JOIN epass_block ON epass_block.area_id = $epass_area_table.id WHERE epass_seat.deleted = '0') as `seats`
+        $sql = "SELECT $epass_area_table.*, events.title as event_name, 
+        (SELECT COUNT(epass_block.id) FROM epass_block WHERE epass_block.area_id = $epass_area_table.id AND epass_block.deleted = '0') as `blocks`, 
+        (SELECT COUNT(epass_seat.id) FROM epass_seat WHERE epass_seat.block_id = epass_block.id AND epass_seat.deleted = '0') as `seats`
         FROM $epass_area_table 
             LEFT JOIN events ON events.id = $epass_area_table.event_id
+            LEFT JOIN epass_block ON epass_block.area_id = $epass_area_table.id
         $where";
 
         return $this->db->query($sql);

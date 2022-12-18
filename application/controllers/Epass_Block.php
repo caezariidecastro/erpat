@@ -124,8 +124,8 @@ class Epass_Block extends MY_Controller {
                 for($i=0; $i<$total_seats; $i++) {
                     $data = array(
                         "block_id" => $save_id,
-                        "seat_name" => "Seat #".$i,
-                        "sort" => $i,
+                        "seat_name" => "Seat #".($i+1),
+                        "sort" => ($i+1),
                         "remarks" => 'generated',
                     );
                     $this->EPass_seat_model->save($data);
