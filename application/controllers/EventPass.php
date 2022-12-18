@@ -37,6 +37,12 @@ class EventPass extends MY_Controller {
         return $labeled_status;
     }
 
+    private function _row_data($id) {
+        $options = array("id" => $id);
+        $data = $this->EventPass_model->get_details($options)->row();
+        return $this->_make_row($data);
+    }
+
     function index(){
         //$this->validate_user_module_permission("module_ams");
         $this->template->rander("epass/index");
@@ -49,7 +55,11 @@ class EventPass extends MY_Controller {
     }
 
     function list_data(){
-        $list_data = $this->EventPass_model->get_details(array(), true)->result();
+        $status = $this->input->post('status');
+
+        $list_data = $this->EventPass_model->get_details(array(
+            "status" => $status
+        ), true)->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -66,9 +76,9 @@ class EventPass extends MY_Controller {
             $data->full_name,
             strtoupper($data->group_name),
             $data->vcode,
-            nl2br($data->remarks),
+            nl2br($data->remarks?$data->remarks:""),
             $data->seats,
-            $data->assign,
+            nl2br($data->assign),
             $this->get_labeled_status($data->status),
             convert_date_utc_to_local($data->timestamp),
             modal_anchor(get_uri("EventPass/modal_form"), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
@@ -84,7 +94,7 @@ class EventPass extends MY_Controller {
 
         $view_data['model_info'] = $this->EventPass_model->get_details(array(
             "id" => $id
-        ));
+        ))->row();
 
         $this->load->view('epass/modal_form', $view_data);
     }
@@ -103,29 +113,24 @@ class EventPass extends MY_Controller {
         }
     }
 
-    function approve() {
+    function update() {
         validate_submitted_data(array(
-            "id" => "required|numeric"
+            "id" => "required|numeric",
+            "status" => "required"
         ));
-        $id = $this->input->post('id');
-        
-        if ($this->EventPass_model->approve($id)) {
-            echo json_encode(array("success" => true, 'message' => lang('record_approved')));
-        } else {
-            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_approved')));
-        }
-    }
 
-    function cancel() {
-        validate_submitted_data(array(
-            "id" => "required|numeric"
-        ));
         $id = $this->input->post('id');
-        
-        if ($this->EventPass_model->cancel($id)) {
-            echo json_encode(array("success" => true, 'message' => lang('record_cancelled')));
+        $status = $this->input->post('status');
+
+        $data = array();
+        if($status == "approved" || $status == "cancelled") {
+            $data['status'] = $this->input->post('status');
+        }
+
+        if ($this->EventPass_model->save($data, $id)) {
+            echo json_encode(array("success" => true, "data" => $this->_row_data($id), 'id' => $id, 'message' => lang('record_saved')));
         } else {
-            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_cancelled')));
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
     }
 }

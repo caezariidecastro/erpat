@@ -43,7 +43,19 @@
             ));
             ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
+            <?php
+            echo form_input(array(
+                "id" => "total_seats",
+                "name" => "total_seats",
+                "type" => "number",
+                "value" => '',
+                "class" => "form-control",
+                "placeholder" => lang('total_seats'),
+            ));
+            ?>
+        </div>
+        <div class="col-md-3">
             <?php
             echo form_input(array(
                 "id" => "sort",

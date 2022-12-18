@@ -872,3 +872,6 @@ $lang["add_seat"] = "Add Seat";
 $lang["select_area"] = "Select Area";
 $lang["select_block"] = "Select Block";
 $lang["select_seat"] = "Select Seat";
+
+$lang["total_seats"] = "Total Seat";
+$lang["total_blocks"] = "Total Block";

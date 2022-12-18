@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("EventPass/approve"), array("id" => "epass-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("EventPass/update"), array("id" => "epass-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <div class="form-group">
@@ -102,17 +102,22 @@
 </div>
 
 <div class="modal-footer">
-    <button type="submit" class="btn btn-danger" disabled><span class="fa fa-times-circle"></span> <?php echo lang('cancel'); ?></button>
-    <button type="submit" class="btn btn-success" disabled><span class="fa fa-check-circle "></span> <?php echo lang('approve'); ?></button>
+    <input id="epass_status_input" type="hidden" name="status" value="" />
+    <button data-status="cancelled" type="submit" class="btn btn-danger update-epass-status"><span class="fa fa-times-circle"></span> <?php echo lang('cancel'); ?></button>
+    <button data-status="approved" type="submit" class="btn btn-success update-epass-status"><span class="fa fa-check-circle "></span> <?php echo lang('approve'); ?></button>
 </div>
 
 <?php echo form_close(); ?>
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $(".update-epass-status").click(function() {
+            $("#epass_status_input").val($(this).attr("data-status"));
+        });
+
         $("#epass-form").appForm({
             onSuccess: function (result) {
-                // $("#epass-table").appTable({newData: result.data, dataId: result.id});
+                $("#epass-table").appTable({newData: result.data, dataId: result.id});
             }
         });
         $("#title").focus();

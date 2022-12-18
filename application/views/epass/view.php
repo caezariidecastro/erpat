@@ -15,6 +15,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        
         $("#epass-table").appTable({
             source: '<?php echo_uri("EventPass/list_data") ?>',
             order: [[1, 'desc']],
@@ -29,12 +30,12 @@
                 {title: '<?php echo lang("virtual_id"); ?>'},
                 {title: '<?php echo lang("remarks"); ?>'},
                 {title: '<?php echo lang("seats_requested"); ?>'},
-                {title: '<?php echo lang("seats_assignment"); ?>'},
+                {title: '<?php echo lang("seats_assignment"); ?>', "class": "w200"},
                 {title: '<?php echo lang("status"); ?>'},
                 {title: '<?php echo lang("date"); ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
-            checkBoxes: [
+            radioButtons: [
                 {text: '<?php echo lang("draft") ?>', name: "status", value: "draft", isChecked: true},
                 {text: '<?php echo lang("approved") ?>', name: "status", value: "approved", isChecked: false},
                 {text: '<?php echo lang("cancelled") ?>', name: "status", value: "cancelled", isChecked: false}

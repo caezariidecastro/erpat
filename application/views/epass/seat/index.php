@@ -23,6 +23,7 @@
                 {title: '<?php echo lang("area_name"); ?>'},
                 {title: '<?php echo lang("block_name"); ?>'},
                 {title: '<?php echo lang("seat_name"); ?>'},
+                {title: '<?php echo lang("status"); ?>'},
                 {title: '<?php echo lang("sort"); ?>'},
                 {title: '<?php echo lang("remarks"); ?>'},
                 {title: '<?php echo lang("date"); ?>'},

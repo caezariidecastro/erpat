@@ -8,6 +8,7 @@ class Epass_Block extends MY_Controller {
 	function __construct() {
        	parent::__construct();
         $this->load->library('encryption');
+        $this->load->model("EPass_seat_model");
 		$this->load->model("EPass_block_model");
         $this->load->model("EPass_area_model");
         $this->load->model("Events_model");
@@ -70,8 +71,9 @@ class Epass_Block extends MY_Controller {
             modal_anchor(get_uri("events/view"), $data->event_name, array("class" => "edit", "title" => lang('event_name'), "data-post-id" => encode_id($data->event_id, "event_id"))),
             $data->area_name,
             $data->block_name,
+            $data->seats,
             $data->sort,
-            nl2br($data->remarks),
+            nl2br($data->remarks?$data->remarks:""),
             convert_date_utc_to_local($data->update_at),
             modal_anchor(get_uri("EPass_Block/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("EPass_Area/delete"), "data-action" => "delete-confirmation"))
@@ -106,6 +108,7 @@ class Epass_Block extends MY_Controller {
         $block_name = $this->input->post('block_name');
         $sort = $this->input->post('sort');
         $remarks = $this->input->post('remarks');
+        $total_seats = $this->input->post('total_seats');
 
         $data = array(
             "area_id" => $this->input->post('area_id'),
@@ -117,6 +120,17 @@ class Epass_Block extends MY_Controller {
 
         $save_id = $this->EPass_block_model->save($data, $id);
         if ($save_id) {
+            if(!$id && (int)$total_seats > 1) { //new
+                for($i=0; $i<$total_seats; $i++) {
+                    $data = array(
+                        "block_id" => $save_id,
+                        "seat_name" => "Seat #".$i,
+                        "sort" => $i,
+                        "remarks" => 'generated',
+                    );
+                    $this->EPass_seat_model->save($data);
+                }
+            }
             echo json_encode(array("success" => true, "data" => $this->_row_data($save_id), 'id' => $save_id, 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));

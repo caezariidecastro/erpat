@@ -29,22 +29,18 @@ class EventPass_model extends Crud_model {
             $where .= " AND $event_pass_table.event_id = $event_id";
         }
 
-        $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, events.title as event_name, seat_assign as assign
+        $status = get_array_value($options, "status");
+        if ($status) {
+            $where .= " AND $event_pass_table.status = '$status'";
+        }
+
+        $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, events.title as event_name, (SELECT group_concat(TRIM(CONCAT(areas.area_name, ' (', blocks.block_name, ') #', epass_seat.id)) SEPARATOR '\n') FROM epass_seat INNER JOIN epass_block as blocks ON blocks.id = epass_seat.block_id INNER JOIN epass_area as areas ON areas.id = blocks.area_id AND areas.event_id = $event_pass_table.event_id WHERE epass_seat.deleted = '0' AND FIND_IN_SET(epass_seat.id, $event_pass_table.seat_assign)) as assign
         FROM $event_pass_table 
             LEFT JOIN users ON users.id = $event_pass_table.user_id
             LEFT JOIN events ON events.id = $event_pass_table.event_id
         $where";
-        $result = $this->db->query($sql);
 
-        if($result->num_rows()) {
-            if($lists) {
-                return $result;
-            }
-
-            return $result->row();
-        } else {
-            return false;
-        }
+        return $this->db->query($sql);
     }
 
     function save_email() {
@@ -73,13 +69,5 @@ class EventPass_model extends Crud_model {
         );
 
         return $this->Email_templates_model->save($data, $template->id);
-    }
-
-    function approve($id) {
-        return true;
-    }
-
-    function cancel($id) {
-        return true;
     }
 }

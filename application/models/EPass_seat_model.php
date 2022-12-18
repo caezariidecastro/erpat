@@ -21,7 +21,7 @@ class EPass_seat_model extends Crud_model {
             $where .= " AND $epass_seat_table.event_id = $event_id";
         }
 
-        $sql = "SELECT $epass_seat_table.*, events.title as event_name, epass_area.event_id as event_id, epass_area.area_name as area_name, epass_block.block_name as block_name
+        $sql = "SELECT $epass_seat_table.*, events.title as event_name, epass_area.event_id as event_id, epass_area.area_name as area_name, epass_block.block_name as block_name, (SELECT COUNT(id) FROM event_pass WHERE FIND_IN_SET($epass_seat_table.id, event_pass.seat_assign)) as assigned
         FROM $epass_seat_table 
             LEFT JOIN epass_block ON epass_block.id = $epass_seat_table.block_id
             LEFT JOIN epass_area ON epass_area.id = epass_block.area_id

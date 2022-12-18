@@ -50,8 +50,10 @@ class Epass_Area extends MY_Controller {
             $data->id,
             modal_anchor(get_uri("events/view"), $data->event_name, array("class" => "edit", "title" => lang('event_name'), "data-post-id" => encode_id($data->event_id, "event_id"))),
             $data->area_name,
+            $data->blocks,
+            $data->seats,
             $data->sort,
-            nl2br($data->remarks),
+            nl2br($data->remarks?$data->remarks:""),
             convert_date_utc_to_local($data->update_at),
             modal_anchor(get_uri("EPass_Area/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("EPass_Area/delete"), "data-action" => "delete-confirmation"))
