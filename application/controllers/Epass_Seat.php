@@ -106,8 +106,8 @@ class Epass_Seat extends MY_Controller {
             $data->sort,
             nl2br($data->remarks?$data->remarks:""),
             convert_date_utc_to_local($data->update_at),
-            modal_anchor(get_uri("EPass_Seat/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("EPass_Seat/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("Epass_Seat/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("Epass_Seat/delete"), "data-action" => "delete-confirmation"))
         );
     }
 

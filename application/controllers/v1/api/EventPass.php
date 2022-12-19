@@ -124,7 +124,7 @@ class EventPass extends CI_Controller {
         $current_pass = $this->EventPass_model->get_details(array(
             "user_id" => $cur_user->id,
             "event_id" => $event_id
-        ));
+        ))->row();
 
         //save if not found
         if(!$current_pass) {
@@ -139,7 +139,7 @@ class EventPass extends CI_Controller {
         $latest_pass = $this->EventPass_model->get_details(array(
             "user_id" => $cur_user->id,
             "event_id" => $event_id
-        ));
+        ))->row();
 
         echo json_encode(array("success" => true, 'data' => array(
             "uuid" => $latest_pass->uuid,
