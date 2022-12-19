@@ -9,6 +9,7 @@ class EventPass extends MY_Controller {
        	parent::__construct();
         $this->load->library('encryption');
 		$this->load->model("EventPass_model");
+        $this->load->model("EPass_seat_model");
         $this->load->model("Users_model");
         $this->load->model("Email_templates_model");
         $this->load->helper('utility');
@@ -125,6 +126,26 @@ class EventPass extends MY_Controller {
         $data = array();
         if($status == "approved" || $status == "cancelled") {
             $data['status'] = $this->input->post('status');
+
+            if($status == "approved") {
+                $epass_instance = $this->EventPass_model->get_details(array(
+                    "id" => $id
+                ))->row();
+
+                $seat_option = array(
+                    "event_id" => $epass_instance->event_id,
+                    "group_name" => $epass_instance->group_name,
+                    "seat_requested" => $epass_instance->seats
+                );
+                $avail_seat = $this->EPass_seat_model->get_seats_available($seat_option)->result();
+
+                $seat_assigned = array();
+                foreach($avail_seat as $item) {
+                    $seat_assigned[] = $item->id;
+                }
+
+                $data['seat_assign'] = implode(",", $seat_assigned);
+            }
         }
 
         if ($this->EventPass_model->save($data, $id)) {
@@ -133,4 +154,5 @@ class EventPass extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
     }
+
 }
