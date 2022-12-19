@@ -68,7 +68,10 @@ class EventPass extends CI_Controller {
         $seats = $this->input->post('seat');
         $group = $this->input->post('group');
         $vcode = $this->input->post('vcode');
+        $address = $this->input->post('address');
         $remarks = $this->input->post('remarks');
+
+        $remarks = "Remarks: ".$remarks."\n\nAddress: ".$address;
 
         if(empty($event_id) || empty($first_name) || empty($last_name) || empty($phone) || empty($email) || empty($seats) || empty($group)) {
             echo json_encode(array("success"=>false, "message"=>"Please complete all required fields."));
@@ -114,6 +117,7 @@ class EventPass extends CI_Controller {
             "uuid" => $this->uuid->v4(),
             "event_id" => $event_id,
             "user_id" => $cur_user->id,
+            "vcode" => $vcode,
             "seats" => $seats,
             "group_name" => $group,
             "remarks" => $remarks,
