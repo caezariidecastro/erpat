@@ -21,7 +21,9 @@ class Roles extends MY_Controller {
             array("payroll_edit", "Coming Soon", "Payroll", "Edit", null),
             array("payroll_remove", "Coming Soon", "Payroll","Remove", null),
 
-            //Project Planning
+            //Marketing
+            array("event_epass", "Coming Soon", "Event Pass", "Enabled", null),
+            array("epass_create", "Coming Soon", "Event Pass", "Create", null),
 
             //TODO: Soon to be remove
             array("module_hrs", "Coming Soon", "Human Resource", "Enabled", null),

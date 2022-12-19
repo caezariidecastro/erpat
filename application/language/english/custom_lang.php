@@ -875,3 +875,9 @@ $lang["select_seat"] = "Select Seat";
 
 $lang["total_seats"] = "Total Seat";
 $lang["total_blocks"] = "Total Block";
+
+$lang["add_epass"] = "Add ePass";
+$lang["vcode"] = "Virtual ID";
+
+$lang["seats"] = "Seats Requested";
+$lang["select_seats"] = "Select Seats";

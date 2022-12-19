@@ -42,23 +42,31 @@ class EPass_seat_model extends Crud_model {
             $where = "AND (epass_area.area_name LIKE '%Lower Box%' OR epass_area.area_name LIKE '%Upper Box%')";
         } else if($group_name == "franchisee") {
             $where = "AND epass_area.area_name LIKE '%Patron%'";
-        } else {
+        } else if($group_name == "viewer") {
             $where = "AND (epass_area.area_name LIKE '%Upper Box%' OR epass_area.area_name LIKE '%Gen. Admin%')";
+        } else {
+            $where = "";
+        }
+
+        if($block_id = get_array_value($options, "block_id")) {
+            $block_id = "AND epass_block.id = '$block_id'";
         }
 
         $event_id = get_array_value($options, "event_id");
-        $seat_requested = get_array_value($options, "seat_requested");
+        if($seat_requested = get_array_value($options, "seat_requested")) {
+            $seat_requested = " LIMIT $seat_requested"; 
+        }
 
-        $sql = "SELECT epass_area.area_name, epass_seat.id, epass_seat.seat_name, (SELECT COUNT(event_pass.id) FROM event_pass WHERE FIND_IN_SET(epass_seat.id, event_pass.seat_assign)) as assigned, epass_seat.sort
+        $sql = "SELECT epass_area.area_name, epass_block.block_name, epass_seat.id, epass_seat.seat_name, (SELECT COUNT(event_pass.id) FROM event_pass WHERE FIND_IN_SET(epass_seat.id, event_pass.seat_assign)) as assigned, epass_seat.sort
         FROM `epass_seat` 
             INNER JOIN epass_block ON epass_block.id = epass_seat.block_id 
             INNER JOIN epass_area ON epass_area.id = epass_block.area_id 
             LEFT JOIN event_pass ON FIND_IN_SET(epass_seat.id, event_pass.seat_assign) 
         WHERE 
             epass_area.event_id = '$event_id' AND 
-            event_pass.id IS NULL $where
+            event_pass.id IS NULL $block_id $where
         ORDER BY epass_seat.block_id ASC, epass_seat.sort ASC
-        LIMIT $seat_requested";
+        $seat_requested";
 
         return $this->db->query($sql);
     }

@@ -355,7 +355,7 @@ class Left_menu {
                 $sidebar_menu["pages"] = array("name" => "pages", "url" => "pages", "class" => "fa-circle");
             }
 
-            if( check_module_enabled("module_epass") ) {
+            if( check_module_enabled("module_epass") && user_role_has_permission("event_epass") ) {
                 $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
             }
 

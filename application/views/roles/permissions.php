@@ -90,12 +90,12 @@
                     $(".select2").select2();
                     
                     console.log("Permissions loaded!");
-                }, 5000);
-            }
+                }, 100);
+            },
+            tableRefreshButton: true,
         });
 
         $('#permission-table tbody').on('click', 'tr', function () {
-            appLoader.show();
             appLoader.hide();
             return false;
         });

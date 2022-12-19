@@ -51,6 +51,20 @@ class Epass_Seat extends MY_Controller {
         return $event_lists;
     }
 
+    function get_seat_select2_data($block_id) {
+        $seats_involved = $this->EPass_seat_model->get_seats_available(array(
+            "event_id" => 3,
+            "block_id" => $block_id,
+        ))->result();
+
+        $seats_dropdown = array(array("id" => "", "text" => "- ".lang('select_seats')." -"));
+        foreach ($seats_involved as $item) {
+            $seats_dropdown[] = array("id" => $item->id, "text" => $item->area_name.": ".$item->block_name." > ".$item->seat_name);
+        }
+
+        return $seats_dropdown;
+    }
+
     private function get_labeled_status($status){
         $labeled_status = "";
 
@@ -78,6 +92,12 @@ class Epass_Seat extends MY_Controller {
     function list_blocks($area_id) {
         echo json_encode(array(
             "data" => $this->get_block_select2_data($area_id)   
+        ));
+    }
+
+    function list_available($block_id) {
+        echo json_encode(array(
+            "data" => $this->get_seat_select2_data($block_id)   
         ));
     }
 
@@ -125,7 +145,7 @@ class Epass_Seat extends MY_Controller {
 
         $view_data['events_dropdown'] = $this->get_event_select2_data();
         $view_data['areas_dropdown'] = array(array("id" => "", "text" => "- Select Event First -"));
-        $view_data['blocks_dropdown'] = array(array("id" => "", "text" => "- Select Areas First -"));;
+        $view_data['blocks_dropdown'] = array(array("id" => "", "text" => "- Select Areas First -"));
         $this->load->view('epass/seat/modal_form', $view_data);
     }
 

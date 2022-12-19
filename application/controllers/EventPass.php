@@ -9,8 +9,10 @@ class EventPass extends MY_Controller {
        	parent::__construct();
         $this->load->library('encryption');
 		$this->load->model("EventPass_model");
+        $this->load->model("Events_model");
         $this->load->model("EPass_seat_model");
-        $this->load->model("Users_model");
+        $this->load->model("EPass_block_model");
+        $this->load->model("EPass_area_model");
         $this->load->model("Email_templates_model");
         $this->load->helper('utility');
     }
@@ -22,6 +24,42 @@ class EventPass extends MY_Controller {
             $consumer_list[] = array("id" => $value->id, "text" => trim($value->first_name . " " . $value->last_name));
         }
         echo json_encode($consumer_list);
+    }
+
+    function get_event_select2_data() {
+        $events = $this->Events_model->get_details(array(
+            "start_date" => get_current_utc_time('Y-m-d'),
+            "end_date" => add_period_to_date(get_current_utc_time('Y-m-d'), 365)
+        ))->result();
+        $event_lists = array(array("id" => "", "text" => "- Select Event -"));
+        foreach ($events as $key => $value) {
+            $event_lists[] = array("id" => $value->id, "text" => trim($value->title . " (" . $value->start_date . " to " . $value->start_date .")"));
+        }
+        return $event_lists;
+    }
+
+    function get_area_select2_data($event_id) {
+        $events = $this->EPass_area_model->get_details(array(
+            "event_id" => $event_id
+        ))->result();
+
+        $event_lists = array(array("id" => "", "text" => "- ".lang('select_area')." -"));
+        foreach ($events as $key => $value) {
+            $event_lists[] = array("id" => $value->id, "text" => $value->area_name . " (" . trim($value->event_name.")"));
+        }
+        return $event_lists;
+    }
+
+    function get_block_select2_data($area_id) {
+        $events = $this->EPass_block_model->get_details(array(
+            "area_id" => $area_id
+        ))->result();
+
+        $event_lists = array(array("id" => "", "text" => "- ".lang('select_block')." -"));
+        foreach ($events as $key => $value) {
+            $event_lists[] = array("id" => $value->id, "text" => $value->block_name ." in ". $value->area_name . " (" . trim($value->event_name.")"));
+        }
+        return $event_lists;
     }
 
     private function get_labeled_status($status){
@@ -100,6 +138,23 @@ class EventPass extends MY_Controller {
         $this->load->view('epass/modal_form', $view_data);
     }
 
+    function modal_form_add() {
+        $view_data['events_dropdown'] = $this->get_event_select2_data();
+        $view_data['areas_dropdown'] = array(array("id" => "", "text" => "- Select Event First -"));
+        $view_data['blocks_dropdown'] = array(array("id" => "", "text" => "- Select Areas First -"));
+        $view_data['seats_dropdown'] = array(array("id" => "", "text" => "- Select Block First -"));
+        
+        $view_data['group_name_dropdown'] = array(
+            array("id" => "", "text" => "- Select Group -"),
+            array("id" => "viewer", "text" => "User / Viewer"),
+            array("id" => "seller", "text" => "Seller"),
+            array("id" => "distributor", "text" => "Distributor"),
+            array("id" => "franchiee", "text" => "Franchisee")
+        );
+
+        $this->load->view('epass/modal_form_add', $view_data);
+    }
+
     function delete() {
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -132,23 +187,55 @@ class EventPass extends MY_Controller {
                     "id" => $id
                 ))->row();
 
-                $seat_option = array(
-                    "event_id" => $epass_instance->event_id,
-                    "group_name" => $epass_instance->group_name,
-                    "seat_requested" => $epass_instance->seats
-                );
-                $avail_seat = $this->EPass_seat_model->get_seats_available($seat_option)->result();
-
-                $seat_assigned = array();
-                foreach($avail_seat as $item) {
-                    $seat_assigned[] = $item->id;
+                if(!$epass_instance->seat_assign) {
+                    $seat_option = array(
+                        "event_id" => $epass_instance->event_id,
+                        "group_name" => $epass_instance->group_name,
+                        "seat_requested" => $epass_instance->seats
+                    );
+                    $avail_seat = $this->EPass_seat_model->get_seats_available($seat_option)->result();
+    
+                    $seat_assigned = array();
+                    foreach($avail_seat as $item) {
+                        $seat_assigned[] = $item->id;
+                    }
+    
+                    $data['seat_assign'] = implode(",", $seat_assigned);
                 }
-
-                $data['seat_assign'] = implode(",", $seat_assigned);
             }
         }
 
         if ($this->EventPass_model->save($data, $id)) {
+            echo json_encode(array("success" => true, "data" => $this->_row_data($id), 'id' => $id, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function reserve() {
+        $event_id = $this->input->post('event_id');
+        $assigned = $this->input->post('seat_assigned');
+        $remarks = $this->input->post('remarks');
+        $remarks = "Remarks: ".$remarks."\n\nAddress: ".$address;
+
+        if(empty($event_id) || empty($assigned)) {
+            echo json_encode(array("success"=>false, "message"=>"Please complete all required fields."));
+            exit;
+        }
+
+        $seats = explode(",", $assigned);
+        $epass_data = array(
+            "uuid" => $this->uuid->v4(),
+            "event_id" => $event_id,
+            "user_id" => 0,
+            "seats" => count($seats),
+            "group_name" => "reserved",
+            "seat_assign" => $assigned,
+            "remarks" => $remarks,
+            "timestamp" => get_current_utc_time()
+        );
+        
+        if ($id = $this->EventPass_model->save($epass_data)) {
             echo json_encode(array("success" => true, "data" => $this->_row_data($id), 'id' => $id, 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));

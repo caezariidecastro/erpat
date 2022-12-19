@@ -2,8 +2,7 @@
     <div class="panel panel-default">
         <div class="page-title clearfix">
             <div class="title-button-group">
-                <!-- Add button to manually add ticket. -->
-                <?php //echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "to_do")); ?>
+                <?php echo modal_anchor(get_uri("EventPass/modal_form_add"), "<i class='fa fa-plus'></i> " . lang('add_epass'), array("class" => "btn btn-default", "title" => lang('add_epass'))); ?>
             </div>
         </div>
         <div class="table-responsive">
