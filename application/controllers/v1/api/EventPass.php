@@ -50,8 +50,8 @@ class EventPass extends CI_Controller {
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
         send_app_mail($email, $email_template->subject, $message, array(
             "attachments" => array(
-                array("file_path" => $qrcode),
-                array("file_path" => "https://brilliantskinessentialsinc.com/files/timeline_files/note_file639977518db2e-pinakamakinang2022.png"),
+                //array("file_path" => $qrcode),
+                //array("file_path" => "https://brilliantskinessentialsinc.com/files/timeline_files/note_file639977518db2e-pinakamakinang2022.png"),
             ), 
             //"cc" => $cc, 
             "bcc" => "admin@brilliantskinessentialsinc.com"
@@ -83,8 +83,8 @@ class EventPass extends CI_Controller {
             exit;
         }
 
-        if(($group == "user" || $group == "viewer") AND (int)$seats > 1) {
-            echo json_encode(array("success"=>false, "message"=>"The User/Viewer is required to have individual ticket, please enter '1' on seat."));
+        if($group != "viewer" && empty($vcode)) {
+            echo json_encode(array("success"=>false, "message"=>"As a".strtoupper($group).", you are required to provide your Virtual ID code."));
             exit;
         }
 
@@ -134,8 +134,9 @@ class EventPass extends CI_Controller {
         if(!$current_pass) {
             $epass_id = $this->EventPass_model->save($epass_data);
 
-            $qr_code = "data:image/png;base64,".get_qrcode_image($epass_id, 'event_pass', 'verify', false, 120);
-            $saved_url = save_base_64_image($qr_code, get_setting("event_epass_path"));
+            $qr_code = "";
+            //$qr_code = "data:image/png;base64,".get_qrcode_image($epass_id, 'event_pass', 'verify', false, 120);
+            //$saved_url = save_base_64_image($qr_code, get_setting("event_epass_path"));
             $this->email(strtoupper($epass_data['uuid']), $first_name, $last_name, $email, $phone, $seats, strtoupper($group), $saved_url, $remarks);
         }
         
