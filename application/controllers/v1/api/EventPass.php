@@ -71,7 +71,7 @@ class EventPass extends CI_Controller {
         $address = $this->input->post('address');
         $remarks = $this->input->post('remarks');
 
-        $remarks = "Remarks: ".$remarks."\n\nAddress: ".$address;
+        $detailed = $remarks."\n\n".$address;
 
         if(empty($event_id) || empty($first_name) || empty($last_name) || empty($phone) || empty($email) || empty($seats) || empty($group)) {
             echo json_encode(array("success"=>false, "message"=>"Please complete all required fields."));
@@ -84,7 +84,7 @@ class EventPass extends CI_Controller {
         }
 
         if($group != "viewer" && empty($vcode)) {
-            echo json_encode(array("success"=>false, "message"=>"As a".strtoupper($group).", you are required to provide your Virtual ID code."));
+            echo json_encode(array("success"=>false, "message"=>"As a ".strtoupper($group).", you are required to provide your Virtual ID code."));
             exit;
         }
 
@@ -120,7 +120,7 @@ class EventPass extends CI_Controller {
             "vcode" => $vcode,
             "seats" => $seats,
             "group_name" => $group,
-            "remarks" => $remarks,
+            "remarks" => $detailed,
             "timestamp" => get_current_utc_time()
         );
 
