@@ -603,6 +603,7 @@ class Settings extends MY_Controller {
 
            'employee' => 'Human Resource',
            'department' => 'Human Resource',
+           'access' => 'Human Resource',
            'attendance' => 'Human Resource',
            'schedule' => 'Human Resource',
            'overtime' => 'Human Resource',
@@ -715,7 +716,7 @@ class Settings extends MY_Controller {
         $settings = array(
             "module_timeline", "module_event", "module_todo", "module_note", "module_message", "module_chat", "module_announcement", 
         "module_hrs", 
-            "module_department", "module_employee", "module_attendance", "module_overtime", "module_disciplinary", "module_leave", "module_holidays",
+            "module_department", "module_employee", "module_attendance", "module_overtime", "module_disciplinary", "module_leave", "module_holidays", "module_access",
         "module_fas", 
             "module_summary", "module_payments", "module_expense", "module_contributions", "module_incentives", "module_payrolls", "module_accounts", "module_transfer", "module_balancesheet",
         "module_mes", 

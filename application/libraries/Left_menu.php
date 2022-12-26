@@ -355,8 +355,12 @@ class Left_menu {
                 $sidebar_menu["pages"] = array("name" => "pages", "url" => "pages", "class" => "fa-circle");
             }
 
-            if( check_module_enabled("module_epass") && user_role_has_permission("event_epass") ) {
+            if( check_module_enabled("module_epass") && ($this->ci->login_user->is_admin || user_role_has_permission("event_epass")) ) {
                 $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
+            }
+
+            if( check_module_enabled("module_access") && ($this->ci->login_user->is_admin || user_role_has_permission("access_logs")) ) {
+                $sidebar_menu["access_logs"] = array("name" => "access_logs", "url" => "access_logs", "class" => "fa-circle");
             }
 
             if (is_user_has_module_permission("module_lds")) {

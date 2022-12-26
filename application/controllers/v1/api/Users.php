@@ -18,6 +18,56 @@ class Users extends CI_Controller {
         }
     }
 
+    function log_access($api_key) {
+
+        $user_id = $this->input->get('user_id');
+        $remarks = $this->input->get('remarks'); //entry or exit
+        $api_secret = $this->input->get('api_secret');
+
+        if( empty($api_key) || empty($user_id) || empty($api_secret) ) {
+            echo json_encode(array("success" => false, 'message' => lang('something_went_wrong')." Error: Request incomplete."));
+            return;
+        }
+
+        //Load all the required modules.
+        $this->load->model('Access_logs_model');
+        $this->load->model('Access_devices_model');
+
+        //Check if the api key and secret if valid.
+        $device_option = array(
+            'api_key' => $api_key,
+        );
+        $device = $this->Access_devices_model->get_details($device_option)->row();
+
+        if(!isset($device->id) && $device->api_secret != $api_secret) {
+            echo json_encode(array("success" => false, 'message' => lang('something_went_wrong')." Error: Device unauthorized."));
+            return;
+        }
+
+        //Validate the user if has access to this device.
+        $pass_list = explode(",", $device->passes);
+        if(!in_array($user_id, $pass_list) ) {
+            echo json_encode(array("success" => $device->id, 'message' => lang('something_went_wrong')." Error: User dont have access."));
+            return;
+        }
+
+        $data = array(
+            "device_id" => $device->id,
+            "user_id" => $user_id,
+            "remarks" => $remarks,
+            "timestamp" => get_current_utc_time(),
+        );
+        $data = clean_data($data);
+
+        $save_id = $this->Access_logs_model->save($data);
+        if ($save_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('something_went_wrong')." Error: System failure."));
+            
+        }
+    }
+
     function signin() {
         $email = $this->input->post('email');
         $pword = $this->input->post('pword');

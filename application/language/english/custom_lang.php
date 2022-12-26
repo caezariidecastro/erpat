@@ -881,3 +881,20 @@ $lang["vcode"] = "Virtual ID";
 
 $lang["seats"] = "Seats Requested";
 $lang["select_seats"] = "Select Seats";
+
+$lang["module_access"] = "Access Module";
+$lang["access"] = "Access";
+$lang["logs"] = "Logs";
+$lang["devices"] = "Devices";
+$lang["device"] = "Device";
+$lang["add_device"] = "Add Device";
+$lang["device_name"] = "Device Name";
+$lang["device_category"] = "Device Category";
+$lang["timestamp"] = "Timestamp";
+$lang["door_access"] = "Door Access";
+$lang["access_logs"] = "Access Logs";
+$lang["generate_new_secret"] = "Generate new Secret";
+$lang["show_secret"] = "Show Secret";
+
+$lang["passes"] = "Passes";
+$lang["access_lists"] = "Access Lists";
