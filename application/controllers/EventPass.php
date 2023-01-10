@@ -161,8 +161,9 @@ class EventPass extends MY_Controller {
         ));
         
         $id = $this->input->post('id');
+        $data['seat_assign'] = "";
         
-        if ($this->EventPass_model->delete($id)) {
+        if ($this->EventPass_model->save($data, $id) && $this->EventPass_model->delete($id)) {
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -202,7 +203,9 @@ class EventPass extends MY_Controller {
     
                     $data['seat_assign'] = implode(",", $seat_assigned);
                 }
-            }
+            } else {
+				$data['seat_assign'] = "";
+			}
         }
 
         if ($this->EventPass_model->save($data, $id)) {

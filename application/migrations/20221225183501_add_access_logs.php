@@ -24,7 +24,7 @@ class Migration_Add_access_logs extends CI_Migration {
                     'null' => true
                 ),
                 'timestamp' => array(
-                    'type' => 'timestamp',
+                    'type' => 'datetime',
                     'null' => false
                 ),
                 'updated_at timestamp default current_timestamp on update current_timestamp',

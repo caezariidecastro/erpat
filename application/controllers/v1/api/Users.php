@@ -35,7 +35,7 @@ class Users extends CI_Controller {
 
         //Check if the api key and secret if valid.
         $device_option = array(
-            'api_key' => $api_key,
+            'api_key' => strtolower($api_key),
         );
         $device = $this->Access_devices_model->get_details($device_option)->row();
 
@@ -47,7 +47,7 @@ class Users extends CI_Controller {
         //Validate the user if has access to this device.
         $pass_list = explode(",", $device->passes);
         if(!in_array($user_id, $pass_list) ) {
-            echo json_encode(array("success" => $device->id, 'message' => lang('something_went_wrong')." Error: User dont have access."));
+            echo json_encode(array("success" => false, 'message' => lang('something_went_wrong')." Error: User dont have access."));
             return;
         }
 
