@@ -634,6 +634,7 @@ class Settings extends MY_Controller {
 
            'lead' => 'Marketing',
            'epass' => 'Marketing',
+           'raffle' => 'Marketing',
 
            'productions' => 'Productions',
            'billofmaterials' => 'Productions',

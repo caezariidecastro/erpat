@@ -363,6 +363,10 @@ class Left_menu {
                 $sidebar_menu["access_logs"] = array("name" => "access_logs", "url" => "access_logs", "class" => "fa-circle");
             }
 
+            if( check_module_enabled("module_raffle") && ($this->ci->login_user->is_admin || user_role_has_permission("raffle_draw")) ) {
+                $sidebar_menu["module_raffle"] = array("name" => "raffle_draw", "url" => "raffle_draw", "class" => "fa-circle");
+            }
+
             if (is_user_has_module_permission("module_lds")) {
                 $sidebar_menu["deliveries"] = array("name" => "submenu_lms_delivery", "url" => "lds/deliveries", "class" => "fa-circle");
                 $sidebar_menu["warehouses"] = array("name" => "submenu_lms_warehouse", "url" => "lds/warehouses", "class" => "fa-circle");

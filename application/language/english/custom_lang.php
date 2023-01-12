@@ -898,3 +898,22 @@ $lang["show_secret"] = "Show Secret";
 
 $lang["passes"] = "Passes";
 $lang["access_lists"] = "Access Lists";
+
+$lang["raffle"] = "Raffle Draw";
+$lang["raffle_draw"] = "Raffle Draw";
+$lang["ranking"] = "Ranking";
+$lang["draw_date"] = "Draw Date";
+$lang["number_of_winners"] = "Number of Winners";
+$lang["create_new_draw"] = "Create New Draw";
+$lang["update_Status"] = "Update Status";
+$lang["view_winners"] = "View Winners";
+$lang["winners"] = "Winners";
+$lang["view_participants"] = "View Participants";
+$lang["participants"] = "Participants";
+
+$lang["raffle_not_exist"] = "Raffle draw does not exist.";
+$lang["raffle_user_exist"] = "User is already a participant.";
+$lang["user_not_exist"] = "The user does not exist in the category.";
+$lang["winners_completed"] = "All winners had been declared.";
+$lang["test_draw"] = "Single Draw";
+$lang["no_participants"] = "There are no participants left.";

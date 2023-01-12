@@ -27,6 +27,7 @@ class Roles extends MY_Controller {
             //Marketing
             array("event_epass", "Coming Soon", "Event Pass", "Enabled", null),
             array("epass_create", "Coming Soon", "Event Pass", "Create", null),
+            array("raffle_draw", "Coming Soon", "Raffle Draw", "Enabled", null),
 
             //TODO: Soon to be remove
             array("module_hrs", "Coming Soon", "Human Resource", "Enabled", null),
