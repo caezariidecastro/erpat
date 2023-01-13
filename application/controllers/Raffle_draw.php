@@ -357,7 +357,7 @@ class Raffle_draw extends MY_Controller {
                     $data->id,
                     $data->uuid,
                     get_team_member_profile_link($data->user_id, $data->user_name, array("target" => "_blank")),
-                    $data->remarks,
+                    "Backend Draw",
                     $data->updated_at,
                 );
 

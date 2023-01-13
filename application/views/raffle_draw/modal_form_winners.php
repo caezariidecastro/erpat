@@ -1,4 +1,4 @@
-<div id="page-content" class="p20 clearfix">
+<div id="page-content" class="p20 clearfix winners-modal">
     <div class="page-title clearfix">
         <h1> <?php echo lang("raffle").": ".$model_info->title; ?></h1>
     </div>
@@ -47,10 +47,14 @@
                     }
                 }
             },
+            beforeAjaxSubmit: function(data, self, options) {
+                appLoader.show({container: ".winners-modal", css: "left:0; top: 50%;"});
+            },
             onAjaxSuccess: function (result) {
                 if(!result.success) {
                     alert(result.message);
                 }
+                appLoader.hide();
             }
         });
 
