@@ -8,6 +8,16 @@
             </table>
         </div>
     </div>
+    <div class="page-title clearfix">
+        <div class="title-button-group" style="display: flex; margin-bottom: 10px;">
+            <?php echo form_open(get_uri("Raffle_draw/join_subscribers/".$model_info->id), array("id" => "join_subscribers-form", "class" => "general-form", "role" => "form")); ?>
+                <button type="submit" class="btn btn-warning"><span class="fa fa-plus "></span>  <?php echo lang('join_subscribers'); ?></button>
+            <?php echo form_close(); ?>
+            <?php echo form_open(get_uri("Raffle_draw/clear_participants/".$model_info->id), array("id" => "clear_participants-form", "class" => "general-form", "role" => "form")); ?>
+                <button type="submit" class="btn btn-danger"><span class="fa fa-trash "></span>  <?php echo lang('clear_participants'); ?></button>
+            <?php echo form_close(); ?>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -26,6 +36,35 @@
             tableRefreshButton: true,
             printColumns: [1,2,3,4],
             xlsColumns: [1,2,3,4],
+        });
+
+        $("#join_subscribers-form").appForm({
+            closeModalOnSuccess: false,
+            onSuccess: function (result) {
+                if(result.success) {
+                    $('#participants_list-table').DataTable().ajax.reload();
+                }
+            },
+            onAjaxSuccess: function (result) {
+                if(!result.success) {
+                    alert(result.message);
+                }
+            }
+        });
+
+        $("#clear_participants-form").appForm({
+            closeModalOnSuccess: false,
+            onSuccess: function (result) {
+                if(result.success) {
+                    console.log('Cleared');
+                    $('#participants_list-table').DataTable().clear().draw();
+                }
+            },
+            onAjaxSuccess: function (result) {
+                if(!result.success) {
+                    alert(result.message);
+                }
+            }
         });
     });
 </script>

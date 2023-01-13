@@ -121,7 +121,7 @@ class Raffle_draw_model extends Crud_model {
             FROM $event_raffle_participants_table
                 LEFT JOIN users ON users.id = $event_raffle_participants_table.user_id
             WHERE $event_raffle_participants_table.raffle_id = $raffle_id AND 
-                user_id NOT IN (SELECT $event_raffle_winner_table.user_id FROM $event_raffle_winner_table WHERE $event_raffle_winner_table.raffle_id = $event_raffle_participants_table.raffle_id )
+                user_id NOT IN (SELECT $event_raffle_winner_table.user_id FROM $event_raffle_winner_table WHERE $event_raffle_winner_table.raffle_id = $event_raffle_participants_table.raffle_id AND $event_raffle_winner_table.deleted = 0)
             ORDER BY RAND()
             LIMIT $winners";
         return $this->db->query($sql);
@@ -131,6 +131,18 @@ class Raffle_draw_model extends Crud_model {
         $event_raffle_winner_table = $this->db->dbprefix('event_raffle_winners');
 
         return $this->db->insert($event_raffle_winner_table, $data);
+    }
+
+    function clear_winners($raffle_id) {
+        $event_raffle_winner_table = $this->db->dbprefix('event_raffle_winners');
+        $sql = "UPDATE $event_raffle_winner_table SET deleted=1 WHERE raffle_id = '$raffle_id'";
+        return $this->db->query($sql);
+    }
+
+    function clear_participants($raffle_id) {
+        $event_raffle_participants_table = $this->db->dbprefix('event_raffle_participants');
+        $sql = "UPDATE $event_raffle_participants_table SET deleted=1 WHERE raffle_id = '$raffle_id'";
+        return $this->db->query($sql);
     }
     
 }

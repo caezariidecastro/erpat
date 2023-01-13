@@ -919,3 +919,6 @@ $lang["test_draw"] = "Single Draw";
 $lang["no_participants"] = "There are no participants left.";
 
 $lang["vacant_seats"] = "Vacant Seats";
+$lang["clear_winners"] = "Clear Winners";
+$lang["join_subscribers"] = "Join Subscribers";
+$lang["clear_participants"] = "Clear Participants";

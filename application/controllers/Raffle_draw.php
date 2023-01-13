@@ -333,7 +333,7 @@ class Raffle_draw extends MY_Controller {
         if($raffle) {
             //Check if winners number is not equal.
             $winners = $this->Raffle_draw_model->get_winners(array(
-                "raffle_id" => $id
+                "raffle_id" => $raffle_id
             ))->result();
 
             if( count($winners) >= $raffle->winners ) {
@@ -372,6 +372,51 @@ class Raffle_draw extends MY_Controller {
             }
             
             echo json_encode(array("success" => true, "data" => $result));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function clear_winners($raffle_id = 0) {
+
+        if($raffle_id) {
+            //Check if winners number is not equal.
+            $cleared = $this->Raffle_draw_model->clear_winners($raffle_id);
+            
+            echo json_encode(array("success" => $cleared?true:false, "message" => lang('record_saved') ));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function join_subscribers($raffle_id = 0) {
+
+        if($raffle_id) {
+            $data = array("user_type"=>"customer");
+            $subcribers = $this->Users_model->get_details($data)->result();
+            foreach($subcribers as $user) {
+                $data = array(
+                    "uuid" => $this->uuid->v4(),
+                    "raffle_id" => $raffle_id,
+                    "user_id" => $user->id,
+                    "remarks" => "Bulk Join"
+                );
+                $cleared = $this->Raffle_draw_model->join_raffle($data);
+            }
+            
+            echo json_encode(array("success" => $cleared?true:false, "message" => lang('record_saved') ));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function clear_participants($raffle_id = 0) {
+
+        if($raffle_id) {
+            //Check if winners number is not equal.
+            $cleared = $this->Raffle_draw_model->clear_participants($raffle_id);
+            
+            echo json_encode(array("success" => $cleared?true:false, "message" => lang('record_saved') ));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
