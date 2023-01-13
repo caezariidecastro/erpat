@@ -21,12 +21,12 @@ class EPass_seat_model extends Crud_model {
             $where .= " AND $epass_seat_table.event_id = $event_id";
         }
 
-        $sql = "SELECT $epass_seat_table.*, events.title as event_name, epass_area.event_id as event_id, epass_area.area_name as area_name, epass_block.block_name as block_name, (SELECT COUNT(id) FROM event_pass WHERE FIND_IN_SET($epass_seat_table.id, event_pass.seat_assign)) as assigned
+        $sql = "SELECT $epass_seat_table.*, events.title as event_name, epass_area.event_id as event_id, epass_area.area_name as area_name, epass_block.block_name as block_name, (SELECT COUNT(id) FROM event_pass WHERE FIND_IN_SET($epass_seat_table.id, event_pass.seat_assign)) as assigned, (SELECT TRIM(CONCAT('<a href=''#'' onclick=\'alert(`', 'ePass ID: ', event_pass.uuid, '`);\'>', users.first_name, ' ', users.last_name, '</a>')) FROM event_pass LEFT JOIN users ON users.id = event_pass.user_id WHERE FIND_IN_SET($epass_seat_table.id, event_pass.seat_assign)) as user_assign
         FROM $epass_seat_table 
-            LEFT JOIN epass_block ON epass_block.id = $epass_seat_table.block_id
-            LEFT JOIN epass_area ON epass_area.id = epass_block.area_id
-            LEFT JOIN events ON events.id = epass_area.event_id
-        $where";
+            LEFT JOIN epass_block ON epass_block.id = $epass_seat_table.block_id AND epass_block.deleted = 0
+            LEFT JOIN epass_area ON epass_area.id = epass_block.area_id AND epass_area.deleted = 0
+            LEFT JOIN events ON events.id = epass_area.event_id AND events.deleted = 0
+        $where ";
 
         return $this->db->query($sql);
     }
@@ -59,10 +59,11 @@ class EPass_seat_model extends Crud_model {
 
         $sql = "SELECT epass_area.area_name, epass_block.block_name, epass_seat.id, epass_seat.seat_name, (SELECT COUNT(event_pass.id) FROM event_pass WHERE FIND_IN_SET(epass_seat.id, event_pass.seat_assign)) as assigned, epass_seat.sort
         FROM `epass_seat` 
-            INNER JOIN epass_block ON epass_block.id = epass_seat.block_id 
-            INNER JOIN epass_area ON epass_area.id = epass_block.area_id 
-            LEFT JOIN event_pass ON FIND_IN_SET(epass_seat.id, event_pass.seat_assign) 
+            INNER JOIN epass_block ON epass_block.id = epass_seat.block_id AND epass_block.deleted = 0
+            INNER JOIN epass_area ON epass_area.id = epass_block.area_id AND epass_area.deleted = 0
+            LEFT JOIN event_pass ON FIND_IN_SET(epass_seat.id, event_pass.seat_assign)  AND event_pass.deleted = 0
         WHERE 
+            epass_area.deleted = 0 AND
             epass_area.event_id = '$event_id' AND 
             event_pass.id IS NULL $block_id $where
         ORDER BY epass_seat.block_id ASC, epass_seat.sort ASC

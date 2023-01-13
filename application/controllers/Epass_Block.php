@@ -72,6 +72,7 @@ class Epass_Block extends MY_Controller {
             $data->area_name,
             $data->block_name,
             $data->seats,
+            ($data->seats-$data->assigned),
             $data->sort,
             nl2br($data->remarks?$data->remarks:""),
             convert_date_utc_to_local($data->update_at),

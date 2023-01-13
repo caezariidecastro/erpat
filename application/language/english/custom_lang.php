@@ -917,3 +917,5 @@ $lang["user_not_exist"] = "The user does not exist in the category.";
 $lang["winners_completed"] = "All winners had been declared.";
 $lang["test_draw"] = "Single Draw";
 $lang["no_participants"] = "There are no participants left.";
+
+$lang["vacant_seats"] = "Vacant Seats";

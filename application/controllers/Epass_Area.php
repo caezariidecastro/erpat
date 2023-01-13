@@ -52,6 +52,7 @@ class Epass_Area extends MY_Controller {
             $data->area_name,
             $data->blocks,
             $data->seats,
+            ($data->seats-$data->assigned),
             $data->sort,
             nl2br($data->remarks?$data->remarks:""),
             convert_date_utc_to_local($data->update_at),

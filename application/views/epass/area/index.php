@@ -23,14 +23,15 @@
                 {title: '<?php echo lang("area_name"); ?>'},
                 {title: '<?php echo lang("total_blocks"); ?>'},
                 {title: '<?php echo lang("total_seats"); ?>'},
+                {title: '<?php echo lang("vacant_seats"); ?>'},
                 {title: '<?php echo lang("sort"); ?>'},
                 {title: '<?php echo lang("remarks"); ?>'},
                 {title: '<?php echo lang("date"); ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             tableRefreshButton: true,
-            // printColumns: [2, 4],
-            // xlsColumns: [2, 4],
+            printColumns: [1,2,3,4,5,6,7],
+            xlsColumns: [1,2,3,4,5,6,7],
         });
     });
 </script>

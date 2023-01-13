@@ -30,8 +30,8 @@
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             tableRefreshButton: true,
-            // printColumns: [2, 4],
-            // xlsColumns: [2, 4],
+            printColumns: [1,2,3,4,5,6,7,8],
+            xlsColumns: [1,2,3,4,5,6,7,8],
         });
     });
 </script>
