@@ -192,7 +192,7 @@ class EventPass extends MY_Controller {
                     $seat_option = array(
                         "event_id" => $epass_instance->event_id,
                         "group_name" => $epass_instance->group_name,
-                        "seat_requested" => $epass_instance->seats
+                        "seat_requested" => $epass_instance->seats + 1
                     );
                     $avail_seat = $this->EPass_seat_model->get_seats_available($seat_option)->result();
     
