@@ -214,7 +214,7 @@ class Team_members extends MY_Controller {
         foreach ($list_data as $data) {
             $result[] = array(
                 $data->id,
-                get_team_member_profile_link($data->id, $job_idnum),
+                get_team_member_profile_link($data->id, $data->job_idnum?$data->job_idnum:"NO ID"),
                 $data->first_name,
                 $data->last_name,
 
@@ -272,7 +272,7 @@ class Team_members extends MY_Controller {
         foreach ($list_data as $data) {
             $result[] = array(
                 $data->id,
-                get_team_member_profile_link($data->id, $job_idnum),
+                get_team_member_profile_link($data->id, $data->job_idnum?$data->job_idnum:"NO ID"),
                 $data->first_name,
                 $data->last_name,
 
@@ -325,7 +325,7 @@ class Team_members extends MY_Controller {
         foreach ($list_data as $data) {
             $result[] = array(
                 $data->id,
-                get_team_member_profile_link($data->id, $job_idnum),
+                get_team_member_profile_link($data->id, $data->job_idnum?$data->job_idnum:"NO ID"),
                 $data->first_name,
                 $data->last_name,
 
@@ -378,7 +378,7 @@ class Team_members extends MY_Controller {
         foreach ($list_data as $data) {
             $result[] = array(
                 $data->id,
-                get_team_member_profile_link($data->id, $job_idnum),
+                get_team_member_profile_link($data->id, $data->job_idnum?$data->job_idnum:"NO ID"),
                 $data->first_name,
                 $data->last_name,
 
