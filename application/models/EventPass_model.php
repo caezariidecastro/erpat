@@ -34,6 +34,11 @@ class EventPass_model extends Crud_model {
             $where .= " AND $event_pass_table.status = '$status'";
         }
 
+        $type = get_array_value($options, "type");
+        if ($type && $type == 'companion') {
+            $where .= " AND $event_pass_table.guest IS NOT NULL";
+        }
+
         $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, events.title as event_name, group_concat(TRIM(CONCAT(seats.area_name, ' (', seats.block_name, ') ', seats.seat_name)) SEPARATOR '\n') as assign
         FROM $event_pass_table 
             LEFT JOIN (

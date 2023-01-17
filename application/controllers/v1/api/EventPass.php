@@ -70,8 +70,9 @@ class EventPass extends CI_Controller {
         $vcode = $this->input->post('vcode');
         $address = $this->input->post('address');
         $remarks = $this->input->post('remarks');
+        $refid = $this->input->post('refid');
 
-        $detailed = $remarks."\n\n".$address;
+        $detailed = $remarks.($address?"\n\n".$address:"");
 
         if(empty($event_id) || empty($first_name) || empty($last_name) || empty($phone) || empty($email) || empty($seats) || empty($group)) {
             echo json_encode(array("success"=>false, "message"=>"Please complete all required fields."));
@@ -123,6 +124,10 @@ class EventPass extends CI_Controller {
             "remarks" => $detailed,
             "timestamp" => get_current_utc_time()
         );
+
+        if(!empty($refid)) {
+            $epass_data["guest"] = $refid;
+        }
 
         //Check if there is already reserve a seat.
         $current_pass = $this->EventPass_model->get_details(array(

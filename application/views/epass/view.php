@@ -34,6 +34,12 @@
                 {title: '<?php echo lang("date"); ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
+            filterDropdown: [
+                {name: "type", class: "w150", options: [
+                    { id: 'guest', text: 'Guest' },
+                    { id: 'companion', text: 'Companion' }
+                ]}
+            ],
             radioButtons: [
                 {text: '<?php echo lang("draft") ?>', name: "status", value: "draft", isChecked: true},
                 {text: '<?php echo lang("approved") ?>', name: "status", value: "approved", isChecked: false},

@@ -95,9 +95,11 @@ class EventPass extends MY_Controller {
 
     function list_data(){
         $status = $this->input->post('status');
+        $type = $this->input->post('type');
 
         $list_data = $this->EventPass_model->get_details(array(
-            "status" => $status
+            "status" => $status,
+            "type" => $type
         ), true)->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -115,7 +117,7 @@ class EventPass extends MY_Controller {
             $data->full_name,
             strtoupper($data->group_name),
             $data->vcode,
-            nl2br($data->remarks?$data->remarks:""),
+            nl2br($data->remarks?$data->remarks.($data->guest?"\n\nGuest: ".$data->guest:""):""),
             $data->seats,
             nl2br($data->assign),
             $this->get_labeled_status($data->status),
