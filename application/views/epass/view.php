@@ -40,8 +40,8 @@
                 {text: '<?php echo lang("cancelled") ?>', name: "status", value: "cancelled", isChecked: false}
             ],
             tableRefreshButton: true,
-            // printColumns: [2, 4],
-            // xlsColumns: [2, 4],
+            printColumns: [1,2,3,4,5,6,7,8,9],
+            xlsColumns: [1,2,3,4,5,6,7,8,9],
         });
     });
 </script>
