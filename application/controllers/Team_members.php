@@ -150,6 +150,17 @@ class Team_members extends MY_Controller {
         $this->validate_user_module_permission("module_hrs");
         $this->validate_user_role_permission("hrs_employee_view");
 
+        $this->template->rander("team_members/index");
+    }
+
+    public function lists() {
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
+
+        $this->validate_user_module_permission("module_hrs");
+        $this->validate_user_role_permission("hrs_employee_view");
+
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
@@ -159,7 +170,225 @@ class Team_members extends MY_Controller {
         $view_data['department_select2'] = $this->_get_team_select2_data();
         $view_data['schedule_select2'] = $this->_get_schedule_select2_data();
 
-        $this->template->rander("team_members/index", $view_data);
+        $this->load->view("team_members/lists", $view_data);
+    }
+
+    public function personal_view() {
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
+
+        $this->validate_user_module_permission("module_hrs");
+        $this->validate_user_role_permission("hrs_employee_view");
+
+        $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
+
+        $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
+
+        $view_data["usertype_dropdown"] = json_encode( $this->get_all_usertypes() );
+        $view_data['users_labels_dropdown'] = json_encode($this->make_labels_dropdown("users", "", true));
+        $view_data['department_select2'] = $this->_get_team_select2_data();
+        $view_data['schedule_select2'] = $this->_get_schedule_select2_data();
+
+        $this->load->view("team_members/personal_view", $view_data);
+    }
+
+    public function personal_view_data() {
+        $filter_user = $this->input->post("status");
+        if($filter_user == "applicant") {
+            $type_of_user = "applicant";
+        } else if( empty($filter_user) ){
+            $filter_user = "active";
+        }
+
+        $options = array(
+            "status" => $filter_user,
+            "label_id" => $this->input->post('label_id'),
+            'department_id' => $this->input->post('department_select2_filter'),
+            'sched_id' => $this->input->post('schedule_select2_filter'),
+            "user_type" => "staff",
+        );
+
+        $list_data = $this->Users_model->get_details($options)->result();
+        $result = array();
+        foreach ($list_data as $data) {
+            $result[] = array(
+                $data->id,
+                $data->job_idnum,
+                $data->first_name,
+                $data->last_name,
+
+                $data->gender,
+                $data->dob,
+                $data->street,
+                $data->city,
+                $data->state,
+                $data->country,
+                $data->zip,
+                $data->alternative_address,
+            );
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    public function job_view() {
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
+
+        $this->validate_user_module_permission("module_hrs");
+        $this->validate_user_role_permission("hrs_employee_view");
+
+        $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
+
+        $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
+
+        $view_data["usertype_dropdown"] = json_encode( $this->get_all_usertypes() );
+        $view_data['users_labels_dropdown'] = json_encode($this->make_labels_dropdown("users", "", true));
+        $view_data['department_select2'] = $this->_get_team_select2_data();
+        $view_data['schedule_select2'] = $this->_get_schedule_select2_data();
+
+        $this->load->view("team_members/job_view", $view_data);
+    }
+
+    public function job_view_data() {
+        $filter_user = $this->input->post("status");
+        if($filter_user == "applicant") {
+            $type_of_user = "applicant";
+        } else if( empty($filter_user) ){
+            $filter_user = "active";
+        }
+
+        $options = array(
+            "status" => $filter_user,
+            "label_id" => $this->input->post('label_id'),
+            'department_id' => $this->input->post('department_select2_filter'),
+            'sched_id' => $this->input->post('schedule_select2_filter'),
+            "user_type" => "staff",
+        );
+
+        $list_data = $this->Users_model->get_details($options)->result();
+        $result = array();
+        foreach ($list_data as $data) {
+            $result[] = array(
+                $data->id,
+                $data->job_idnum,
+                $data->first_name,
+                $data->last_name,
+
+                $data->job_title,
+                $data->date_of_hire,
+                $data->	signiture_url,
+            );
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    public function bank_view() {
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
+
+        $this->validate_user_module_permission("module_hrs");
+        $this->validate_user_role_permission("hrs_employee_view");
+
+        $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
+
+        $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
+
+        $view_data["usertype_dropdown"] = json_encode( $this->get_all_usertypes() );
+        $view_data['users_labels_dropdown'] = json_encode($this->make_labels_dropdown("users", "", true));
+        $view_data['department_select2'] = $this->_get_team_select2_data();
+        $view_data['schedule_select2'] = $this->_get_schedule_select2_data();
+
+        $this->load->view("team_members/bank_view", $view_data);
+    }
+
+    public function bank_view_data() {
+        $filter_user = $this->input->post("status");
+        if($filter_user == "applicant") {
+            $type_of_user = "applicant";
+        } else if( empty($filter_user) ){
+            $filter_user = "active";
+        }
+
+        $options = array(
+            "status" => $filter_user,
+            "label_id" => $this->input->post('label_id'),
+            'department_id' => $this->input->post('department_select2_filter'),
+            'sched_id' => $this->input->post('schedule_select2_filter'),
+            "user_type" => "staff",
+        );
+
+        $list_data = $this->Users_model->get_details($options)->result();
+        $result = array();
+        foreach ($list_data as $data) {
+            $result[] = array(
+                $data->id,
+                $data->job_idnum,
+                $data->first_name,
+                $data->last_name,
+
+                $data->bank_name,
+                $data->bank_account,
+                $data->bank_number,
+            );
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    public function contribution_view() {
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
+
+        $this->validate_user_module_permission("module_hrs");
+        $this->validate_user_role_permission("hrs_employee_view");
+
+        $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
+
+        $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
+
+        $view_data["usertype_dropdown"] = json_encode( $this->get_all_usertypes() );
+        $view_data['users_labels_dropdown'] = json_encode($this->make_labels_dropdown("users", "", true));
+        $view_data['department_select2'] = $this->_get_team_select2_data();
+        $view_data['schedule_select2'] = $this->_get_schedule_select2_data();
+
+        $this->load->view("team_members/contribution_view", $view_data);
+    }
+
+    public function contribution_view_data() {
+        $filter_user = $this->input->post("status");
+        if($filter_user == "applicant") {
+            $type_of_user = "applicant";
+        } else if( empty($filter_user) ){
+            $filter_user = "active";
+        }
+
+        $options = array(
+            "status" => $filter_user,
+            "label_id" => $this->input->post('label_id'),
+            'department_id' => $this->input->post('department_select2_filter'),
+            'sched_id' => $this->input->post('schedule_select2_filter'),
+            "user_type" => "staff",
+        );
+
+        $list_data = $this->Users_model->get_details($options)->result();
+        $result = array();
+        foreach ($list_data as $data) {
+            $result[] = array(
+                $data->id,
+                $data->job_idnum,
+                $data->first_name,
+                $data->last_name,
+
+                $data->sss,
+                $data->tin,
+                $data->pag_ibig,
+                $data->phil_health
+            );
+        }
+        echo json_encode(array("data" => $result));
     }
 
     /* open new member modal */

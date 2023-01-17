@@ -922,3 +922,6 @@ $lang["vacant_seats"] = "Vacant Seats";
 $lang["clear_winners"] = "Clear Winners";
 $lang["join_subscribers"] = "Join Subscribers";
 $lang["clear_participants"] = "Clear Participants";
+
+$lang["personal_info"] = "Personal Info";
+$lang["alt_Addresss"] = "Alt. Address";
