@@ -14,9 +14,24 @@ class EventPass_model extends Crud_model {
         $event_pass_table = $this->db->dbprefix('event_pass');
         $where = " WHERE $event_pass_table.deleted=0 ";
 
+        $deleted = get_array_value($options, "deleted");
+        if ($deleted && $deleted == true) {
+            $where = " WHERE $event_pass_table.deleted=1 ";
+        }
+
         $id = get_array_value($options, "id");
         if ($id) {
             $where .= " AND $event_pass_table.id=$id";
+        }
+
+        $uuid = get_array_value($options, "uuid");
+        if ($uuid) {
+            $where .= " AND $event_pass_table.uuid='$uuid'";
+        }
+
+        $guest = get_array_value($options, "guest");
+        if ($guest) {
+            $where .= " AND $event_pass_table.guest='$guest'";
         }
 
         $user_id = get_array_value($options, "user_id");

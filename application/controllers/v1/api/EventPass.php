@@ -90,7 +90,6 @@ class EventPass extends CI_Controller {
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Invalid email format";
             echo json_encode(array("success"=>false, "message"=>"Email address is invalid."));
             exit;
         }
@@ -127,6 +126,27 @@ class EventPass extends CI_Controller {
 
         if(!empty($refid)) {
             $epass_data["guest"] = $refid;
+        }
+
+        //Check if ref id is valid.
+        $guest_pass = $this->EventPass_model->get_details(array(
+            "uuid" => $refid,
+            "status" => 'approved'
+        ))->row();
+
+        if(!$guest_pass) {
+            echo json_encode(array("success"=>false, "message"=>"Guest Reference ID not valid, please check email."));
+            exit;
+        }
+
+        $companions = $this->EventPass_model->get_details(array(
+            "guest" => $refid,
+            "status" => 'approved'
+        ))->result();
+
+        if(count($companions) >= (int)$guest_pass->seats) {
+            echo json_encode(array("success"=>false, "message"=>"The number of this guest is already used."));
+            exit;
         }
 
         //Check if there is already reserve a seat.
