@@ -214,7 +214,7 @@ class Team_members extends MY_Controller {
         foreach ($list_data as $data) {
             $result[] = array(
                 $data->id,
-                $data->job_idnum,
+                get_team_member_profile_link($data->id, $job_idnum),
                 $data->first_name,
                 $data->last_name,
 
@@ -272,13 +272,13 @@ class Team_members extends MY_Controller {
         foreach ($list_data as $data) {
             $result[] = array(
                 $data->id,
-                $data->job_idnum,
+                get_team_member_profile_link($data->id, $job_idnum),
                 $data->first_name,
                 $data->last_name,
 
                 $data->job_title,
                 $data->date_of_hire,
-                $data->	signiture_url,
+                $data->signiture_url?"<a href='".$data->signiture_url."' target='__blank'>View</a>":"",
             );
         }
         echo json_encode(array("data" => $result));
@@ -325,7 +325,7 @@ class Team_members extends MY_Controller {
         foreach ($list_data as $data) {
             $result[] = array(
                 $data->id,
-                $data->job_idnum,
+                get_team_member_profile_link($data->id, $job_idnum),
                 $data->first_name,
                 $data->last_name,
 
@@ -378,7 +378,7 @@ class Team_members extends MY_Controller {
         foreach ($list_data as $data) {
             $result[] = array(
                 $data->id,
-                $data->job_idnum,
+                get_team_member_profile_link($data->id, $job_idnum),
                 $data->first_name,
                 $data->last_name,
 
