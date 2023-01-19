@@ -71,6 +71,7 @@ class EventPass extends CI_Controller {
         $address = $this->input->post('address');
         $remarks = $this->input->post('remarks');
         $refid = $this->input->post('refid');
+        $age = $this->input->post('age');
 
         $detailed = $remarks.($address?"\n\n".$address:"");
 
@@ -101,6 +102,7 @@ class EventPass extends CI_Controller {
             "email" => $email,
             "phone" => $phone,
             "user_type" => 'customer',
+            "dob" => subtract_period_from_date(get_current_utc_time(), (int)$age, "years"),
         );
 
         if (!$cur_user = $this->Users_model->is_email_exists($email)) {
@@ -125,6 +127,10 @@ class EventPass extends CI_Controller {
         );
 
         if(!empty($refid)) {
+            if(empty($age) || $age == 'none') {
+                echo json_encode(array("success"=>false, "message"=>"Age is required for a companion registration."));
+                exit;
+            }
             $epass_data["guest"] = $refid;
         }
 
