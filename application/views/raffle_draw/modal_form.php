@@ -28,7 +28,7 @@
         </div>
     </div>
     <div class="form-group">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <?php echo form_input(array(
                 "id" => "number_of_winners",
                 "name" => "number_of_winners",
@@ -39,13 +39,16 @@
                 "required" => true
             )); ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <?php
             echo form_dropdown(
                 "ranking", array("asc"=>"ASC","desc"=>"DESC"), 
                 $model_info->ranking, 
                 "class='select2 validate-hidden' id='ranking' data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
+        </div>
+        <div class="col-md-4">
+        <input type="text" value="<?php echo $model_info->crowd_type; ?>" name="crowd_type" id="crowd_type" class="w100p validate-hidden"  placeholder="<?php echo lang('crowd_type'); ?>"  />
         </div>
     </div>
     <div class="form-group">
@@ -65,17 +68,35 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="draw_date" class=" col-md-3"><?php echo lang('draw_date'); ?></label>
-        <div class="col-md-9">
+        <div class="col-md-4">
+            <?php
+            echo form_dropdown(
+                "raffle_type", array("countdown"=>"Countdown","spinner"=>"Spinner","wheel"=>"Wheel","mosaic"=>"Mosaic"), 
+                $model_info->raffle_type, 
+                "class='select2 validate-hidden' id='raffle_type' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            ?>
+        </div>
+        <div class="col-md-4">
             <?php
             echo form_input(array(
                 "id" => "draw_date",
                 "name" => "draw_date",
                 "value" => $model_info->draw_date ? $model_info->draw_date : "",
                 "class" => "form-control",
-                "placeholder" => lang('bill_date'),
+                "placeholder" => lang('draw_date'),
                 "autocomplete" => "off",
                 "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+        <div class="col-md-4">
+            <?php
+            echo form_input(array(
+                "id" => "draw_time",
+                "name" => "draw_time",
+                "value" => $model_info->draw_time,
+                "class" => "form-control",
+                "placeholder" => $model_info->draw_time,
             ));
             ?>
         </div>
@@ -106,7 +127,16 @@
                 $("#raffle_draw-table").appTable({newData: result.data, dataId: result.id});
             }
         });
-        $("#ranking").select2();
+        $("#ranking, #raffle_type").select2();
+        $("#crowd_type").select2({
+            multiple: true,
+            data: <?php echo json_encode([
+                array("id"=>"user", "text"=>"User" ),
+                array("id"=>"seller", "text"=>"Seller" ),
+                array("id"=>"distributor", "text"=>"Distributor" ),
+                array("id"=>"franchisee", "text"=>"Franchisee" )
+            ]); ?>
+        });
         
         $("#number_of_winners").on("input", function () {
             if($(this).val() > 1) {
@@ -117,6 +147,7 @@
         });
 
         setDatePicker("#draw_date");
+        setTimePicker("#draw_time");
 
         $('#events_dropdown').select2({data: <?php echo json_encode($events_dropdown); ?>}).on("change", function () {
             console.log('Event ID: ', $(this).val());

@@ -73,7 +73,7 @@ class Raffle_draw extends MY_Controller {
             $data->labels,
             nl2br($data->remarks),
             strtoupper($data->ranking),
-            $data->draw_date?convert_date_utc_to_local($data->draw_date):"-",
+            $data->draw_date?convert_date_utc_to_local($data->draw_date, "Y-m-d h:i A"):"-",
             $this->make_status_element($data->status),
             get_team_member_profile_link($data->user_id, $data->user_name, array("target" => "_blank")),
             $data->timestamp,
@@ -92,9 +92,15 @@ class Raffle_draw extends MY_Controller {
         $id = $this->input->post('id');
 
         if($id) {
-            $view_data['model_info'] = $this->Raffle_draw_model->get_details(array(
+            $model_info = $this->Raffle_draw_model->get_details(array(
                 "id" => $id
             ))->row();
+
+            $localdt = convert_date_utc_to_local($model_info->draw_date);
+            $model_info->draw_date = format_to_date($localdt);
+            $model_info->draw_time = format_to_time($localdt, false);//date('H:i A', strtotime($model_info->draw_date)); //($model_info->draw_date);
+
+            $view_data['model_info'] = $model_info;
         }
 
         $view_data['events_dropdown'] = $this->get_event_select2_data();
@@ -109,6 +115,17 @@ class Raffle_draw extends MY_Controller {
 
         $id = $this->input->post('id');
 
+        $draw_date = "";
+        $date = $this->input->post('draw_date');
+        $time = $this->input->post('draw_time');
+        if(!empty($date) && !empty($time) ) {
+            if (get_setting("time_format") != "24_hours") {
+                $time = convert_time_to_24hours_format($time);
+            }
+
+            $draw_date = convert_date_local_to_utc($date." ".$time);
+        }
+
         $data = array(
             "event_id" => $this->input->post('event_id'),
             "title" => $this->input->post('title'),
@@ -117,7 +134,11 @@ class Raffle_draw extends MY_Controller {
             "winners" => $this->input->post('number_of_winners'),
             "ranking" => $this->input->post('ranking'),
             //"labels" => $this->input->post('labels'),
+            "draw_date" => $draw_date,
+            "crowd_type" => $this->input->post('crowd_type'),
+            "raffle_type" => $this->input->post('raffle_type'),
         );
+
         $data = clean_data($data);
 
         if(!$id) {

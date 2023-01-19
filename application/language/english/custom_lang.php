@@ -925,3 +925,6 @@ $lang["clear_participants"] = "Clear Participants";
 
 $lang["personal_info"] = "Personal Info";
 $lang["alt_Addresss"] = "Alt. Address";
+$lang["draw_time"] = "Draw Time";
+$lang["crowd_type"] = "Crowd Type";
+$lang["raffle_type"] = "Raffle Type";
