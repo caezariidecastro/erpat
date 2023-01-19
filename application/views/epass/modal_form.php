@@ -103,8 +103,12 @@
 
 <div class="modal-footer">
     <input id="epass_status_input" type="hidden" name="status" value="" />
-    <button data-status="cancelled" type="submit" class="btn btn-danger update-epass-status"><span class="fa fa-times-circle"></span> <?php echo lang('cancel'); ?></button>
-    <button data-status="approved" type="submit" class="btn btn-success update-epass-status"><span class="fa fa-check-circle "></span> <?php echo lang('approve'); ?></button>
+    <?php if($model_info->status == "approved") {?>
+        <button data-status="cancelled" type="submit" class="btn btn-danger update-epass-status"><span class="fa fa-times-circle"></span> <?php echo lang('cancel'); ?></button>
+    <?php } ?>
+    <?php if($model_info->status == "draft" || $model_info->remarks == "cancelled") {?>
+        <button data-status="approved" type="submit" class="btn btn-success update-epass-status"><span class="fa fa-check-circle "></span> <?php echo lang('approve'); ?></button>
+    <?php } ?>
 </div>
 
 <?php echo form_close(); ?>

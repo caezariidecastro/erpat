@@ -62,6 +62,19 @@ class EventPass extends MY_Controller {
         return $event_lists;
     }
 
+    private function _get_users_dropdown_list_for_filter() {
+        $where = array("status" => "active");
+
+        $members = $this->Users_model->get_dropdown_list(array("first_name", "last_name", "user_type", "email"), "id", $where);
+
+        $users_dropdown = array(array("id" => "", "text" => "- " . lang("select_user") . " -"));
+        foreach ($members as $id => $name) {
+            $users_dropdown[] = array("id" => $id, "text" => $name);
+        }
+
+        return $users_dropdown;
+    }
+
     private function get_labeled_status($status){
         $labeled_status = "";
 
@@ -109,6 +122,11 @@ class EventPass extends MY_Controller {
     }
 
     private function _make_row($data) {
+        
+        $assign_customer = modal_anchor(get_uri("EventPass/modal_form_add_user"), "<i class='fa fa-user'></i>", array("class" => "edit", "title" => lang('epass_user_assignment'), "data-post-id" => $data->id));
+        if($data->user_id) {
+            $assign_customer = "";
+        }
 
         return array(
             $data->id,
@@ -123,6 +141,7 @@ class EventPass extends MY_Controller {
             $this->get_labeled_status($data->status),
             convert_date_utc_to_local($data->timestamp),
             modal_anchor(get_uri("EventPass/modal_form"), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
+            .$assign_customer
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("EventPass/delete"), "data-action" => "delete-confirmation"))
         );
     }
@@ -138,6 +157,36 @@ class EventPass extends MY_Controller {
         ))->row();
 
         $this->load->view('epass/modal_form', $view_data);
+    }
+
+    function modal_form_add_user() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        $id = $this->input->post('id');
+
+        $view_data['model_info'] = $this->EventPass_model->get_details(array(
+            "id" => $id
+        ))->row();
+
+        $view_data['users_dropdown'] = $this->_get_users_dropdown_list_for_filter();
+        $this->load->view('epass/modal_form_add_user', $view_data);
+    }
+
+    function save_assigned_user() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        $id = $this->input->post('id');
+
+        $data = array();
+        $data['user_id'] = $this->input->post('user_assigned');
+
+        if ($this->EventPass_model->save($data, $id)) {
+            echo json_encode(array("success" => true, "data" => $this->_row_data($id), 'id' => $id, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
     }
 
     function modal_form_add() {

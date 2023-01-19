@@ -928,3 +928,5 @@ $lang["alt_Addresss"] = "Alt. Address";
 $lang["draw_time"] = "Draw Time";
 $lang["crowd_type"] = "Crowd Type";
 $lang["raffle_type"] = "Raffle Type";
+$lang["epass_user_assignment"] = "ePass User Assignment";
+$lang["select_user"] = "Select User";
