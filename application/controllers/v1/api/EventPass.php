@@ -101,24 +101,12 @@ class EventPass extends CI_Controller {
             "last_name" => $last_name,
             "email" => $email,
             "phone" => $phone,
-            "user_type" => 'customer',
-            "dob" => subtract_period_from_date(get_current_utc_time(), (int)$age, "years"),
+            "user_type" => 'customer'
         );
-
-        if (!$cur_user = $this->Users_model->is_email_exists($email)) {
-            $user_data["uuid"] = $this->uuid->v4();
-            $user_data["disable_login"] = 1;
-            $user_data["password"] = password_hash($password, PASSWORD_DEFAULT);
-            $user_data["created_at"] = get_current_utc_time();
-
-            $user_id = $this->Users_model->save($user_data);
-            $cur_user = $this->Users_model->get_one($user_id);
-        }
 
         $epass_data = array(
             "uuid" => $this->uuid->v4(),
             "event_id" => $event_id,
-            "user_id" => $cur_user->id,
             "vcode" => $vcode,
             "seats" => $seats,
             "group_name" => $group,
@@ -132,27 +120,42 @@ class EventPass extends CI_Controller {
                 exit;
             }
             $epass_data["guest"] = $refid;
+            $user_data["dob"] = subtract_period_from_date(get_current_utc_time(), (int)$age, "years");
         }
 
-        //Check if ref id is valid.
-        $guest_pass = $this->EventPass_model->get_details(array(
-            "uuid" => $refid,
-            "status" => 'approved'
-        ))->row();
+        $cur_user = $this->Users_model->is_email_exists($email);
+        if (!$cur_user) {
+            $user_data["uuid"] = $this->uuid->v4();
+            $user_data["disable_login"] = 1;
+            $user_data["password"] = password_hash($password, PASSWORD_DEFAULT);
+            $user_data["created_at"] = get_current_utc_time();
 
-        if(!$guest_pass) {
-            echo json_encode(array("success"=>false, "message"=>"Guest Reference ID not valid, please check email."));
-            exit;
+            $user_id = $this->Users_model->save($user_data);
+            $cur_user = $this->Users_model->get_one($user_id);
         }
+        $epass_data["user_id"] = $cur_user->id;
 
-        $companions = $this->EventPass_model->get_details(array(
-            "guest" => $refid,
-            "status" => 'approved'
-        ))->result();
+        if(!empty($refid)) {
+            //Check if ref id is valid.
+            $guest_pass = $this->EventPass_model->get_details(array(
+                "uuid" => $refid,
+                "status" => 'approved'
+            ))->row();
 
-        if(count($companions) >= (int)$guest_pass->seats) {
-            echo json_encode(array("success"=>false, "message"=>"The number of this guest is already used."));
-            exit;
+            if(!$guest_pass) {
+                echo json_encode(array("success"=>false, "message"=>"Guest Reference ID not valid or approve yet, please check email."));
+                exit;
+            }
+
+            $companions = $this->EventPass_model->get_details(array(
+                "guest" => $refid,
+                "status" => 'approved'
+            ))->result();
+
+            if(count($companions) >= (int)$guest_pass->seats) {
+                echo json_encode(array("success"=>false, "message"=>"The total number of this guest is already used."));
+                exit;
+            }
         }
 
         //Check if there is already reserve a seat.
@@ -180,7 +183,8 @@ class EventPass extends CI_Controller {
         echo json_encode(array("success" => true, 'data' => array(
             "uuid" => $latest_pass->uuid,
             "existing" => $current_pass?true:false,
-            "pass" => $latest_pass
+            "pass" => $latest_pass,
+            "user"=>$cur_user
         )));
     }
 }
