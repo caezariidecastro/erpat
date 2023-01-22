@@ -106,12 +106,34 @@ class Epass_Seat extends MY_Controller {
     }
 
     function list_data(){
-        $list_data = $this->EPass_seat_model->get_details()->result();
+        $search = $this->input->post('search');
+        $status = $this->input->post('status');
+        $limits = $this->input->post('limits');
+        $area = $this->input->post('area');
+        $data = array(
+            'search' => $search,
+            'status' => $status,
+            'limits' => $limits?$limits:100,
+            'area' => $area,
+        );
+
+        $list_data = $this->EPass_seat_model->get_details($data)->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
         }
         echo json_encode(array("data" => $result));
+    }
+
+    private function getRowUser($epass_uuid, $first_name, $last_name) {
+        $html = "";
+        if($first_name) {
+            $html = "<a href='#' onclick='alert(`e-Pass: ".$epass_uuid."`)'>";
+            $html .= $first_name." ".$last_name;
+            $html .= "</a>";
+        }
+
+        return $html;
     }
 
     private function _make_row($data) {
@@ -122,9 +144,9 @@ class Epass_Seat extends MY_Controller {
             $data->area_name,
             $data->block_name,
             $data->seat_name,
-            $this->get_labeled_status($data->assigned ? "assigned":"vacant"),
+            $this->get_labeled_status($data->first_name ? "assigned":"vacant"),
             $data->sort,
-            nl2br($data->remarks?$data->remarks:"")."\n".$data->user_assign,
+            nl2br($data->remarks?$data->remarks:"")."\n".$this->getRowUser($data->epass_uuid, $data->first_name, $data->last_name),
             convert_date_utc_to_local($data->update_at),
             modal_anchor(get_uri("Epass_Seat/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("Epass_Seat/delete"), "data-action" => "delete-confirmation"))
