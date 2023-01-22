@@ -12,6 +12,13 @@
     </div>
 </div>
 
+<style>
+    .search-margin {
+        margin-left: 15px; 
+        margin-right: 15px; 
+    }
+</style>
+
 <script type="text/javascript">
     $(document).ready(function () {
         
@@ -59,9 +66,18 @@
                 {text: '<?php echo lang("approved") ?>', name: "status", value: "approved", isChecked: false},
                 {text: '<?php echo lang("cancelled") ?>', name: "status", value: "cancelled", isChecked: false}
             ],
+            search: {
+                show: true,
+                name: "search"
+            },
+            onRelaodCallback: function() {
+                appLoader.hide();
+            },
             tableRefreshButton: true,
             printColumns: [1,2,3,4,5,6,7,8,9],
             xlsColumns: [1,2,3,4,5,6,7,8,9],
         });
+        $('#epass-table_filter').remove();
+        $('.custom-filter-search').addClass('search-margin');
     });
 </script>

@@ -111,8 +111,10 @@ class EventPass extends MY_Controller {
         $type = $this->input->post('type');
         $groups = $this->input->post('groups');
         $limits = $this->input->post('limits');
+        $search = $this->input->post('search');
 
         $filter = array(
+            'search' => $search,
             "status" => $status,
             "type" => $type,
             "groups" => $groups,

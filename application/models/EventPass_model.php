@@ -54,6 +54,26 @@ class EventPass_model extends Crud_model {
             $where .= " AND $event_pass_table.guest IS NOT NULL";
         }
 
+        if($search = get_array_value($options, "search")) {
+            $search_query_start = " AND ( ";
+            $search_query_end = " )";
+            $search_lists = "";
+
+            $searches = explode(" ", $search);
+            foreach($searches as $item) {
+                if(!empty($search_lists)) {
+                    $search_lists .= " OR ";
+                }
+                $search_lists .= " $event_pass_table.uuid LIKE '%$item%' ";
+                $search_lists .= " OR first_name LIKE '%$item%' ";
+                $search_lists .= " OR last_name LIKE '%$item%' ";
+            }
+            
+            if(!empty($search_lists)) {
+                $where .= $search_query_start.$search_lists.$search_query_end;
+            }
+        }
+
         $groups = get_array_value($options, "groups");
         if ($groups) {
             $where .= " AND $event_pass_table.group_name = '$groups'";
@@ -65,7 +85,7 @@ class EventPass_model extends Crud_model {
             $limit = " LIMIT $limits";
         }
 
-        $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, events.title as event_name, group_concat(TRIM(CONCAT(seats.area_name, ' (', seats.block_name, ') ', seats.seat_name)) SEPARATOR '\n') as assign
+        $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, events.title as event_name, group_concat(TRIM(CONCAT(seats.area_name, ' (', seats.block_name, ') ', seats.seat_name)) SEPARATOR '\n') as assign, users.first_name, users.last_name
         FROM $event_pass_table 
             LEFT JOIN (
                 SELECT epass_seat.id as id, epass_seat.seat_name as seat_name, epass_area.event_id as event_id, epass_area.area_name as area_name, epass_block.block_name as block_name

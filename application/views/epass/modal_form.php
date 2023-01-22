@@ -106,7 +106,7 @@
     <?php if($model_info->status == "approved") {?>
         <button data-status="cancelled" type="submit" class="btn btn-danger update-epass-status"><span class="fa fa-times-circle"></span> <?php echo lang('cancel'); ?></button>
     <?php } ?>
-    <?php if($model_info->status == "draft" || $model_info->remarks == "cancelled") {?>
+    <?php if($model_info->status == "draft" || $model_info->status == "cancelled") {?>
         <button data-status="approved" type="submit" class="btn btn-success update-epass-status"><span class="fa fa-check-circle "></span> <?php echo lang('approve'); ?></button>
     <?php } ?>
 </div>
