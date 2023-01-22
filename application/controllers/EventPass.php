@@ -109,11 +109,17 @@ class EventPass extends MY_Controller {
     function list_data(){
         $status = $this->input->post('status');
         $type = $this->input->post('type');
+        $groups = $this->input->post('groups');
+        $limits = $this->input->post('limits');
 
-        $list_data = $this->EventPass_model->get_details(array(
+        $filter = array(
             "status" => $status,
-            "type" => $type
-        ), true)->result();
+            "type" => $type,
+            "groups" => $groups,
+            "limits" => $limits?$limits:100
+        );
+
+        $list_data = $this->EventPass_model->get_details($filter)->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);

@@ -83,14 +83,14 @@ class EPass_seat_model extends Crud_model {
         $where = "";
         $group_name = get_array_value($options, "group_name"); //TODO
 
-        if($group_name == "seller") {
-            $where = "AND (epass_area.area_name LIKE '%Upper Box%' OR epass_area.area_name LIKE '%Gen. Admin%')";
+        if($group_name == "franchisee") {
+            $where = "AND epass_area.id = 1";
         } else if($group_name == "distributor") {
-            $where = "AND (epass_area.area_name LIKE '%Lower Box%' OR epass_area.area_name LIKE '%Upper Box%')";
-        } else if($group_name == "franchisee") {
-            $where = "AND epass_area.area_name LIKE '%Patron%'";
+            $where = "AND (epass_area.id = 2 OR epass_area.id = 3 OR epass_area.id = 4)";
+        } else if($group_name == "seller") {
+            $where = "AND (epass_area.id = 3 OR epass_area.id = 4 OR epass_area.id = 5)";
         } else if($group_name == "viewer") {
-            $where = "AND (epass_area.area_name LIKE '%Upper Box%' OR epass_area.area_name LIKE '%Gen. Admin%')";
+            $where = "AND epass_area.id = 5";
         } else {
             $where = "";
         }
@@ -113,7 +113,7 @@ class EPass_seat_model extends Crud_model {
             epass_area.deleted = 0 AND
             epass_area.event_id = '$event_id' AND 
             event_pass.id IS NULL $block_id $where
-        ORDER BY epass_seat.block_id ASC, epass_seat.sort ASC
+        ORDER BY epass_seat.id ASC
         $seat_requested";
 
         return $this->db->query($sql);

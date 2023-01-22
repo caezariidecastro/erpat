@@ -10,7 +10,7 @@ class EventPass_model extends Crud_model {
         $this->load->model('Email_templates_model');
     }
 
-    function get_details($options = array(), $lists = false) {
+    function get_details($options = array()) {
         $event_pass_table = $this->db->dbprefix('event_pass');
         $where = " WHERE $event_pass_table.deleted=0 ";
 
@@ -54,6 +54,17 @@ class EventPass_model extends Crud_model {
             $where .= " AND $event_pass_table.guest IS NOT NULL";
         }
 
+        $groups = get_array_value($options, "groups");
+        if ($groups) {
+            $where .= " AND $event_pass_table.group_name = '$groups'";
+        }
+
+        $limit = "";
+        $limits = get_array_value($options, "limits");
+        if ($limits) {
+            $limit = " LIMIT $limits";
+        }
+
         $sql = "SELECT $event_pass_table.*, users.id as user_id, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, events.title as event_name, group_concat(TRIM(CONCAT(seats.area_name, ' (', seats.block_name, ') ', seats.seat_name)) SEPARATOR '\n') as assign
         FROM $event_pass_table 
             LEFT JOIN (
@@ -63,9 +74,10 @@ class EventPass_model extends Crud_model {
                     INNER JOIN epass_area ON epass_area.id = epass_block.area_id
                 WHERE epass_seat.deleted = '0' 
             ) as seats ON seats.event_id =  $event_pass_table.event_id AND FIND_IN_SET(seats.id, $event_pass_table.seat_assign)
-            LEFT JOIN users ON users.id = $event_pass_table.user_id
-            LEFT JOIN events ON events.id = $event_pass_table.event_id
-        $where GROUP BY $event_pass_table.uuid";
+            LEFT JOIN users ON users.id = $event_pass_table.user_id AND users.deleted = 0
+            LEFT JOIN events ON events.id = $event_pass_table.event_id AND events.deleted = 0
+            
+        $where GROUP BY $event_pass_table.uuid $limit ";
 
         return $this->db->query($sql);
     }

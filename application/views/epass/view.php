@@ -35,9 +35,23 @@
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             filterDropdown: [
-                {name: "type", class: "w150", options: [
+                {id: "type", name: "type", class: "w150", options: [
                     { id: 'guest', text: 'Guest' },
                     { id: 'companion', text: 'Companion' }
+                ]},
+                {id: "limits", name: "limits", class: "w100", options: [
+                    { id: '100', text: '100 items' },
+                    { id: '500', text: '500 items' },
+                    { id: '1000', text: '1k items' },
+                    { id: '5000', text: '5k items' },
+                    { id: '1000000', text: 'All Items' },
+                ]},
+                {id: "groups", name: "groups", class: "w150", options: [
+                    { id: '', text: 'All Groups' },
+                    { id: 'franchisee', text: 'Franchisee Only' },
+                    { id: 'distributor', text: 'Distributor Only' },
+                    { id: 'seller', text: 'Seller Only' },
+                    { id: 'viewer', text: 'Viewer Only' },
                 ]}
             ],
             radioButtons: [
