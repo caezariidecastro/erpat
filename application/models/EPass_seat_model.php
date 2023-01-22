@@ -44,8 +44,9 @@ class EPass_seat_model extends Crud_model {
 
         $status = get_array_value($options, "status");
         if ($status) {
-            $status = $status=="vacant"?"IS NULL":"IS NOT NULL";
-            $where .= " AND users.id $status";
+            $filter = $status=="vacant"?"IS NULL":"IS NOT NULL";
+            $filter = $status=="assigned"?"IS NOT NULL":$filter;
+            $where .= " AND users.id $filter";
         }
 
         $area = get_array_value($options, "area");

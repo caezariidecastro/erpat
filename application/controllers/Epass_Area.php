@@ -9,6 +9,7 @@ class Epass_Area extends MY_Controller {
        	parent::__construct();
         $this->load->library('encryption');
 		$this->load->model("EPass_area_model");
+        $this->load->model("EPass_seat_model");
         $this->load->model("Events_model");
         $this->load->helper('utility');
     }
@@ -46,13 +47,20 @@ class Epass_Area extends MY_Controller {
 
     private function _make_row($data) {
 
+        $filter = array(
+            'status' => 'assigned',
+            'limits' => 1000000,
+            'area' => $data->id,
+        );
+        $assigned = $this->EPass_seat_model->get_details($filter)->num_rows();
+
         return array(
             $data->id,
             modal_anchor(get_uri("events/view"), $data->event_name, array("class" => "edit", "title" => lang('event_name'), "data-post-id" => encode_id($data->event_id, "event_id"))),
             $data->area_name,
             $data->blocks,
             $data->seats,
-            ($data->seats-$data->assigned),
+            $data->seats-$assigned,
             $data->sort,
             nl2br($data->remarks?$data->remarks:""),
             convert_date_utc_to_local($data->update_at),

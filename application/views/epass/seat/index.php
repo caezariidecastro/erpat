@@ -42,7 +42,7 @@
                     { id: '2', text: 'Lower Box Only' },
                     { id: '3', text: 'Upper Box A Only' },
                     { id: '4', text: 'Upper Box B Only' },
-                    { id: '4', text: 'Gen. Admin Only' },
+                    { id: '5', text: 'Gen. Admin Only' },
                 ]}
             ],
             search: {

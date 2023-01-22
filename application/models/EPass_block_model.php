@@ -22,15 +22,7 @@ class EPass_block_model extends Crud_model {
         }
 
         $sql = "SELECT $epass_block_table.*, events.title as event_name, epass_area.area_name as area_name, epass_area.event_id as event_id, 
-        (SELECT COUNT(id) FROM epass_seat WHERE epass_seat.block_id = $epass_block_table.id AND epass_seat.deleted = '0') as `seats`,
-        (
-            SELECT COUNT(epass_seat.id) 
-            FROM epass_seat 
-                INNER JOIN $epass_block_table ON $epass_block_table.id = epass_seat.block_id AND $epass_block_table.deleted = 0
-                INNER JOIN event_pass ON FIND_IN_SET(epass_seat.id, event_pass.seat_assign) AND event_pass.deleted = 0
-            WHERE 
-                epass_seat.deleted = '0' 
-        ) as assigned
+        (SELECT COUNT(id) FROM epass_seat WHERE epass_seat.block_id = $epass_block_table.id AND epass_seat.deleted = '0') as `seats`
         FROM $epass_block_table 
             LEFT JOIN epass_area ON epass_area.id = $epass_block_table.area_id AND epass_area.deleted = 0
             LEFT JOIN events ON events.id = epass_area.event_id AND events.deleted = 0
