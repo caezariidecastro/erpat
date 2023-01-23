@@ -160,6 +160,7 @@ class EventPass extends MY_Controller {
         ));
         $id = $this->input->post('id');
 
+        $view_data['is_admin'] = $this->login_user->is_admin;
         $view_data['model_info'] = $this->EventPass_model->get_details(array(
             "id" => $id
         ))->row();

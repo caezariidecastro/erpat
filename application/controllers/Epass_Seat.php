@@ -118,9 +118,15 @@ class Epass_Seat extends MY_Controller {
         );
 
         $list_data = $this->EPass_seat_model->get_details($data)->result();
+
+        $lists = array();
         $result = array();
         foreach ($list_data as $data) {
+            if(in_array($data->sort, $lists)) {
+                $data->last_name = $data->last_name." - (DUPLICATE)";
+            }
             $result[] = $this->_make_row($data);
+            $lists[] = $data->sort;
         }
         echo json_encode(array("data" => $result));
     }

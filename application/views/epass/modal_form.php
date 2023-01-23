@@ -103,7 +103,7 @@
 
 <div class="modal-footer">
     <input id="epass_status_input" type="hidden" name="status" value="" />
-    <?php if($model_info->status == "approved") {?>
+    <?php if($is_admin && $model_info->status == "approved") {?>
         <button data-status="cancelled" type="submit" class="btn btn-danger update-epass-status"><span class="fa fa-times-circle"></span> <?php echo lang('cancel'); ?></button>
     <?php } ?>
     <?php if($model_info->status == "draft" || $model_info->status == "cancelled") {?>
