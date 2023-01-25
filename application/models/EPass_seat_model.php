@@ -86,7 +86,7 @@ class EPass_seat_model extends Crud_model {
         if($group_name == "franchisee") {
             $where = "AND epass_area.id = 1";
         } else if($group_name == "distributor") {
-            $where = "AND (epass_area.id = 2 OR epass_area.id = 3 OR epass_area.id = 4)";
+            $where = "AND (epass_area.id = 2 OR epass_area.id = 3 OR epass_area.id = 4 OR epass_area.id = 5)";
         } else if($group_name == "seller") {
             $where = "AND (epass_area.id = 3 OR epass_area.id = 4 OR epass_area.id = 5)";
         } else if($group_name == "viewer") {
