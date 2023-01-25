@@ -1,0 +1,12 @@
+{
+    "name": "bytescrafter/erpat",
+    "require": {
+        "intervention/image": "^2.7"
+    },
+    "authors": [
+        {
+            "name": "BytesCrafter",
+            "email": "support@bytescrafter.net"
+        }
+    ]
+}

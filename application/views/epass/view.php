@@ -42,9 +42,11 @@
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             filterDropdown: [
-                {id: "type", name: "type", class: "w150", options: [
-                    { id: 'guest', text: 'Guest' },
-                    { id: 'companion', text: 'Companion' }
+                {id: "status",  name: "status", class: "w150", options: [
+                    {text: '<?php echo lang("draft") ?>', id: "draft"},
+                    {text: '<?php echo lang("approved") ?>', id: "approved"},
+                    {text: '<?php echo lang("sent") ?>', id: "sent"},
+                    {text: '<?php echo lang("cancelled") ?>', id: "cancelled"}
                 ]},
                 {id: "limits", name: "limits", class: "w100", options: [
                     { id: '100', text: '100 items' },
@@ -62,9 +64,8 @@
                 ]}
             ],
             radioButtons: [
-                {text: '<?php echo lang("draft") ?>', name: "status", value: "draft", isChecked: true},
-                {text: '<?php echo lang("approved") ?>', name: "status", value: "approved", isChecked: false},
-                {text: '<?php echo lang("cancelled") ?>', name: "status", value: "cancelled", isChecked: false}
+                { value: 'guest', name: "type", text: 'Guest', isChecked: true },
+                { value: 'companion', name: "type", text: 'Companion', isChecked: false }
             ],
             search: {
                 show: true,
@@ -72,6 +73,12 @@
             },
             onRelaodCallback: function() {
                 appLoader.hide();
+            },
+            onInitComplete: () => {
+
+            },
+            rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                console.log('asdsdas');
             },
             tableRefreshButton: true,
             printColumns: [1,2,3,4,5,6,7,8,9],
