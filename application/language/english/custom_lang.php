@@ -930,3 +930,5 @@ $lang["crowd_type"] = "Crowd Type";
 $lang["raffle_type"] = "Raffle Type";
 $lang["epass_user_assignment"] = "ePass User Assignment";
 $lang["select_user"] = "Select User";
+
+$lang["allocate_seats"] = "Allocate Seats";

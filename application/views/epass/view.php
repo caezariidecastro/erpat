@@ -2,6 +2,7 @@
     <div class="panel panel-default">
         <div class="page-title clearfix">
             <div class="title-button-group">
+                <?php echo modal_anchor(get_uri("EventPass/modal_form_allocate"), "<i class='fa fa-recycle'></i> " . lang('allocate_seats'), array("class" => "btn btn-danger", "title" => lang('allocate_seats'))); ?>
                 <?php echo modal_anchor(get_uri("EventPass/modal_form_add"), "<i class='fa fa-plus'></i> " . lang('add_epass'), array("class" => "btn btn-default", "title" => lang('add_epass'))); ?>
             </div>
         </div>
@@ -86,5 +87,6 @@
         });
         $('#epass-table_filter').remove();
         $('.custom-filter-search').addClass('search-margin');
+
     });
 </script>

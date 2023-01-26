@@ -115,7 +115,7 @@ class EventPass extends MY_Controller {
 
         $filter = array(
             'search' => $search,
-            "status" => $status,
+            "status" => $status?$status:"draft",
             "type" => $type,
             "groups" => $groups,
             "limits" => $limits?$limits:100
@@ -215,6 +215,22 @@ class EventPass extends MY_Controller {
         $this->load->view('epass/modal_form_add', $view_data);
     }
 
+    function modal_form_allocate() {
+        $epasses = $this->EventPass_model->get_all_approved();
+        $view_data['total'] = count($epasses);
+
+        $reserve = 0;
+        $epass = 0;
+        foreach($epasses as $single) {
+            $reserve += $single->seats+1;
+            $epass += 1;
+        }
+        $view_data['seats'] = $reserve;
+        $view_data['epass'] = $epass;
+        
+        $this->load->view('epass/modal_form_allocate', $view_data);
+    }
+
     function delete() {
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -303,6 +319,68 @@ class EventPass extends MY_Controller {
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
+    }
+
+    function clear_allocation() {
+        $summary = array();
+
+        //SET ALL APPROVED seat_assign NULLED.
+        $this->EventPass_model->unassign_all_approved();
+
+        //GET ALL APPROVED epass for processing.
+        $epasses = $this->EventPass_model->get_all_approved();
+
+        //RETURN TOTAL SUMMARY OF ACTION.
+        echo json_encode(array("success" => true, "data" => $epasses, 'message' => lang('record_saved')));
+    }
+
+    function allocate_seats() {
+        $id = $this->input->post('id');
+        $uuid = $this->input->post('uuid');
+        $seats = $this->input->post('seats');
+
+        $seat_option = array(
+            "event_id" => $this->input->post('event_id'),
+            "group_name" => $this->input->post('group_name'),
+            "seat_requested" => (int)$seats+1
+        );
+        $avail_seat = $this->EPass_seat_model->get_seats_available($seat_option)->result();
+
+        $seat_names = array();
+        $seat_assigned = array();
+        foreach($avail_seat as $item) {
+            $seat_assigned[] = $item->id;
+            $seat_names[] = $item->seat_name;
+        }
+
+        $data = array(
+            "seat_assign" => implode(",", $seat_assigned)
+        );
+        
+        if( $this->EventPass_model->save($data, $id) ) {
+            echo json_encode(array("success" => true, 'message' => $uuid." seats are ".implode(",", $seat_names)));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function generate_ticket() {
+
+        if( $this->login_user->is_admin ) {
+            $this->load->library('ImageEditor');
+
+            $epass = array(
+                "uuid" => "1541885d-5b9a-4d4c-8367-d83f71d61031",
+                "fname" => "Juan Dela Cruz - Madrigal",
+                "area" => "Gen. Admin",
+                "seat" => "Seat #1234"
+            );
+            $image_data = (new ImageEditor())->render($epass);
+
+            //echo json_encode(array("success" => true, "data" => $this->_row_data($id), 'id' => $id, 'message' => lang('record_saved')));
+        }
+
+        echo json_encode(array("success" => false));
     }
 
 }

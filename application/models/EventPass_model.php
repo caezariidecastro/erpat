@@ -97,7 +97,7 @@ class EventPass_model extends Crud_model {
             LEFT JOIN users ON users.id = $event_pass_table.user_id AND users.deleted = 0
             LEFT JOIN events ON events.id = $event_pass_table.event_id AND events.deleted = 0
             
-        $where GROUP BY $event_pass_table.uuid $limit ";
+        $where GROUP BY $event_pass_table.uuid ORDER BY $event_pass_table.id ASC $limit ";
 
         return $this->db->query($sql);
     }
@@ -128,5 +128,26 @@ class EventPass_model extends Crud_model {
         );
 
         return $this->Email_templates_model->save($data, $template->id);
+    }
+
+    function unassign_all_approved() {
+        $event_pass_table = $this->db->dbprefix('event_pass');
+
+        $sql = "UPDATE $event_pass_table 
+            SET seat_assign=''
+            WHERE $event_pass_table.deleted=0 AND $event_pass_table.status='approved' AND group_name!='franchisee'";
+
+        return $this->db->query($sql);
+    }
+
+    function get_all_approved() {
+        $event_pass_table = $this->db->dbprefix('event_pass');
+
+        $sql = "SELECT $event_pass_table.*
+            FROM $event_pass_table 
+            WHERE $event_pass_table.deleted=0 AND $event_pass_table.status='approved' AND group_name!='franchisee'
+            ORDER BY timestamp ASC";
+
+        return $this->db->query($sql)->result();
     }
 }
