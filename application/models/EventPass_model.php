@@ -140,12 +140,12 @@ class EventPass_model extends Crud_model {
         return $this->db->query($sql);
     }
 
-    function get_all_approved() {
+    function get_all_approved($group_name) {
         $event_pass_table = $this->db->dbprefix('event_pass');
 
         $sql = "SELECT $event_pass_table.*
             FROM $event_pass_table 
-            WHERE $event_pass_table.deleted=0 AND $event_pass_table.status='approved' AND group_name!='franchisee'
+            WHERE $event_pass_table.deleted=0 AND $event_pass_table.status='approved' AND group_name='$group_name'
             ORDER BY timestamp ASC";
 
         return $this->db->query($sql)->result();

@@ -216,7 +216,7 @@ class EventPass extends MY_Controller {
     }
 
     function modal_form_allocate() {
-        $epasses = $this->EventPass_model->get_all_approved();
+        $epasses = $this->getEpassList();
         $view_data['total'] = count($epasses);
 
         $reserve = 0;
@@ -328,7 +328,7 @@ class EventPass extends MY_Controller {
         $this->EventPass_model->unassign_all_approved();
 
         //GET ALL APPROVED epass for processing.
-        $epasses = $this->EventPass_model->get_all_approved();
+        $epasses = $this->getEpassList();
 
         //RETURN TOTAL SUMMARY OF ACTION.
         echo json_encode(array("success" => true, "data" => $epasses, 'message' => lang('record_saved')));
@@ -381,6 +381,25 @@ class EventPass extends MY_Controller {
         }
 
         echo json_encode(array("success" => false));
+    }
+
+    private function getEpassList() {
+        $epasses = array();
+
+        $distributor = $this->EventPass_model->get_all_approved('distributor');
+        foreach($distributor as $dist) {
+            $epasses[] = $dist;
+        }
+        $seller = $this->EventPass_model->get_all_approved('seller');
+        foreach($seller as $sell) {
+            $epasses[] = $sell;
+        }
+        $viewer = $this->EventPass_model->get_all_approved('viewer');
+        foreach($viewer as $view) {
+            $epasses[] = $view;
+        }
+
+        return $epasses;
     }
 
 }

@@ -15,6 +15,11 @@
             </div>
         </div>
     </div>
+    <div class="form-group">
+        <div class="alert alert-danger" role="alert">
+            <strong>Warning!</strong> This action should only be execute with caution. This will re-assign all seats from distributor, seller, and viewer respectively. 
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">
