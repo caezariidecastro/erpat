@@ -65,7 +65,10 @@ class Check_fix extends MY_Controller
 
     protected function generate_new_email_templates() {    
         $total = 0;    
-        if($this->EventPass_model->save_email()) {
+        if($this->EventPass_model->event_verify()) {
+            $total += 1;
+        }
+        if($this->EventPass_model->event_confirm()) {
             $total += 1;
         }
         return $total;

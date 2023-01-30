@@ -2,7 +2,10 @@
     <div class="panel panel-default">
         <div class="page-title clearfix">
             <div class="title-button-group">
+                <?php if( $this->login_user->is_admin ) { ?>
+                <?php echo modal_anchor(get_uri("EventPass/modal_form_email_blast"), "<i class='fa fa-paper-plane'></i> " . lang('email_blast'), array("class" => "btn btn-warning", "title" => lang('email_blast'))); ?>
                 <?php echo modal_anchor(get_uri("EventPass/modal_form_allocate"), "<i class='fa fa-recycle'></i> " . lang('allocate_seats'), array("class" => "btn btn-danger", "title" => lang('allocate_seats'))); ?>
+                <?php } ?>
                 <?php echo modal_anchor(get_uri("EventPass/modal_form_add"), "<i class='fa fa-plus'></i> " . lang('add_epass'), array("class" => "btn btn-default", "title" => lang('add_epass'))); ?>
             </div>
         </div>
@@ -79,7 +82,7 @@
 
             },
             rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                console.log('asdsdas');
+                //console.log('asdsdas');
             },
             tableRefreshButton: true,
             printColumns: [1,2,3,4,5,6,7,8,9],

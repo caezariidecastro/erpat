@@ -932,3 +932,7 @@ $lang["epass_user_assignment"] = "ePass User Assignment";
 $lang["select_user"] = "Select User";
 
 $lang["allocate_seats"] = "Allocate Seats";
+$lang["epass_confirm"] = "ePass Confirmation";
+$lang["email_blast"] = "Email Blast";
+
+$lang["image_preview"] = "Image Preview";

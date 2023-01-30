@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("EventPass/clear_allocation"), array("id" => "epass-ticket-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("EventPass/prepare_email_instance"), array("id" => "epass-email-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <div class="form-group">
         <div class="col-md-12">Console</div>
@@ -17,7 +17,7 @@
     </div>
     <div class="form-group">
         <div class="alert alert-danger" role="alert">
-            <strong>Warning!</strong> This action should only be execute with caution. This will re-assign all seats from distributor, seller, and viewer respectively. 
+            <strong>Warning!</strong> This action should only be execute with caution. This will send an email to all franchisee, distributor, seller, and viewer with the list of epass. This action cannot be undone!
         </div>
     </div>
 </div>
@@ -30,17 +30,19 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+
         function log(message) {
             $('#consolelog').val('> '+message+'\n'+$('#consolelog').val());
         }
-        log('Click execute to unset all seat and re-assign a new seat acccording to the order of date registered.');
+        log('Click execute to send an email to all franchisee, distributor, seller, and viewer with the list of epass.');
+        log('Total number of seats: <?php echo json_encode($seats); ?>');
 
         let epasses = [];
-        $("#epass-ticket-form").appForm({
+        $("#epass-email-form").appForm({
             closeModalOnSuccess: false,
             showLoader: false,
             onSuccess: function (result) {
-                //console.log(result.data);
+                
                 epasses = result.data;
                 log('The total epass to process is: ' + epasses.length);
 
@@ -50,15 +52,15 @@
                 $maskTarget.removeClass("hide");
                 $(".modal-mask").remove();
 
-                const allocate = async (curremt) => {
+                const sendEmail = async (curremt) => {
                     return $.ajax({
-                        url: "<?php echo base_url()?>/EventPass/allocate_seats",
+                        url: "<?php echo base_url()?>/EventPass/prepare_epass_email",
                         data: curremt,
                         method: "POST",
                         dataType: "json",
                         success: function(response){
                             if(response.success){
-                                log('Success on id of '+response.data);
+                                log('ePass #'+curremt.id+' process return '+(response.success?"successfull!":"failed!"));
                             }
                             return response;
                         }
@@ -68,7 +70,7 @@
                 const process = async (lists) => {
                     for (let index = 0; index < lists.length; index++) {
                         const curremt = lists[index]
-                        const process = await allocate(curremt)
+                        const process = await sendEmail(curremt)
                         log(process.message+' Progress is '+(index+1)+' out of '+lists.length);
                     }
                 }
@@ -76,9 +78,6 @@
                 if(epasses.length > 0) {
                     process(epasses);
                 }
-
-                //reload instead
-                //$("#epass-table").appTable({newData: result.data, dataId: result.id});
             }
         });
 

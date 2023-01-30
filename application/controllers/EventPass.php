@@ -81,6 +81,8 @@ class EventPass extends MY_Controller {
         if($status == "draft"){
             $labeled_status = "<span class='label label-default'>".(ucwords($status))."</span>";
         } else if($status == "approved"){
+            $labeled_status = "<span class='label label-primary'>".(ucwords($status))."</span>";
+        } else if($status == "sent"){
             $labeled_status = "<span class='label label-success'>".(ucwords($status))."</span>";
         } else if($status == "cancelled"){
             $labeled_status = "<span class='label label-danger'>".(ucwords($status))."</span>";
@@ -136,6 +138,23 @@ class EventPass extends MY_Controller {
             $assign_customer = "";
         }
 
+        $actions = "";
+        if($data->status == "draft" || $data->status == "approved" || $data->status == "cancelled") {
+            $actions = modal_anchor(get_uri("EventPass/modal_form"), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
+            .$assign_customer;
+        }
+        if($data->status == "draft" || $data->status == "cancelled") {
+            $actions .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("EventPass/delete"), "data-action" => "delete-confirmation"));
+        }
+        if($data->status == "sent") {
+            $seats = explode(",", $data->seat_assign);
+            if (count($seats)) {
+                foreach($seats as $index=>$seat) {
+                    $actions .= modal_anchor(get_uri("EventPass/modal_form_epass"), "<i class='fa fa-file-image-o'></i>", array("class" => "edit", "title" => lang('image_preview'), "data-post-file_url" => get_uri(get_setting('event_epass_ticket_path')."/".$data->uuid."-".$index.".jpg")));
+                }
+            }
+        }
+
         return array(
             $data->id,
             strtoupper($data->uuid),
@@ -148,9 +167,7 @@ class EventPass extends MY_Controller {
             nl2br($data->assign),
             $this->get_labeled_status($data->status),
             convert_date_utc_to_local($data->timestamp),
-            modal_anchor(get_uri("EventPass/modal_form"), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('ticket_approval'), "data-post-id" => $data->id))
-            .$assign_customer
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("EventPass/delete"), "data-action" => "delete-confirmation"))
+            $actions
         );
     }
 
@@ -166,6 +183,12 @@ class EventPass extends MY_Controller {
         ))->row();
 
         $this->load->view('epass/modal_form', $view_data);
+    }
+
+    function modal_form_epass() {
+        $view_data['file_url'] = $this->input->post('file_url');
+
+        $this->load->view('epass/modal_form_epass', $view_data);
     }
 
     function modal_form_add_user() {
@@ -229,6 +252,28 @@ class EventPass extends MY_Controller {
         $view_data['epass'] = $epass;
         
         $this->load->view('epass/modal_form_allocate', $view_data);
+    }
+
+    function modal_form_email_blast() {
+        $epasses = $this->getEpassListApproved();
+
+        $lists = array();
+        $reserve = 0;
+        foreach($epasses as $single) {
+            array_push($lists, array(
+                "id" => $single->id
+            ));
+            $reserve += $single->seats+1;
+        }
+        $view_data['lists'] = $lists;
+        $view_data['seats'] = $reserve;
+        
+        $this->load->view('epass/modal_form_email_blast', $view_data);
+    }
+
+    function prepare_email_instance() {
+        $epasses = $this->getEpassListApproved();
+        echo json_encode(array("success" => true, "data" => $epasses, 'message' => lang('record_saved')));
     }
 
     function delete() {
@@ -358,29 +403,65 @@ class EventPass extends MY_Controller {
         );
         
         if( $this->EventPass_model->save($data, $id) ) {
-            echo json_encode(array("success" => true, 'message' => $uuid." seats are ".implode(",", $seat_names)));
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
     }
 
-    function generate_ticket() {
+    function prepare_epass_email() {
+        $id = $this->input->post('id');
 
-        if( $this->login_user->is_admin ) {
-            $this->load->library('ImageEditor');
-
-            $epass = array(
-                "uuid" => "1541885d-5b9a-4d4c-8367-d83f71d61031",
-                "fname" => "Juan Dela Cruz - Madrigal",
-                "area" => "Gen. Admin",
-                "seat" => "Seat #1234"
-            );
-            $image_data = (new ImageEditor())->render($epass);
-
-            //echo json_encode(array("success" => true, "data" => $this->_row_data($id), 'id' => $id, 'message' => lang('record_saved')));
+        //Get the instance of the epass.
+        $filter = array("id"=>$id);
+        $instance = $this->EventPass_model->get_details($filter)->row();
+        if(!$instance) {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            exit;
         }
 
-        echo json_encode(array("success" => false));
+        //Generate all the epass ticket image and return the url's.
+        $this->load->library('ImageEditor');
+        $tickets = array();
+        $seats = explode(",", $instance->seat_assign);
+        foreach($seats as $index=>$seat) {
+            $seat_filter = array("id"=>$seat);
+            if($cur_seat = $this->EPass_seat_model->get_details($seat_filter)->row()) {
+                $epass = array(
+                    "uuid" => $instance->uuid."-".$index,
+                    "fname" => $instance->full_name,
+                    "area" => $cur_seat->area_name,
+                    "seat" => $cur_seat->seat_name
+                );
+                $image_data = (new ImageEditor())->render($epass);
+                array_push($tickets, $image_data["path"]);
+            }
+        }
+        
+        //Compose the email instance then send.
+        $data = array(
+            "reference_id" => $instance->uuid,
+            "first_name" => $instance->first_name,
+            "last_name" => $instance->last_name,
+            "phone" => $instance->phone,
+            "seats" => $instance->seats,
+            "group" => strtoupper($instance->group_name),
+            "remarks" => $instance->remarks,
+            "attachments" => $tickets,
+        );
+        $success = $this->sendEpassConfirm($data, $instance->user_email);
+        if(!$success) {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            exit;
+        }
+
+        //Save new status to sent if success.
+        $update = array( "status" => "sent" );
+        if( $this->EventPass_model->save($update, $id) ) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved') ));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
     }
 
     private function getEpassList() {
@@ -401,5 +482,59 @@ class EventPass extends MY_Controller {
 
         return $epasses;
     }
+
+    private function getEpassListApproved() {
+        $epasses = array();
+
+        $franchisee = $this->EventPass_model->get_all_approved('franchisee');
+        foreach($franchisee as $fran) {
+            $epasses[] = $fran;
+        }
+        $distributor = $this->EventPass_model->get_all_approved('distributor');
+        foreach($distributor as $dist) {
+            $epasses[] = $dist;
+        }
+        $seller = $this->EventPass_model->get_all_approved('seller');
+        foreach($seller as $sell) {
+            $epasses[] = $sell;
+        }
+        $viewer = $this->EventPass_model->get_all_approved('viewer');
+        foreach($viewer as $view) {
+            $epasses[] = $view;
+        }
+
+        return $epasses;
+    }
+
+    private function sendEpassConfirm($data, $email){
+        $email_template = $this->Email_templates_model->get_final_template("epass_confirm");
+
+        $parser_data["REFERENCE_ID"] = $data['reference_id'];
+        $parser_data["SIGNATURE"] = $email_template->signature;
+        $parser_data["FIRST_NAME"] = $data['first_name'];
+        $parser_data["LAST_NAME"] = $data['last_name'];
+        $parser_data["PHONE_NUMBER"] = $data['phone'];
+        $parser_data["TOTAL_SEATS"] = $data['seats'];
+        $parser_data["GROUP_NAME"] = $data['group'];
+        $parser_data["REMARKS"] = $data['remarks'];
+        $parser_data["LOGO_URL"] = get_logo_url();
+
+        $attachments = array();
+        foreach($data['attachments'] as $urls) {
+            array_push($attachments, array(
+                "file_path" => $urls
+            ));
+        }
+
+        log_message("error", json_encode($attachments));
+
+        $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
+        return send_app_mail($email, $email_template->subject, $message, array(
+            "attachments" => $attachments,
+            "cc" => "brilliantaleck@gmail.com", 
+            "bcc" => "admin@brilliantskinessentialsinc.com"
+        ));
+    }
+
 
 }

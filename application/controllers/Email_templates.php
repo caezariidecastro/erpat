@@ -21,7 +21,8 @@ class Email_templates extends MY_Controller {
                 "new_client_greetings" => array("CONTACT_FIRST_NAME", "CONTACT_LAST_NAME", "COMPANY_NAME", "DASHBOARD_URL", "CONTACT_LOGIN_EMAIL", "CONTACT_LOGIN_PASSWORD", "LOGO_URL", "SIGNATURE"),
                 "client_contact_invitation" => array("INVITATION_SENT_BY", "INVITATION_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
                 "verify_email" => array("VERIFY_EMAIL_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
-                "event_pass" => array("VERIFY_EMAIL_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
+                "event_pass" => array("REFERENCE_ID", "GROUP_NAME", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "TOTAL_SEATS", "REMARKS", "SIGNATURE"),
+                "epass_confirm" => array("REFERENCE_ID", "GROUP_NAME", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "TOTAL_SEATS", "REMARKS", "SIGNATURE"),
             ),
             "project" => array(
                 "project_task_deadline_reminder" => array("APP_TITLE", "DEADLINE", "SIGNATURE", "TASKS_LIST", "LOGO_URL"),
