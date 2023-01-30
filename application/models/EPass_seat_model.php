@@ -71,7 +71,7 @@ class EPass_seat_model extends Crud_model {
             LEFT JOIN epass_block ON epass_block.id = $epass_seat_table.block_id AND epass_block.deleted = 0
             LEFT JOIN epass_area ON epass_area.id = epass_block.area_id AND epass_area.deleted = 0
             LEFT JOIN events ON events.id = epass_area.event_id AND events.deleted = 0
-            LEFT JOIN event_pass ON event_pass.event_id = events.id AND FIND_IN_SET($epass_seat_table.id, event_pass.seat_assign) AND event_pass.user_id IS NOT NULL AND event_pass.status = 'approved'
+            LEFT JOIN event_pass ON event_pass.event_id = events.id AND FIND_IN_SET($epass_seat_table.id, event_pass.seat_assign) AND event_pass.user_id IS NOT NULL AND (event_pass.status = 'approved' OR event_pass.status = 'sent')
             LEFT JOIN users ON users.id = event_pass.user_id AND users.deleted = 0
         $where";
 

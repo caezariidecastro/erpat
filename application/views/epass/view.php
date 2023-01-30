@@ -65,6 +65,7 @@
                     { id: 'distributor', text: 'Distributor Only' },
                     { id: 'seller', text: 'Seller Only' },
                     { id: 'viewer', text: 'Viewer Only' },
+					{ id: 'reserved', text: 'Reserved Seats' },
                 ]}
             ],
             radioButtons: [
