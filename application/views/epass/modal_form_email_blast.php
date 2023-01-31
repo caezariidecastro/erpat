@@ -82,17 +82,28 @@
                     })
                 }
 
-                const process = async (lists) => {
-                    for (let index = 0; index < lists.length; index++) {
-                        const curremt = lists[index]
-                        const process = await sendEmail(curremt)
-                        log(process.message+' Progress is '+(index+1)+' out of '+lists.length);
-                    }
-                }
+                let totalItems = epasses.length;
+                let totalProcessed = 0;
 
-                if(epasses.length > 0) {
-                    process(epasses);
-                }
+                const maxProcesses = 2;
+                let processing = 0;
+                let loops = setInterval(async () => {
+                    if(processing < maxProcesses && epasses.length > 0) {
+                        let current = epasses.shift();
+                        processing++;
+
+                        const process = await sendEmail(current)
+                        log(process.message+' Progress is '+(totalProcessed+1)+' out of '+totalItems);
+                        processing--;
+
+                        totalProcessed += 1;
+                    }
+
+                    if(processing == 0 && epasses.length == 0) {
+                        log('Completed sending of email for '+totalItems+' ePass.');
+                        clearInterval(loops)
+                    }
+                }, 1000);
             }
         });
 
