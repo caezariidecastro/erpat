@@ -407,6 +407,10 @@ class EventPass extends MY_Controller {
             "seat_requested" => (int)$seats+1
         );
         $avail_seat = $this->EPass_seat_model->get_seats_available($seat_option)->result();
+        if(count($avail_seat) <= 0) {
+            echo json_encode(array("success" => false, 'data' => 'ePass #'.$id, 'message' => lang('no_seats_available')));
+            exit();
+        }
 
         $seat_names = array();
         $seat_assigned = array();
@@ -420,9 +424,9 @@ class EventPass extends MY_Controller {
         );
         
         if( $this->EventPass_model->save($data, $id) ) {
-            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+            echo json_encode(array("success" => true, 'data' => 'ePass #'.$id, 'message' => lang('record_saved')));
         } else {
-            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            echo json_encode(array("success" => false, 'data' => 'ePass #'.$id, 'message' => lang('error_occurred')));
         }
     }
 

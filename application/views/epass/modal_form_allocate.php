@@ -59,26 +59,36 @@
                         success: function(response){
                             if(response.success){
                                 log('Success on id of '+response.data);
+                            } else {
+                                log('Failed on id of '+response.data);
                             }
                             return response;
                         }
                     })
                 }
 
-                const process = async (lists) => {
-                    for (let index = 0; index < lists.length; index++) {
-                        const curremt = lists[index]
-                        const process = await allocate(curremt)
-                        log(process.message+' Progress is '+(index+1)+' out of '+lists.length);
+                let totalItems = epasses.length;
+                let totalProcessed = 0;
+
+                const maxProcesses = 5;
+                let processing = 0;
+                let loops = setInterval(async () => {
+                    if(processing < 10 && epasses.length > 0) {
+                        let current = epasses.shift();
+                        processing++;
+
+                        const process = await allocate(current)
+                        log(process.message+' Progress is '+(totalProcessed+1)+' out of '+totalItems);
+                        processing--;
+
+                        totalProcessed += 1;
                     }
-                }
 
-                if(epasses.length > 0) {
-                    process(epasses);
-                }
-
-                //reload instead
-                //$("#epass-table").appTable({newData: result.data, dataId: result.id});
+                    if(processing == 0 && epasses.length == 0) {
+                        log('Completed reallocation of seats for '+totalItems+' ePass.');
+                        clearInterval(loops)
+                    }
+                }, 100);
             }
         });
 
