@@ -117,10 +117,10 @@ class Raffle_draw_model extends Crud_model {
         $raffle_id = get_array_value($options, "raffle_id");
         $winners = (int)(get_array_value($options, "winners")?get_array_value($options, "winners"):1);
 
-        $sql = "SELECT *, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS user_name 
+        $sql = "SELECT $event_raffle_participants_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS user_name 
             FROM $event_raffle_participants_table
                 LEFT JOIN users ON users.id = $event_raffle_participants_table.user_id
-            WHERE $event_raffle_participants_table.raffle_id = $raffle_id AND 
+            WHERE $event_raffle_participants_table.deleted = '0' AND $event_raffle_participants_table.raffle_id = $raffle_id AND 
                 user_id NOT IN (SELECT $event_raffle_winner_table.user_id FROM $event_raffle_winner_table WHERE $event_raffle_winner_table.raffle_id = $event_raffle_participants_table.raffle_id AND $event_raffle_winner_table.deleted = 0)
             ORDER BY RAND()
             LIMIT $winners";

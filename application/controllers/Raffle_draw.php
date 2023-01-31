@@ -362,10 +362,8 @@ class Raffle_draw extends MY_Controller {
                 exit;
             }
 
-            $list_data = $this->Raffle_draw_model->pick_winners(array(
-                "raffle_id" => $raffle_id,
-                //"winners" => 2
-            ))->result();
+            $win_conf = array( "raffle_id" => $raffle_id, "winners" => 1 );
+            $list_data = $this->Raffle_draw_model->pick_winners($win_conf)->result();
 
             if(count($list_data) == 0) {
                 echo json_encode(array("success" => false, 'message' => lang('no_participants')));
