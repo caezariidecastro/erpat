@@ -22,7 +22,7 @@ class Email_templates extends MY_Controller {
                 "client_contact_invitation" => array("INVITATION_SENT_BY", "INVITATION_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
                 "verify_email" => array("VERIFY_EMAIL_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
                 "event_pass" => array("REFERENCE_ID", "GROUP_NAME", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "TOTAL_SEATS", "REMARKS", "SIGNATURE"),
-                "epass_confirm" => array("REFERENCE_ID", "GROUP_NAME", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "TOTAL_SEATS", "REMARKS", "SIGNATURE"),
+                "epass_confirm" => array("REFERENCE_ID", "GROUP_NAME", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "TOTAL_SEATS", "REMARKS", "COMPANION_LINK", "SIGNATURE"),
             ),
             "project" => array(
                 "project_task_deadline_reminder" => array("APP_TITLE", "DEADLINE", "SIGNATURE", "TASKS_LIST", "LOGO_URL"),
@@ -140,6 +140,8 @@ class Email_templates extends MY_Controller {
         $parser_data["PHONE_NUMBER"] = "639 123 456 7890";
         $parser_data["TOTAL_SEATS"] = 3;
         $parser_data["REMARKS"] = "Me, Myself, and I";
+        $link = "https://events.brilliantskinessentials.ph/companion?refid=".strtoupper("82e7ec97-7337-477d-9f6e-0ab72b1a570e");
+        $parser_data["COMPANION_LINK"] = "<a href='$link' target='__blank'>Click Here</a>";
         $parser_data["LOGO_URL"] = get_logo_url();
 
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
@@ -147,8 +149,7 @@ class Email_templates extends MY_Controller {
             "attachments" => array(
                 array("file_path" => $saved_url)
             ), 
-            //"cc" => $cc, 
-            "bcc" => "admin@brilliantskinessentialsinc.com"
+            "cc" => "admin@brilliantskinessentialsinc.com, brilliantaleck@gmail.com", 
         ));
         echo json_encode( array("success"=>$sent, "message"=>lang('test_email_sent').$email ) );
     }

@@ -73,6 +73,11 @@ class EventPass extends CI_Controller {
         $refid = $this->input->post('refid');
         $age = $this->input->post('age');
 
+        if(!$refid) {
+			echo json_encode(array("success"=>false, "message"=>"Ticket reservation is already closed, thank you for your understanding."));
+            exit;
+		}
+
         $detailed = $remarks.($address?"\n\n".$address:"");
 
         if(empty($event_id) || empty($first_name) || empty($last_name) || empty($phone) || empty($email) || empty($seats) || empty($group)) {

@@ -67,6 +67,13 @@ class ImageEditor {
         //     $font->align('left');
         //     $font->valign('top');
         // });  
+        $img->text($epass['area'], 450, 1270, function($font) {
+            $font->file( getcwd()."/".get_setting("system_file_path")."/Myriad_Pro_Bold.ttf" );
+            $font->size(50);
+            $font->color('#ffffff');
+            $font->align('center');
+            $font->valign('top');
+        });  
 
         // seat
         // $img->text($epass['seat'], 575, 920, function($font) {
@@ -76,13 +83,6 @@ class ImageEditor {
         //     $font->align('right');
         //     $font->valign('top');
         // });  
-        $img->text($epass['seat'], 450, 1270, function($font) {
-            $font->file( getcwd()."/".get_setting("system_file_path")."/Myriad_Pro_Bold.ttf" );
-            $font->size(50);
-            $font->color('#ffffff');
-            $font->align('center');
-            $font->valign('top');
-        });  
         
         // Saving
         $dir_path = get_setting("event_epass_ticket_path");

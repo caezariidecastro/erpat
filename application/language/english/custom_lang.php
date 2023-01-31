@@ -936,3 +936,4 @@ $lang["epass_confirm"] = "ePass Confirmation";
 $lang["email_blast"] = "Email Blast";
 
 $lang["image_preview"] = "Image Preview";
+$lang["select_action"] = "Select Action";

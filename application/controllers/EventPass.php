@@ -267,12 +267,29 @@ class EventPass extends MY_Controller {
         }
         $view_data['lists'] = $lists;
         $view_data['seats'] = $reserve;
+
+        $action_lists = array(
+            array("id" => "", "text" => "- ".lang('select_action')." -"),
+            array("id" => "email_blast", "text" => "Email Blast"),
+            array("id" => "resend", "text" => "Bulk Resend")
+        );
+        $view_data['action_lists'] = $action_lists;
         
         $this->load->view('epass/modal_form_email_blast', $view_data);
     }
 
     function prepare_email_instance() {
-        $epasses = $this->getEpassListApproved();
+        $action = $this->input->post('action');
+
+        if($action === "email_blast") {
+            $epasses = $this->getEpassListApproved();
+        } else if($action === "resend") {
+            $epasses = $this->getEpassListSent();
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            exit;
+        }
+
         echo json_encode(array("success" => true, "data" => $epasses, 'message' => lang('record_saved')));
     }
 
@@ -510,6 +527,17 @@ class EventPass extends MY_Controller {
         return $epasses;
     }
 
+    private function getEpassListSent() {
+        $epasses = array();
+
+        $sents = $this->EventPass_model->get_all_sent();
+        foreach($sents as $sent) {
+            $epasses[] = $sent;
+        }
+
+        return $epasses;
+    }
+
     private function sendEpassConfirm($data, $email){
         $email_template = $this->Email_templates_model->get_final_template("epass_confirm");
 
@@ -522,6 +550,8 @@ class EventPass extends MY_Controller {
         $parser_data["GROUP_NAME"] = $data['group'];
         $parser_data["REMARKS"] = $data['remarks'];
         $parser_data["LOGO_URL"] = get_logo_url();
+        $link = "https://events.brilliantskinessentials.ph/companion?refid=".$data['reference_id'];
+        $parser_data["COMPANION_LINK"] = "<a href='$link' target='__blank'>$link</a>";
 
         $attachments = array();
         foreach($data['attachments'] as $urls) {
@@ -530,15 +560,11 @@ class EventPass extends MY_Controller {
             ));
         }
 
-        log_message("error", json_encode($attachments));
-
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
         return send_app_mail($email, $email_template->subject, $message, array(
             "attachments" => $attachments,
-            "cc" => "brilliantaleck@gmail.com", 
-            "bcc" => "admin@brilliantskinessentialsinc.com"
+            "cc" => "admin@brilliantskinessentialsinc.com, brilliantaleck@gmail.com", 
         ));
     }
-
 
 }
