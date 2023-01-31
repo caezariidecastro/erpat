@@ -510,6 +510,10 @@ class EventPass extends MY_Controller {
             }
         }
 
+        $franchisee = $this->EventPass_model->get_all_approved('franchisee');
+        foreach($franchisee as $fran) {
+            $epasses[] = $fran;
+        }
         foreach($reserved as $reserve) {
             $epasses[] = $reserve;
         }
