@@ -401,9 +401,12 @@ class EventPass extends MY_Controller {
         $uuid = $this->input->post('uuid');
         $seats = $this->input->post('seats');
 
+        $group_name = $this->input->post('group_name');
+        $group_name = $group_name=="reserved"?"franchisee":$group_name;
+
         $seat_option = array(
             "event_id" => $this->input->post('event_id'),
-            "group_name" => $this->input->post('group_name'),
+            "group_name" => $group_name,
             "seat_requested" => (int)$seats+1
         );
         $avail_seat = $this->EPass_seat_model->get_seats_available($seat_option)->result();
@@ -485,18 +488,37 @@ class EventPass extends MY_Controller {
         }
     }
 
+    //for allocation only.
     private function getEpassList() {
         $epasses = array();
 
+        $reserved = $this->EventPass_model->get_all_approved('reserved');
         $distributor = $this->EventPass_model->get_all_approved('distributor');
+        $seller = $this->EventPass_model->get_all_approved('seller');
+        $viewer = $this->EventPass_model->get_all_approved('viewer');
+
+        $sents = $this->EventPass_model->get_all_sent();
+        foreach($sents as $sent) {
+            if($sent->group_name == "reserved") {
+                $reserved[] = $sent;
+            } else if($sent->group_name == "distributor") {
+                $distributor[] = $sent;
+            } else if($sent->group_name == "seller") {
+                $seller[] = $sent;
+            } else if($sent->group_name == "viewer") {
+                $viewer[] = $sent;
+            }
+        }
+
+        foreach($reserved as $reserve) {
+            $epasses[] = $reserve;
+        }
         foreach($distributor as $dist) {
             $epasses[] = $dist;
         }
-        $seller = $this->EventPass_model->get_all_approved('seller');
         foreach($seller as $sell) {
             $epasses[] = $sell;
         }
-        $viewer = $this->EventPass_model->get_all_approved('viewer');
         foreach($viewer as $view) {
             $epasses[] = $view;
         }

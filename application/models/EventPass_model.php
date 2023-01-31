@@ -156,7 +156,7 @@ class EventPass_model extends Crud_model {
 
         $sql = "UPDATE $event_pass_table 
             SET seat_assign=''
-            WHERE $event_pass_table.deleted=0 AND $event_pass_table.status='approved' AND group_name!='franchisee'";
+            WHERE $event_pass_table.deleted=0 AND ($event_pass_table.status='approved' OR $event_pass_table.status='sent') AND group_name!='franchisee'";
 
         return $this->db->query($sql);
     }
