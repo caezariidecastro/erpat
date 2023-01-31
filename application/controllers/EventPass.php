@@ -250,6 +250,13 @@ class EventPass extends MY_Controller {
         }
         $view_data['seats'] = $reserve;
         $view_data['epass'] = $epass;
+
+        $action_lists = array(
+            array("id" => "", "text" => "- ".lang('select_action')." -"),
+            array("id" => "clear", "text" => "Clear and Allocate Seat"),
+            array("id" => "continue", "text" => "Continue Seat Allocation")
+        );
+        $view_data['action_lists'] = $action_lists;
         
         $this->load->view('epass/modal_form_allocate', $view_data);
     }
@@ -386,8 +393,12 @@ class EventPass extends MY_Controller {
     function clear_allocation() {
         $summary = array();
 
-        //SET ALL APPROVED seat_assign NULLED.
-        $this->EventPass_model->unassign_all_approved();
+        $action = $this->input->post('action');
+
+        if($action == "clear") {
+            //SET ALL APPROVED seat_assign NULLED.
+            $this->EventPass_model->unassign_all_approved();
+        }
 
         //GET ALL APPROVED epass for processing.
         $epasses = $this->getEpassList();

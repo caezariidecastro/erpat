@@ -16,6 +16,20 @@
         </div>
     </div>
     <div class="form-group">
+        <div class="col-md-12">
+            <?php
+            echo form_input(array(
+                "id" => "action",
+                "name" => "action",
+                "value" => "",
+                "class" => "form-control notepad-title",
+                "placeholder" => lang('action'),
+                "autofocus" => true,
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <div class="alert alert-danger" role="alert">
             <strong>Warning!</strong> This action should only be execute with caution. This will re-assign all seats from distributor, seller, and viewer respectively. 
         </div>
@@ -30,6 +44,8 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('#action').select2({data: <?php echo json_encode($action_lists); ?>});
+        
         function log(message) {
             $('#consolelog').val('> '+message+'\n'+$('#consolelog').val());
         }
