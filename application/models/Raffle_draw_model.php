@@ -18,6 +18,11 @@ class Raffle_draw_model extends Crud_model {
             $where .= " AND $event_raffle_table.id=$id";
         }
 
+        $event_id = get_array_value($options, "event_id");
+        if ($event_id) {
+            $where .= " AND $event_raffle_table.event_id=$event_id";
+        }
+
         $labels = get_array_value($options, "label_id"); //not yet implemented
         if ($labels) {
             $where .= " AND (FIND_IN_SET('$labels', $event_raffle_table.labels)) ";
