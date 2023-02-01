@@ -27,7 +27,8 @@ class EventRaffle extends CI_Controller {
         $eventid = $this->input->post('eventid');
 
         $filter = array(
-            "event_id" => $eventid
+            "event_id" => $eventid,
+            "status" => "active"
         );
         $raffles = $this->Raffle_draw_model->get_details($filter)->result();
         echo json_encode( array("data"=>$raffles) );
