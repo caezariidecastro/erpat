@@ -78,6 +78,61 @@ class EPass_seat_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function get_seats_vacant($options = array()) {
+        
+        $where = "epass_seat.deleted = '0' ";
+        $group_name = get_array_value($options, "group_name"); //TODO
+
+        if($group_name == "franchisee") {
+            $where .= "AND epass_area.id = 1";
+        } else if($group_name == "distributor") {
+            $where .= "AND (epass_area.id = 2 OR epass_area.id = 3 OR epass_area.id = 4 OR epass_area.id = 5)";
+        } else if($group_name == "seller") {
+            $where .= "AND (epass_area.id = 3 OR epass_area.id = 4 OR epass_area.id = 5)";
+        } else if($group_name == "viewer") {
+            $where .= "AND epass_area.id = 5";
+        } else {
+            $where .= "";
+        }
+
+        if($block_id = get_array_value($options, "block_id")) {
+            $where .= " AND epass_block.id = '$block_id'";
+        }
+
+        if($event_id = get_array_value($options, "event_id")) {
+            $where .= " AND epass_area.event_id = '$event_id'";
+        }
+
+        $limit_request = "";
+        if($seat_requested = get_array_value($options, "seat_requested")) {
+            $limit_request = "LIMIT $seat_requested"; 
+        }
+
+        $seat_lists = [];
+        $seats_sql = "SELECT seat_assign as assign FROM event_pass WHERE deleted = '0' AND (status='approved' OR status='sent') ";
+        $seats_query = $this->db->query($seats_sql)->result();
+        foreach($seats_query as $seats) {
+            if(!empty($seats->assign)) {
+                $items = explode(",", $seats->assign);
+                foreach($items as $item) {
+                    $seat_lists[] = "'".$item."'";
+                }
+            }
+        }
+        if(count($seat_lists) > 0) {
+            $listing = implode(",", $seat_lists);
+            $where .= " AND epass_seat.id NOT IN (".$listing.")";
+        }
+
+        $avail_sql = "SELECT epass_seat.id, epass_seat.seat_name, epass_seat.sort, epass_area.area_name, epass_block.block_name
+            FROM epass_seat 
+                INNER JOIN epass_block ON epass_block.id = epass_seat.block_id AND epass_block.deleted = 0
+                INNER JOIN epass_area ON epass_area.id = epass_block.area_id AND epass_area.deleted = 0
+            WHERE $where ORDER BY epass_area.sort ASC, epass_block.sort ASC, epass_seat.sort ASC $limit_request";
+        $avail_query = $this->db->query($avail_sql)->result();
+        return $avail_query;
+    }
+
     function get_seats_available($options = array()) {
 
         $where = "epass_seat.deleted='0' AND event_pass.id IS NULL ";

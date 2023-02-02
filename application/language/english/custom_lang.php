@@ -939,3 +939,4 @@ $lang["image_preview"] = "Image Preview";
 $lang["select_action"] = "Select Action";
 
 $lang["no_seats_available"] = "There is no seats available for this ePass's group.";
+$lang["seats_already_assigned"] = "Seats already assigned";

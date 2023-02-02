@@ -239,7 +239,7 @@ class EventPass extends MY_Controller {
     function modal_form_allocate() {
         $this->access_only_admin();
 
-        $epasses = $this->getEpassList();
+        $epasses = $this->getAllUnassignedPass();
         $view_data['total'] = count($epasses);
 
         $reserve = 0;
@@ -412,7 +412,7 @@ class EventPass extends MY_Controller {
             $this->EventPass_model->unassign_all_approved();
         } else {
             //GET ALL APPROVED epass for processing.
-            $epasses = $this->getEpassList();
+            $epasses = $this->getAllUnassignedPass();
         }
 
         //RETURN TOTAL SUMMARY OF ACTION.
@@ -429,14 +429,15 @@ class EventPass extends MY_Controller {
         $group_name = $this->input->post('group_name');
         $group_name = $group_name=="reserved"?"franchisee":$group_name;
 
+        $req_seats = (int)$seats+1;
         $seat_option = array(
             "event_id" => $this->input->post('event_id'),
             "group_name" => $group_name,
-            "seat_requested" => (int)$seats+1
+            "seat_requested" => $req_seats
         );
-        $avail_seat = $this->EPass_seat_model->get_seats_available($seat_option)->result();
+        $avail_seat = $this->EPass_seat_model->get_seats_vacant($seat_option);
         if(count($avail_seat) <= 0) {
-            echo json_encode(array("success" => false, 'data' => 'ePass #'.$id, 'message' => lang('no_seats_available')));
+            echo json_encode(array("success" => false, 'data' => 'ePass #'.$id." w/ seats of ".$req_seats, 'message' => lang('no_seats_available')));
             exit();
         }
 
@@ -450,11 +451,10 @@ class EventPass extends MY_Controller {
         $data = array(
             "seat_assign" => implode(",", $seat_assigned)
         );
-        
         if( $this->EventPass_model->save($data, $id) ) {
-            echo json_encode(array("success" => true, 'data' => 'ePass #'.$id, 'message' => lang('record_saved')));
+            echo json_encode(array("success" => true, 'data' => "(".$group_name.') ePass #'.$id." w/ seats of ".$req_seats." to ".$avail_seat[0]->area_name."(".implode($seat_assigned, ",").")", 'message' => lang('record_saved')));
         } else {
-            echo json_encode(array("success" => false, 'data' => 'ePass #'.$id, 'message' => lang('error_occurred')));
+            echo json_encode(array("success" => false, 'data' => $group_name.') ePass #'.$id." w/ seats of ".$req_seats, 'message' => lang('error_occurred')));
         }
     }
 
@@ -531,7 +531,7 @@ class EventPass extends MY_Controller {
     }
 
     //for allocation only.
-    private function getEpassList() {
+    private function getAllUnassignedPass() {
         $epasses = array();
 
         $reserved = $this->EventPass_model->get_all_approved('reserved');
@@ -542,31 +542,45 @@ class EventPass extends MY_Controller {
 
         $sents = $this->EventPass_model->get_all_sent();
         foreach($sents as $sent) {
-            if($sent->group_name == "reserved") {
-                $reserved[] = $sent;
-            } else if($sent->group_name == "distributor") {
-                $distributor[] = $sent;
-            } else if($sent->group_name == "seller") {
-                $seller[] = $sent;
-            } else if($sent->group_name == "viewer") {
-                $viewer[] = $sent;
+            if(!$sent->seat_assign) {
+                if($sent->group_name == "reserved") {
+                    $reserved[] = $sent;
+                } else if($sent->group_name == "franchisee") {
+                    $franchisee[] = $sent;
+                } else if($sent->group_name == "distributor") {
+                    $distributor[] = $sent;
+                } else if($sent->group_name == "seller") {
+                    $seller[] = $sent;
+                } else if($sent->group_name == "viewer") {
+                    $viewer[] = $sent;
+                }   
             }
         }
 
         foreach($reserved as $reserv) {
-            $epasses[] = $reserv;
+            if(!$reserv->seat_assign) {
+                $epasses[] = $reserv;
+            }
         }
         foreach($franchisee as $fran) {
+            if(!$fran->seat_assign) {
             $epasses[] = $fran;
+            }
         }
         foreach($distributor as $dist) {
-            $epasses[] = $dist;
+            if(!$dist->seat_assign) {
+                $epasses[] = $dist; 
+            }
         }
         foreach($seller as $sell) {
-            $epasses[] = $sell;
+            if(!$sell->seat_assign) {
+                $epasses[] = $sell;
+            }
         }
         foreach($viewer as $view) {
-            $epasses[] = $view;
+            if(!$view->seat_assign) {
+                $epasses[] = $view;  
+            }
         }
 
         return $epasses;
@@ -638,5 +652,4 @@ class EventPass extends MY_Controller {
             "cc" => "admin@brilliantskinessentialsinc.com, brilliantaleck@gmail.com", 
         ));
     }
-
 }

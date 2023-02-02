@@ -93,7 +93,7 @@
                     let totalItems = epasses.length;
                     let totalProcessed = 0;
 
-                    const maxProcesses = 2;
+                    const maxProcesses = 10;
                     let processing = 0;
                     loops = setInterval(async () => {
                         if(processing < maxProcesses && epasses.length > 0) {
@@ -111,7 +111,7 @@
                             log('Completed reallocation of seats for '+totalItems+' ePass.');
                             clearInterval(loops)
                         }
-                    }, 1000);
+                    }, 100);
                 }
             }
         });
