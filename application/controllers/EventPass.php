@@ -294,10 +294,18 @@ class EventPass extends MY_Controller {
         $action = $this->input->post('action');
 
         if($action === "render_all") {
-            $epasses = $this->getEpassListSent();
+            $epasses = array();
+            $sent = $this->getEpassListSent();
+            foreach($sent as $item) {
+                if(!isset($item->tickets)) {
+                    $epasses[] = $item;
+                }
+            }
             $approved = $this->getEpassListApproved();
             foreach($approved as $item) {
-                $epasses[] = $item;
+                if(!isset($item->tickets)) {
+                    $epasses[] = $item;
+                }
             }
         } else if($action === "email_blast") {
             $epasses = $this->getEpassListApproved();
