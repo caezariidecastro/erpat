@@ -182,4 +182,16 @@ class EventPass_model extends Crud_model {
 
         return $this->db->query($sql)->result();
     }
+
+    function get_all_unassigned() {
+        $event_pass_table = $this->db->dbprefix('event_pass');
+
+        $sql = "SELECT $event_pass_table.*
+            FROM $event_pass_table 
+            WHERE $event_pass_table.deleted='0' 
+                AND ($event_pass_table.status='approved' OR $event_pass_table.status='sent') 
+                AND $event_pass_table.seat_assign ='' ORDER BY `event_pass`.`id` ASC";
+
+        return $this->db->query($sql)->result();
+    }
 }

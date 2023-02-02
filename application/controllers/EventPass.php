@@ -668,4 +668,31 @@ class EventPass extends MY_Controller {
             "cc" => "admin@brilliantskinessentialsinc.com, brilliantaleck@gmail.com", 
         ));
     }
+
+    //Temporary assign to duplicate to get the override seats.
+    public function overrideSeatsAllocation() {
+        $ePasses = $this->EventPass_model->get_all_unassigned();
+        foreach($ePasses as $epass) {
+            $count = 0;
+            $total = 0;
+
+            if($epass->group_name == "seller") {
+                $count = 6337;
+                $total = (int)$epass->seats+1;
+            } else if($epass->group_name == "viewer") {
+                $count = 8837;
+                $total = (int)$epass->seats+1;
+            }
+
+            $seat_assigned = array();
+            for($i=$count;$i>($count-$total);$i--) {
+                $seat_assigned[] = $i;
+            }
+
+            $data = array(
+                "seat_assign" => implode(",", $seat_assigned)
+            );
+            $this->EventPass_model->save($data, $epass->id);
+        }
+    }
 }
