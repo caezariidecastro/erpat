@@ -355,19 +355,24 @@ class EventPass extends MY_Controller {
                     "id" => $id
                 ))->row();
 
-                if(!$epass_instance->seat_assign) {
+                if(!isset($epass_instance->seat_assign)) {
+
                     $seat_option = array(
                         "event_id" => $epass_instance->event_id,
                         "group_name" => $epass_instance->group_name,
                         "seat_requested" => $epass_instance->seats + 1
                     );
-                    $avail_seat = $this->EPass_seat_model->get_seats_available($seat_option)->result();
-    
+                    $avail_seat = $this->EPass_seat_model->get_seats_vacant($seat_option);
+                    if(count($avail_seat) <= 0) {
+                        echo json_encode(array("success" => false, 'data' => 'ePass #'.$id." w/ seats of ".$req_seats, 'message' => lang('no_seats_available')));
+                        exit();
+                    }
+
                     $seat_assigned = array();
                     foreach($avail_seat as $item) {
                         $seat_assigned[] = $item->id;
                     }
-    
+
                     $data['seat_assign'] = implode(",", $seat_assigned);
                 }
             } else {
