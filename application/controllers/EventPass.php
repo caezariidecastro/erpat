@@ -98,13 +98,11 @@ class EventPass extends MY_Controller {
     }
 
     function index(){
-        //$this->validate_user_module_permission("module_ams");
         $this->template->rander("epass/index");
     }
 
     function view(){
-        //$this->validate_user_module_permission("module_ams");
-        $view_data['test'] = "";
+        $view_data['is_admin'] = $this->login_user->is_admin;
         $this->load->view("epass/view", $view_data);
     }
 
@@ -239,6 +237,8 @@ class EventPass extends MY_Controller {
     }
 
     function modal_form_allocate() {
+        $this->access_only_admin();
+
         $epasses = $this->getEpassList();
         $view_data['total'] = count($epasses);
 
@@ -253,8 +253,8 @@ class EventPass extends MY_Controller {
 
         $action_lists = array(
             array("id" => "", "text" => "- ".lang('select_action')." -"),
-            array("id" => "clear", "text" => "Clear and Allocate Seat"),
-            array("id" => "continue", "text" => "Continue Seat Allocation")
+            array("id" => "clear", "text" => "Clear Seat Assignment"),
+            array("id" => "allocate", "text" => "Start Seat Allocation")
         );
         $view_data['action_lists'] = $action_lists;
         
@@ -262,6 +262,8 @@ class EventPass extends MY_Controller {
     }
 
     function modal_form_email_blast() {
+        $this->access_only_admin();
+
         $epasses = $this->getEpassListApproved();
 
         $lists = array();
@@ -277,6 +279,7 @@ class EventPass extends MY_Controller {
 
         $action_lists = array(
             array("id" => "", "text" => "- ".lang('select_action')." -"),
+            array("id" => "render_all", "text" => "Render All"),
             array("id" => "email_blast", "text" => "Email Blast"),
             array("id" => "resend", "text" => "Bulk Resend")
         );
@@ -285,10 +288,18 @@ class EventPass extends MY_Controller {
         $this->load->view('epass/modal_form_email_blast', $view_data);
     }
 
-    function prepare_email_instance() {
+    function prepare_epass_instance() {
+        $this->access_only_admin();
+
         $action = $this->input->post('action');
 
-        if($action === "email_blast") {
+        if($action === "render_all") {
+            $epasses = $this->getEpassListSent();
+            $approved = $this->getEpassListApproved();
+            foreach($approved as $item) {
+                $epasses[] = $item;
+            }
+        } else if($action === "email_blast") {
             $epasses = $this->getEpassListApproved();
         } else if($action === "resend") {
             $epasses = $this->getEpassListSent();
@@ -297,7 +308,7 @@ class EventPass extends MY_Controller {
             exit;
         }
 
-        echo json_encode(array("success" => true, "data" => $epasses, 'message' => lang('record_saved')));
+        echo json_encode(array("success" => true, "action" => $action, "data" => $epasses, 'message' => lang('record_saved')));
     }
 
     function delete() {
@@ -391,23 +402,26 @@ class EventPass extends MY_Controller {
     }
 
     function clear_allocation() {
-        $summary = array();
+        $this->access_only_admin();
+
+        $epasses = array();
 
         $action = $this->input->post('action');
-
         if($action == "clear") {
             //SET ALL APPROVED seat_assign NULLED.
             $this->EventPass_model->unassign_all_approved();
+        } else {
+            //GET ALL APPROVED epass for processing.
+            $epasses = $this->getEpassList();
         }
 
-        //GET ALL APPROVED epass for processing.
-        $epasses = $this->getEpassList();
-
         //RETURN TOTAL SUMMARY OF ACTION.
-        echo json_encode(array("success" => true, "data" => $epasses, 'message' => lang('record_saved')));
+        echo json_encode(array("success" => true, "action" => $action, "data" => $epasses, 'message' => lang('record_saved')));
     }
 
     function allocate_seats() {
+        $this->access_only_admin();
+
         $id = $this->input->post('id');
         $uuid = $this->input->post('uuid');
         $seats = $this->input->post('seats');
@@ -444,8 +458,11 @@ class EventPass extends MY_Controller {
         }
     }
 
-    function prepare_epass_email() {
+    function prepare_epass_render_or_email() {
+        $this->access_only_admin();
+
         $id = $this->input->post('id');
+        $action = $this->input->post('action');
 
         //Get the instance of the epass.
         $filter = array("id"=>$id);
@@ -455,48 +472,62 @@ class EventPass extends MY_Controller {
             exit;
         }
 
-        //Generate all the epass ticket image and return the url's.
-        $this->load->library('ImageEditor');
-        $tickets = array();
-        $seats = explode(",", $instance->seat_assign);
-        foreach($seats as $index=>$seat) {
-            $seat_filter = array("id"=>$seat);
-            if($cur_seat = $this->EPass_seat_model->get_details($seat_filter)->row()) {
-                $epass = array(
-                    "uuid" => $instance->uuid."-".$index,
-                    "fname" => $instance->full_name,
-                    "area" => $cur_seat->area_name,
-                    "seat" => $cur_seat->seat_name
-                );
-                $image_data = (new ImageEditor())->render($epass);
-                array_push($tickets, $image_data["path"]);
+        if($action == "render_all") {
+            //Generate all the epass ticket image and return the url's.
+            $this->load->library('ImageEditor');
+            $tickets = array();
+            $seats = explode(",", $instance->seat_assign);
+            foreach($seats as $index=>$seat) {
+                $seat_filter = array("id"=>$seat);
+                if($cur_seat = $this->EPass_seat_model->get_details($seat_filter)->row()) {
+                    $epass = array(
+                        "uuid" => $instance->uuid."-".$index,
+                        "fname" => $instance->full_name,
+                        "area" => $cur_seat->area_name,
+                        "seat" => $cur_seat->seat_name
+                    );
+                    $image_data = (new ImageEditor())->render($epass);
+                    array_push($tickets, $image_data["path"]);
+                }
             }
-        }
-        
-        //Compose the email instance then send.
-        $data = array(
-            "reference_id" => $instance->uuid,
-            "first_name" => $instance->first_name,
-            "last_name" => $instance->last_name,
-            "phone" => $instance->phone,
-            "seats" => $instance->seats,
-            "group" => strtoupper($instance->group_name),
-            "remarks" => $instance->remarks,
-            "attachments" => $tickets,
-        );
-        $success = $this->sendEpassConfirm($data, $instance->user_email);
-        if(!$success) {
-            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
-            exit;
-        }
+            $tickets_db = serialize($tickets);
 
-        //Save new status to sent if success.
-        $update = array( "status" => "sent" );
-        if( $this->EventPass_model->save($update, $id) ) {
-            echo json_encode(array("success" => true, 'message' => lang('record_saved') ));
-        } else {
-            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
-        }
+            $update = array( "tickets" => $tickets_db );
+            if( $this->EventPass_model->save($update, $id) ) {
+                echo json_encode(array("success" => true, 'message' => lang('record_saved') ));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            }
+            exit;
+        } else if($action == "email_blast" || $action == "resend") {
+            //Compose the email instance then send.
+            $data = array(
+                "reference_id" => $instance->uuid,
+                "first_name" => $instance->first_name,
+                "last_name" => $instance->last_name,
+                "phone" => $instance->phone,
+                "seats" => $instance->seats,
+                "group" => strtoupper($instance->group_name),
+                "remarks" => $instance->remarks,
+                "attachments" => unserialize($instance->tickets),
+            );
+            $success = $this->sendEpassConfirm($data, $instance->user_email);
+            if(!$success) {
+                echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+                exit;
+            }
+
+             //Save new status to sent if success.
+            $update = array( "status" => "sent" );
+            if( $this->EventPass_model->save($update, $id) ) {
+                echo json_encode(array("success" => true, 'message' => lang('record_saved') ));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            }
+            exit;
+        }        
+
+        echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
     }
 
     //for allocation only.
@@ -504,6 +535,7 @@ class EventPass extends MY_Controller {
         $epasses = array();
 
         $reserved = $this->EventPass_model->get_all_approved('reserved');
+        $franchisee = $this->EventPass_model->get_all_approved('franchisee');
         $distributor = $this->EventPass_model->get_all_approved('distributor');
         $seller = $this->EventPass_model->get_all_approved('seller');
         $viewer = $this->EventPass_model->get_all_approved('viewer');
@@ -521,12 +553,11 @@ class EventPass extends MY_Controller {
             }
         }
 
-        $franchisee = $this->EventPass_model->get_all_approved('franchisee');
+        foreach($reserved as $reserv) {
+            $epasses[] = $reserv;
+        }
         foreach($franchisee as $fran) {
             $epasses[] = $fran;
-        }
-        foreach($reserved as $reserve) {
-            $epasses[] = $reserve;
         }
         foreach($distributor as $dist) {
             $epasses[] = $dist;

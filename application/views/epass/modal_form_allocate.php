@@ -52,6 +52,7 @@
         log('Click execute to unset all seat and re-assign a new seat acccording to the order of date registered.');
 
         let epasses = [];
+        let loops = null;
         $("#epass-ticket-form").appForm({
             closeModalOnSuccess: false,
             showLoader: false,
@@ -66,48 +67,57 @@
                 $maskTarget.removeClass("hide");
                 $(".modal-mask").remove();
 
-                const allocate = async (curremt) => {
-                    return $.ajax({
-                        url: "<?php echo base_url()?>/EventPass/allocate_seats",
-                        data: curremt,
-                        method: "POST",
-                        dataType: "json",
-                        success: function(response){
-                            if(response.success){
-                                log('Success on id of '+response.data);
-                            } else {
-                                log('Failed on id of '+response.data);
-                            }
-                            return response;
-                        }
-                    })
+                if(result.action == "clear") {
+                    return;
                 }
 
-                let totalItems = epasses.length;
-                let totalProcessed = 0;
+                if(result.action == "allocate") {
 
-                const maxProcesses = 2;
-                let processing = 0;
-                let loops = setInterval(async () => {
-                    if(processing < maxProcesses && epasses.length > 0) {
-                        let current = epasses.shift();
-                        processing++;
-
-                        const process = await allocate(current)
-                        log(process.message+' Progress is '+(totalProcessed+1)+' out of '+totalItems);
-                        processing--;
-
-                        totalProcessed += 1;
+                    const allocate = async (curremt) => {
+                        return $.ajax({
+                            url: "<?php echo base_url()?>/EventPass/allocate_seats",
+                            data: curremt,
+                            method: "POST",
+                            dataType: "json",
+                            success: function(response){
+                                if(response.success){
+                                    log('Success on id of '+response.data);
+                                } else {
+                                    log('Failed on id of '+response.data);
+                                }
+                                return response;
+                            }
+                        })
                     }
 
-                    if(processing == 0 && epasses.length == 0) {
-                        log('Completed reallocation of seats for '+totalItems+' ePass.');
-                        clearInterval(loops)
-                    }
-                }, 1000);
+                    let totalItems = epasses.length;
+                    let totalProcessed = 0;
+
+                    const maxProcesses = 2;
+                    let processing = 0;
+                    loops = setInterval(async () => {
+                        if(processing < maxProcesses && epasses.length > 0) {
+                            let current = epasses.shift();
+                            processing++;
+
+                            const process = await allocate(current)
+                            log(process.message+' Progress is '+(totalProcessed+1)+' out of '+totalItems);
+                            processing--;
+
+                            totalProcessed += 1;
+                        }
+
+                        if(processing == 0 && epasses.length == 0) {
+                            log('Completed reallocation of seats for '+totalItems+' ePass.');
+                            clearInterval(loops)
+                        }
+                    }, 1000);
+                }
             }
         });
 
-        
+        $('#ajaxModal').on('hide.bs.modal', function (event) {
+            clearInterval(loops);
+        });
     });
 </script>    

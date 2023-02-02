@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("EventPass/prepare_email_instance"), array("id" => "epass-email-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("EventPass/prepare_epass_instance"), array("id" => "epass-email-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <div class="form-group">
         <div class="col-md-12">Console</div>
@@ -51,13 +51,16 @@
         }
         log('Click execute to send an email to all franchisee, distributor, seller, and viewer with the list of epass.');
         log('Total number of seats: <?php echo json_encode($seats); ?>');
+        log('Total number of epass: <?php echo json_encode(count($lists)); ?>');
 
+        let action = "";
         let epasses = [];
+        let loops = null;
         $("#epass-email-form").appForm({
             closeModalOnSuccess: false,
             showLoader: false,
             onSuccess: function (result) {
-                
+                action = result.action;
                 epasses = result.data;
                 log('The total epass to process is: ' + epasses.length);
 
@@ -67,15 +70,15 @@
                 $maskTarget.removeClass("hide");
                 $(".modal-mask").remove();
 
-                const sendEmail = async (curremt) => {
+                const prapreTicket = async (current) => {
                     return $.ajax({
-                        url: "<?php echo base_url()?>/EventPass/prepare_epass_email",
-                        data: curremt,
+                        url: "<?php echo base_url()?>/EventPass/prepare_epass_render_or_email",
+                        data: current,
                         method: "POST",
                         dataType: "json",
                         success: function(response){
                             if(response.success){
-                                log('ePass #'+curremt.id+' process return '+(response.success?"successfull!":"failed!"));
+                                log('ePass #'+current.id+' process return '+(response.success?"successfull!":"failed!"));
                             }
                             return response;
                         }
@@ -87,12 +90,13 @@
 
                 const maxProcesses = 2;
                 let processing = 0;
-                let loops = setInterval(async () => {
+                loops = setInterval(async () => {
                     if(processing < maxProcesses && epasses.length > 0) {
                         let current = epasses.shift();
                         processing++;
+                        current.action = action;
 
-                        const process = await sendEmail(current)
+                        const process = await prapreTicket(current)
                         log(process.message+' Progress is '+(totalProcessed+1)+' out of '+totalItems);
                         processing--;
 
@@ -107,6 +111,8 @@
             }
         });
 
-        
+        $('#ajaxModal').on('hide.bs.modal', function (event) {
+            clearInterval(loops);
+        });
     });
 </script>    

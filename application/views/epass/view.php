@@ -2,7 +2,7 @@
     <div class="panel panel-default">
         <div class="page-title clearfix">
             <div class="title-button-group">
-                <?php if( $this->login_user->is_admin ) { ?>
+                <?php if( $is_admin ) { ?>
                 <?php echo modal_anchor(get_uri("EventPass/modal_form_email_blast"), "<i class='fa fa-paper-plane'></i> " . lang('email_blast'), array("class" => "btn btn-warning", "title" => lang('email_blast'))); ?>
                 <?php echo modal_anchor(get_uri("EventPass/modal_form_allocate"), "<i class='fa fa-recycle'></i> " . lang('allocate_seats'), array("class" => "btn btn-danger", "title" => lang('allocate_seats'))); ?>
                 <?php } ?>
