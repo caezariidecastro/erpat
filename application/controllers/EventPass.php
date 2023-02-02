@@ -295,25 +295,35 @@ class EventPass extends MY_Controller {
         $this->access_only_admin();
 
         $action = $this->input->post('action');
+        $epasses = array();
 
         if($action === "render_all") {
-            $epasses = array();
             $sent = $this->getEpassListSent();
             foreach($sent as $item) {
-                if(!isset($item->tickets)) {
+                if(!isset($item->tickets) && isset($item->user_id)) {
                     $epasses[] = $item;
                 }
             }
             $approved = $this->getEpassListApproved();
             foreach($approved as $item) {
-                if(!isset($item->tickets)) {
+                if(!isset($item->tickets) && isset($item->user_id)) {
                     $epasses[] = $item;
                 }
             }
         } else if($action === "email_blast") {
-            $epasses = $this->getEpassListApproved();
+            $email_blast = $this->getEpassListApproved();
+            foreach($email_blast as $item) {
+                if(!isset($item->tickets) && isset($item->user_id)) {
+                    $epasses[] = $item;
+                }
+            }
         } else if($action === "resend") {
-            $epasses = $this->getEpassListSent();
+            $resent = $this->getEpassListSent();
+            foreach($resent as $item) {
+                if(!isset($item->tickets) && isset($item->user_id)) {
+                    $epasses[] = $item;
+                }
+            }
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
             exit;
