@@ -146,13 +146,9 @@ class EventPass extends MY_Controller {
         }
 
         $previews = "";
-        if($data->status == "sent") {
-            $seats = explode(",", $data->seat_assign);
-            if (count($seats)) {
-                foreach($seats as $index=>$seat) {
-                    $previews = modal_anchor(get_uri("EventPass/modal_form_epass"), "<i class='fa fa-file-image-o'></i>", array("class" => "edit", "title" => lang('image_preview'), "data-post-file_url" => get_uri(get_setting('event_epass_ticket_path')."/".$data->uuid."-".$index.".jpg")));
-                }
-            }
+        $preview_obj = $data->tickets?unserialize($data->tickets):[];
+        foreach($preview_obj as $link) {
+            $previews .= modal_anchor(get_uri("EventPass/modal_form_epass"), "<i class='fa fa-file-image-o'></i>", array("class" => "edit", "title" => lang('image_preview'), "data-post-file_url" => get_uri($link)));
         }
 
         return array(
@@ -313,14 +309,14 @@ class EventPass extends MY_Controller {
         } else if($action === "email_blast") {
             $email_blast = $this->getEpassListApproved();
             foreach($email_blast as $item) {
-                if(!isset($item->tickets) && isset($item->user_id)) {
+                if(isset($item->tickets) && isset($item->user_id)) {
                     $epasses[] = $item;
                 }
             }
         } else if($action === "resend") {
             $resent = $this->getEpassListSent();
             foreach($resent as $item) {
-                if(!isset($item->tickets) && isset($item->user_id)) {
+                if(isset($item->tickets) && isset($item->user_id)) {
                     $epasses[] = $item;
                 }
             }
