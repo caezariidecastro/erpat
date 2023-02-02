@@ -40,7 +40,8 @@
                 {title: '<?php echo lang("virtual_id"); ?>'},
                 {title: '<?php echo lang("remarks"); ?>'},
                 {title: '<?php echo lang("seats_requested"); ?>'},
-                {title: '<?php echo lang("seats_assignment"); ?>', "class": "w200"},
+                {title: '<?php echo lang("seats_assignment"); ?>'},
+                {title: '<?php echo lang("preview"); ?>'},
                 {title: '<?php echo lang("status"); ?>'},
                 {title: '<?php echo lang("date"); ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}

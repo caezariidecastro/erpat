@@ -144,11 +144,13 @@ class EventPass extends MY_Controller {
         if($data->status == "draft" || $data->status == "cancelled") {
             $actions .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("EventPass/delete"), "data-action" => "delete-confirmation"));
         }
+
+        $previews = "";
         if($data->status == "sent") {
             $seats = explode(",", $data->seat_assign);
             if (count($seats)) {
                 foreach($seats as $index=>$seat) {
-                    $actions .= modal_anchor(get_uri("EventPass/modal_form_epass"), "<i class='fa fa-file-image-o'></i>", array("class" => "edit", "title" => lang('image_preview'), "data-post-file_url" => get_uri(get_setting('event_epass_ticket_path')."/".$data->uuid."-".$index.".jpg")));
+                    $previews = modal_anchor(get_uri("EventPass/modal_form_epass"), "<i class='fa fa-file-image-o'></i>", array("class" => "edit", "title" => lang('image_preview'), "data-post-file_url" => get_uri(get_setting('event_epass_ticket_path')."/".$data->uuid."-".$index.".jpg")));
                 }
             }
         }
@@ -163,6 +165,7 @@ class EventPass extends MY_Controller {
             nl2br($data->remarks?$data->remarks.($data->guest?"\n\nGuest: ".$data->guest:""):""),
             $data->seats,
             nl2br($data->assign),
+            $previews,
             $this->get_labeled_status($data->status),
             convert_date_utc_to_local($data->timestamp),
             $actions
