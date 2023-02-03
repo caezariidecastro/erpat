@@ -696,7 +696,9 @@ class EventPass extends MY_Controller {
             }
 
             $data = array(
-                "seat_assign" => implode(",", $seat_assigned)
+                "seat_assign" => implode(",", $seat_assigned),
+                "status" => 'approved',
+                "override" => "1",
             );
             $this->EventPass_model->save($data, $epass->id);
         }

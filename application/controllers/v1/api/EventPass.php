@@ -144,7 +144,7 @@ class EventPass extends CI_Controller {
             //Check if ref id is valid.
             $guest_pass = $this->EventPass_model->get_details(array(
                 "uuid" => $refid,
-                "status" => 'approved'
+                //"status" => 'approved'
             ))->row();
 
             if(!$guest_pass) {
