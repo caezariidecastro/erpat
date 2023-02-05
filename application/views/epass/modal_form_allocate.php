@@ -71,11 +71,14 @@
                     return;
                 }
 
-                if(result.action == "allocate") {
+                if(result.action == "allocate" || result.action == "allocate_companion") {
 
+                    let apiPoint = 'allocate_seats';
+                    apiPoint = result.action == "allocate_companion"?"allocate_companion":apiPoint;
+                    
                     const allocate = async (curremt) => {
                         return $.ajax({
-                            url: "<?php echo base_url()?>/EventPass/allocate_seats",
+                            url: "<?php echo base_url()?>/EventPass/"+apiPoint,
                             data: curremt,
                             method: "POST",
                             dataType: "json",

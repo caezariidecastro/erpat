@@ -253,7 +253,8 @@ class EventPass extends MY_Controller {
         $action_lists = array(
             array("id" => "", "text" => "- ".lang('select_action')." -"),
             array("id" => "clear", "text" => "Clear Seat Assignment"),
-            array("id" => "allocate", "text" => "Start Seat Allocation")
+            array("id" => "allocate", "text" => "Start Seat Allocation"),
+            array("id" => "allocate_companion", "text" => "Companion Seat Allocation")
         );
         $view_data['action_lists'] = $action_lists;
         
@@ -306,11 +307,46 @@ class EventPass extends MY_Controller {
                     $epasses[] = $item;
                 }
             }
+
+            $guest = "";
+            $counter = 0;
+            $companion = $this->EventPass_model->get_all_unsent_companion();
+            foreach($companion as $item) {
+                if(!isset($item->tickets) && isset($item->user_id)) {
+                    if($guest == $item->guest) {
+                        if($counter <= $item->seats) {
+                            $epasses[] = $item;
+                        } //else do nothing!
+                        $counter ++;
+                    } else {
+                        $guest = $item->guest;
+                        $counter = 0;
+                        $epasses[] = $item;
+                    }                
+                }
+            }
         } else if($action === "email_blast") {
             $email_blast = $this->getEpassListApproved();
             foreach($email_blast as $item) {
                 if(isset($item->tickets) && isset($item->user_id)) {
                     $epasses[] = $item;
+                }
+            }
+            $guest = "";
+            $counter = 0;
+            $companion = $this->EventPass_model->get_all_unsent_companion();
+            foreach($companion as $item) {
+                if(!isset($item->tickets) && isset($item->user_id)) {
+                    if($guest == $item->guest) {
+                        if($counter <= $item->seats) {
+                            $epasses[] = $item;
+                        } //else do nothing!
+                        $counter ++;
+                    } else {
+                        $guest = $item->guest;
+                        $counter = 0;
+                        $epasses[] = $item;
+                    }                
                 }
             }
         } else if($action === "resend") {
@@ -430,11 +466,11 @@ class EventPass extends MY_Controller {
 
         $action = $this->input->post('action');
         if($action == "clear") {
-            //SET ALL APPROVED seat_assign NULLED.
             $this->EventPass_model->unassign_all_approved();
-        } else {
-            //GET ALL APPROVED epass for processing.
+        } else if($action == "allocate") {
             $epasses = $this->getAllUnassignedPass();
+        } else if($action == "allocate_companion") {
+            $epasses = $this->EventPass_model->get_all_unsent_companion();
         }
 
         //RETURN TOTAL SUMMARY OF ACTION.
@@ -477,6 +513,52 @@ class EventPass extends MY_Controller {
             echo json_encode(array("success" => true, 'data' => "(".$group_name.') ePass #'.$id." w/ seats of ".$req_seats." to ".$avail_seat[0]->area_name."(".implode($seat_assigned, ",").")", 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'data' => $group_name.') ePass #'.$id." w/ seats of ".$req_seats, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function allocate_companion() {
+        $this->access_only_admin();
+
+        $id = $this->input->post('id');
+        $uuid = $this->input->post('uuid');
+        $seats = $this->input->post('seats');
+        $guest = $this->input->post('guest');
+
+        //TODO: Get seat from parent.
+        $option = array(
+            "uuid" => strtolower($guest)
+        );
+        $guest_pass = $this->EventPass_model->get_details($option)->row();
+        if( !$guest_pass && isset($guest_pass->seat_assign) ) {
+            echo json_encode(array("success" => false, 'data' => 'ePass #'.$id." w/ seats of 1.", 'message' => lang('guest_cant_found')));
+            exit();
+        }
+
+        if(!$guest_pass) {
+            echo json_encode(array("success"=>false, "message"=>"Guest Reference ID not valid or approve yet, please check email."));
+            exit;
+        }
+
+        $companions = $this->EventPass_model->get_details(array(
+            "guest" => $guest,
+            "status" => 'approved'
+        ))->result();
+
+        if(count($companions) >= (int)$guest_pass->seats) {
+            echo json_encode(array("success"=>false, "message"=>"The total number of this guest is already used. (".count($companions)."/".$guest_pass->seats.")"));
+            exit;
+        }
+
+        $seat_one = explode(",", $guest_pass->seat_assign);
+        $data = array(
+            "seat_assign" => count($seat_one)>0?$seat_one[0]:"",
+            "group_name" => 'companion',
+            "status" => 'approved'
+        );
+        if( $this->EventPass_model->save($data, $id) ) {
+            echo json_encode(array("success" => true, 'data' => ' ePass #'.$id." w/ seats of 1.", 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'data' => ' ePass #'.$id." w/ seats of 1.", 'message' => lang('error_occurred')));
         }
     }
 
@@ -631,6 +713,10 @@ class EventPass extends MY_Controller {
         foreach($viewer as $view) {
             $epasses[] = $view;
         }
+        $companion = $this->EventPass_model->get_all_approved('companion');
+        foreach($companion as $compan) {
+            $epasses[] = $compan;
+        }
 
         return $epasses;
     }
@@ -677,30 +763,39 @@ class EventPass extends MY_Controller {
 
     //Temporary assign to duplicate to get the override seats.
     public function overrideSeatsAllocation() {
+		$processes = 0;
+        $successes = 0;
+		
         $ePasses = $this->EventPass_model->get_all_unassigned();
-        foreach($ePasses as $epass) {
-            $count = 0;
-            $total = 0;
+		foreach($ePasses as $epass) {
+			$processes ++;
+			$count = 0;
+			$total = 0;
 
-            if($epass->group_name == "seller") {
-                $count = 6337;
-                $total = (int)$epass->seats+1;
-            } else if($epass->group_name == "viewer") {
-                $count = 8837;
-                $total = (int)$epass->seats+1;
-            }
+			if($epass->group_name == "seller") {
+				$count = 6337;
+				$total = (int)$epass->seats+1;
+			} else if($epass->group_name == "viewer") {
+				$count = 8837;
+				$total = (int)$epass->seats+1;
+			}
 
-            $seat_assigned = array();
-            for($i=$count;$i>($count-$total);$i--) {
-                $seat_assigned[] = $i;
-            }
+			$seat_assigned = array();
+			for($i=$count;$i>($count-$total);$i--) {
+				$seat_assigned[] = $i;
+			}
 
-            $data = array(
-                "seat_assign" => implode(",", $seat_assigned),
-                "status" => 'approved',
-                "override" => "1",
-            );
-            $this->EventPass_model->save($data, $epass->id);
-        }
+			$data = array(
+				"seat_assign" => implode(",", $seat_assigned),
+				"status" => 'approved',
+				"override" => "1",
+			);
+
+			if($success = $this->EventPass_model->save($data, $epass->id)) {
+				$successes ++;
+			}
+		}
+
+        echo "Total success is ".$successes." out of ".$processes.".";
     }
 }

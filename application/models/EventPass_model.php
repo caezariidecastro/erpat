@@ -52,6 +52,8 @@ class EventPass_model extends Crud_model {
         $type = get_array_value($options, "type");
         if ($type && $type == 'companion') {
             $where .= " AND $event_pass_table.guest IS NOT NULL";
+        } else if($type && $type == 'guest') {
+            $where .= " AND $event_pass_table.guest IS NULL";
         }
 
         if($search = get_array_value($options, "search")) {
@@ -93,7 +95,7 @@ class EventPass_model extends Crud_model {
                     INNER JOIN epass_block ON epass_block.id = epass_seat.block_id 
                     INNER JOIN epass_area ON epass_area.id = epass_block.area_id
                 WHERE epass_seat.deleted = '0' 
-            ) as seats ON seats.event_id =  $event_pass_table.event_id AND FIND_IN_SET(seats.id, $event_pass_table.seat_assign)
+            ) as seats ON seats.event_id = $event_pass_table.event_id AND FIND_IN_SET(seats.id, $event_pass_table.seat_assign)
             LEFT JOIN users ON users.id = $event_pass_table.user_id AND users.deleted = 0
             LEFT JOIN events ON events.id = $event_pass_table.event_id AND events.deleted = 0
             
@@ -167,7 +169,7 @@ class EventPass_model extends Crud_model {
         $sql = "SELECT $event_pass_table.*
             FROM $event_pass_table 
             WHERE $event_pass_table.deleted=0 AND $event_pass_table.status='approved' AND group_name='$group_name' 
-                AND guest IS NULL $extra
+                $extra
             ORDER BY timestamp ASC";
 
         return $this->db->query($sql)->result();
@@ -193,6 +195,20 @@ class EventPass_model extends Crud_model {
             WHERE $event_pass_table.deleted='0' 
                 AND ($event_pass_table.status='approved' OR $event_pass_table.status='sent') 
                 AND $event_pass_table.seat_assign ='' ORDER BY `event_pass`.`id` ASC";
+
+        return $this->db->query($sql)->result();
+    }
+
+    function get_all_unsent_companion() {
+        $event_pass_table = $this->db->dbprefix('event_pass');
+
+        $sql = "SELECT $event_pass_table.*
+            FROM $event_pass_table 
+            WHERE $event_pass_table.deleted='0' 
+                AND $event_pass_table.guest IS NOT NULL
+                AND ($event_pass_table.status='draft' OR $event_pass_table.status='approved')
+                AND $event_pass_table.seat_assign IS NULL 
+                ORDER BY `event_pass`.`guest` ASC";
 
         return $this->db->query($sql)->result();
     }
