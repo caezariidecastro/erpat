@@ -269,10 +269,12 @@ class EventPass extends MY_Controller {
         $lists = array();
         $reserve = 0;
         foreach($epasses as $single) {
-            array_push($lists, array(
-                "id" => $single->id
-            ));
-            $reserve += $single->seats+1;
+            if(isset($single->user_id)) {
+                array_push($lists, array(
+                    "id" => $single->id
+                ));
+                $reserve += $single->seats+1;
+            }
         }
         $view_data['lists'] = $lists;
         $view_data['seats'] = $reserve;
@@ -336,7 +338,7 @@ class EventPass extends MY_Controller {
             $counter = 0;
             $companion = $this->EventPass_model->get_all_unsent_companion();
             foreach($companion as $item) {
-                if(!isset($item->tickets) && isset($item->user_id)) {
+                if(isset($item->tickets) && isset($item->user_id)) {
                     if($guest == $item->guest) {
                         if($counter <= $item->seats) {
                             $epasses[] = $item;
@@ -643,6 +645,7 @@ class EventPass extends MY_Controller {
         $distributor = $this->EventPass_model->get_all_approved('distributor');
         $seller = $this->EventPass_model->get_all_approved('seller');
         $viewer = $this->EventPass_model->get_all_approved('viewer');
+        $companion = $this->EventPass_model->get_all_approved('companion');
 
         $sents = $this->EventPass_model->get_all_sent();
         foreach($sents as $sent) {
@@ -684,6 +687,11 @@ class EventPass extends MY_Controller {
         foreach($viewer as $view) {
             if(!$view->seat_assign) {
                 $epasses[] = $view;  
+            }
+        }
+        foreach($companion as $comp) {
+            if(!$comp->seat_assign) {
+                $epasses[] = $comp;  
             }
         }
 
