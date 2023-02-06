@@ -64,8 +64,6 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('phone'),
                 "autofocus" => true,
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>
@@ -81,8 +79,6 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('street'),
                 "autofocus" => true,
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>
@@ -98,8 +94,6 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('city'),
                 "autofocus" => true,
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>
@@ -115,8 +109,6 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('state'),
                 "autofocus" => true,
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>
@@ -132,8 +124,6 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('zip'),
                 "autofocus" => true,
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>
@@ -149,8 +139,6 @@
                 "class" => "form-control validate-hidden",
                 "placeholder" => lang('country'),
                 "autofocus" => true,
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
             ));
             ?>
         </div>
