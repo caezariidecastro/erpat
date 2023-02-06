@@ -943,3 +943,5 @@ $lang["seats_already_assigned"] = "Seats already assigned";
 
 $lang["guest_cant_found"] = "Guest cannot be found";
 $lang["companions"] = "Companions";
+
+$lang["add_override"] = "Add Override";

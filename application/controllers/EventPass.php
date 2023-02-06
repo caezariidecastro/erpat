@@ -188,6 +188,68 @@ class EventPass extends MY_Controller {
         $this->load->view('epass/modal_form_epass', $view_data);
     }
 
+    function modal_form_override() {
+        $this->load->view('epass/modal_form_override');
+    }
+
+    function add_override_epass() {
+        //Get first, last, and email.
+        $first_name = $this->input->post('first_name');
+        $last_name = $this->input->post('last_name');
+
+        //Create User 
+        $email = $this->uuid->v4()."@brilliantskinessentialsinc.com";
+        $password = make_random_string(8);
+        $customer_data = array(
+            "uuid" => $this->uuid->v4(),
+            "first_name" => $first_name,
+            "last_name" => $last_name,
+            "email" => $email,
+            "user_type" => 'customer',
+            "disable_login" => 1,
+            "password" => password_hash($password, PASSWORD_DEFAULT),
+            "created_at" => get_current_utc_time(),
+            "created_by" => $this->login_user->id,
+        );
+        $customer_id = $this->Users_model->save($customer_data);
+        if (!$customer_id) {
+            echo json_encode(array("success" => true, 'message' => lang('error_occurred')));
+            exit;
+        }
+
+        //Auto Render
+        $this->load->library('ImageEditor');
+        $tickets = array();
+        $epass = array(
+            "uuid" => $this->uuid->v4(),
+            "fname" => $first_name." ".$last_name,
+            "area" => "Gen. Admin",
+            "seat" => "Seat# 2500"
+        );
+        $image_data = (new ImageEditor())->render($epass);
+        array_push($tickets, $image_data["path"]);
+        $tickets_db = serialize($tickets);
+
+        //Create Epass
+        $epass_data = array(
+            "uuid" => $this->uuid->v4(),
+            "event_id" => 3,
+            "user_id" => $customer_id,
+            "seats" => 1,
+            "group_name" => "viewer",
+            "seat_assign" => "8837",
+            "status" => "sent",
+            "override" => "2",
+            "tickets" => $tickets_db,
+            "timestamp" => get_current_utc_time()
+        );
+        if ($id = $this->EventPass_model->save($epass_data)) {
+            echo json_encode(array("success" => true, "data" => $this->_row_data($id), 'id' => $id, 'url' => get_uri($image_data["path"]), 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     function modal_form_add_user() {
         validate_submitted_data(array(
             "id" => "numeric"

@@ -5,6 +5,7 @@
                 <?php if( $is_admin ) { ?>
                 <?php echo modal_anchor(get_uri("EventPass/modal_form_email_blast"), "<i class='fa fa-paper-plane'></i> " . lang('email_blast'), array("class" => "btn btn-warning", "title" => lang('email_blast'))); ?>
                 <?php echo modal_anchor(get_uri("EventPass/modal_form_allocate"), "<i class='fa fa-recycle'></i> " . lang('allocate_seats'), array("class" => "btn btn-danger", "title" => lang('allocate_seats'))); ?>
+                <?php echo modal_anchor(get_uri("EventPass/modal_form_override"), "<i class='fa fa-plus'></i> " . lang('add_override'), array("class" => "btn btn-primary", "title" => lang('add_override'))); ?>
                 <?php } ?>
                 <?php echo modal_anchor(get_uri("EventPass/modal_form_add"), "<i class='fa fa-plus'></i> " . lang('add_epass'), array("class" => "btn btn-default", "title" => lang('add_epass'))); ?>
             </div>
@@ -47,6 +48,11 @@
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             filterDropdown: [
+                {id: "type", name: "type", class: "w100", options: [
+                    { id: 'guest', text: 'Guest' },
+                    { id: 'companion', text: 'Companion' },
+                    { id: 'override', text: 'Override' },
+                ]},
                 {id: "status",  name: "status", class: "w150", options: [
                     {text: '<?php echo lang("draft") ?>', id: "draft"},
                     {text: '<?php echo lang("approved") ?>', id: "approved"},
@@ -68,10 +74,6 @@
                     { id: 'viewer', text: 'Viewer Only' },
 					{ id: 'reserved', text: 'Reserved Seats' },
                 ]}
-            ],
-            radioButtons: [
-                { value: 'guest', name: "type", text: 'Guest', isChecked: true },
-                { value: 'companion', name: "type", text: 'Companion', isChecked: false }
             ],
             search: {
                 show: true,

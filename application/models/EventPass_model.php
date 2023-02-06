@@ -50,9 +50,11 @@ class EventPass_model extends Crud_model {
         }
 
         $type = get_array_value($options, "type");
-        if ($type && $type == 'companion') {
+        if ($type == 'companion') {
             $where .= " AND $event_pass_table.guest IS NOT NULL";
-        } else if($type && $type == 'guest') {
+        } else if($type == 'override') {
+            $where .= " AND $event_pass_table.override='2'";
+        } else {
             $where .= " AND $event_pass_table.guest IS NULL";
         }
 
