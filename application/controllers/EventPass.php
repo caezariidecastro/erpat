@@ -217,11 +217,13 @@ class EventPass extends MY_Controller {
             exit;
         }
 
+        $epass_id = $this->uuid->v4();
+
         //Auto Render
         $this->load->library('ImageEditor');
         $tickets = array();
         $epass = array(
-            "uuid" => $this->uuid->v4(),
+            "uuid" => $epass_id,
             "fname" => $first_name." ".$last_name,
             "area" => "Gen. Admin",
             "seat" => "Seat# 2500"
@@ -232,7 +234,7 @@ class EventPass extends MY_Controller {
 
         //Create Epass
         $epass_data = array(
-            "uuid" => $this->uuid->v4(),
+            "uuid" => $epass_id,
             "event_id" => 3,
             "user_id" => $customer_id,
             "seats" => 1,
