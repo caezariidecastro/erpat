@@ -2089,7 +2089,7 @@ if (!function_exists('is_user_has_module_permission')) {
         $ci = get_instance();
         $permissions = $ci->login_user->permissions;
 
-        if(get_setting($module) == "1" && ($ci->login_user->is_admin || get_array_value($permissions, $module))){
+        if( $ci->login_user->is_admin || get_array_value($permissions, $module) ){
             return true;
         }
 

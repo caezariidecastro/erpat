@@ -10,7 +10,6 @@ $lang["module_lds"] = "Logistic & Distribution";
 $lang["module_sms"] = "Sales & Invoicing";
 $lang["module_ams"] = "Assets Management";
 $lang["module_pms"] = "Project Planning";
-$lang["module_css"] = "Help & Support";
 
 $lang["menu_hrs"] = "Human Resource";
 $lang["menu_fas"] = "Finance & Accounting";

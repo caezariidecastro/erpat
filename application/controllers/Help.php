@@ -8,7 +8,7 @@ class Help extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_team_members();
-        $this->init_permission_checker("help_and_knowledge_base");
+        $this->init_permission_checker("help");
         
         $this->load->model("Help_categories_model");
         $this->load->model("Help_articles_model");
@@ -20,7 +20,7 @@ class Help extends MY_Controller {
 
         $type = "help";
         $view_data["type"] = $type;
-        $view_data['allowed_member'] = $this->validate_user_role_permission('help_and_knowledge_base', true);
+        $view_data['allowed_member'] = $this->validate_user_role_permission('help', true);
         $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
     }
 
@@ -82,8 +82,6 @@ class Help extends MY_Controller {
 
     //show help articles list
     function view_preview() {
-        $this->access_only_allowed_members();
-
         $view_data["type"] = "help";
         $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => "help", "only_active_categories" => true))->result();
         $this->load->view("help_and_knowledge_base/index", $view_data);
@@ -91,8 +89,6 @@ class Help extends MY_Controller {
 
     //show help articles list
     function view_articles() {
-        $this->access_only_allowed_members();
-
         $view_data["type"] = "help";
         $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => "help", "only_active_categories" => true))->result();
         $this->load->view("help_and_knowledge_base/articles/tab-panel", $view_data);
@@ -100,32 +96,24 @@ class Help extends MY_Controller {
 
     //show help articles list
     function  view_categories() {
-        $this->access_only_allowed_members();
-
         $view_data["type"] = "help";
         $this->load->view("help_and_knowledge_base/categories/tab-panel", $view_data);
     }
 
     //show knowledge base articles list
     function knowledge_base_articles() {
-        $this->access_only_allowed_members();
-
         $view_data["type"] = "knowledge_base";
         $this->template->rander("help_and_knowledge_base/articles/tab-panel", $view_data);
     }
 
     //show knowledge base articles list
     function knowledge_base_categories() {
-        $this->access_only_allowed_members();
-
         $view_data["type"] = "knowledge_base";
         $this->template->rander("help_and_knowledge_base/categories/tab-panel", $view_data);
     }
 
     //show add/edit category modal
     function category_modal_form($type) {
-        $this->access_only_allowed_members();
-
         validate_submitted_data(array(
             "id" => "numeric"
         ));
@@ -138,8 +126,6 @@ class Help extends MY_Controller {
 
     //save category
     function save_category() {
-        $this->access_only_allowed_members();
-
         validate_submitted_data(array(
             "id" => "numeric",
             "title" => "required",
@@ -164,8 +150,6 @@ class Help extends MY_Controller {
 
     //delete/undo a category 
     function delete_category() {
-        $this->access_only_allowed_members();
-
         validate_submitted_data(array(
             "id" => "required|numeric"
         ));
@@ -188,8 +172,6 @@ class Help extends MY_Controller {
 
     //prepare categories list data
     function categories_list_data($type) {
-        $this->access_only_allowed_members();
-
         $list_data = $this->Help_categories_model->get_details(array("type" => $type))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -219,8 +201,6 @@ class Help extends MY_Controller {
 
     //show add/edit article form
     function article_form($type, $id = 0) {
-        $this->access_only_allowed_members();
-
         $view_data['model_info'] = $this->Help_articles_model->get_one($id);
         $view_data['type'] = $type;
         $view_data['categories_dropdown'] = $this->Help_categories_model->get_dropdown_list(array("title"), "id", array("type" => $type));
@@ -229,8 +209,6 @@ class Help extends MY_Controller {
 
     //save article
     function save_article() {
-        $this->access_only_allowed_members();
-
         validate_submitted_data(array(
             "id" => "numeric",
             "title" => "required",
@@ -281,8 +259,6 @@ class Help extends MY_Controller {
 
     //delete/undo an article 
     function delete_article() {
-        $this->access_only_allowed_members();
-
         validate_submitted_data(array(
             "id" => "required|numeric"
         ));
@@ -305,8 +281,6 @@ class Help extends MY_Controller {
 
     //prepare article list data
     function articles_list_data($type) {
-        $this->access_only_allowed_members();
-
         $list_data = $this->Help_articles_model->get_details(array("type" => $type))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -336,8 +310,6 @@ class Help extends MY_Controller {
     
     // upload a file 
     function upload_file() {
-        $this->access_only_allowed_members();
-
         upload_file_to_temp();
     }
 

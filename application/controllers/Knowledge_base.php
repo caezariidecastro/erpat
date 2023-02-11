@@ -26,7 +26,7 @@ class Knowledge_base extends MY_Controller {
                 $this->login_user->permissions = array();
             }
         }
-
+        $this->init_permission_checker("knowledge_base");
 
         $this->load->model("Help_categories_model");
         $this->load->model("Help_articles_model");
@@ -34,16 +34,14 @@ class Knowledge_base extends MY_Controller {
 
     //show knowledge base page
     function index() {
-        if (!get_setting("module_knowledge_base")) {
-            show_404();
-        }
+        $this->check_module_availability("module_knowledge_base");
 
         $type = "knowledge_base";
         $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => $type, "only_active_categories" => true))->result();
         $view_data["type"] = $type;
         if (isset($this->login_user->id)) {
             $view_data['external'] = true;
-            $view_data['allowed_member'] = $this->validate_user_role_permission('help_and_knowledge_base', true);
+            $view_data['allowed_member'] = $this->validate_user_role_permission('knowledge_base', true);
             $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
         } else {
             $view_data['topbar'] = "includes/public/topbar";
@@ -137,7 +135,7 @@ class Knowledge_base extends MY_Controller {
 
     //show help articles list
     function view_articles() {
-        $this->validate_user_role_permission('help_and_knowledge_base');
+        $this->validate_user_role_permission('knowledge_base');
 
         $view_data["type"] = "knowledge_base";
         $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => "knowledge_base", "only_active_categories" => true))->result();
@@ -146,7 +144,7 @@ class Knowledge_base extends MY_Controller {
 
     //show help articles list
     function  view_categories() {
-        $this->validate_user_role_permission('help_and_knowledge_base');
+        $this->validate_user_role_permission('knowledge_base');
 
         $view_data["type"] = "knowledge_base";
         $this->load->view("help_and_knowledge_base/categories/tab-panel", $view_data);

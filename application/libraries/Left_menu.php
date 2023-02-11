@@ -248,7 +248,6 @@ class Left_menu {
 
             $access_expense = get_array_value($permissions, "expense");
             $access_invoice = get_array_value($permissions, "invoice");
-            $access_ticket = get_array_value($permissions, "ticket");
             $access_client = get_array_value($permissions, "client");
             $access_lead = get_array_value($permissions, "lead");
             $access_timecard = get_array_value($permissions, "attendance");
@@ -259,9 +258,6 @@ class Left_menu {
             $client_message_users = get_setting("client_message_users");
             $client_message_users_array = explode(",", $client_message_users);
             $access_messages = ($this->ci->login_user->is_admin || get_array_value($permissions, "message_permission") !== "no" || in_array($this->ci->login_user->id, $client_message_users_array));
-
-            $manage_help_and_knowledge_base = ($this->ci->login_user->is_admin || get_array_value($permissions, "help_and_knowledge_base"));
-
 
             if (get_setting("module_timeline") == "1") {
                 $sidebar_menu["timeline"] = array("name" => "timeline", "url" => "timeline", "class" => " fa-comments font-18");
@@ -424,30 +420,25 @@ class Left_menu {
             // End: Module permissions workaround
 
             //prepere the help and suppor menues
-            if (is_user_has_module_permission("module_css")) {
+            if ( get_setting("module_ticket") == "1" && user_role_has_permission('ticket') ) {
 
-                if ($this->ci->login_user->is_admin || (get_setting("module_ticket") == "1" && $access_ticket)) {
-
-                    $ticket_badge = 0;
-                    if ($this->ci->login_user->is_admin || $access_ticket === "all") {
-                        $ticket_badge = count_new_tickets();
-                    } else if ($access_ticket === "specific") {
-                        $specific_ticket_permission = get_array_value($permissions, "ticket_specific");
-                        $ticket_badge = count_new_tickets($specific_ticket_permission);
-                    }
-    
-                    $sidebar_menu["tickets"] = array("name" => "tickets", "url" => "tickets", "class" => "fa-circle", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
-                }    
-
-                $module_help = $this->ci->login_user->is_admin || get_setting("module_help") == "1" ? true : false;
-                if ($manage_help_and_knowledge_base && $module_help) {
-                    $sidebar_menu["help"] = array("name" => "help_page_title", "url" => "help", "class" => "fa-circle");
+                $ticket_badge = 0;
+                if ($this->ci->login_user->is_admin || $access_ticket === "all") {
+                    $ticket_badge = count_new_tickets();
+                } else if ($access_ticket === "specific") {
+                    $specific_ticket_permission = get_array_value($permissions, "ticket_specific");
+                    $ticket_badge = count_new_tickets($specific_ticket_permission);
                 }
 
-                $module_knowledge_base = $this->ci->login_user->is_admin || get_setting("module_knowledge_base") == "1" ? true : false;
-                if ($module_knowledge_base) {
-                    $sidebar_menu["knowledge_base"] = array("name" => "knowledge_base", "url" => "knowledge_base", "class" => "fa-circle");
-                }
+                $sidebar_menu["tickets"] = array("name" => "tickets", "url" => "tickets", "class" => "fa-circle", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+            }
+
+            if ( get_setting("module_help") == "1" && user_role_has_permission('help') ) {
+                $sidebar_menu["help"] = array("name" => "help_page_title", "url" => "help", "class" => "fa-circle");
+            }
+
+            if ( get_setting("module_knowledge_base") == "1" && user_role_has_permission('knowledge_base') ) {
+                $sidebar_menu["knowledge_base"] = array("name" => "knowledge_base", "url" => "knowledge_base", "class" => "fa-circle");
             }
 
             if ($this->ci->login_user->is_admin) {

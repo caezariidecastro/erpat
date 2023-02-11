@@ -34,7 +34,6 @@ class Roles extends MY_Controller {
             array("module_mcs", "Coming Soon", "Marketing", "Enabled", null),
             array("module_sms", "Coming Soon", "Sales", "Enabled", null),
             array("module_fas", "Coming Soon", "Accounting", "Enabled", null),
-            array("module_css", "Coming Soon", "Help Center", "Enabled", null),
             array("module_pms", "Coming Soon", "Project Planning", "Enabled", null),
             array("module_ams", "Coming Soon", "Manufacturing", "Enabled", null),
             array("module_lds", "Coming Soon", "Warehouse & Logistics", "Enabled", null),
@@ -60,9 +59,7 @@ class Roles extends MY_Controller {
 
             array("client", "Coming Soon", "Marketing", "Clients", null),
             array("lead", "Coming Soon", "Marketing", "Leads", null),
-
-            array("help_and_knowledge_base", "Coming Soon", "Help Center", "Enabled", null),
-
+            
             array("can_manage_all_projects", "Coming Soon", "Planning", "Manage All Projects", null),
             array("can_create_projects", "Coming Soon", "Planning", "Create Project", null),
             array("can_edit_projects", "Coming Soon", "Planning", "Edit Projects", null),
@@ -84,7 +81,6 @@ class Roles extends MY_Controller {
             array("can_delete_leave_application", "Coming Soon", "HR Employee", "Delete Leave Application", null),
             array("hide_team_members_list", "Coming Soon", "HR Employee", "Hide Team Member List", null),
 
-            array("ticket", "Coming Soon", "Default: Ticket", "Access", "dropdown"),
             array("message_permission", "Coming Soon", "Default: Message", "Access", "dropdown"),
             array("leave", "Coming Soon", "Default: Leave", "Access", "dropdown"),
             array("attendance", "Coming Soon", "Default: Attendance", "Access", "dropdown"),
@@ -93,6 +89,10 @@ class Roles extends MY_Controller {
 
             array("can_update_account", "New!", "HR Employee", "Update account and password.", null),
             array("can_update_contribution", "New!", "Payroll", "Able to update contributions.", null),
+
+            array("ticket", "Coming Soon", "Default: Ticket", "Access", "dropdown"),
+            array("help", "Coming Soon", "Help Center", "Enabled", null),
+            array("knowledge_base", "Coming Soon", "Knowledge Base", "Enabled", null),
         ];
     }
 

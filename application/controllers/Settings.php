@@ -732,9 +732,7 @@ class Settings extends MY_Controller {
             "module_assets", "module_asset_category", "module_location", "module_vendors", "module_brands", 
         "module_pms", 
             "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 
-        "module_css",  
-            "module_ticket", "module_help", "module_knowledge_base",
-    
+        "module_ticket", "module_help", "module_knowledge_base",
         );
 
         foreach ($settings as $setting) {
