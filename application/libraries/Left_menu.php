@@ -376,9 +376,9 @@ class Left_menu {
                 $sidebar_menu["sales-matrix"] = array("name" => "sales_matrix", "url" => "sales/Sales_matrix", "class" => "fa-circle");
                 
                 if ($this->ci->login_user->is_admin || (get_setting("module_estimate") && get_setting("module_estimate_request") && $access_estimate)) {
-                    $sidebar_menu["estimates"] = array("name" => "submenu_sms_estimates", "url" => "sms/estimates", "class" => "fa-circle");
+                    $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "sales/Estimates", "class" => "fa-circle");
                 } else if ($this->ci->login_user->is_admin || (get_setting("module_estimate") && $access_estimate)) {
-                    $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "sms/estimates", "class" => "fa-circle");
+                    $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "sales/Estimates", "class" => "fa-circle");
                 }
 
                 if ($this->ci->login_user->is_admin || (get_setting("module_invoice") == "1" && $access_invoice)) {

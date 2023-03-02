@@ -55,11 +55,6 @@ $route['default_controller'] = 'dashboard';
 //this route will move 'about/any-text' to 'domain.com/about/index/any-text'
 $route['about/(:any)'] = 'about/index/$1';
 
-// Estimates
-$route['sms/estimates'] = 'estimates/index';
-$route['sms/estimates/(:any)'] = 'estimates/$1';
-$route['sms/estimates/(:any)/(:any)'] = 'estimates/$1/$2';
-
 // Payrolls
 $route['fas/payrolls'] = 'payrolls/index';
 $route['fas/payrolls/(:any)'] = 'payrolls/$1';

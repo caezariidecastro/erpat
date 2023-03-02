@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("estimates/save"), array("id" => "estimate-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Estimates/save"), array("id" => "estimate-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <input type="hidden" name="estimate_request_id" value="<?php echo $estimate_request_id; ?>" />
@@ -202,7 +202,7 @@
             appLoader.show({container: "#estimate_client_selection_wrapper", css:"left: 7%; bottom: -30px;"});
 
             $.ajax({
-                url: "<?php echo get_uri("estimates/get_clients_and_leads_select2") ?>",
+                url: "<?php echo get_uri("sales/Estimate_requests/get_clients_and_leads_select2") ?>",
                 dataType: "json",
                 success: function (result) {
                     $("#estimate_client_id").show().val("");

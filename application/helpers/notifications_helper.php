@@ -115,7 +115,7 @@ if (!function_exists('get_notification_config')) {
         $estimate_link = function($options) {
             $url = "";
             if (isset($options->estimate_id)) {
-                $url = get_uri("estimates/preview/" . $options->estimate_id . "/1");
+                $url = get_uri("sales/Estimates/preview/" . $options->estimate_id . "/1");
             }
 
             return array("url" => $url);
@@ -124,7 +124,7 @@ if (!function_exists('get_notification_config')) {
         $estimate_request_link = function($options) {
             $url = "";
             if (isset($options->estimate_request_id)) {
-                $url = get_uri("estimate_requests/view_estimate_request/" . $options->estimate_request_id);
+                $url = get_uri("sales/Estimate_requests/view_estimate_request/" . $options->estimate_request_id);
             }
 
             return array("url" => $url);

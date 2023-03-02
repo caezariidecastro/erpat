@@ -377,7 +377,7 @@ class Estimates extends MY_Controller {
             $estimate_url = anchor(get_uri("sms/estimates/view/" . $data->id), get_estimate_id($data->id));
         } else {
             //for client client
-            $estimate_url = anchor(get_uri("estimates/preview/" . $data->id), get_estimate_id($data->id));
+            $estimate_url = anchor(get_uri("sales/Estimates/preview/" . $data->id), get_estimate_id($data->id));
         }
 
         $client = anchor(get_uri("sales/Clients/view/" . $data->client_id), $data->company_name);
@@ -403,8 +403,8 @@ class Estimates extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $row_data[] = modal_anchor(get_uri("estimates/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_estimate'), "data-post-id" => $data->id))
-                . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_estimate'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("estimates/delete"), "data-action" => "delete"));
+        $row_data[] = modal_anchor(get_uri("sales/Estimate_requests/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_estimate'), "data-post-id" => $data->id))
+                . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_estimate'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Estimate_requests/delete"), "data-action" => "delete"));
 
         return $row_data;
     }
@@ -674,7 +674,7 @@ class Estimates extends MY_Controller {
             to_currency($data->rate, $data->currency_symbol),
             to_currency($data->total, $data->currency_symbol),
             modal_anchor(get_uri("sms/estimates/item_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_estimate'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("estimates/delete_item"), "data-action" => "delete"))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Estimate_requests/delete_item"), "data-action" => "delete"))
         );
     }
 
@@ -832,7 +832,7 @@ class Estimates extends MY_Controller {
             $parser_data["CONTACT_FIRST_NAME"] = $contact_first_name;
             $parser_data["CONTACT_LAST_NAME"] = $contact_last_name;
             $parser_data["PROJECT_TITLE"] = $estimate_info->project_title;
-            $parser_data["ESTIMATE_URL"] = get_uri("estimates/preview/" . $estimate_info->id);
+            $parser_data["ESTIMATE_URL"] = get_uri("sales/Estimate_requests/preview/" . $estimate_info->id);
             $parser_data['SIGNATURE'] = $email_template->signature;
             $parser_data["LOGO_URL"] = get_logo_url();
 

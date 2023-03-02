@@ -21,7 +21,7 @@
         }
 
         $("#estimate-request-table").appTable({
-            source: '<?php echo_uri("estimate_requests/estimate_requests_list_data_of_client/" . $client_id) ?>',
+            source: '<?php echo_uri("sales/Estimate_requests/estimate_requests_list_data_of_client/" . $client_id) ?>',
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('id'); ?>"},

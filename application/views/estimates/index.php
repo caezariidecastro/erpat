@@ -3,14 +3,14 @@
         <ul id="estimate-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
             <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang('estimates'); ?></h4></li>
             <li><a id="monthly-estimate-button" class="active" role="presentation" href="javascript:;" data-target="#monthly-estimates"><?php echo lang("monthly"); ?></a></li>
-            <li><a role="presentation" href="<?php echo_uri("estimates/yearly/"); ?>" data-target="#yearly-estimates"><?php echo lang('yearly'); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("sales/Estimates/yearly/"); ?>" data-target="#yearly-estimates"><?php echo lang('yearly'); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("estimate_requests"); ?>" data-target="#estimate-requests"><?php echo lang('requests'); ?></a></li>
-            <li><a role="presentation" href="<?php echo_uri("estimate_requests/estimate_forms"); ?>" data-target="#estimate-request-forms"><?php echo lang('forms'); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("sales/Estimates/estimate_forms"); ?>" data-target="#estimate-request-forms"><?php echo lang('forms'); ?></a></li>
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
-                    <?php echo modal_anchor(get_uri("estimates/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_estimate'), array("class" => "btn btn-default", "title" => lang('add_estimate'), "id" => "add_estimate_button")); ?>
-                    <?php echo modal_anchor(get_uri("estimate_requests/request_an_estimate_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('create_estimate_request'), array("class" => "btn btn-default", "title" => lang('create_estimate_request'), "id" => "add_create_estimate_request_button")); ?>
-                    <?php echo modal_anchor(get_uri("estimate_requests/estimate_request_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_form'), array("class" => "btn btn-default", "title" => lang('add_form'), "id" => "add_form")); ?>
+                    <?php echo modal_anchor(get_uri("sales/Estimates/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_estimate'), array("class" => "btn btn-default", "title" => lang('add_estimate'), "id" => "add_estimate_button")); ?>
+                    <?php echo modal_anchor(get_uri("sales/Estimate_requests/request_an_estimate_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('create_estimate_request'), array("class" => "btn btn-default", "title" => lang('create_estimate_request'), "id" => "add_create_estimate_request_button")); ?>
+                    <?php echo modal_anchor(get_uri("sales/Estimate_requests/estimate_request_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_form'), array("class" => "btn btn-default", "title" => lang('add_form'), "id" => "add_form")); ?>
                 </div>
             </div>
         </ul>
@@ -36,7 +36,7 @@
 <script type="text/javascript">
     loadEstimatesTable = function (selector, dateRange) {
         $(selector).appTable({
-            source: '<?php echo_uri("estimates/list_data") ?>',
+            source: '<?php echo_uri("sales/Estimates/list_data") ?>',
             order: [[0, "desc"]],
             dateRangeType: dateRange,
             filterDropdown: [{name: "status", class: "w150", options: <?php $this->load->view("estimates/estimate_statuses_dropdown"); ?>}],

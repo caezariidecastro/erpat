@@ -151,13 +151,13 @@ class Estimate_requests extends MY_Controller {
             }
         }
 
-        $edit = '<li role="presentation">' . modal_anchor(get_uri("estimate_requests/edit_estimate_request_modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('estimate_request'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
+        $edit = '<li role="presentation">' . modal_anchor(get_uri("sales/Estimate_requests/edit_estimate_request_modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('estimate_request'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
 
         $request_status = $this->load->view("estimate_requests/estimate_request_status_options", array("model_info" => $data), true);
 
-        $add_estimate = '<li role="presentation">' . modal_anchor(get_uri("estimates/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_estimate'), array('title' => lang('add_estimate'), "data-post-estimate_request_id" => $data->id, "data-post-client_id" => $data->client_id)) . '</li>';
+        $add_estimate = '<li role="presentation">' . modal_anchor(get_uri("sales/Estimates/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_estimate'), array('title' => lang('add_estimate'), "data-post-estimate_request_id" => $data->id, "data-post-client_id" => $data->client_id)) . '</li>';
 
-        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_estimate_form'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("estimate_requests/delete_estimate_request"), "data-action" => "delete-confirmation")) . '</li>';
+        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_estimate_form'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Estimate_requests/delete_estimate_request"), "data-action" => "delete-confirmation")) . '</li>';
 
         $options = '<span class="dropdown inline-block">
                         <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
@@ -169,7 +169,7 @@ class Estimate_requests extends MY_Controller {
 
 
         return array(
-            anchor(get_uri("estimate_requests/view_estimate_request/" . $data->id), lang("estimate_request") . " - " . $data->id),
+            anchor(get_uri("sales/Estimate_requests/view_estimate_request/" . $data->id), lang("estimate_request") . " - " . $data->id),
             $client,
             $data->form_title,
             $assigned_to,
@@ -353,7 +353,7 @@ class Estimate_requests extends MY_Controller {
 
     //prepare a row of estimates forms list
     private function _make_form_row($data) {
-        $title = anchor(get_uri("estimate_requests/edit_estimate_form/" . $data->id), $data->title, array("class" => "edit", "title" => lang('edit_estimate_form'), "data-post-id" => $data->id));
+        $title = anchor(get_uri("sales/Estimate_requests/edit_estimate_form/" . $data->id), $data->title, array("class" => "edit", "title" => lang('edit_estimate_form'), "data-post-id" => $data->id));
 
         $public = "";
         if ($data->public) {
@@ -364,7 +364,7 @@ class Estimate_requests extends MY_Controller {
 
         $embedded_code = "";
         if ($data->public) {
-            $embedded_code = modal_anchor(get_uri("estimate_requests/embedded_code_modal_form"), "<i class='fa fa-code'></i>", array("title" => lang('embed'), "class" => "edit", "data-post-id" => $data->id));
+            $embedded_code = modal_anchor(get_uri("sales/Estimate_requests/embedded_code_modal_form"), "<i class='fa fa-code'></i>", array("title" => lang('embed'), "class" => "edit", "data-post-id" => $data->id));
         }
 
         return array(
@@ -372,8 +372,8 @@ class Estimate_requests extends MY_Controller {
             $public,
             $embedded_code,
             lang($data->status),
-            modal_anchor(get_uri("estimate_requests/estimate_request_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_form'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_estimate_form'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("estimate_requests/delete_estimate_request_form"), "data-action" => "delete"))
+            modal_anchor(get_uri("sales/Estimate_requests/estimate_request_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_form'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_estimate_form'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Estimate_requests/delete_estimate_request_form"), "data-action" => "delete"))
         );
     }
 
@@ -549,8 +549,8 @@ class Estimate_requests extends MY_Controller {
         return array(
             $field,
             $data->sort,
-            modal_anchor(get_uri("estimate_requests/estimate_form_field_modal_form/" . $estimate_form_id), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_form'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_estimate_form'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("estimate_requests/estimate_form_field_delete"), "data-action" => "delete"))
+            modal_anchor(get_uri("sales/Estimate_requests/estimate_form_field_modal_form/" . $estimate_form_id), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_form'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_estimate_form'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Estimate_requests/estimate_form_field_delete"), "data-action" => "delete"))
         );
     }
 

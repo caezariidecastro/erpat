@@ -26,7 +26,7 @@
         <span class="ml15">
             <?php
             echo lang("estimate_request") . ": ";
-            echo (anchor(get_uri("estimate_requests/view_estimate_request/" . $estimate_info->estimate_request_id), lang('estimate_request') . " - " . $estimate_info->estimate_request_id));
+            echo (anchor(get_uri("sales/Estimates/view_estimate_request/" . $estimate_info->estimate_request_id), lang('estimate_request') . " - " . $estimate_info->estimate_request_id));
             ?>
         </span>
         <?php

@@ -9,7 +9,7 @@
     $discount_row = "<tr>
                         <td style='padding-top:13px;'>" . lang("discount") . "</td>
                         <td style='padding-top:13px;'>" . to_currency($estimate_total_summary->discount_total, $estimate_total_summary->currency_symbol) . "</td>
-                        <td class='text-center option w100'>" . modal_anchor(get_uri("estimates/discount_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "data-post-estimate_id" => $estimate_id, "title" => lang('edit_discount'))) . "<span class='p20'>&nbsp;&nbsp;&nbsp;</span></td>
+                        <td class='text-center option w100'>" . modal_anchor(get_uri("sales/Estimates/discount_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "data-post-estimate_id" => $estimate_id, "title" => lang('edit_discount'))) . "<span class='p20'>&nbsp;&nbsp;&nbsp;</span></td>
                     </tr>";
 
     if ($estimate_total_summary->estimate_subtotal && (!$estimate_total_summary->discount_total || ($estimate_total_summary->discount_total !== 0 && $estimate_total_summary->discount_type == "before_tax"))) {

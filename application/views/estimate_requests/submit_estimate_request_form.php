@@ -1,7 +1,7 @@
 <div id="page-content" class="p20 clearfix">
     <div id="estimate-form-container">
         <?php
-        echo form_open(get_uri("estimate_requests/save_estimate_request"), array("id" => "estimate-request-form", "class" => "general-form", "role" => "form"));
+        echo form_open(get_uri("sales/Estimate_requests/save_estimate_request"), array("id" => "estimate-request-form", "class" => "general-form", "role" => "form"));
         echo "<input type='hidden' name='form_id' value='$model_info->id' />";
         echo "<input type='hidden' name='assigned_to' value='$model_info->assigned_to' />";
         $this->load->view("estimate_requests/estimate_request_form");

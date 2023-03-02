@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("estimates/send_estimate"), array("id" => "send-estimate-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Estimates/send_estimate"), array("id" => "send-estimate-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $estimate_info->id; ?>" />
 
@@ -66,7 +66,7 @@
         </div>
     </div>
     <div class="form-group ml15">
-        <i class='fa fa-check-circle' style="color: #5CB85C;"></i> <?php echo lang('attached') . ' ' . anchor(get_uri("estimates/download_pdf/" . $estimate_info->id), lang("estimate") . "-$estimate_info->id.pdf", array("target" => "_blank")); ?> 
+        <i class='fa fa-check-circle' style="color: #5CB85C;"></i> <?php echo lang('attached') . ' ' . anchor(get_uri("sales/Estimate_requests/download_pdf/" . $estimate_info->id), lang("estimate") . "-$estimate_info->id.pdf", array("target" => "_blank")); ?> 
     </div>
 
 </div>

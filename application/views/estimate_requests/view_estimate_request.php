@@ -17,7 +17,7 @@
                         <ul class="dropdown-menu pull-right" role="menu">
                             <?php if ($this->login_user->user_type == "staff") { ?>
                                 <li role="presentation">
-                                    <?php echo modal_anchor(get_uri("estimate_requests/edit_estimate_request_modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('estimate_request'), "data-post-view" => "details", "data-post-id" => $model_info->id)); ?>
+                                    <?php echo modal_anchor(get_uri("sales/Estimate_requests/edit_estimate_request_modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('estimate_request'), "data-post-view" => "details", "data-post-id" => $model_info->id)); ?>
                                 </li>
                                 <?php
                             }
@@ -27,7 +27,7 @@
 
                             <?php if ($this->login_user->user_type == "staff") { ?>
                                 <li role="presentation">
-                                    <?php echo modal_anchor(get_uri("estimates/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_estimate'), array("title" => lang('add_estimate'), "data-post-estimate_request_id" => $model_info->id, "data-post-client_id" => $model_info->client_id)); ?>    
+                                    <?php echo modal_anchor(get_uri("sales/Estimate_requests/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_estimate'), array("title" => lang('add_estimate'), "data-post-estimate_request_id" => $model_info->id, "data-post-client_id" => $model_info->client_id)); ?>    
                                 </li>
                             <?php } ?>
                         </ul>
@@ -113,7 +113,7 @@
                             echo "<i class='fa fa-paperclip pull-left font-16'></i>";
 
 
-                            echo anchor(get_uri("estimate_requests/download_estimate_request_files/" . $model_info->id), $download_caption, array("class" => "pull-right", "title" => $download_caption));
+                            echo anchor(get_uri("sales/Estimate_requests/download_estimate_request_files/" . $model_info->id), $download_caption, array("class" => "pull-right", "title" => $download_caption));
                         }
                     }
                     ?>
@@ -199,7 +199,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#estimate-request-table").appTable({
-            source: '<?php echo_uri("estimate_requests/estimate_request_filed_list_data/" . $model_info->id) ?>',
+            source: '<?php echo_uri("sales/Estimate_requests/estimate_request_filed_list_data/" . $model_info->id) ?>',
             order: [[1, "asc"]],
             hideTools: true,
             displayLength: 100,

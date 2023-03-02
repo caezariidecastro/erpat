@@ -6,7 +6,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#estimate-form-main-table").appTable({
-            source: '<?php echo_uri("estimate_requests/estimate_forms_list_data") ?>',
+            source: '<?php echo_uri("sales/Estimate_requests/estimate_forms_list_data") ?>',
             order: [[0, 'asc']],
             columns: [
                 {title: "<?php echo lang("title"); ?>"},

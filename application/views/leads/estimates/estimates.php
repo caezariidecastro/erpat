@@ -2,7 +2,7 @@
     <div class="tab-title clearfix">
         <h4><?php echo lang('estimates'); ?></h4>
         <div class="title-button-group">
-            <?php echo modal_anchor(get_uri("estimates/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_estimate'), array("class" => "btn btn-default", "data-post-client_id" => $client_id, "title" => lang('add_estimate'))); ?>
+            <?php echo modal_anchor(get_uri("sales/Estimate_requests/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_estimate'), array("class" => "btn btn-default", "data-post-client_id" => $client_id, "title" => lang('add_estimate'))); ?>
         </div>
     </div>
     <div class="table-responsive">
@@ -26,7 +26,7 @@
     $(document).ready(function () {
         var currencySymbol = "<?php echo $lead_info->currency_symbol; ?>";
         $("#estimate-table").appTable({
-            source: '<?php echo_uri("estimates/estimate_list_data_of_client/" . $client_id) ?>',
+            source: '<?php echo_uri("sales/Estimates/estimate_list_data_of_client/" . $client_id) ?>',
             order: [[0, "desc"]],
             columns: [
                 {title: "<?php echo lang("estimate") ?>", "class": "w15p"},
