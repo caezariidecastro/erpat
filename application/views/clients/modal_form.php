@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("clients/save"), array("id" => "client-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Clients/save"), array("id" => "client-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="ticket_id" value="<?php echo $ticket_id; ?>" />
     <?php $this->load->view("clients/client_form_fields"); ?>

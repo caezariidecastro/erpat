@@ -6,7 +6,7 @@
     if (isset($user_type)) {
         if ($user_type === "client") {
             $reload_url = "";
-            $save_url = get_uri("clients/save_contact_social_links/" . $user_id);
+            $save_url = get_uri("sales/Clients/save_contact_social_links/" . $user_id);
         } else if ($user_type === "lead") {
             $reload_url = "";
             $save_url = get_uri("mcs/leads/save_contact_social_links/" . $user_id);

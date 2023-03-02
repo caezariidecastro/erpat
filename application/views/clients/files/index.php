@@ -9,7 +9,7 @@
                 <div class="title-button-group">
                     <?php
                     if ($this->login_user->user_type == "staff" || ($this->login_user->user_type == "client" && get_setting("client_can_add_files"))) {
-                        echo modal_anchor(get_uri("clients/file_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_files'), array("class" => "btn btn-default", "title" => lang('add_files'), "data-post-client_id" => $client_id));
+                        echo modal_anchor(get_uri("sales/Clients/file_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_files'), array("class" => "btn btn-default", "title" => lang('add_files'), "data-post-client_id" => $client_id));
                     }
                     ?>
                 </div>
@@ -29,7 +29,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#client-file-table").appTable({
-            source: '<?php echo_uri("clients/files_list_data/" . $client_id) ?>',
+            source: '<?php echo_uri("sales/Clients/files_list_data/" . $client_id) ?>',
             order: [[0, "desc"]],
             columns: [
                 {title: '<?php echo lang("id") ?>'},

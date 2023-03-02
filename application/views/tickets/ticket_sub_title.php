@@ -23,11 +23,11 @@
     ?>
     <?php if ($this->login_user->user_type === "staff" && $ticket_info->client_id) { ?>
         <span class="text-off ml15"><?php echo lang("client") . ": "; ?></span>
-        <?php echo $ticket_info->company_name ? anchor(get_uri("sms/clients/view/" . $ticket_info->client_id), $ticket_info->company_name) : "-"; ?>
+        <?php echo $ticket_info->company_name ? anchor(get_uri("sales/Clients/view/" . $ticket_info->client_id), $ticket_info->company_name) : "-"; ?>
 
         <?php if ($ticket_info->requested_by) { ?>
             <span class="text-off ml15"><?php echo lang("requested_by") . ": "; ?></span>
-            <?php echo anchor(get_uri("clients/contact_profile/" . $ticket_info->requested_by), $ticket_info->requested_by_name); ?>
+            <?php echo anchor(get_uri("sales/Clients/contact_profile/" . $ticket_info->requested_by), $ticket_info->requested_by_name); ?>
         <?php } ?>
 
     <?php } ?>

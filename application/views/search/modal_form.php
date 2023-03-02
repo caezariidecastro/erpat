@@ -115,7 +115,7 @@
                     } else if (searchFieldValue === "project") {
                         location = "<?php echo get_uri("projects/view"); ?>/" + this.value;
                     } else if (searchFieldValue === "client") {
-                        location = "<?php echo get_uri("clients/view"); ?>/" + this.value;
+                        location = "<?php echo get_uri("sales/Clients/view"); ?>/" + this.value;
                     }
 
                     window.location.href = location;

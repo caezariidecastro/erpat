@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("clients/send_invitation"), array("id" => "invitation-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Clients/send_invitation"), array("id" => "invitation-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <br />
     <div class="form-group mb15">

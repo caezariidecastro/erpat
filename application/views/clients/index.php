@@ -2,11 +2,11 @@
     <div class="panel clearfix">
         <ul id="client-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white title" role="tablist">
             <li><a id="clients-button" class="active" role="presentation" href="javascript:;" data-target="#clients"><?php echo lang('clients'); ?></a></li>
-            <li><a role="presentation" href="<?php echo_uri("clients/contacts/"); ?>" data-target="#contacts"><?php echo lang('contacts'); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("sales/Clients/contacts/"); ?>" data-target="#contacts"><?php echo lang('contacts'); ?></a></li>
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
-                    <?php echo modal_anchor(get_uri("clients/import_clients_modal_form"), "<i class='fa fa-upload'></i> " . lang('import_clients'), array("class" => "btn btn-default", "title" => lang('import_clients'))); ?>
-                    <?php echo modal_anchor(get_uri("clients/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_client'), array("class" => "btn btn-default", "title" => lang('add_client'))); ?>
+                    <?php echo modal_anchor(get_uri("sales/Clients/import_clients_modal_form"), "<i class='fa fa-upload'></i> " . lang('import_clients'), array("class" => "btn btn-default", "title" => lang('import_clients'))); ?>
+                    <?php echo modal_anchor(get_uri("sales/Clients/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_client'), array("class" => "btn btn-default", "title" => lang('add_client'))); ?>
                 </div>
             </div>
         </ul>
@@ -30,7 +30,7 @@
         }
 
         $(selector).appTable({
-            source: '<?php echo_uri("clients/list_data") ?>',
+            source: '<?php echo_uri("sales/Clients/list_data") ?>',
             filterDropdown: [
                 {name: "group_id", class: "w200", options: <?php echo $groups_dropdown; ?>}
             ],

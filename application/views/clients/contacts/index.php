@@ -4,9 +4,9 @@
             <h4><?php echo lang('contacts'); ?></h4>
             <div class="title-button-group">
                 <?php
-                echo modal_anchor(get_uri("clients/invitation_modal"), "<i class='fa fa-envelope-o'></i> " . lang('send_invitation'), array("class" => "btn btn-default", "title" => lang('send_invitation'), "data-post-client_id" => $client_id));
+                echo modal_anchor(get_uri("sales/Clients/invitation_modal"), "<i class='fa fa-envelope-o'></i> " . lang('send_invitation'), array("class" => "btn btn-default", "title" => lang('send_invitation'), "data-post-client_id" => $client_id));
 
-                echo modal_anchor(get_uri("clients/add_new_contact_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_contact'), array("class" => "btn btn-default", "title" => lang('add_contact'), "data-post-client_id" => $client_id));
+                echo modal_anchor(get_uri("sales/Clients/add_new_contact_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_contact'), array("class" => "btn btn-default", "title" => lang('add_contact'), "data-post-client_id" => $client_id));
                 ?>
             </div>
         </div>
@@ -36,7 +36,7 @@
         }
 
         $("#contact-table").appTable({
-            source: '<?php echo_uri("clients/contacts_list_data/" . $client_id) ?>',
+            source: '<?php echo_uri("sales/Clients/contacts_list_data/" . $client_id) ?>',
             order: [[1, "asc"]],
             columns: [
                 {title: '', "class": "w50 text-center"},

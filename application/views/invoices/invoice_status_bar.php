@@ -12,7 +12,7 @@
         $client_lang = "";
 
         if($invoice_info->client_id){
-            $client = anchor(get_uri("sms/clients/view/" . $invoice_info->client_id), $invoice_info->company_name);
+            $client = anchor(get_uri("sales/Clients/view/" . $invoice_info->client_id), $invoice_info->company_name);
             $client_lang = lang("client");
         }
 

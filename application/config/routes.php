@@ -88,10 +88,6 @@ $route['pms/view_gantts'] = 'projects/all_gantt';
 // Timesheets
 $route['pms/timesheets'] = 'projects/all_timesheets';
 
-// Clients
-$route['sms/clients'] = 'clients/index';
-$route['sms/clients/view/(:any)'] = 'clients/view/$1';
-
 // Tickets
 // $route['help/tickets'] = 'tickets/index';
 

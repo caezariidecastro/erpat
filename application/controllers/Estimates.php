@@ -380,7 +380,7 @@ class Estimates extends MY_Controller {
             $estimate_url = anchor(get_uri("estimates/preview/" . $data->id), get_estimate_id($data->id));
         }
 
-        $client = anchor(get_uri("sms/clients/view/" . $data->client_id), $data->company_name);
+        $client = anchor(get_uri("sales/Clients/view/" . $data->client_id), $data->company_name);
         if ($data->is_lead) {
             $client = anchor(get_uri("mcs/leads/view/" . $data->client_id), $data->company_name);
         }

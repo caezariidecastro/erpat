@@ -113,7 +113,7 @@ class Estimate_requests extends MY_Controller {
 
         if ($client_id) {
             $view_data['client_id'] = $client_id;
-            $this->load->view("clients/estimates/estimate_requests", $view_data);
+            $this->load->view("sales/Clients/estimates/estimate_requests", $view_data);
         }
     }
 
@@ -147,7 +147,7 @@ class Estimate_requests extends MY_Controller {
             if ($data->is_lead) {
                 $client = anchor(get_uri("mcs/leads/view/" . $data->client_id), $data->company_name);
             } else {
-                $client = anchor(get_uri("sms/clients/view/" . $data->client_id), $data->company_name);
+                $client = anchor(get_uri("sales/Clients/view/" . $data->client_id), $data->company_name);
             }
         }
 

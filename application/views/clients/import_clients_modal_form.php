@@ -1,10 +1,10 @@
-<?php echo form_open(get_uri("clients/save_client_from_excel_file"), array("id" => "import-client-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Clients/save_client_from_excel_file"), array("id" => "import-client-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix import-client-modal-body">
     <div id="upload-area">
         <?php
         $this->load->view("includes/multi_file_uploader", array(
-            "upload_url" => get_uri("clients/upload_excel_file"),
-            "validation_url" => get_uri("clients/validate_import_clients_file"),
+            "upload_url" => get_uri("sales/Clients/upload_excel_file"),
+            "validation_url" => get_uri("sales/Clients/validate_import_clients_file"),
             "max_files" => 1,
             "hide_description" => true
         ));

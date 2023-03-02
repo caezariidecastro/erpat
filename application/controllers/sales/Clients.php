@@ -233,7 +233,7 @@ class Clients extends MY_Controller {
         }
 
         $row_data = array($data->id,
-            anchor(get_uri("sms/clients/view/" . $data->id), $data->company_name),
+            anchor(get_uri("sales/Clients/view/" . $data->id), $data->company_name),
             $data->primary_contact ? $primary_contact : "",
             $group_list,
             to_decimal_format($data->total_projects),
@@ -247,8 +247,8 @@ class Clients extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $row_data[] = modal_anchor(get_uri("clients/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_client'), "data-post-id" => $data->id))
-                . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_client'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("clients/delete"), "data-action" => "delete-confirmation"));
+        $row_data[] = modal_anchor(get_uri("sales/Clients/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_client'), "data-post-id" => $data->id))
+                . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_client'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Clients/delete"), "data-action" => "delete-confirmation"));
 
         return $row_data;
     }
@@ -534,7 +534,7 @@ class Clients extends MY_Controller {
         }
 
         $description = "<div class='pull-left'>" .
-                js_anchor(remove_file_prefix($data->file_name), array('title' => "", "data-toggle" => "app-modal", "data-sidebar" => "0", "data-url" => get_uri("clients/view_file/" . $data->id)));
+                js_anchor(remove_file_prefix($data->file_name), array('title' => "", "data-toggle" => "app-modal", "data-sidebar" => "0", "data-url" => get_uri("sales/Clients/view_file/" . $data->id)));
 
         if ($data->description) {
             $description .= "<br /><span>" . $data->description . "</span></div>";
@@ -542,10 +542,10 @@ class Clients extends MY_Controller {
             $description .= "</div>";
         }
 
-        $options = anchor(get_uri("clients/download_file/" . $data->id), "<i class='fa fa fa-cloud-download'></i>", array("title" => lang("download")));
+        $options = anchor(get_uri("sales/Clients/download_file/" . $data->id), "<i class='fa fa fa-cloud-download'></i>", array("title" => lang("download")));
 
         if ($this->login_user->user_type == "staff") {
-            $options .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_file'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("clients/delete_file"), "data-action" => "delete-confirmation"));
+            $options .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_file'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Clients/delete_file"), "data-action" => "delete-confirmation"));
         }
 
 
@@ -1091,7 +1091,7 @@ class Clients extends MY_Controller {
             $removal_request_pending = "<span class='label-danger label'>" . lang("removal_request_pending") . "</span>";
         }
 
-        $contact_link = anchor(get_uri("clients/contact_profile/" . $data->id), $full_name . $primary_contact) . $removal_request_pending;
+        $contact_link = anchor(get_uri("sales/Clients/contact_profile/" . $data->id), $full_name . $primary_contact) . $removal_request_pending;
         if ($this->login_user->user_type === "client") {
             $contact_link = $full_name; //don't show clickable link to client
         }
@@ -1101,7 +1101,7 @@ class Clients extends MY_Controller {
         $row_data = array(
             $user_avatar,
             $contact_link,
-            anchor(get_uri("sms/clients/view/" . $data->client_id), $client_info->company_name),
+            anchor(get_uri("sales/Clients/view/" . $data->client_id), $client_info->company_name),
             $data->job_title,
             $data->email,
             $data->phone ? $data->phone : "-",
@@ -1113,7 +1113,7 @@ class Clients extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $row_data[] = js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_contact'), "class" => "delete", "data-id" => "$data->id", "data-action-url" => get_uri("clients/delete_contact"), "data-action" => "delete"));
+        $row_data[] = js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_contact'), "class" => "delete", "data-id" => "$data->id", "data-action-url" => get_uri("sales/Clients/delete_contact"), "data-action" => "delete"));
 
         return $row_data;
     }

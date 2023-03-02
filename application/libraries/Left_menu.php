@@ -390,7 +390,7 @@ class Left_menu {
                 }
 
                 if ($this->ci->login_user->is_admin || $access_client) {
-                    $sidebar_menu["clients"] = array("name" => "submenu_sms_clients", "url" => "sms/clients", "class" => "fa-circle");
+                    $sidebar_menu["clients"] = array("name" => "clients", "url" => "sales/Clients", "class" => "fa-circle");
                 }
                 
                 $sidebar_menu["customers"] = array("name" => "submenu_sms_customers", "url" => "sales/Customers", "class" => "fa-circle");

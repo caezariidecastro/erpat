@@ -31,7 +31,7 @@
                                 <?php } ?>
                                 <?php if ($ticket_info->client_id === "0" && $this->login_user->user_type == "staff") { ?>
                                     <?php if ($can_create_client) { ?>
-                                        <li role="presentation"><?php echo modal_anchor(get_uri("clients/modal_form"), "<i class='fa fa-plus'></i> " . lang('link_to_new_client'), array("title" => lang('link_to_new_client'), "data-post-ticket_id" => $ticket_info->id)); ?></li>
+                                        <li role="presentation"><?php echo modal_anchor(get_uri("sales/Clients/modal_form"), "<i class='fa fa-plus'></i> " . lang('link_to_new_client'), array("title" => lang('link_to_new_client'), "data-post-ticket_id" => $ticket_info->id)); ?></li>
                                     <?php } ?>
                                     <li role="presentation"><?php echo modal_anchor(get_uri("tickets/add_client_modal_form/$ticket_info->id"), "<i class='fa fa-chain'></i> " . lang('link_to_existing_client'), array("title" => lang('link_to_existing_client'))); ?></li>
                                 <?php } ?>

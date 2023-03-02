@@ -1,7 +1,7 @@
 <div class="tab-content">
     <?php
     $user_id = $this->login_user->id;
-    echo form_open(get_uri("clients/save_my_preferences/"), array("id" => "my-preferences-form", "class" => "general-form dashed-row white", "role" => "form"));
+    echo form_open(get_uri("sales/Clients/save_my_preferences/"), array("id" => "my-preferences-form", "class" => "general-form dashed-row white", "role" => "form"));
     ?>
     <div class="panel">
         <div class="panel-default panel-heading">
@@ -120,7 +120,7 @@
                     );
                     ?>
                 </div>
-                <?php echo modal_anchor(get_uri("clients/keyboard_shortcut_modal_form/"), "<i class='fa fa-info'></i>", array("class" => "btn btn-default keyboard-shortcut-info-icon", "title" => lang('keyboard_shortcuts_info'), "data-post-user_id" => $this->login_user->id)); ?>
+                <?php echo modal_anchor(get_uri("sales/Clients/keyboard_shortcut_modal_form/"), "<i class='fa fa-info'></i>", array("class" => "btn btn-default keyboard-shortcut-info-icon", "title" => lang('keyboard_shortcuts_info'), "data-post-user_id" => $this->login_user->id)); ?>
             </div>
 
         </div>

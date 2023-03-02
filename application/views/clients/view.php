@@ -26,34 +26,34 @@
     </div>
 
     <ul id="client-tabs" data-toggle="ajax-tab" class="nav nav-tabs" role="tablist">
-        <li><a  role="presentation" href="<?php echo_uri("clients/contacts/" . $client_info->id); ?>" data-target="#client-contacts"> <?php echo lang('contacts'); ?></a></li>
-        <li><a  role="presentation" href="<?php echo_uri("clients/company_info_tab/" . $client_info->id); ?>" data-target="#client-info"> <?php echo lang('client_info'); ?></a></li>
-        <li><a  role="presentation" href="<?php echo_uri("clients/projects/" . $client_info->id); ?>" data-target="#client-projects"><?php echo lang('projects'); ?></a></li>
+        <li><a  role="presentation" href="<?php echo_uri("sales/Clients/contacts/" . $client_info->id); ?>" data-target="#client-contacts"> <?php echo lang('contacts'); ?></a></li>
+        <li><a  role="presentation" href="<?php echo_uri("sales/Clients/company_info_tab/" . $client_info->id); ?>" data-target="#client-info"> <?php echo lang('client_info'); ?></a></li>
+        <li><a  role="presentation" href="<?php echo_uri("sales/Clients/projects/" . $client_info->id); ?>" data-target="#client-projects"><?php echo lang('projects'); ?></a></li>
 
         <?php if ($show_invoice_info) { ?>
-            <li><a  role="presentation" href="<?php echo_uri("clients/invoices/" . $client_info->id); ?>" data-target="#client-invoices"> <?php echo lang('invoices'); ?></a></li>
-            <li><a  role="presentation" href="<?php echo_uri("clients/payments/" . $client_info->id); ?>" data-target="#client-payments"> <?php echo lang('payments'); ?></a></li>
+            <li><a  role="presentation" href="<?php echo_uri("sales/Clients/invoices/" . $client_info->id); ?>" data-target="#client-invoices"> <?php echo lang('invoices'); ?></a></li>
+            <li><a  role="presentation" href="<?php echo_uri("sales/Clients/payments/" . $client_info->id); ?>" data-target="#client-payments"> <?php echo lang('payments'); ?></a></li>
         <?php } ?>
         <?php if ($show_estimate_info) { ?>
-            <li><a  role="presentation" href="<?php echo_uri("clients/estimates/" . $client_info->id); ?>" data-target="#client-estimates"> <?php echo lang('estimates'); ?></a></li>
+            <li><a  role="presentation" href="<?php echo_uri("sales/Clients/estimates/" . $client_info->id); ?>" data-target="#client-estimates"> <?php echo lang('estimates'); ?></a></li>
         <?php } ?>
         <?php if ($show_estimate_request_info) { ?>
-            <li><a  role="presentation" href="<?php echo_uri("clients/estimate_requests/" . $client_info->id); ?>" data-target="#client-estimate-requests"> <?php echo lang('estimate_requests'); ?></a></li>
+            <li><a  role="presentation" href="<?php echo_uri("sales/Clients/estimate_requests/" . $client_info->id); ?>" data-target="#client-estimate-requests"> <?php echo lang('estimate_requests'); ?></a></li>
         <?php } ?>
         <?php if ($show_ticket_info) { ?>
-            <li><a  role="presentation" href="<?php echo_uri("clients/tickets/" . $client_info->id); ?>" data-target="#client-tickets"> <?php echo lang('tickets'); ?></a></li>
+            <li><a  role="presentation" href="<?php echo_uri("sales/Clients/tickets/" . $client_info->id); ?>" data-target="#client-tickets"> <?php echo lang('tickets'); ?></a></li>
         <?php } ?>
         <?php if ($show_note_info) { ?>
-            <li><a  role="presentation" href="<?php echo_uri("clients/notes/" . $client_info->id); ?>" data-target="#client-notes"> <?php echo lang('notes'); ?></a></li>
+            <li><a  role="presentation" href="<?php echo_uri("sales/Clients/notes/" . $client_info->id); ?>" data-target="#client-notes"> <?php echo lang('notes'); ?></a></li>
         <?php } ?>
-        <li><a  role="presentation" href="<?php echo_uri("clients/files/" . $client_info->id); ?>" data-target="#client-files"><?php echo lang('files'); ?></a></li>
+        <li><a  role="presentation" href="<?php echo_uri("sales/Clients/files/" . $client_info->id); ?>" data-target="#client-files"><?php echo lang('files'); ?></a></li>
 
         <?php if ($show_event_info) { ?>
-            <li><a  role="presentation" href="<?php echo_uri("clients/events/" . $client_info->id); ?>" data-target="#client-events"> <?php echo lang('events'); ?></a></li>
+            <li><a  role="presentation" href="<?php echo_uri("sales/Clients/events/" . $client_info->id); ?>" data-target="#client-events"> <?php echo lang('events'); ?></a></li>
         <?php } ?>
 
         <?php if ($show_expense_info) { ?>
-            <li><a  role="presentation" href="<?php echo_uri("clients/expenses/" . $client_info->id); ?>" data-target="#client-expenses"> <?php echo lang('expenses'); ?></a></li>
+            <li><a  role="presentation" href="<?php echo_uri("sales/Clients/expenses/" . $client_info->id); ?>" data-target="#client-expenses"> <?php echo lang('expenses'); ?></a></li>
         <?php } ?>
     </ul>
     <div class="tab-content">

@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("clients/save_contact"), array("id" => "contact-form", "class" => "general-form", "role" => "form", "autocomplete" => "false")); ?>
+<?php echo form_open(get_uri("sales/Clients/save_contact"), array("id" => "contact-form", "class" => "general-form", "role" => "form", "autocomplete" => "false")); ?>
 <div class="modal-body clearfix">
     <?php $this->load->view("clients/contacts/contact_general_info_fields"); ?>
 </div>
