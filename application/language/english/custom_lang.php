@@ -32,8 +32,8 @@ $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
 $lang["submenu_hrm_holidays"] = "Holidays";
 
-$lang["submenu_pid_productions"] = "Manufacturing Order";
-$lang["submenu_pid_billofmaterials"] = "Bill of Materials";
+$lang["manufacturing_order"] = "Manufacturing Order";
+$lang["bill_of_materials"] = "Bill of Materials";
 $lang["submenu_pid_purchases"] = "Purchases";
 $lang["submenu_pid_returns"] = "Returns";
 $lang["submenu_pid_supplier"] = "Supplier";

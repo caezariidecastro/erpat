@@ -321,8 +321,8 @@ class Left_menu {
             $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
 
             // PRODUCTION
-            $sidebar_menu["manufacturing-orders"] = array("name" => "submenu_pid_productions", "url" => "production/ManufacturingOrders", "class" => "fa-circle");
-            $sidebar_menu["bill-of-materials"] = array("name" => "submenu_pid_billofmaterials", "url" => "production/BillOfMaterials", "class" => "fa-circle");            
+            $sidebar_menu["manufacturing-orders"] = array("name" => "manufacturing_order", "url" => "production/ManufacturingOrders", "class" => "fa-circle");
+            $sidebar_menu["bill-of-materials"] = array("name" => "bill_of_materials", "url" => "production/BillOfMaterials", "class" => "fa-circle");            
 
             // PROCUREMENT
             $sidebar_menu["purchase-orders"] = array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders", "class" => "fa-circle");
@@ -347,12 +347,9 @@ class Left_menu {
             $sidebar_menu["vendors"] = array("name" => "submenu_ams_vendors", "url" => "ams/vendors", "class" => "fa-circle");
             $sidebar_menu["brands"] = array("name" => "submenu_ams_maker", "url" => "ams/brands", "class" => "fa-circle");
 
-            // RAFFLE
+            // ENGAGE
             if( check_module_enabled("module_epass") && ($this->ci->login_user->is_admin || user_role_has_permission("event_epass")) ) {
                 $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
-            }
-            if( check_module_enabled("module_access") && ($this->ci->login_user->is_admin || user_role_has_permission("access_logs")) ) {
-                $sidebar_menu["access_logs"] = array("name" => "access_logs", "url" => "access_logs", "class" => "fa-circle");
             }
             if( check_module_enabled("module_raffle") && ($this->ci->login_user->is_admin || user_role_has_permission("raffle_draw")) ) {
                 $sidebar_menu["module_raffle"] = array("name" => "raffle_draw", "url" => "raffle_draw", "class" => "fa-circle");
@@ -397,6 +394,11 @@ class Left_menu {
             }
             $sidebar_menu["my_tasks"] = array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks", "class" => "fa-circle");
             $sidebar_menu["all_projects"] = array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects", "class" => "fa-circle");
+
+            // SECURITY
+            if( check_module_enabled("module_access") && ($this->ci->login_user->is_admin || user_role_has_permission("access_logs")) ) {
+                $sidebar_menu["access_logs"] = array("name" => "access_logs", "url" => "access_logs", "class" => "fa-circle");
+            }
 
             // End: Module permissions workaround
 
