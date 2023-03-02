@@ -11,7 +11,7 @@
     $(document).ready(function () {
 
         $("#sub-invoice-table").appTable({
-            source: '<?php echo_uri("invoices/sub_invoices_list_data/" . $recurring_invoice_id) ?>',
+            source: '<?php echo_uri("sales/Invoices/sub_invoices_list_data/" . $recurring_invoice_id) ?>',
             order: [[0, "desc"]],
             columns: [
                 {title: "<?php echo lang("invoice_id") ?>", "class": "w10p"},

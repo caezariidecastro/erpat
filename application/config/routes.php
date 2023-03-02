@@ -60,11 +60,6 @@ $route['sms/estimates'] = 'estimates/index';
 $route['sms/estimates/(:any)'] = 'estimates/$1';
 $route['sms/estimates/(:any)/(:any)'] = 'estimates/$1/$2';
 
-// Invoices
-$route['sms/invoices'] = 'invoices/index';
-$route['sms/invoices/(:any)'] = 'invoices/$1';
-$route['sms/invoices/(:any)/(:any)'] = 'invoices/$1/$2';
-
 // Payrolls
 $route['fas/payrolls'] = 'payrolls/index';
 $route['fas/payrolls/(:any)'] = 'payrolls/$1';

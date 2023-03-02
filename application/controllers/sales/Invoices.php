@@ -539,9 +539,9 @@ class Invoices extends MY_Controller {
     private function _make_row($data, $custom_fields) {
         $invoice_url = "";
         if ($this->login_user->user_type == "staff") {
-            $invoice_url = anchor(get_uri("sms/invoices/view/" . $data->id), get_invoice_id($data->id));
+            $invoice_url = anchor(get_uri("sales/Invoices/view/" . $data->id), get_invoice_id($data->id));
         } else {
-            $invoice_url = anchor(get_uri("invoices/preview/" . $data->id), get_invoice_id($data->id));
+            $invoice_url = anchor(get_uri("sales/Invoices/preview/" . $data->id), get_invoice_id($data->id));
         }
         
         $invoice_labels = make_labels_view_data($data->labels_list, true, true);
@@ -584,9 +584,9 @@ class Invoices extends MY_Controller {
         $client_id = $data->client_id;
         $consumer_id = $data->consumer_id;
 
-        $edit = '<li role="presentation">' . modal_anchor(get_uri("invoices/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit_invoice'), "data-post-id" => $invoice_id, "data-post-client_id" => $client_id, "data-post-consumer_id" => $consumer_id)) . '</li>';
+        $edit = '<li role="presentation">' . modal_anchor(get_uri("sales/Invoices/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit_invoice'), "data-post-id" => $invoice_id, "data-post-client_id" => $client_id, "data-post-consumer_id" => $consumer_id)) . '</li>';
 
-        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_invoice'), "class" => "delete", "data-id" => $invoice_id, "data-action-url" => get_uri("invoices/delete"), "data-action" => "delete-confirmation")) . '</li>';
+        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_invoice'), "class" => "delete", "data-id" => $invoice_id, "data-action-url" => get_uri("sales/Invoices/delete"), "data-action" => "delete-confirmation")) . '</li>';
 
         $add_payment = "";
         if($data->status != "cancelled" && (float)$data->payment_received < (float)$data->invoice_value) {
@@ -635,7 +635,7 @@ class Invoices extends MY_Controller {
 
     private function _make_recurring_row($data) {
 
-        $invoice_url = anchor(get_uri("sms/invoices/view/" . $data->id), get_invoice_id($data->id));
+        $invoice_url = anchor(get_uri("sales/Invoices/view/" . $data->id), get_invoice_id($data->id));
 
         $cycles = $data->no_of_cycles_completed . "/" . $data->no_of_cycles;
         if (!$data->no_of_cycles) { //if not no of cycles, so it's infinity
@@ -878,12 +878,12 @@ class Invoices extends MY_Controller {
         $actions = "";
 
         if($data->delivery_reference_no){
-            $actions = modal_anchor(get_uri("invoices/product_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-invoice_id" => $data->invoice_id, "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("invoices/delete_item"), "data-action" => "delete"));
+            $actions = modal_anchor(get_uri("sales/Invoices/product_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-invoice_id" => $data->invoice_id, "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Invoices/delete_item"), "data-action" => "delete"));
         }
         else{
-            $actions = modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("invoices/delete_item"), "data-action" => "delete"));
+            $actions = modal_anchor(get_uri("sales/Invoices/item_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Invoices/delete_item"), "data-action" => "delete"));
         }
 
         return array(
@@ -1093,7 +1093,7 @@ class Invoices extends MY_Controller {
         $parser_data["BALANCE_DUE"] = to_currency($invoice_total_summary->balance_due, $invoice_total_summary->currency_symbol);
         $parser_data["DUE_DATE"] = $invoice_info->due_date;
         $parser_data["PROJECT_TITLE"] = $invoice_info->project_title;
-        $parser_data["INVOICE_URL"] = get_uri("invoices/preview/" . $invoice_info->id);
+        $parser_data["INVOICE_URL"] = get_uri("sales/Invoices/preview/" . $invoice_info->id);
         $parser_data['SIGNATURE'] = $email_template->signature;
         $parser_data["LOGO_URL"] = get_logo_url();
 

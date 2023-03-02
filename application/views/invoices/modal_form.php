@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("invoices/save"), array("id" => "invoice-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Invoices/save"), array("id" => "invoice-form", "class" => "general-form", "role" => "form")); ?>
 <div id="invoices-dropzone" class="post-dropzone">
     <div class="modal-body clearfix">
         <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
@@ -292,8 +292,8 @@
             RELOAD_VIEW_AFTER_UPDATE = false; //go to invoice page
         }
 
-        var uploadUrl = "<?php echo get_uri("invoices/upload_file"); ?>";
-        var validationUri = "<?php echo get_uri("invoices/validate_invoices_file"); ?>";
+        var uploadUrl = "<?php echo get_uri("sales/Invoices/upload_file"); ?>";
+        var validationUri = "<?php echo get_uri("sales/Invoices/validate_invoices_file"); ?>";
 
         var dropzone = attachDropzoneWithForm("#invoices-dropzone", uploadUrl, validationUri);
 
@@ -340,7 +340,7 @@
                 } else {
                     appLoader.show({container: "#invoice-porject-dropdown-section"});
                     $.ajax({
-                        url: "<?php echo get_uri("invoices/get_project_suggestion") ?>" + "/" + client_id,
+                        url: "<?php echo get_uri("sales/Invoices/get_project_suggestion") ?>" + "/" + client_id,
                         dataType: "json",
                         success: function (result) {
                             //$("#invoice_consumer_id").val("");

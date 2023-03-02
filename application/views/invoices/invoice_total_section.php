@@ -10,7 +10,7 @@
     <?php
     $discount_edit_btn = "";
     if ($can_edit_invoices) {
-        $discount_edit_btn = "<td class='text-center option w100'>" . modal_anchor(get_uri("invoices/discount_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "data-post-invoice_id" => $invoice_id, "title" => lang('edit_discount'))) . "<span class='p20'>&nbsp;&nbsp;&nbsp;</span></td>";
+        $discount_edit_btn = "<td class='text-center option w100'>" . modal_anchor(get_uri("sales/Invoices/discount_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "data-post-invoice_id" => $invoice_id, "title" => lang('edit_discount'))) . "<span class='p20'>&nbsp;&nbsp;&nbsp;</span></td>";
     }
     $discount_row = "<tr>
                         <td style='padding-top:13px;'>" . lang("discount") . "</td>

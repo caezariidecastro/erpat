@@ -106,7 +106,7 @@ if (!function_exists('get_notification_config')) {
         $invoice_link = function($options) {
             $url = "";
             if (isset($options->invoice_id)) {
-                $url = get_uri("invoices/preview/" . $options->invoice_id);
+                $url = get_uri("sales/Invoices/preview/" . $options->invoice_id);
             }
 
             return array("url" => $url);

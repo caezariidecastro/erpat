@@ -8,7 +8,7 @@
     }
 
     $("#recurring-invoice-table").appTable({
-    source: '<?php echo_uri("invoices/recurring_list_data") ?>',
+    source: '<?php echo_uri("sales/Invoices/recurring_list_data") ?>',
             order: [[0, "desc"]],
             rangeDatepicker: [{startDate: {name: "next_recurring_start_date"}, endDate: {name: "next_recurring_end_date"}, showClearButton: true}],
 <?php if ($currencies_dropdown) { ?>

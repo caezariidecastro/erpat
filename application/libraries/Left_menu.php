@@ -382,7 +382,7 @@ class Left_menu {
                 }
 
                 if ($this->ci->login_user->is_admin || (get_setting("module_invoice") == "1" && $access_invoice)) {
-                    $sidebar_menu["invoices"] = array("name" => "submenu_sms_invoices", "url" => "sms/invoices", "class" => "fa-circle");
+                    $sidebar_menu["invoices"] = array("name" => "submenu_sms_invoices", "url" => "sales/Invoices", "class" => "fa-circle");
                 }
                
                 if ($access_items && (get_setting("module_invoice") == "1" || get_setting("module_estimate") == "1" )) {

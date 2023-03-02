@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("invoices/send_invoice"), array("id" => "send-invoice-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Invoices/send_invoice"), array("id" => "send-invoice-form", "class" => "general-form", "role" => "form")); ?>
 <div id="send_invoice-dropzone" class="post-dropzone">
     <div class="modal-body clearfix">
         <input type="hidden" name="id" value="<?php echo $invoice_info->id; ?>" />
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="form-group ml15">
-            <i class='fa fa-check-circle' style="color: #5CB85C;"></i> <?php echo lang('attached') . ' ' . anchor(get_uri("invoices/download_pdf/" . $invoice_info->id), lang("invoice") . "-$invoice_info->id.pdf", array("target" => "_blank")); ?> 
+            <i class='fa fa-check-circle' style="color: #5CB85C;"></i> <?php echo lang('attached') . ' ' . anchor(get_uri("sales/Invoices/download_pdf/" . $invoice_info->id), lang("invoice") . "-$invoice_info->id.pdf", array("target" => "_blank")); ?> 
         </div>
 
         <?php $this->load->view("includes/dropzone_preview"); ?>
@@ -84,8 +84,8 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        var uploadUrl = "<?php echo get_uri("invoices/upload_file"); ?>";
-        var validationUri = "<?php echo get_uri("invoices/validate_invoices_file"); ?>";
+        var uploadUrl = "<?php echo get_uri("sales/Invoices/upload_file"); ?>";
+        var validationUri = "<?php echo get_uri("sales/Invoices/validate_invoices_file"); ?>";
 
         var dropzone = attachDropzoneWithForm("#send_invoice-dropzone", uploadUrl, validationUri);
 

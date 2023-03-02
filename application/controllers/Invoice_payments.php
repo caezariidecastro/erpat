@@ -246,9 +246,9 @@ class Invoice_payments extends MY_Controller {
         }
 
         if ($this->login_user->user_type == "staff") {
-            $invoice_url = anchor(get_uri("sms/invoices/view/" . $data->invoice_id), get_invoice_id($data->invoice_id));
+            $invoice_url = anchor(get_uri("sales/Invoices/view/" . $data->invoice_id), get_invoice_id($data->invoice_id));
         } else {
-            $invoice_url = anchor(get_uri("invoices/preview/" . $data->invoice_id), get_invoice_id($data->invoice_id));
+            $invoice_url = anchor(get_uri("sales/Invoices/preview/" . $data->invoice_id), get_invoice_id($data->invoice_id));
         }
         return array(
             $invoice_url,

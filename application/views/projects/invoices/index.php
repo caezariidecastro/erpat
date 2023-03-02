@@ -4,7 +4,7 @@
         <div class="title-button-group">
             <?php
             if ($can_edit_invoices) {
-                echo modal_anchor(get_uri("invoices/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_invoice'), array("class" => "btn btn-default", "title" => lang('add_invoice'), "data-post-project_id" => $project_id));
+                echo modal_anchor(get_uri("sales/Invoices/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_invoice'), array("class" => "btn btn-default", "title" => lang('add_invoice'), "data-post-project_id" => $project_id));
             }
             ?>
         </div>
@@ -21,7 +21,7 @@
     $(document).ready(function () {
         var currencySymbol = "<?php echo $project_info->currency_symbol; ?>";
         $("#invoice-table").appTable({
-            source: '<?php echo_uri("invoices/invoice_list_data_of_project/" . $project_id) ?>',
+            source: '<?php echo_uri("sales/Invoices/invoice_list_data_of_project/" . $project_id) ?>',
             order: [[0, "desc"]],
             filterDropdown: [{name: "status", class: "w150", options: <?php $this->load->view("invoices/invoice_statuses_dropdown"); ?>}],
             columns: [
