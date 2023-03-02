@@ -373,7 +373,7 @@ class Left_menu {
             }
 
             if (is_user_has_module_permission("module_sms")) { //TODO: POS, giftcard, coupons
-                $sidebar_menu["sales-matrix"] = array("name" => "submenu_sms_salesmatrix", "url" => "sms/sales-matrix", "class" => "fa-circle");
+                $sidebar_menu["sales-matrix"] = array("name" => "sales_matrix", "url" => "sales/Sales_matrix", "class" => "fa-circle");
                 
                 if ($this->ci->login_user->is_admin || (get_setting("module_estimate") && get_setting("module_estimate_request") && $access_estimate)) {
                     $sidebar_menu["estimates"] = array("name" => "submenu_sms_estimates", "url" => "sms/estimates", "class" => "fa-circle");

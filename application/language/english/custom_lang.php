@@ -566,7 +566,6 @@ $lang["mytask"] = "My Task";
 $lang["allprojects"] = "All Projects";
 $lang["asset_category"] = "Asset Category";
 $lang["location"] = "Location";
-$lang["sales_matrix"] = "Sales Matrix";
 $lang["item_transfer"] = "Item Transfer";
 
 $lang["module_updated"] = "Module Updated";
