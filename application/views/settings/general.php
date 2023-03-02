@@ -109,6 +109,19 @@
                             ?>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="enable_training" class=" col-md-2"><?php echo lang('enable_training'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_dropdown(
+                                    "enable_training", array(
+                                        "no" => lang("no"),
+                                        "yes" => lang("yes")
+                                    ), get_setting('enable_training'), "class='select2 mini'"
+                            );
+                            ?>
+                        </div>
+                    </div>
 
                 </div>
                 <div class="panel-footer">
