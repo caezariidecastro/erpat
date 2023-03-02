@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("stores_categories/save"), array("id" => "stores-categories-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Stores_categories/save"), array("id" => "stores-categories-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
 

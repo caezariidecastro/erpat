@@ -151,7 +151,7 @@ class Stores extends MY_Controller {
             $data->updated_at,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             modal_anchor(
-                get_uri("stores/modal_form"), 
+                get_uri("sales/Stores/modal_form"), 
                 "<i class='fa fa-pencil'></i>", 
                 array(
                     "class" => "edit", "title" => lang('edit_item'), 
@@ -162,7 +162,7 @@ class Stores extends MY_Controller {
             . js_anchor("<i class='fa fa-times fa-fw'></i>", 
                 array('title' => lang('delete'), 
                 "class" => "delete", "data-id" => $data->id, 
-                "data-action-url" => get_uri("stores/delete"), 
+                "data-action-url" => get_uri("sales/Stores/delete"), 
                 "data-action" => "delete-confirmation"))
         );
     }

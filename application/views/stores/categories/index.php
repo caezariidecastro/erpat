@@ -6,7 +6,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#stores-categories-table").appTable({
-            source: '<?php echo_uri("stores_categories/list_data") ?>',
+            source: '<?php echo_uri("sales/Stores_categories/list_data") ?>',
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('uuid') ?> ", "class": "w15p"},

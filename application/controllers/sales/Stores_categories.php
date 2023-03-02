@@ -34,7 +34,7 @@ class Stores_categories extends MY_Controller {
             $data->timestamp,
             $data->updated_at,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
-            modal_anchor(get_uri("stores_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit user-status-confirm", "title" => lang('edit_category'), "data-post-id" => $data->id))
+            modal_anchor(get_uri("sales/Stores_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit user-status-confirm", "title" => lang('edit_category'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete user-status-confirm", "data-id" => $data->id, "data-action-url" => get_uri("stores_categories/delete"), "data-action" => "delete-confirmation"))
         );
     }

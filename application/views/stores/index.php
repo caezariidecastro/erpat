@@ -8,8 +8,8 @@
             <li><a role="presentation" href="<?php echo_uri("stores_categories"); ?>" data-target="#stores-categories"><?php echo lang('categories'); ?></a></li>
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
-                    <?php echo modal_anchor(get_uri("stores/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_entry'), array("class" => "btn btn-default", "title" => lang('add_entry'), "id" => "add_entry_button")); ?>
-                    <?php echo modal_anchor(get_uri("stores_categories/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'), "id" => "add_category_button")); ?>
+                    <?php echo modal_anchor(get_uri("sales/Stores/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_entry'), array("class" => "btn btn-default", "title" => lang('add_entry'), "id" => "add_entry_button")); ?>
+                    <?php echo modal_anchor(get_uri("sales/Stores_categories/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'), "id" => "add_category_button")); ?>
                 </div>
             </div>
         </ul>
@@ -31,7 +31,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#stores-table").appTable({
-            source: '<?php echo_uri("stores/list_data") ?>',
+            source: '<?php echo_uri("sales/Stores/list_data") ?>',
             filterDropdown: [
                 {id: "category_select2_filter", name: "category_select2_filter", class: "w200", options: <?php echo json_encode($category_select2); ?>},
             ],
@@ -68,7 +68,7 @@
                     
                     appLoader.show();
                     $.ajax({
-                        url: "<?php echo get_uri("Stores/update_store_image"); ?>/",
+                        url: "<?php echo get_uri("sales/Stores/update_store_image"); ?>/",
                         method: "POST",
                         data: {
                             id: id,
