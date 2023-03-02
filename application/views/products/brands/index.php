@@ -6,7 +6,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#item-brands-table").appTable({
-            source: '<?php echo_uri("mes/ProductBrands/list_data") ?>',
+            source: '<?php echo_uri("sales/ProductBrands/list_data") ?>',
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('title') ?> ", "class": "w20p"},

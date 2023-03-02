@@ -97,8 +97,8 @@ class ProductInventory extends MY_Controller {
                     </div>
                 </div>';
 
-        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("mes/ProductInventory/delete"), "data-action" => "delete-confirmation", "data-reload-on-success" => "1")) . '</li>';
-        $add = '<li role="presentation">' . modal_anchor(get_uri("mes/ProductInventory/add_stock_modal_form/$data->warehouse/$data->id"), "<i class='fa fa-plus-circle'></i> " . lang('add_stock'), array( "title" => lang('add_stock'), "id" => "add_stock_button")) . '</li>';
+        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/ProductInventory/delete"), "data-action" => "delete-confirmation", "data-reload-on-success" => "1")) . '</li>';
+        $add = '<li role="presentation">' . modal_anchor(get_uri("sales/ProductInventory/add_stock_modal_form/$data->warehouse/$data->id"), "<i class='fa fa-plus-circle'></i> " . lang('add_stock'), array( "title" => lang('add_stock'), "id" => "add_stock_button")) . '</li>';
 
         $actions = '<span class="dropdown inline-block" style="position: relative; right: 0; margin-top: 0;">
                         <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">

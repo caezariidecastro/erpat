@@ -8,7 +8,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#inventory-item-entries-table").appTable({
-            source: '<?php echo_uri("mes/ProductEntries/list_data") ?>',
+            source: '<?php echo_uri("sales/ProductEntries/list_data") ?>',
             filterDropdown: [
                 {id: "category_select2_filter", name: "category_select2_filter", class: "w200", options: <?php echo json_encode($category_select2); ?>},
                 {id: "vendor_select2_filter", name: "vendor_select2_filter", class: "w200", options: <?php echo json_encode($vendor_select2); ?>},
@@ -49,7 +49,7 @@
                     
                     appLoader.show();
                     $.ajax({
-                        url: "<?php echo get_uri("ProductEntries/update_product_image"); ?>/",
+                        url: "<?php echo get_uri("sales/ProductEntries/update_product_image"); ?>/",
                         method: "POST",
                         data: {
                             id: id,

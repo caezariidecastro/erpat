@@ -8,9 +8,9 @@
             <li><a role="presentation" href="<?php echo_uri("inventory"); ?>" data-target="#item-inventory"><?php echo lang('inventory'); ?></a></li>
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
-                    <?php echo modal_anchor(get_uri("mes/ProductEntries/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_entry'), array("class" => "btn btn-default", "title" => lang('add_entry'), "id" => "add_entry_button")); ?>
-                    <?php echo modal_anchor(get_uri("mes/ProductCategories/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'), "id" => "add_category_button")); ?>
-                    <?php echo modal_anchor(get_uri("mes/ProductBrands/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_brands'), array("class" => "btn btn-default", "title" => lang('add_brands'), "id" => "add_brands_button")); ?>
+                    <?php echo modal_anchor(get_uri("sales/ProductEntries/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_entry'), array("class" => "btn btn-default", "title" => lang('add_entry'), "id" => "add_entry_button")); ?>
+                    <?php echo modal_anchor(get_uri("sales/ProductCategories/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'), "id" => "add_category_button")); ?>
+                    <?php echo modal_anchor(get_uri("sales/ProductBrands/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_brands'), array("class" => "btn btn-default", "title" => lang('add_brands'), "id" => "add_brands_button")); ?>
                 </div>
             </div>
         </ul>

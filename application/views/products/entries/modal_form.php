@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("mes/ProductEntries/save"), array("id" => "inventory-item-entries-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/ProductEntries/save"), array("id" => "inventory-item-entries-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <?php if ($model_info->id) { ?>

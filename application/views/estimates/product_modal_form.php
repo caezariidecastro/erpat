@@ -127,7 +127,7 @@
                     $('#inventory_id').val(inventory_id);
         
                     $.ajax({
-                        url: "<?php echo get_uri("ProductInventory/get_inventory"); ?>",
+                        url: "<?php echo get_uri("sales/ProductInventory/get_inventory"); ?>",
                         data: {id: inventory_id},
                         cache: false,
                         type: 'POST',

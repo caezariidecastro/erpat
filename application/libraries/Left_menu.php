@@ -334,7 +334,7 @@ class Left_menu {
                 $sidebar_menu["bill-of-materials"] = array("name" => "submenu_pid_billofmaterials", "url" => "mes/bill-of-materials", "class" => "fa-circle");
                 $sidebar_menu["raw-materials"] = array("name" => "submenu_pid_materials", "url" => "mes/raw-materials", "class" => "fa-circle");
                 $sidebar_menu["work-in-process"] = array("name" => "submenu_pid_process", "url" => "mes/work-in-process", "class" => "fa-circle");
-                $sidebar_menu["products"] = array("name" => "submenu_pid_products", "url" => "mes/products", "class" => "fa-circle");
+                $sidebar_menu["products"] = array("name" => "submenu_pid_products", "url" => "sales/ProductEntries", "class" => "fa-circle");
                 $sidebar_menu["purchase-orders"] = array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders", "class" => "fa-circle");
                 $sidebar_menu["purchase-returns"] = array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns", "class" => "fa-circle");
                 $sidebar_menu["suppliers"] = array("name" => "submenu_pid_supplier", "url" => "mes/suppliers", "class" => "fa-circle");

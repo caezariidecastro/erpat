@@ -123,7 +123,7 @@
         appLoader.show({container: "#inventory_selection_wrapper", css:"left: 7%; bottom: -30px;"});
 
         $.ajax({
-            url: "<?php echo get_uri("mes/ProductInventory/get_production_product_warehouse_select2_data") ?>" + `?id=${id}`,
+            url: "<?php echo get_uri("sales/ProductInventory/get_production_product_warehouse_select2_data") ?>" + `?id=${id}`,
             dataType: "json",
             success: function (result) {
                 $("#inventory_id").show().val("");
