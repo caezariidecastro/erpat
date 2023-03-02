@@ -75,11 +75,6 @@ $route['fas/payrolls/(:any)/(:any)'] = 'payrolls/$1/$2';
 // Sales Matrix
 $route["sms/sales-matrix"] = "sales_matrix/index";
 
-// Customers
-$route["sms/customers"] = "Customers/index";
-$route["sms/customers/(:any)"] = "Customers/$1";
-$route["sms/customers/(:any)/(:any)"] = "Customers/$1/$2";
-
 // All Projects
 $route['pms/all_projects'] = 'projects/all_projects';
 $route['pms/projects/view/(:any)'] = 'projects/view/$1';

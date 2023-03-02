@@ -393,7 +393,7 @@ class Left_menu {
                     $sidebar_menu["clients"] = array("name" => "submenu_sms_clients", "url" => "sms/clients", "class" => "fa-circle");
                 }
                 
-                $sidebar_menu["customers"] = array("name" => "submenu_sms_customers", "url" => "sms/customers", "class" => "fa-circle");
+                $sidebar_menu["customers"] = array("name" => "submenu_sms_customers", "url" => "sales/Customers", "class" => "fa-circle");
                 $sidebar_menu["stores"] = array("name" => "submenu_sms_stores", "url" => "stores", "class" => "fa-circle");
             }
 

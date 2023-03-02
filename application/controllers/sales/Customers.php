@@ -39,8 +39,8 @@ class Customers extends MY_Controller {
             $data->country,
             $data->created_at,
             $data->updated_at,
-            modal_anchor(get_uri("customers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_customer'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("customers/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("sales/Customers/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_customer'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Customers/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
