@@ -386,7 +386,7 @@ class Left_menu {
                 }
                
                 if ($access_items && (get_setting("module_invoice") == "1" || get_setting("module_estimate") == "1" )) {
-                    $sidebar_menu["services"] = array("name" => "submenu_sms_services", "url" => "sms/services", "class" => "fa-circle");
+                    $sidebar_menu["services"] = array("name" => "submenu_sms_services", "url" => "sales/Services", "class" => "fa-circle");
                 }
 
                 if ($this->ci->login_user->is_admin || $access_client) {

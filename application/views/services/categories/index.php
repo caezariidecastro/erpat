@@ -6,7 +6,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#services-categories-table").appTable({
-            source: '<?php echo_uri("services_categories/list_data") ?>',
+            source: '<?php echo_uri("sales/Services_categories/list_data") ?>',
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('title') ?> ", "class": "w150"},

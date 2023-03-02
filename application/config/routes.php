@@ -97,14 +97,6 @@ $route['pms/timesheets'] = 'projects/all_timesheets';
 $route['sms/clients'] = 'clients/index';
 $route['sms/clients/view/(:any)'] = 'clients/view/$1';
 
-// Services
-$route['services'] = 'sms/services';
-$route['services/index'] = 'sms/services';
-$route['sms/services'] = 'services/index';
-$route['services_categories'] = 'sms/services_categories';
-$route['services_categories/index'] = 'sms/services_categories';
-$route['sms/services_categories'] = 'services_categories/index';
-
 // Tickets
 // $route['help/tickets'] = 'tickets/index';
 
