@@ -70,9 +70,9 @@ class ManufacturingOrders extends MY_Controller {
             $status = '<span class="mt0 label label-danger large">Cancelled</span>';
         }
 
-        $edit = "<li role='presentation'>" . modal_anchor(get_uri("mes/ManufacturingOrders/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit_production'), array("class" => "edit", "title" => lang('edit_production'), "data-post-id" => $data->id)) . "</li>";
-        $details = "<li role='presentation'>" . modal_anchor(get_uri("mes/ManufacturingOrders/modal_details/$data->id"), "<i class='fa fa-search'></i> " . lang('view_details'), array("title" => lang('view_details'))) . "</li>";
-        $print = "<li role='presentation'>" . anchor(get_uri("mes/ManufacturingOrders/print/".$data->id), "<i class='fa fa-print'></i> " . lang('print_details'), array("title" => lang('print_details'), "target" => "_blank")) . "</li>";
+        $edit = "<li role='presentation'>" . modal_anchor(get_uri("production/ManufacturingOrders/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit_production'), array("class" => "edit", "title" => lang('edit_production'), "data-post-id" => $data->id)) . "</li>";
+        $details = "<li role='presentation'>" . modal_anchor(get_uri("production/ManufacturingOrders/modal_details/$data->id"), "<i class='fa fa-search'></i> " . lang('view_details'), array("title" => lang('view_details'))) . "</li>";
+        $print = "<li role='presentation'>" . anchor(get_uri("production/ManufacturingOrders/print/".$data->id), "<i class='fa fa-print'></i> " . lang('print_details'), array("title" => lang('print_details'), "target" => "_blank")) . "</li>";
 
         $action = '<span class="dropdown inline-block">
                 <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">

@@ -103,7 +103,7 @@
 
             if(material_id){
                 $.ajax({
-                    url: "<?php echo get_uri("mes/RawMaterialEntries/get_material"); ?>",
+                    url: "<?php echo get_uri("sales/ProductEntries/get_item"); ?>",
                     data: {id: material_id},
                     cache: false,
                     type: 'POST',

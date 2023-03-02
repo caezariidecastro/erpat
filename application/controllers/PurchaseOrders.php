@@ -11,10 +11,9 @@ class PurchaseOrders extends MY_Controller {
         parent::__construct();
         $this->load->model("Purchase_orders_model");
         $this->load->model("Vendors_model");
-        $this->load->model("Material_entries_model");
+        $this->load->model("Inventory_item_entries_model");
         $this->load->model("Purchase_order_materials_model");
         $this->load->model("Purchase_order_budgets_model");
-        $this->load->model("Material_inventory_model");
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
         $this->load->model("Expense_categories_model");
@@ -262,7 +261,7 @@ class PurchaseOrders extends MY_Controller {
 
         $vendor_id = $this->input->post("vendor_id");
 
-        $view_data['material_dropdown'] = array("" => "-") + $this->Material_entries_model->get_dropdown_list(array("name"), "id", array("vendor" => $vendor_id));
+        $view_data['material_dropdown'] = array("" => "-") + $this->Inventory_item_entries_model->get_dropdown_list(array("name"), "id", array("vendor" => $vendor_id));
         $view_data['model_info'] = $this->Purchase_order_materials_model->get_one($this->input->post('id'));
         $view_data["warehouse_dropdown"] = $this->get_warehouses_select2_data($view_data['model_info']->material_id);
         $view_data["purchase_id"] = $this->input->post("purchase_id");
@@ -273,7 +272,7 @@ class PurchaseOrders extends MY_Controller {
 
     function get_warehouses_select2_data($material_id = 0){
         $material_id = !$material_id ? $this->input->post("material_id") : $material_id;
-        $warehouses = $this->Material_inventory_model->get_details(array("material_id" => $material_id))->result();
+        $warehouses = $this->Inventory_item_entries_model->get_details(array("material_id" => $material_id))->result();
 
         $warehouse_list = array(array("id" => "", "text" => "-"));
         foreach ($warehouses as $value) {

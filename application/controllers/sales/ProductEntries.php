@@ -34,6 +34,16 @@ class ProductEntries extends MY_Controller {
         return $brand_dropdown;
     }
 
+    protected function _get_kind_dropdown_data() {
+        $kind_dropdown = array('' => '-');
+
+        $kind_dropdown['finished_goods'] = "Finished Goods";
+        $kind_dropdown['raw_materials'] = "Raw Materials";
+        $kind_dropdown['work_in_process'] = "Work In Process";
+
+        return $kind_dropdown;
+    }
+
     protected function _get_units_dropdown_data() {
         $units = $this->Units_model->get_all()->result();
         $units_dropdown = array('' => '-');
@@ -112,13 +122,13 @@ class ProductEntries extends MY_Controller {
         $add_material = "";
 
         if($data->bom){
-            $delete = '<li role="presentation">' . modal_anchor(get_uri("mes/BillOfMaterials/delete_modal_form"), "<i class='fa fa-times fa-fw'></i> ". lang('delete'), array("class" => "delete", "title" => lang('delete'), "data-post-id" => $data->bom)) . '</li>';
-            $edit = '<li role="presentation">' . modal_anchor(get_uri("mes/BillOfMaterials/modal_form"), "<i class='fa fa-pencil'></i> ". lang('edit_bill_of_material'), array("class" => "edit", "title" => lang('edit_bill_of_material'), "data-post-id" => $data->bom, "data-post-item_id" => $data->id)) . '</li>';
-            $add_material = '<li role="presentation">' . modal_anchor(get_uri("mes/BillOfMaterials/add_material_modal_form"), "<i class='fa fa-plus-circle'></i> ". lang('add_view_materials'), array("class" => "edit", "title" => lang('add_view_materials'), "data-post-id" => $data->bom)) . '</li>';
+            $delete = '<li role="presentation">' . modal_anchor(get_uri("production/BillOfMaterials/delete_modal_form"), "<i class='fa fa-times fa-fw'></i> ". lang('delete'), array("class" => "delete", "title" => lang('delete'), "data-post-id" => $data->bom)) . '</li>';
+            $edit = '<li role="presentation">' . modal_anchor(get_uri("production/BillOfMaterials/modal_form"), "<i class='fa fa-pencil'></i> ". lang('edit_bill_of_material'), array("class" => "edit", "title" => lang('edit_bill_of_material'), "data-post-id" => $data->bom, "data-post-item_id" => $data->id)) . '</li>';
+            $add_material = '<li role="presentation">' . modal_anchor(get_uri("production/BillOfMaterials/add_material_modal_form"), "<i class='fa fa-plus-circle'></i> ". lang('add_view_materials'), array("class" => "edit", "title" => lang('add_view_materials'), "data-post-id" => $data->bom)) . '</li>';
     
         }
         else{
-            $add_bom = '<li role="presentation">' . modal_anchor(get_uri("mes/BillOfMaterials/modal_form"), "<i class='fa fa-plus-circle'></i> ". lang('add_bill_of_material'), array("class" => "edit", "title" => lang('add_bill_of_material'), "data-post-item_id" => $data->id)) . '</li>';
+            $add_bom = '<li role="presentation">' . modal_anchor(get_uri("production/BillOfMaterials/modal_form"), "<i class='fa fa-plus-circle'></i> ". lang('add_bill_of_material'), array("class" => "edit", "title" => lang('add_bill_of_material'), "data-post-item_id" => $data->id)) . '</li>';
         }
         
         $actions = '<span class="dropdown inline-block" style="position: relative; right: 0; margin-top: 0;">
@@ -192,6 +202,7 @@ class ProductEntries extends MY_Controller {
             "unit" => $this->input->post('unit'),
             "category" => $this->input->post('category'),
             "brand" => $this->input->post('brand'),
+            "kind" => $this->input->post('kinds'),
             "cost_price" => $this->input->post('cost_price'),
             "selling_price" => $this->input->post('selling_price'),
             "vendor" => $this->input->post('vendor'),
@@ -222,6 +233,7 @@ class ProductEntries extends MY_Controller {
         $view_data['model_info'] = $this->Inventory_item_entries_model->get_one($id);
         $view_data['category_dropdown'] = $this->_get_category_dropdown_data();
         $view_data['brand_dropdown'] = $this->_get_brand_dropdown_data();
+        $view_data['kind_dropdown'] = $this->_get_kind_dropdown_data();
         $view_data['units_dropdown'] = $this->_get_units_dropdown_data();
         $view_data['vendor_dropdown'] = $this->_get_vendor_dropdown_data($id ? "" : "active");
 

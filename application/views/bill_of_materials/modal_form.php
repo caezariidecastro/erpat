@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("mes/BillOfMaterials/save"), array("id" => "bill-of-materials-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("production/BillOfMaterials/save"), array("id" => "bill-of-materials-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
 
@@ -50,7 +50,7 @@
         else{
     ?>
     <div class="form-group">
-        <label for="bill_of_material_id" class="col-md-3"><?php echo lang('product'); ?></label>
+        <label for="item_id" class="col-md-3"><?php echo lang('product'); ?></label>
         <div class="col-md-9">
             <?php
             echo form_dropdown("item_id", $product_dropdown, $model_info ? $model_info->item_id : "", "class='select2 validate-hidden' id='item_id' data-rule-required='true' data-msg-required='".lang("field_required")."'");
@@ -109,6 +109,8 @@
             }
         });
 
+        $('.select2').select2();
+        
         // $("#item_id").select2().change(function(){
         //     $.ajax({
         //         url: "<?php //echo base_url()?>sales/ProductEntries/inventory",

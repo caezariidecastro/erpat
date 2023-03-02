@@ -1,5 +1,5 @@
 <div class="modal-body clearfix">
-    <?php echo form_open(get_uri("mes/BillOfMaterials/add_material"), array("id" => "bill-of-materials-materials-form", "class" => "general-form", "role" => "form")); ?>
+    <?php echo form_open(get_uri("production/BillOfMaterials/add_material"), array("id" => "bill-of-materials-materials-form", "class" => "general-form", "role" => "form")); ?>
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
 
     <div class="form-group">
@@ -92,7 +92,7 @@
         });
 
         $("#bill-of-materials-materials-table").appTable({
-            source: '<?php echo_uri("mes/BillOfMaterials/material_list_data?id=".$model_info->id) ?>',
+            source: '<?php echo_uri("production/BillOfMaterials/material_list_data?id=".$model_info->id) ?>',
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('material') ?> "},
@@ -104,7 +104,7 @@
 
         $('#material_id').select2().change(function(){
             $.ajax({
-                url: "<?php echo base_url()?>mes/RawMaterialInventory/get_material_inventory",
+                url: "<?php echo base_url()?>sales/ProductInventory/get_inventory",
                 data: {id: $(this).val()},
                 method: "POST",
                 dataType: "json",

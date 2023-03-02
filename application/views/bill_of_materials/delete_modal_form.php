@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("mes/BillOfMaterials/delete"), array("id" => "delete-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("production/BillOfMaterials/delete"), array("id" => "delete-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $id?>" />
     <?php echo lang("delete_confirmation_message")?>

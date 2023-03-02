@@ -284,142 +284,122 @@ class Left_menu {
             }
 
             // Start: Module permissions workaround
-            if (is_user_has_module_permission("module_hrs")) {
-                if ($this->ci->login_user->is_admin || get_array_value($this->ci->login_user->permissions, "hide_team_members_list") != true) {
-                    $sidebar_menu["employee"] = array("name" => "submenu_hrm_employee", "url" => "hrs/employee", "class" => "fa-circle");
-                }
-                
-                $sidebar_menu["department"] = array("name" => "submenu_hrm_department", "url" => "hrs/department", "class" => "fa-circle");
-                
-                if ($this->ci->login_user->is_admin || (get_setting("module_attendance") == "1" && $access_timecard)) {
-                    $sidebar_menu["attendance"] = array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance", "class" => "fa-circle");
-                } else if (get_setting("module_attendance") == "1") {
-                    $sidebar_menu["attendance"] = array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance/attendance_info", "class" => "fa-circle");
-                }
 
-                $sidebar_menu["overtime"] = array("name" => "submenu_hrm_overtime", "url" => "hrs/overtime", "class" => "fa-circle");
-                $sidebar_menu["schedule"] = array("name" => "submenu_hrm_schedule", "url" => "hrs/schedule", "class" => "fa-circle");
-                $sidebar_menu["disciplinary"] = array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary", "class" => "fa-circle");
-
-                if ($this->ci->login_user->is_admin || (get_setting("module_leave") == "1" && $access_leave)) {
-                    $sidebar_menu["leaves"] = array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves", "class" => "fa-circle");
-                } else if (get_setting("module_leave") == "1") {
-                    $sidebar_menu["leaves"] = array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves/leave_info", "class" => "fa-circle");
-                }
-
-                $sidebar_menu["holidays"] = array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays", "class" => "fa-circle");
+            // STAFFING
+            if ($this->ci->login_user->is_admin || get_array_value($this->ci->login_user->permissions, "hide_team_members_list") != true) {
+                $sidebar_menu["employee"] = array("name" => "submenu_hrm_employee", "url" => "hrs/employee", "class" => "fa-circle");
             }
-
-            if (is_user_has_module_permission("module_fas")) {
-                if ($this->ci->login_user->is_admin || (get_setting("module_invoice") == "1" && get_setting("module_expense") == "1" && ($access_expense || $access_invoice))) {
-                    $sidebar_menu["summary"] = array("name" => "submenu_fas_summary", "url" => "fas/summary", "class" => "fa-circle");
-                }
-
-                $sidebar_menu["payments"] = array("name" => "submenu_fas_payments", "url" => "fas/payments", "class" => "fa-circle");
-
-                if ($this->ci->login_user->is_admin || (get_setting("module_expense") == "1" && $access_expense)) {
-                    $sidebar_menu["expenses"] = array("name" => "submenu_fas_expenses", "url" => "fas/expenses", "class" => "fa-circle");
-                }
-                
-                $sidebar_menu["contributions"] = array("name" => "submenu_fas_contributions", "url" => "fas/contributions", "class" => "fa-circle");
-                $sidebar_menu["incentives"] = array("name" => "submenu_fas_incentives", "url" => "fas/incentives", "class" => "fa-circle");
-                $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "fas/payrolls", "class" => "fa-circle");
-                $sidebar_menu["transfers"] = array("name" => "submenu_fas_transfers", "url" => "fas/transfers", "class" => "fa-circle");
-                $sidebar_menu["accounts"] = array("name" => "submenu_fas_accounts", "url" => "fas/accounts", "class" => "fa-circle");
-                $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
+            $sidebar_menu["department"] = array("name" => "submenu_hrm_department", "url" => "hrs/department", "class" => "fa-circle");
+            if ($this->ci->login_user->is_admin || (get_setting("module_attendance") == "1" && $access_timecard)) {
+                $sidebar_menu["attendance"] = array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance", "class" => "fa-circle");
+            } else if (get_setting("module_attendance") == "1") {
+                $sidebar_menu["attendance"] = array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance/attendance_info", "class" => "fa-circle");
             }
-
-            if (is_user_has_module_permission("module_mes")) {
-                $sidebar_menu["manufacturing-orders"] = array("name" => "submenu_pid_productions", "url" => "mes/manufacturing-orders", "class" => "fa-circle");
-                $sidebar_menu["bill-of-materials"] = array("name" => "submenu_pid_billofmaterials", "url" => "mes/bill-of-materials", "class" => "fa-circle");
-                $sidebar_menu["raw-materials"] = array("name" => "submenu_pid_materials", "url" => "mes/raw-materials", "class" => "fa-circle");
-                $sidebar_menu["work-in-process"] = array("name" => "submenu_pid_process", "url" => "mes/work-in-process", "class" => "fa-circle");
-                $sidebar_menu["products"] = array("name" => "submenu_pid_products", "url" => "sales/ProductEntries", "class" => "fa-circle");
-                $sidebar_menu["purchase-orders"] = array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders", "class" => "fa-circle");
-                $sidebar_menu["purchase-returns"] = array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns", "class" => "fa-circle");
-                $sidebar_menu["suppliers"] = array("name" => "submenu_pid_supplier", "url" => "mes/suppliers", "class" => "fa-circle");
-                $sidebar_menu["units"] = array("name" => "submenu_pid_units", "url" => "mes/units", "class" => "fa-circle");
+            $sidebar_menu["overtime"] = array("name" => "submenu_hrm_overtime", "url" => "hrs/overtime", "class" => "fa-circle");
+            $sidebar_menu["schedule"] = array("name" => "submenu_hrm_schedule", "url" => "hrs/schedule", "class" => "fa-circle");
+            $sidebar_menu["disciplinary"] = array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary", "class" => "fa-circle");
+            if ($this->ci->login_user->is_admin || (get_setting("module_leave") == "1" && $access_leave)) {
+                $sidebar_menu["leaves"] = array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves", "class" => "fa-circle");
+            } else if (get_setting("module_leave") == "1") {
+                $sidebar_menu["leaves"] = array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves/leave_info", "class" => "fa-circle");
             }
+            $sidebar_menu["holidays"] = array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays", "class" => "fa-circle");
 
-            if (is_user_has_module_permission("module_mcs")) {
-                if ($this->ci->login_user->is_admin || (get_setting("module_lead") == "1" && $access_lead)) {
-                    $sidebar_menu["leads"] = array("name" => "submenu_mcs_leads", "url" => "mcs/leads", "class" => "fa-circle");
-                }
-
-                $sidebar_menu["lead_status"] = array("name" => "submenu_mcs_status", "url" => "mcs/lead_status", "class" => "fa-circle");
-                $sidebar_menu["lead_source"] = array("name" => "submenu_mcs_source", "url" => "mcs/lead_source", "class" => "fa-circle");
-                $sidebar_menu["pages"] = array("name" => "pages", "url" => "pages", "class" => "fa-circle");
+            // FINANCE
+            if ($this->ci->login_user->is_admin || (get_setting("module_invoice") == "1" && get_setting("module_expense") == "1" && ($access_expense || $access_invoice))) {
+                $sidebar_menu["summary"] = array("name" => "submenu_fas_summary", "url" => "fas/summary", "class" => "fa-circle");
             }
+            if ($this->ci->login_user->is_admin || (get_setting("module_expense") == "1" && $access_expense)) {
+                $sidebar_menu["expenses"] = array("name" => "submenu_fas_expenses", "url" => "fas/expenses", "class" => "fa-circle");
+            }
+            $sidebar_menu["payments"] = array("name" => "submenu_fas_payments", "url" => "fas/payments", "class" => "fa-circle");
+            $sidebar_menu["contributions"] = array("name" => "submenu_fas_contributions", "url" => "fas/contributions", "class" => "fa-circle");
+            $sidebar_menu["incentives"] = array("name" => "submenu_fas_incentives", "url" => "fas/incentives", "class" => "fa-circle");
+            $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "fas/payrolls", "class" => "fa-circle");
+            $sidebar_menu["transfers"] = array("name" => "submenu_fas_transfers", "url" => "fas/transfers", "class" => "fa-circle");
+            $sidebar_menu["accounts"] = array("name" => "submenu_fas_accounts", "url" => "fas/accounts", "class" => "fa-circle");
+            $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
 
+            // PRODUCTION
+            $sidebar_menu["manufacturing-orders"] = array("name" => "submenu_pid_productions", "url" => "production/ManufacturingOrders", "class" => "fa-circle");
+            $sidebar_menu["bill-of-materials"] = array("name" => "submenu_pid_billofmaterials", "url" => "production/BillOfMaterials", "class" => "fa-circle");            
+
+            // PROCUREMENT
+            $sidebar_menu["purchase-orders"] = array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders", "class" => "fa-circle");
+            $sidebar_menu["purchase-returns"] = array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns", "class" => "fa-circle");
+            $sidebar_menu["suppliers"] = array("name" => "submenu_pid_supplier", "url" => "mes/suppliers", "class" => "fa-circle");
+
+            // TOOLSET
+            $sidebar_menu["units"] = array("name" => "submenu_pid_units", "url" => "mes/units", "class" => "fa-circle");
+
+            // MARKETING
+            if ($this->ci->login_user->is_admin || (get_setting("module_lead") == "1" && $access_lead)) {
+                $sidebar_menu["leads"] = array("name" => "submenu_mcs_leads", "url" => "mcs/leads", "class" => "fa-circle");
+            }
+            $sidebar_menu["lead_status"] = array("name" => "submenu_mcs_status", "url" => "mcs/lead_status", "class" => "fa-circle");
+            $sidebar_menu["lead_source"] = array("name" => "submenu_mcs_source", "url" => "mcs/lead_source", "class" => "fa-circle");
+            $sidebar_menu["pages"] = array("name" => "pages", "url" => "pages", "class" => "fa-circle");
+
+            // ASSETS
+            $sidebar_menu["entries"] = array("name" => "submenu_ams_assets", "url" => "ams/entries", "class" => "fa-circle");
+            $sidebar_menu["categories"] = array("name" => "submenu_ams_category", "url" => "ams/categories", "class" => "fa-circle");
+            $sidebar_menu["locations"] = array("name" => "submenu_ams_location", "url" => "ams/locations", "class" => "fa-circle");
+            $sidebar_menu["vendors"] = array("name" => "submenu_ams_vendors", "url" => "ams/vendors", "class" => "fa-circle");
+            $sidebar_menu["brands"] = array("name" => "submenu_ams_maker", "url" => "ams/brands", "class" => "fa-circle");
+
+            // RAFFLE
             if( check_module_enabled("module_epass") && ($this->ci->login_user->is_admin || user_role_has_permission("event_epass")) ) {
                 $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
             }
-
             if( check_module_enabled("module_access") && ($this->ci->login_user->is_admin || user_role_has_permission("access_logs")) ) {
                 $sidebar_menu["access_logs"] = array("name" => "access_logs", "url" => "access_logs", "class" => "fa-circle");
             }
-
             if( check_module_enabled("module_raffle") && ($this->ci->login_user->is_admin || user_role_has_permission("raffle_draw")) ) {
                 $sidebar_menu["module_raffle"] = array("name" => "raffle_draw", "url" => "raffle_draw", "class" => "fa-circle");
             }
 
-            if (is_user_has_module_permission("module_lds")) {
-                $sidebar_menu["deliveries"] = array("name" => "submenu_lms_delivery", "url" => "lds/deliveries", "class" => "fa-circle");
-                $sidebar_menu["warehouses"] = array("name" => "submenu_lms_warehouse", "url" => "lds/warehouses", "class" => "fa-circle");
-                $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "lds/pallets", "class" => "fa-circle");
-                $sidebar_menu["lds_transfers"] = array("name" => "submenu_lms_transfers", "url" => "lds/transfers", "class" => "fa-circle");
-                $sidebar_menu["vehicles"] = array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles", "class" => "fa-circle");
-                $sidebar_menu["drivers"] = array("name" => "submenu_lms_drivers", "url" => "lds/drivers", "class" => "fa-circle");
+            // WAREHOUSE
+            $sidebar_menu["warehouses"] = array("name" => "submenu_lms_warehouse", "url" => "lds/warehouses", "class" => "fa-circle");
+            $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "lds/pallets", "class" => "fa-circle");
+
+            // LOGISTICS
+            $sidebar_menu["deliveries"] = array("name" => "submenu_lms_delivery", "url" => "lds/deliveries", "class" => "fa-circle");
+            $sidebar_menu["lds_transfers"] = array("name" => "submenu_lms_transfers", "url" => "lds/transfers", "class" => "fa-circle");
+            $sidebar_menu["vehicles"] = array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles", "class" => "fa-circle");
+            $sidebar_menu["drivers"] = array("name" => "submenu_lms_drivers", "url" => "lds/drivers", "class" => "fa-circle");
+
+            // SALES
+            $sidebar_menu["sales-matrix"] = array("name" => "sales_matrix", "url" => "sales/Sales_matrix", "class" => "fa-circle");
+            if ($this->ci->login_user->is_admin || (get_setting("module_estimate") && get_setting("module_estimate_request") && $access_estimate)) {
+                $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "sales/Estimates", "class" => "fa-circle");
+            } else if ($this->ci->login_user->is_admin || (get_setting("module_estimate") && $access_estimate)) {
+                $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "sales/Estimates", "class" => "fa-circle");
             }
-
-            if (is_user_has_module_permission("module_sms")) { //TODO: POS, giftcard, coupons
-                $sidebar_menu["sales-matrix"] = array("name" => "sales_matrix", "url" => "sales/Sales_matrix", "class" => "fa-circle");
-                
-                if ($this->ci->login_user->is_admin || (get_setting("module_estimate") && get_setting("module_estimate_request") && $access_estimate)) {
-                    $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "sales/Estimates", "class" => "fa-circle");
-                } else if ($this->ci->login_user->is_admin || (get_setting("module_estimate") && $access_estimate)) {
-                    $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "sales/Estimates", "class" => "fa-circle");
-                }
-
-                if ($this->ci->login_user->is_admin || (get_setting("module_invoice") == "1" && $access_invoice)) {
-                    $sidebar_menu["invoices"] = array("name" => "submenu_sms_invoices", "url" => "sales/Invoices", "class" => "fa-circle");
-                }
-               
-                if ($access_items && (get_setting("module_invoice") == "1" || get_setting("module_estimate") == "1" )) {
-                    $sidebar_menu["services"] = array("name" => "submenu_sms_services", "url" => "sales/Services", "class" => "fa-circle");
-                }
-
-                if ($this->ci->login_user->is_admin || $access_client) {
-                    $sidebar_menu["clients"] = array("name" => "clients", "url" => "sales/Clients", "class" => "fa-circle");
-                }
-                
-                $sidebar_menu["customers"] = array("name" => "submenu_sms_customers", "url" => "sales/Customers", "class" => "fa-circle");
-                $sidebar_menu["stores"] = array("name" => "stores", "url" => "sales/Stores", "class" => "fa-circle");
+            if ($this->ci->login_user->is_admin || (get_setting("module_invoice") == "1" && $access_invoice)) {
+                $sidebar_menu["invoices"] = array("name" => "submenu_sms_invoices", "url" => "sales/Invoices", "class" => "fa-circle");
             }
-
-            if (is_user_has_module_permission("module_ams")) {
-                $sidebar_menu["entries"] = array("name" => "submenu_ams_assets", "url" => "ams/entries", "class" => "fa-circle");
-                $sidebar_menu["categories"] = array("name" => "submenu_ams_category", "url" => "ams/categories", "class" => "fa-circle");
-                $sidebar_menu["locations"] = array("name" => "submenu_ams_location", "url" => "ams/locations", "class" => "fa-circle");
-                $sidebar_menu["vendors"] = array("name" => "submenu_ams_vendors", "url" => "ams/vendors", "class" => "fa-circle");
-                $sidebar_menu["brands"] = array("name" => "submenu_ams_maker", "url" => "ams/brands", "class" => "fa-circle");
+            if ($access_items && (get_setting("module_invoice") == "1" || get_setting("module_estimate") == "1" )) {
+                $sidebar_menu["services"] = array("name" => "submenu_sms_services", "url" => "sales/Services", "class" => "fa-circle");
             }
-
-            if (is_user_has_module_permission("module_pms")) {
-                $sidebar_menu["all_projects"] = array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects", "class" => "fa-circle");
-                $sidebar_menu["my_tasks"] = array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks", "class" => "fa-circle");
-
-                if (get_setting("module_gantt")) {
-                    $sidebar_menu["view_gantts"] = array("name" => "submenu_pms_view_gantts", "url" => "pms/view_gantts", "class" => "fa-circle");
-                }
-
-                if (get_setting("module_project_timesheet")) {
-                    $sidebar_menu["timesheets"] = array("name" => "submenu_pms_timesheets", "url" => "pms/timesheets", "class" => "fa-circle");
-                }
+            if ($this->ci->login_user->is_admin || $access_client) {
+                $sidebar_menu["clients"] = array("name" => "clients", "url" => "sales/Clients", "class" => "fa-circle");
             }
+            $sidebar_menu["customers"] = array("name" => "submenu_sms_customers", "url" => "sales/Customers", "class" => "fa-circle");
+            $sidebar_menu["stores"] = array("name" => "stores", "url" => "sales/Stores", "class" => "fa-circle");
+            $sidebar_menu["products"] = array("name" => "submenu_pid_products", "url" => "sales/ProductEntries", "class" => "fa-circle");
+
+            // PLANNING
+            if (get_setting("module_gantt")) {
+                $sidebar_menu["view_gantts"] = array("name" => "submenu_pms_view_gantts", "url" => "pms/view_gantts", "class" => "fa-circle");
+            }
+            if (get_setting("module_project_timesheet")) {
+                $sidebar_menu["timesheets"] = array("name" => "submenu_pms_timesheets", "url" => "pms/timesheets", "class" => "fa-circle");
+            }
+            $sidebar_menu["my_tasks"] = array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks", "class" => "fa-circle");
+            $sidebar_menu["all_projects"] = array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects", "class" => "fa-circle");
+
             // End: Module permissions workaround
 
-            //prepere the help and suppor menues
             if ( get_setting("module_ticket") == "1" && user_role_has_permission('ticket') ) {
 
                 $ticket_badge = 0;

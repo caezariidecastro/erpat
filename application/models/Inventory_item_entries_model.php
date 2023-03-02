@@ -15,6 +15,7 @@ class Inventory_item_entries_model extends Crud_model {
         $id = get_array_value($options, "id");
         $category = get_array_value($options, "category");
         $vendor = get_array_value($options, "vendor");
+        $kind = get_array_value($options, "kind");
 
         if ($id) {
             $where .= " AND $inventory_items_table.id=$id";
@@ -26,6 +27,10 @@ class Inventory_item_entries_model extends Crud_model {
 
         if($vendor){
             $where .= " AND $inventory_items_table.vendor = $vendor";
+        }
+
+        if($kind){
+            $where .= " AND $inventory_items_table.kind = '$kind'";
         }
 
         $sql = "SELECT $inventory_items_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, brand.name AS brand_name, un.title AS unit_abbreviation, v.name AS vendor_name, COALESCE((

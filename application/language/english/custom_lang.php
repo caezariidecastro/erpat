@@ -944,3 +944,5 @@ $lang["companions"] = "Companions";
 
 $lang["add_override"] = "Add Override";
 $lang["enable_training"] = "Enable Training";
+
+$lang["kinds"] = "Kinds";

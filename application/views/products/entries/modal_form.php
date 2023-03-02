@@ -23,6 +23,14 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="kinds" class="col-md-3"><?php echo lang('kinds'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_dropdown("kinds", $kind_dropdown, $model_info ? $model_info->kind : "", "class='select2 validate-hidden' id='kinds'");
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="name" class="col-md-3"><?php echo lang('name'); ?></label>
         <div class=" col-md-9">
             <?php

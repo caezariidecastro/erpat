@@ -24,7 +24,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo lang('productions'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("mes/ManufacturingOrders/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_production'), array("class" => "btn btn-default", "title" => lang('add_production'))); ?>
+                <?php echo modal_anchor(get_uri("production/ManufacturingOrders/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_production'), array("class" => "btn btn-default", "title" => lang('add_production'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -39,7 +39,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#production-table").appTable({
-            source: '<?php echo_uri("mes/ManufacturingOrders/list_data") ?>',
+            source: '<?php echo_uri("production/ManufacturingOrders/list_data") ?>',
             filterDropdown: [
                 {id: "warehouse_select2_filter", name: "warehouse_select2_filter", class: "w200", options: <?php echo json_encode($warehouse_select2); ?>},
             ],

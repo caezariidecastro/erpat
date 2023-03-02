@@ -218,11 +218,6 @@ $route["lds/transfers/(:any)"] = "Transfers/$1";
 $route["lds/transfers/(:any)/(:any)"] = "Transfers/$1/$2";
 $route["lds/transfers/(:any)/(:any)/(:any)"] = "Transfers/$1/$2/$3";
 
-$route["lds/TransferRawMaterials"] = "TransferRawMaterials/index";
-$route["lds/TransferRawMaterials/(:any)"] = "TransferRawMaterials/$1";
-$route["lds/TransferRawMaterials/(:any)/(:any)"] = "TransferRawMaterials/$1/$2";
-$route["lds/TransferRawMaterials/(:any)/(:any)/(:any)"] = "TransferRawMaterials/$1/$2/$3";
-
 $route["lds/vehicles"] = "Vehicles/index";
 $route["lds/vehicles/(:any)"] = "Vehicles/$1";
 
@@ -256,23 +251,6 @@ $route['mcs/epass_block/(:any)/(:any)'] = 'Epass_Block/$1/$2';
 $route['mcs/epass_seat'] = 'Epass_Seat/index';
 $route['mcs/epass_seat/(:any)'] = 'Epass_Seat/$1';
 $route['mcs/epass_seat/(:any)/(:any)'] = 'Epass_Seat/$1/$2';
-
-// MES Controller 
-$route["mes"] = "ManufacturingOrders/index";
-$route["mes/manufacturing-orders"] = "ManufacturingOrders/index";
-$route["mes/ManufacturingOrders/(:any)"] = "ManufacturingOrders/$1";
-$route["mes/ManufacturingOrders/(:any)/(:any)"] = "ManufacturingOrders/$1/$2";
-
-$route["mes/bill-of-materials"] = "BillOfMaterials/index";
-$route["mes/BillOfMaterials/(:any)"] = "BillOfMaterials/$1";
-$route["mes/BillOfMaterials/(:any)/(:any)"] = "BillOfMaterials/$1/$2";
-
-$route["mes/raw-materials"] = "RawMaterialEntries/index";
-$route["mes/RawMaterialEntries/(:any)"] = "RawMaterialEntries/$1";
-$route["mes/RawMaterialCategories/(:any)"] = "RawMaterialCategories/$1";
-$route["mes/RawMaterialInventory/(:any)"] = "RawMaterialInventory/$1";
-$route["mes/RawMaterialInventory/(:any)/(:any)"] = "RawMaterialInventory/$1/$2";
-$route["mes/RawMaterialInventory/(:any)/(:any)/(:any)"] = "RawMaterialInventory/$1/$2/$3";
 
 $route["mes/in-progress"] = "InProgress/index";
 $route["mes/InProgress/(:any)"] = "InProgress/$1";
