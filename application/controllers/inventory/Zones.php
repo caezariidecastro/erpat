@@ -3,15 +3,12 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Racks extends MY_Controller {
+class Zones extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model("Racks_model");
-        $this->load->model("Warehouse_model");
         $this->load->model("Zones_model");
-
-        $this->load->helper("warehouse");
+        $this->load->model("Warehouse_model");
         $this->load->helper("utility");
     }
 
@@ -25,14 +22,14 @@ class Racks extends MY_Controller {
         return $status_select2;
     }
 
-    protected function _get_zone_dropdown_data() {
-        $zone = $this->Zones_model->get_all()->result();
-        $zone_dropdown = array('' => '-');
+    protected function _get_warehouse_dropdown_data() {
+        $warehouses = $this->Warehouse_model->get_all()->result();
+        $warehouse_dropdown = array('' => '-');
 
-        foreach ($zone as $group) {
-            $zone_dropdown[$group->id] = get_id_name($group->id, 'Z');
+        foreach ($warehouses as $group) {
+            $warehouse_dropdown[$group->id] = $group->name;
         }
-        return $zone_dropdown;
+        return $warehouse_dropdown;
     }
 
     protected function _get_warehouse_select2_data() {
@@ -43,16 +40,6 @@ class Racks extends MY_Controller {
             $warehouse_select2[] = array('id' => $group->id, 'text' => $group->name) ;
         }
         return $warehouse_select2;
-    }
-
-    protected function _get_zone_select2_data() {
-        $zones = $this->Zones_model->get_all()->result();
-        $zone_select2 = array(array('id' => '', 'text'  => '- Zones -'));
-
-        foreach ($zones as $group) {
-            $zone_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." - ".get_id_name($group->id, 'Z')) ;
-        }
-        return $zone_select2;
     }
 
     protected function make_labels_dropdown($type = "", $label_ids = "", $is_filter = false) {
@@ -92,22 +79,24 @@ class Racks extends MY_Controller {
         return $labels_dropdown;
     }
 
-    function index(){
+    function index($warehouse_id = 0){
         $this->validate_user_module_permission("module_lds");
-        $view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
-        $view_data['zone_select2'] = $this->_get_zone_select2_data();
+        $view_data['warehouse_id'] = $warehouse_id;
+        if(!$warehouse_id) {
+            $view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
+        }
+        $view_data['zones_labels_dropdown'] = json_encode($this->make_labels_dropdown("zones", "", true));
         $view_data['status_select2'] = $this->_get_status_select2_data();
-        $view_data['racks_labels_dropdown'] = json_encode($this->make_labels_dropdown("racks", "", true));
-        //$this->template->rander("racks/index", $view_data);
-        $this->load->view("racks/index", $view_data);
-    }
+        //$this->template->rander("zones/index", $view_data);
+        $this->load->view("warehouse/zones/index", $view_data);
+    }        
 
-    function list_data(){
-        $list_data = $this->Racks_model->get_details(array(
-            'warehouse_id' => $this->input->post('warehouse_select2_filter'),
-            'zone_id' => $this->input->post('zone_select2_filter'),
-            'status' => $this->input->post('status_select2_filter'),
+    function list_data($warehouse_id = 0){
+        $warehouse_id = isset($warehouse_id)?$warehouse_id:$this->input->post('warehouse_select2_filter');
+        $list_data = $this->Zones_model->get_details(array(
+            'warehouse_id' => $warehouse_id,
             'label_id' => $this->input->post('labels_select2_filter'),
+            'status' => $this->input->post('status_select2_filter'),
         ))->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -124,9 +113,7 @@ class Racks extends MY_Controller {
         }
 
         return array(
-            get_id_name($data->id, 'R'),
-            $data->warehouse_name,
-            get_id_name($data->zone_id, 'Z'),
+            get_id_name($data->id, 'Z'),
             $data->qrcode,
             $data->barcode,
             $data->rfid,
@@ -135,21 +122,20 @@ class Racks extends MY_Controller {
             make_status_view_data($data->status=="active"),
             $data->timestamp,
             get_team_member_profile_link($data->creator_id, $data->created_by),
-            modal_anchor(get_uri("lds/racks/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_rack'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lds/racks/delete"), "data-action" => "delete-confirmation"))
-            ."<a href='#' id='$data->id' class='view_btn role-row link'><i class='fa fa-eye fa-fw'></i></a>"
+            modal_anchor(get_uri("inventory/Zones/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_zone'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory/Zones/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
     function save() {
         validate_submitted_data(array(
-            "zone_id" => "numeric"
+            "warehouse_id" => "numeric"
         ));
 
         $id = $this->input->post('id');
 
         $data = array(
-            "zone_id" => $this->input->post('zone_id'),
+            "warehouse_id" => $this->input->post('warehouse_id'),
             "qrcode" => $this->input->post('qrcode'),
             "barcode" => $this->input->post('barcode'),
             "rfid" => $this->input->post('rfid'),
@@ -163,10 +149,10 @@ class Racks extends MY_Controller {
             $data["created_by"] = $this->login_user->id;
         }
         
-        $saved_id = $this->Racks_model->save($data, $id);
+        $saved_id = $this->Zones_model->save($data, $id);
         if ($saved_id) {
             $options = array("id" => $saved_id);
-            $model_info = $this->Racks_model->get_details($options)->row();
+            $model_info = $this->Zones_model->get_details($options)->row();
             echo json_encode(array("success" => true, "id" => $model_info->id, "data" => $this->_make_row($model_info), 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
@@ -178,13 +164,13 @@ class Racks extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Racks_model->get_one($this->input->post('id'));
-        $view_data['zone_dropdown'] = $this->_get_zone_dropdown_data();
-        $view_data['label_suggestions'] = $this->make_labels_dropdown("racks", $view_data['model_info']->labels);
+        $view_data['model_info'] = $this->Zones_model->get_one($this->input->post('id'));
+        $view_data['warehouse_dropdown'] = $this->_get_warehouse_dropdown_data();
+        $view_data['label_suggestions'] = $this->make_labels_dropdown("zones", $view_data['model_info']->labels);
 
         $view_data['status_select2'] = $this->_get_status_select2_data();
 
-        $this->load->view('racks/modal_form', $view_data);
+        $this->load->view('warehouse/zones/modal_form', $view_data);
     }
 
     function delete() {
@@ -194,7 +180,7 @@ class Racks extends MY_Controller {
 
         $id = $this->input->post('id');
 
-        if ($this->Racks_model->delete($id)) {
+        if ($this->Zones_model->delete($id)) {
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));

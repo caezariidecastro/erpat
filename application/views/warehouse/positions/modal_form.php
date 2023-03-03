@@ -1,11 +1,11 @@
-<?php echo form_open(get_uri("lds/racks/save"), array("id" => "rack-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("inventory/Positions/save"), array("id" => "position-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <div class="form-group">
-        <label for="zone_id" class="col-md-3"><?php echo lang('zone'); ?></label>
+        <label for="level_id" class="col-md-3"><?php echo lang('level'); ?></label>
         <div class="col-md-9">
             <?php
-            echo form_dropdown("zone_id", $zone_dropdown, $model_info ? $model_info->zone_id : "", "class='select2 validate-hidden' id='transferee' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            echo form_dropdown("level_id", $level_dropdown, $model_info ? $model_info->level_id : "", "class='select2 validate-hidden' id='transferee' data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
         </div>
     </div>
@@ -108,9 +108,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#rack-form").appForm({
+        $("#position-form").appForm({
             onSuccess: function (result) {
-                $("#rack-table").appTable({newData: result.data, dataId: result.id});
+                $("#position-table").appTable({newData: result.data, dataId: result.id});
             }
         });
 

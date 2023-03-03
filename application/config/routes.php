@@ -182,36 +182,10 @@ $route["hrs/leaves/(:any)"] = "leaves/$1";
 $route['hrs/holidays'] = 'holidays/index';
 $route["hrs/holidays/(:any)"] = "holidays/$1";
 
-
 // LDS Controller 
 $route["lds"] = "deliveries/index";
 $route["lds/deliveries"] = "deliveries/index";
 $route["lds/deliveries/(:any)"] = "Deliveries/$1";
-
-$route["lds/warehouses"] = "Warehouses/index";
-$route["lds/warehouses/(:any)"] = "Warehouses/$1";
-
-$route["lds/zones"] = "Zones/index";
-$route["lds/zones/(:any)"] = "Zones/$1";
-
-$route["lds/racks"] = "Racks/index";
-$route["lds/racks/(:any)"] = "Racks/$1";
-
-$route["lds/bays"] = "Bays/index";
-$route["lds/bays/(:any)"] = "Bays/$1";
-$route["lds/bays/(:any)/(:any)"] = "Bays/$1/$2";
-
-$route["lds/levels"] = "Levels/index";
-$route["lds/levels/(:any)"] = "Levels/$1";
-$route["lds/levels/(:any)/(:any)"] = "Levels/$1/$2";
-
-$route["lds/positions"] = "Positions/index";
-$route["lds/positions/(:any)"] = "Positions/$1";
-$route["lds/positions/(:any)/(:any)"] = "Positions/$1/$2";
-
-$route["lds/pallets"] = "Pallets/index";
-$route["lds/pallets/(:any)"] = "Pallets/$1";
-$route["lds/pallets/(:any)/(:any)"] = "Pallets/$1/$2";
 
 $route["lds/transfers"] = "Transfers/index";
 $route["lds/transfers/(:any)"] = "Transfers/$1";

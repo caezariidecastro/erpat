@@ -37,7 +37,7 @@ class Pallets extends MY_Controller {
         $zone_dropdown = array('' => '-');
 
         foreach ($zone as $group) {
-            $zone_dropdown[$group->id] = get_warehouse_name($group->warehouse_id)." - ".get_id_name($group->id, 'Z');
+            $zone_dropdown[$group->id] = get_id_name($group->id, 'Z')." ".$group->remarks;
         }
         return $zone_dropdown;
     }
@@ -97,7 +97,7 @@ class Pallets extends MY_Controller {
         $zone_select2 = array(array('id' => '', 'text'  => '- Zones -'));
 
         foreach ($zones as $group) {
-            $zone_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." - ". get_id_name($group->id, 'Z')) ;
+            $zone_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'Z')." ".$group->remarks);
         }
         return $zone_select2;
     }
@@ -205,9 +205,8 @@ class Pallets extends MY_Controller {
         return $labels_dropdown;
     }
 
-    function index(){
-        $this->validate_user_module_permission("module_lds");
-        $view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
+    function index($warehouse_id = 0){
+        $view_data['warehouse_id'] = $warehouse_id;
         $view_data['zone_select2'] = $this->_get_zone_select2_data();
         $view_data['rack_select2'] = $this->_get_rack_select2_data();
         $view_data['bay_select2'] = $this->_get_bay_select2_data();
@@ -216,12 +215,12 @@ class Pallets extends MY_Controller {
         $view_data['status_select2'] = $this->_get_status_select2_data();
         $view_data['pallets_labels_dropdown'] = json_encode($this->make_labels_dropdown("pallets", "", true));
         $view_data['pages_labels_dropdown'] = $this->_get_page_select2_data();
-        $this->template->rander("pallets/index", $view_data);
+        $this->load->view("warehouse/pallets/index", $view_data);
     }
 
-    function list_data(){
+    function list_data($warehouse_id = 0){
         $list_data = $this->Pallets_model->get_details(array(
-            'warehouse_id' => $this->input->post('warehouse_select2_filter'),
+            'warehouse_id' => $warehouse_id,
             'zone_id' => $this->input->post('zone_select2_filter'),
             'rack_id' => $this->input->post('rack_select2_filter'),
             'bay_id' => $this->input->post('bay_select2_filter'),
@@ -255,7 +254,6 @@ class Pallets extends MY_Controller {
             get_qrcode_image($data->id, 'pallets', 'view', true), 
             get_barcode_image($bcode, true, 1,70), 
             $data->rfid,
-            $data->warehouse_name,
             get_id_name($data->zone_id, 'Z'),
             get_id_name($data->rack_id, 'R'),
             get_id_name($data->bay_id, 'B'),
@@ -266,8 +264,8 @@ class Pallets extends MY_Controller {
             make_status_view_data($data->status=="active"),
             $data->timestamp,
             get_team_member_profile_link($data->creator_id, $data->created_by),
-            modal_anchor(get_uri("lds/pallets/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_pallet'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lds/pallets/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("inventory/Pallets/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_pallet'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory/Pallets/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
@@ -344,7 +342,7 @@ class Pallets extends MY_Controller {
 
         $view_data['status_select2'] = $this->_get_status_select2_data();
 
-        $this->load->view('pallets/modal_form', $view_data);
+        $this->load->view('warehouse/pallets/modal_form', $view_data);
     }
 
     function bulk_modal_form() {
@@ -356,7 +354,7 @@ class Pallets extends MY_Controller {
         $view_data['label_suggestions'] = $this->make_labels_dropdown("pallets");
         $view_data['status_select2'] = $this->_get_status_select2_data();
 
-        $this->load->view('pallets/bulk_modal_form', $view_data);
+        $this->load->view('warehouse/pallets/bulk_modal_form', $view_data);
     }
 
     function export_modal_form() {
@@ -368,7 +366,7 @@ class Pallets extends MY_Controller {
         $view_data['label_dropdown'] = $this->_get_label_dropdown_data();
         $view_data['status_select2'] = $this->_get_status_select2_data();
 
-        $this->load->view('pallets/export_modal_form', $view_data);
+        $this->load->view('warehouse/pallets/export_modal_form', $view_data);
     }
 
     function delete() {
@@ -427,7 +425,7 @@ class Pallets extends MY_Controller {
             $current[] = $pallet_lists[$i];
 
             if(count($current) == 6 || $total == count($pallet_lists)) {
-                $html = $this->load->view("pallets/export_qrcode", array(
+                $html = $this->load->view("warehouse/pallets/export_qrcode", array(
                     'lists' => $current,
                 ), true);
                 $this->pdf->writeHTML($html, true, false, true, false, '');

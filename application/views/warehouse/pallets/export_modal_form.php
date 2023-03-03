@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("lds/pallets/prepare_export"), array("id" => "export-pallet-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("inventory/Pallets/prepare_export"), array("id" => "export-pallet-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <div class="form-group">
         <label for="zone_id" class="col-md-3"><?php echo lang('zone'); ?></label>
@@ -43,7 +43,7 @@
             onSuccess: function (result) {
                 if(result.success) {
                     for(var i=1; i<= result.pages; i++) {
-                        var win = window.open('<?= get_uri("lds/pallets/export_barcode/") ?>'+i+result.data, '_blank');
+                        var win = window.open('<?= get_uri("inventory/Pallets/export_barcode/") ?>'+i+result.data, '_blank');
                         if (win) {
                             win.focus();
                         } else {

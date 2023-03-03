@@ -355,9 +355,9 @@ class Left_menu {
                 $sidebar_menu["module_raffle"] = array("name" => "raffle_draw", "url" => "raffle_draw", "class" => "fa-circle");
             }
 
-            // WAREHOUSE
-            $sidebar_menu["warehouses"] = array("name" => "submenu_lms_warehouse", "url" => "lds/warehouses", "class" => "fa-circle");
-            $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "lds/pallets", "class" => "fa-circle");
+            // INVENTORY
+            $sidebar_menu["warehouses"] = array("name" => "warehouses", "url" => "inventory/Warehouses", "class" => "fa-circle");
+            $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "inventory/Pallets", "class" => "fa-circle");
 
             // LOGISTICS
             $sidebar_menu["deliveries"] = array("name" => "submenu_lms_delivery", "url" => "lds/deliveries", "class" => "fa-circle");

@@ -1,11 +1,19 @@
-<?php echo form_open(get_uri("lds/levels/save"), array("id" => "level-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("inventory/Pallets/save"), array("id" => "pallet-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info ? $model_info->id : "" ?>" />
     <div class="form-group">
-        <label for="bay_id" class="col-md-3"><?php echo lang('bay'); ?></label>
+        <label for="position_id" class="col-md-3"><?php echo lang('position'); ?></label>
         <div class="col-md-9">
             <?php
-            echo form_dropdown("bay_id", $bay_dropdown, $model_info ? $model_info->bay_id : "", "class='select2 validate-hidden' id='transferee' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            echo form_dropdown("position_id", $position_dropdown, $model_info ? $model_info->position_id : "", "class='select2 validate-hidden' ");
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="zone_id" class="col-md-3"><?php echo lang('zone'); ?></label>
+        <div class="col-md-9">
+            <?php
+            echo form_dropdown("zone_id", $zone_dropdown, $model_info ? $model_info->zone_id : "", "class='select2 validate-hidden' ");
             ?>
         </div>
     </div>
@@ -108,9 +116,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#level-form").appForm({
+        $("#pallet-form").appForm({
             onSuccess: function (result) {
-                $("#level-table").appTable({newData: result.data, dataId: result.id});
+                $("#pallet-table").appTable({newData: result.data, dataId: result.id});
             }
         });
 
@@ -118,5 +126,7 @@
         $("#labels").select2({multiple: true, data: <?php echo json_encode($label_suggestions); ?>});
 
         $("#status").select2({data: <?= json_encode(array_replace($status_select2, array(0 => array("id" => "", "text"  => "-"))))?> });
+
+        $('#zone_id').on("change", function (e) { console.log("change"); });
     });
 </script>

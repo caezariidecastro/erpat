@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("lds/pallets/save_bulk"), array("id" => "pallet-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("inventory/Pallets/save_bulk"), array("id" => "pallet-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <div class="form-group">
         <label for="total" class=" col-md-3"><?php echo lang('total'); ?></label>

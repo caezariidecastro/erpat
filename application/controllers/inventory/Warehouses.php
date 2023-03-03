@@ -11,7 +11,6 @@ class Warehouses extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_module_permission("module_lds");
         $this->template->rander("warehouse/index");
     }
 
@@ -29,15 +28,15 @@ class Warehouses extends MY_Controller {
 
     private function _make_row($data) {
         return array(
-            $data->name,
+            get_warehouse_link($data->id, $data->name),
             $data->address,
             $data->zip_code,
             $data->email,
             get_team_member_profile_link($data->head, $data->head_name, array("target" => "_blank")),
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             $data->created_on,
-            modal_anchor(get_uri("lds/warehouses/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_warehouse'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lds/warehouses/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("inventory/Warehouses/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_warehouse'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory/Warehouses/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
@@ -94,5 +93,30 @@ class Warehouses extends MY_Controller {
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
+    }
+
+    function view($warehouse_id = 0) {
+        $view_data['model_info'] = $this->Warehouse_model->get_one($warehouse_id);
+        $this->template->rander("warehouse/view", $view_data);
+    }
+
+    function dashboard($warehouse_id = 0) {
+        $view_data['model_info'] = $this->Warehouse_model->get_one($warehouse_id);
+        $this->load->view("warehouse/single/dashboard", $view_data);
+    }
+
+    function zones($warehouse_id = 0) {
+        $view_data['model_info'] = $this->Warehouse_model->get_one($warehouse_id);
+        $this->load->view("warehouse/zones/index", $view_data);
+    }
+
+    function members($warehouse_id = 0) {
+        $view_data['model_info'] = $this->Warehouse_model->get_one($warehouse_id);
+        $this->load->view("warehouse/single/members", $view_data);
+    }
+
+    function settings($warehouse_id = 0) {
+        $view_data['model_info'] = $this->Warehouse_model->get_one($warehouse_id);
+        $this->load->view("warehouse/single/settings", $view_data);
     }
 }

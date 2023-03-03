@@ -946,3 +946,7 @@ $lang["add_override"] = "Add Override";
 $lang["enable_training"] = "Enable Training";
 
 $lang["kinds"] = "Kinds";
+$lang["members"] = "Members";
+$lang["consumer"] = "Customer";
+
+$lang["under_development"] = "This feature is currently under development.";

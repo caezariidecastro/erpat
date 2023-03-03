@@ -2535,3 +2535,17 @@ if (!function_exists('get_sss_contribution')) {
         }
     }
 }
+
+if (!function_exists('get_warehouse_link')) {
+
+    function get_warehouse_link($id = 0, $name = "", $attributes = array()) {
+        $ci = get_instance();
+
+        if( !$id ) {
+            return "None";
+        }
+
+        return anchor("inventory/Warehouses/view/" . $id, $name, $attributes);
+    }
+
+}

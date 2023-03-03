@@ -3,15 +3,16 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Levels extends MY_Controller {
+class Positions extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model("Levels_model");
+        $this->load->model("Positions_model");
         $this->load->model("Warehouse_model");
         $this->load->model("Zones_model");
         $this->load->model("Racks_model");
         $this->load->model("Bays_model");
+        $this->load->model("Levels_model");
 
         $this->load->helper("warehouse");
         $this->load->helper("utility");
@@ -57,6 +58,16 @@ class Levels extends MY_Controller {
         return $bay_dropdown;
     }
 
+    protected function _get_level_dropdown_data() {
+        $level = $this->Levels_model->get_all()->result();
+        $level_dropdown = array('' => '-');
+
+        foreach ($level as $group) {
+            $level_dropdown[$group->id] = get_id_name($group->id, 'L');
+        }
+        return $level_dropdown;
+    }
+
     protected function _get_warehouse_select2_data() {
         $warehouses = $this->Warehouse_model->get_all()->result();
         $warehouse_select2 = array(array('id' => '', 'text'  => '- Warehouse -'));
@@ -92,9 +103,19 @@ class Levels extends MY_Controller {
         $bays_select2 = array(array('id' => '', 'text'  => '- Bays -'));
 
         foreach ($bays as $group) {
-            $bays_select2[] = array('id' => $group->id, 'text' => get_rack_name($group->rack_id, 'R')." - ".get_id_name($group->id, 'B')) ;
+            $bays_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'B')) ;
         }
         return $bays_select2;
+    }
+
+    protected function _get_level_select2_data() {
+        $levels = $this->Levels_model->get_details()->result();
+        $levels_select2 = array(array('id' => '', 'text'  => '- Levels -'));
+
+        foreach ($levels as $group) {
+            $levels_select2[] = array('id' => $group->id, 'text' => get_rack_name($group->rack_id, 'R')." - ".get_bay_name($group->bay_id, 'B')." - ".get_id_name($group->id, 'L')) ;
+        }
+        return $levels_select2;
     }
 
     protected function make_labels_dropdown($type = "", $label_ids = "", $is_filter = false) {
@@ -139,20 +160,22 @@ class Levels extends MY_Controller {
         //$view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
         //$view_data['zone_select2'] = $this->_get_zone_select2_data();
         //$view_data['rack_select2'] = $this->_get_rack_select2_data();
-        $view_data['bay_select2'] = $this->_get_bay_select2_data();
+        //$view_data['bay_select2'] = $this->_get_bay_select2_data();
+        $view_data['level_select2'] = $this->_get_level_select2_data();
         $view_data['status_select2'] = $this->_get_status_select2_data();
-        $view_data['levels_labels_dropdown'] = json_encode($this->make_labels_dropdown("levels", "", true));
+        $view_data['positions_labels_dropdown'] = json_encode($this->make_labels_dropdown("positions", "", true));
         $view_data['rack_id'] = $rack_id;
-        $this->load->view("levels/index", $view_data);
+        $this->load->view("warehouse/positions/index", $view_data);
     }
 
     function list_data($rack_id = 0) {
-        $list_data = $this->Levels_model->get_details(array(
+        $list_data = $this->Positions_model->get_details(array(
             //'warehouse_id' => $this->input->post('warehouse_select2_filter'),
             //'zone_id' => $this->input->post('zone_select2_filter'),
             //'rack_id' => $this->input->post('rack_select2_filter'),
             'rack_id' => $rack_id,
-            'bay_id' => $this->input->post('bay_select2_filter'),
+            //'bay_id' => $this->input->post('bay_select2_filter'),
+            'level_id' => $this->input->post('level_select2_filter'),
             'status' => $this->input->post('status_select2_filter'),
             'label_id' => $this->input->post('labels_select2_filter'),
         ))->result();
@@ -171,11 +194,12 @@ class Levels extends MY_Controller {
         }
 
         return array(
-            get_id_name($data->id, 'L'),
+            get_id_name($data->id, 'P'),
             $data->warehouse_name,
             get_id_name($data->zone_id, 'Z'),
             get_id_name($data->rack_id, 'R'),
             get_id_name($data->bay_id, 'B'),
+            get_id_name($data->level_id, 'L'),
             $data->qrcode,
             $data->barcode,
             $data->rfid,
@@ -184,20 +208,20 @@ class Levels extends MY_Controller {
             make_status_view_data($data->status=="active"),
             $data->timestamp,
             get_team_member_profile_link($data->creator_id, $data->created_by),
-            modal_anchor(get_uri("lds/levels/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_level'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("lds/levels/delete"), "data-action" => "delete-confirmation"))
+            modal_anchor(get_uri("inventory/Positions/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_position'), "data-post-id" => $data->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("inventory/Positions/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
     function save() {
         validate_submitted_data(array(
-            "bay_id" => "numeric"
+            "level_id" => "numeric"
         ));
 
         $id = $this->input->post('id');
 
         $data = array(
-            "bay_id" => $this->input->post('bay_id'),
+            "level_id" => $this->input->post('level_id'),
             "qrcode" => $this->input->post('qrcode'),
             "barcode" => $this->input->post('barcode'),
             "rfid" => $this->input->post('rfid'),
@@ -211,10 +235,10 @@ class Levels extends MY_Controller {
             $data["created_by"] = $this->login_user->id;
         }
         
-        $saved_id = $this->Levels_model->save($data, $id);
+        $saved_id = $this->Positions_model->save($data, $id);
         if ($saved_id) {
             $options = array("id" => $saved_id);
-            $model_info = $this->Levels_model->get_details($options)->row();
+            $model_info = $this->Positions_model->get_details($options)->row();
             echo json_encode(array("success" => true, "id" => $model_info->id, "data" => $this->_make_row($model_info), 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
@@ -226,13 +250,13 @@ class Levels extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Levels_model->get_one($this->input->post('id'));
-        $view_data['bay_dropdown'] = $this->_get_bay_dropdown_data();
-        $view_data['label_suggestions'] = $this->make_labels_dropdown("levels", $view_data['model_info']->labels);
+        $view_data['model_info'] = $this->Positions_model->get_one($this->input->post('id'));
+        $view_data['level_dropdown'] = $this->_get_level_dropdown_data();
+        $view_data['label_suggestions'] = $this->make_labels_dropdown("positions", $view_data['model_info']->labels);
 
         $view_data['status_select2'] = $this->_get_status_select2_data();
 
-        $this->load->view('levels/modal_form', $view_data);
+        $this->load->view('warehouse/positions/modal_form', $view_data);
     }
 
     function delete() {
@@ -242,7 +266,7 @@ class Levels extends MY_Controller {
 
         $id = $this->input->post('id');
 
-        if ($this->Levels_model->delete($id)) {
+        if ($this->Positions_model->delete($id)) {
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));

@@ -4,7 +4,7 @@
         <h1> <?= lang('current_rack'); ?>: <label class="rack_id"><?= isset($rack_id)?get_id_name($rack_id, "R"):"All" ?></label></h1>
             <div class="title-button-group">
                 <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "positions")); ?>
-                <?php echo modal_anchor(get_uri("lds/positions/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_position'), array("class" => "btn btn-default", "title" => lang('add_position'))); ?>
+                <?php echo modal_anchor(get_uri("inventory/Positions/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_position'), array("class" => "btn btn-default", "title" => lang('add_position'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -17,7 +17,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#position-table").appTable({
-            source: '<?php echo_uri("lds/positions/list_data/".$rack_id) ?>',
+            source: '<?php echo_uri("inventory/Positions/list_data/".$rack_id) ?>',
             order: [[0, 'desc']],
             filterDropdown: [
                 {name: "labels_select2_filter", class: "w150", options: <?php echo $positions_labels_dropdown; ?>}, 
@@ -46,7 +46,8 @@
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+            tableRefreshButton: true,
         });
     });
 </script>

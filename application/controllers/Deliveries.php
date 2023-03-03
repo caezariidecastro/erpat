@@ -44,20 +44,6 @@ class Deliveries extends MY_Controller {
         return $users_select2;
     }
 
-    function index(){
-        $this->validate_user_module_permission("module_lds");
-        $this->template->rander("deliveries/index");
-    }
-
-    function list_data(){
-        $list_data = $this->Deliveries_model->get_details()->result();
-        $result = array();
-        foreach ($list_data as $data) {
-            $result[] = $this->_make_row($data);
-        }
-        echo json_encode(array("data" => $result));
-    }
-
     private function _get_status_label($status){
         $labeled_status = "";
 
@@ -89,11 +75,22 @@ class Deliveries extends MY_Controller {
         );
     }
 
+    function index(){
+        $this->validate_user_module_permission("module_lds");
+        $this->template->rander("deliveries/index");
+    }
+
+    function list_data(){
+        $list_data = $this->Deliveries_model->get_details()->result();
+        $result = array();
+        foreach ($list_data as $data) {
+            $result[] = $this->_make_row($data);
+        }
+        echo json_encode(array("data" => $result));
+    }
+
     private function _make_row($data) {
-        $address = (trim($data->street) ? trim($data->street) . ", " : "") 
-            . (trim($data->city)  ? trim($data->city)  . ", " : "") 
-            . (trim($data->state)  ? trim($data->state)  . ", " : "") 
-            . trim($data->country) ." ". trim($data->zip);
+        $address = (trim($data->city)  ? trim($data->city)  . ", " : "") . (trim($data->state)  ? trim($data->state)  . ", " : "");
 
         $invoice_url = "";
         if ($this->login_user->user_type == "staff") {
@@ -106,11 +103,11 @@ class Deliveries extends MY_Controller {
             $data->reference_number,
             $invoice_url,
             get_team_member_profile_link($data->consumer, $data->consumer_name, array("target" => "_blank")),
+            $address,
             get_team_member_profile_link($data->dispatcher, $data->dispatcher_name, array("target" => "_blank")),
             get_team_member_profile_link($data->driver, $data->driver_name, array("target" => "_blank")),
             $data->vehicle_name,
             nl2br($data->remarks),
-            $address,
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
             $this->_get_status_label($data->status),
@@ -129,17 +126,17 @@ class Deliveries extends MY_Controller {
         $invoice_id = $this->input->post('invoice_id');
 
         // ** Save invoice first
-        $invoice_data = array(
-            "bill_date" => date('Y-m-d'),
-            "due_date" => date("Y-m-d", strtotime("+1 week")),
-            "consumer_id" => $consumer,
-        );
+        // $invoice_data = array(
+        //     "bill_date" => date('Y-m-d'),
+        //     "due_date" => date("Y-m-d", strtotime("+1 week")),
+        //     "consumer_id" => $consumer,
+        // );
 
-        $invoice_save_id = $this->Invoices_model->save($invoice_data, $invoice_id);
+        // $invoice_save_id = $this->Invoices_model->save($invoice_data, $invoice_id);
         // **
 
         $delivery_data = array(
-            "invoice_id" => $invoice_save_id,
+            "invoice_id" => $invoice_id,
             "consumer" => $consumer,
             "dispatcher" => $this->input->post('dispatcher'),
             "driver" => $this->input->post('driver'),
