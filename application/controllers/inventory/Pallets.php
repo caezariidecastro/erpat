@@ -32,12 +32,17 @@ class Pallets extends MY_Controller {
         return $status_select2;
     }
 
-    protected function _get_zone_dropdown_data() {
-        $zone = $this->Zones_model->get_all()->result();
+    protected function _get_zone_dropdown_data($warehouse_id = 0) {
+        $option = array("warehouse_id"=>$warehouse_id);
+        $zones = $this->Zones_model->get_details($option)->result();
         $zone_dropdown = array('' => '-');
 
-        foreach ($zone as $group) {
-            $zone_dropdown[$group->id] = get_id_name($group->id, 'Z')." ".$group->remarks;
+        foreach ($zones as $group) {
+            if(!$warehouse_id) {
+                $zone_dropdown[$group->id] = get_warehouse_name($group->warehouse_id)." ".get_id_name($group->id, 'Z');
+            } else {
+                $zone_dropdown[$group->id] = get_id_name($group->id, 'Z')." ".$group->remarks;
+            }
         }
         return $zone_dropdown;
     }
@@ -77,7 +82,7 @@ class Pallets extends MY_Controller {
         $position_dropdown = array('' => '-');
 
         foreach ($position as $group) {
-            $position_dropdown[$group->id] = get_warehouse_name($group->warehouse_id)." - ". get_id_name($group->zone_id, 'Z')." - ". get_id_name($group->rack_id, 'R') ." - ". get_id_name($group->level_id, 'L') ." - ". get_id_name($group->id, 'P');
+            $position_dropdown[$group->id] = $group->zone_name." - ". get_id_name($group->zone_id, 'Z')." - ". get_id_name($group->rack_id, 'R') ." - ". get_id_name($group->level_id, 'L') ." - ". get_id_name($group->id, 'P');
         }
         return $position_dropdown;
     }
@@ -92,12 +97,17 @@ class Pallets extends MY_Controller {
         return $warehouse_select2;
     }
 
-    protected function _get_zone_select2_data() {
-        $zones = $this->Zones_model->get_all()->result();
+    protected function _get_zone_select2_data($warehouse_id = 0) {
+        $option = array("warehouse_id"=>$warehouse_id);
+        $zones = $this->Zones_model->get_details($option)->result();
         $zone_select2 = array(array('id' => '', 'text'  => '- Zones -'));
 
         foreach ($zones as $group) {
-            $zone_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'Z')." ".$group->remarks);
+            if(!$warehouse_id) {
+                $zone_select2[] = array('id' => $group->id, 'text' => get_warehouse_name($group->warehouse_id)." ".get_id_name($group->id, 'Z') ) ;
+            } else {
+                $zone_select2[] = array('id' => $group->id, 'text' => get_id_name($group->id, 'Z')." ".$group->remarks ) ;
+            }
         }
         return $zone_select2;
     }
@@ -207,11 +217,9 @@ class Pallets extends MY_Controller {
 
     function index($warehouse_id = 0){
         $view_data['warehouse_id'] = $warehouse_id;
-        $view_data['zone_select2'] = $this->_get_zone_select2_data();
+        $view_data['zone_select2'] = $this->_get_zone_select2_data($warehouse_id);
         $view_data['rack_select2'] = $this->_get_rack_select2_data();
         $view_data['bay_select2'] = $this->_get_bay_select2_data();
-        $view_data['level_select2'] = $this->_get_level_select2_data();
-        $view_data['position_select2'] = $this->_get_position_select2_data();
         $view_data['status_select2'] = $this->_get_status_select2_data();
         $view_data['pallets_labels_dropdown'] = json_encode($this->make_labels_dropdown("pallets", "", true));
         $view_data['pages_labels_dropdown'] = $this->_get_page_select2_data();
@@ -224,8 +232,6 @@ class Pallets extends MY_Controller {
             'zone_id' => $this->input->post('zone_select2_filter'),
             'rack_id' => $this->input->post('rack_select2_filter'),
             'bay_id' => $this->input->post('bay_select2_filter'),
-            'level_id' => $this->input->post('level_select2_filter'),
-            'position_id' => $this->input->post('position_select2_filter'),
             'status' => $this->input->post('status_select2_filter'),
             'label_id' => $this->input->post('labels_select2_filter'),
             "limit" => $this->max_row_per_ajax,

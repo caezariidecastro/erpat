@@ -37,8 +37,8 @@
             source: '<?php echo_uri("inventory/Racks/list_data/".$warehouse_id) ?>',
             order: [[0, 'desc']],
             filterDropdown: [
-                {name: "labels_select2_filter", class: "w100", options: <?php echo $racks_labels_dropdown; ?>}, 
-                {name: "status_select2_filter", class: "w100", options: <?php echo json_encode($status_select2); ?>}, 
+                {name: "labels_select2_filter", class: "w150", options: <?php echo $racks_labels_dropdown; ?>}, 
+                {name: "status_select2_filter", class: "w150", options: <?php echo json_encode($status_select2); ?>}, 
                 {id: "zone_select2_filter", name: "zone_select2_filter", class: "w200", options: <?php echo json_encode($zone_select2); ?>}, 
             ],
             columns: [

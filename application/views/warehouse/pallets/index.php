@@ -23,11 +23,9 @@
             filterDropdown: [
                 {name: "labels_select2_filter", class: "w100", options: <?php echo $pallets_labels_dropdown; ?>}, 
                 {name: "status_select2_filter", class: "w100", options: <?php echo json_encode($status_select2); ?>}, 
-                {id: "position_select2_filter", name: "position_select2_filter", class: "w100", options: <?php echo json_encode($position_select2); ?>}, 
-                {id: "level_select2_filter", name: "level_select2_filter", class: "w100", options: <?php echo json_encode($level_select2); ?>}, 
                 {id: "bay_select2_filter", name: "bay_select2_filter", class: "w100", options: <?php echo json_encode($bay_select2); ?>}, 
                 {id: "rack_select2_filter", name: "rack_select2_filter", class: "w100", options: <?php echo json_encode($rack_select2); ?>}, 
-                {id: "zone_select2_filter", name: "zone_select2_filter", class: "w150", options: <?php echo json_encode($zone_select2); ?>}, 
+                {id: "zone_select2_filter", name: "zone_select2_filter", class: "w200", options: <?php echo json_encode($zone_select2); ?>}, 
             ],
             columns: [
                 {title: "<?php echo lang('pallet_id') ?> ", "class": "text-center w100"},
