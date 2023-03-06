@@ -1322,6 +1322,129 @@ class Settings extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('slack_notification_error_message')));
         }
     }
+
+    function system_account() {
+        $this->template->rander("settings/system_account/index");
+    }
+
+    function settings_list_account() {
+        $options = array(
+            "status" => "active",
+            "user_type" => "system"
+        );
+        $list_data = $this->Users_model->get_details($options)->result();
+
+        $result = array();
+        foreach ($list_data as $data) {
+            $result[] = $this->settings_list_account_row($data);
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    protected function settings_list_account_row($data) {
+        $action_btn = modal_anchor(
+            get_uri("settings/settings_add_account"), 
+            "<i class='fa fa-pencil'></i>", 
+            array(
+                "class" => "edit", 
+                "title" => lang('edit_account'), 
+                "data-post-id" => $data->id
+        ))
+        .js_anchor("<i class='fa fa-times fa-fw'></i>", 
+            array(
+            'title' => lang('delete_team_member'), 
+            "class" => "delete user-status-confirm", 
+            "data-id" => $data->id, 
+            "data-action-url" => get_uri("settings/settings_delete_account"), 
+            "data-action" => "delete-confirmation"
+        ));
+
+        return array(
+            $data->first_name,
+            $data->last_name,
+            $data->email,
+            $data->access_syntry?"Biometric App":"None",
+            $action_btn
+        );
+    }
+
+    function settings_add_account() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        ;
+
+        if( $user_id = $this->input->post('id') ) {
+            $options = array(
+                "id"=>$user_id,
+                "status" => "active",
+                "user_type" => "system"
+            );
+            $data = $this->Users_model->get_details($options)->row();
+            $view_data["model_info"] = $data;
+        }
+        
+        $this->load->view("settings/system_account/modal_form", $view_data);
+    }
+
+    function settings_delete_account() {
+        if (!$this->login_user->is_admin) {
+			redirect("forbidden");
+		}
+
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+
+        if ($id != $this->login_user->id && $this->Users_model->delete($id)) {
+            echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+        }
+    }
+
+    function settings_save_account() {
+        if (!$this->login_user->is_admin) {
+			redirect("forbidden");
+		}
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $user_id = $this->input->post('id');
+
+        $user_data = array(
+            "first_name" => $this->input->post('first_name'),
+            "last_name" => $this->input->post('last_name'),
+            "email" => $this->input->post('email'),
+            "user_type" => "system",
+            "access_syntry" => $this->input->post('access_syntry')?"1":"0",
+        );
+
+        $new_pass = $this->input->post('new_pass');
+        $confirm_pass = $this->input->post('confirm_pass');
+        if(!empty($new_pass) && strlen($new_pass) >= 7 && $new_pass == $confirm_pass) {
+            $user_data['password'] = password_hash($new_pass, PASSWORD_DEFAULT);
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('password_not_match')));
+            exit;
+        }
+
+        if ($this->Users_model->save($user_data, $user_id)) {
+            $options = array(
+                "id" => $user_id,
+                "user_type" => "system"
+            );
+            $current = $this->Users_model->get_details($options)->row();
+
+            echo json_encode(array("success" => true, "data" => $this->settings_list_account_row($current), 'id' => $user_id, 'message' => lang('record_updated')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
 }
 
 /* End of file general_settings.php */
