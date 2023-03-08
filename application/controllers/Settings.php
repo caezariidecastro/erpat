@@ -1426,11 +1426,13 @@ class Settings extends MY_Controller {
 
         $new_pass = $this->input->post('new_pass');
         $confirm_pass = $this->input->post('confirm_pass');
-        if(!empty($new_pass) && strlen($new_pass) >= 7 && $new_pass == $confirm_pass) {
-            $user_data['password'] = password_hash($new_pass, PASSWORD_DEFAULT);
-        } else {
-            echo json_encode(array("success" => false, 'message' => lang('password_not_match')));
-            exit;
+        if(!empty($new_pass)) {
+            if(strlen($new_pass) >= 7 && $new_pass == $confirm_pass) {
+                $user_data['password'] = password_hash($new_pass, PASSWORD_DEFAULT);
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('password_not_match')));
+                exit;
+            }
         }
 
         if ($this->Users_model->save($user_data, $user_id)) {
