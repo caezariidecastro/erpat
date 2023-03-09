@@ -7,6 +7,8 @@ class Events extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_event", true);
+
         $this->load->model("Events_model");
         $this->load->model("Leave_applications_model");
         $this->load->model("Projects_model");
@@ -16,7 +18,6 @@ class Events extends MY_Controller {
 
     //load calendar view
     function index($encrypted_event_id = "") {
-        $this->check_module_availability("module_event");
         $view_data['encrypted_event_id'] = $encrypted_event_id;
         $view_data['calendar_filter_dropdown'] = $this->get_calendar_filter_dropdown();
         $this->template->rander("events/index", $view_data);

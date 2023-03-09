@@ -7,6 +7,8 @@ class Team_members extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_permission("staff", true);
+
         $this->access_only_team_members();
         $this->load->library('Phpqr');
         $this->load->model('Schedule_model');
@@ -77,7 +79,7 @@ class Team_members extends MY_Controller {
     //only admin can change other user's info
     //none admin users can only change his/her own info
     private function only_admin_or_own_or_permission($user_id) {
-        if ($user_id && ($this->login_user->id === $user_id || $this->validate_user_role_permission('team_member_update_permission_all', true))) {
+        if ($user_id && ($this->login_user->id === $user_id || $this->with_permission('team_member_update_permission_all'))) {
             return true;
         } else {
             redirect("forbidden");
@@ -146,20 +148,15 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
+        $view_data['permit_view'] = $this->with_permission("staff_view");
 
-        $this->validate_user_module_permission("module_hrs");
-        $this->validate_user_role_permission("hrs_employee_view");
-
-        $this->template->rander("team_members/index");
+        $this->template->rander("team_members/index", $view_data);
     }
 
     public function lists() {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-
-        $this->validate_user_module_permission("module_hrs");
-        $this->validate_user_role_permission("hrs_employee_view");
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -170,6 +167,10 @@ class Team_members extends MY_Controller {
         $view_data['department_select2'] = $this->_get_team_select2_data();
         $view_data['schedule_select2'] = $this->_get_schedule_select2_data();
 
+        $view_data['permit_edit'] = $this->with_permission("staff_update");
+        $view_data['permit_add'] = $this->with_permission("staff_create");
+        $view_data['permit_invite'] = $this->with_permission("staff_invite");
+
         $this->load->view("team_members/lists", $view_data);
     }
 
@@ -177,9 +178,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-
-        $this->validate_user_module_permission("module_hrs");
-        $this->validate_user_role_permission("hrs_employee_view");
+        $this->with_permission("staff_view", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -194,6 +193,11 @@ class Team_members extends MY_Controller {
     }
 
     public function personal_view_data() {
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
+        $this->with_permission("staff_view", true);
+
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
             $type_of_user = "applicant";
@@ -235,9 +239,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-
-        $this->validate_user_module_permission("module_hrs");
-        $this->validate_user_role_permission("hrs_employee_view");
+        $this->with_permission("staff_view", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -252,6 +254,11 @@ class Team_members extends MY_Controller {
     }
 
     public function job_view_data() {
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
+        $this->with_permission("staff_view", true);
+
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
             $type_of_user = "applicant";
@@ -288,9 +295,11 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
+        $this->with_permission("staff_view", true);
 
-        $this->validate_user_module_permission("module_hrs");
-        $this->validate_user_role_permission("hrs_employee_view");
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -305,6 +314,11 @@ class Team_members extends MY_Controller {
     }
 
     public function bank_view_data() {
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
+        $this->with_permission("staff_view", true);
+        
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
             $type_of_user = "applicant";
@@ -341,9 +355,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-
-        $this->validate_user_module_permission("module_hrs");
-        $this->validate_user_role_permission("hrs_employee_view");
+        $this->with_permission("staff_view", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -358,6 +370,11 @@ class Team_members extends MY_Controller {
     }
 
     public function contribution_view_data() {
+        if (!$this->can_view_team_members_list()) {
+            redirect("forbidden");
+        }
+        $this->with_permission("staff_view", true);
+
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
             $type_of_user = "applicant";
@@ -394,22 +411,28 @@ class Team_members extends MY_Controller {
     /* open new member modal */
 
     function modal_form() {
-        $this->validate_user_role_permission("hrs_employee_add");
-
         validate_submitted_data(array(
             "id" => "numeric"
         ));
 
-        $view_data['role_dropdown'] = $this->_get_roles_dropdown();
 
         $id = $this->input->post('id');
         $options = array(
             "id" => $id,
         );
 
-        $view_data['model_info'] = $this->Users_model->get_details($options)->row();
+        if($id) {
+            $this->with_permission("staff_update", true);
+        } else {
+            $this->with_permission("staff_create", true);
+        }
 
-        $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("team_members", 0, $this->login_user->is_admin, $this->login_user->user_type)->result();
+        $view_data['model_info'] = $this->Users_model->get_details($options)->row();
+        $view_data['role_dropdown'] = $this->_get_roles_dropdown();
+        $view_data["custom_fields"] = $this->Custom_fields_model
+            ->get_combined_details(
+                "team_members", 0, $this->login_user->is_admin, $this->login_user->user_type)
+            ->result();
 
         $this->load->view('team_members/modal_form', $view_data);
     }
@@ -420,6 +443,7 @@ class Team_members extends MY_Controller {
         if(!$this->login_user->is_admin && !$this->access_only_specific("team_member_update_permission") ) {
 			redirect("forbidden");
 		}
+        $this->with_permission("staff_create", true);
 
         //check duplicate email address, if found then show an error message
         if ($this->Users_model->is_email_exists($this->input->post('email'))) {
@@ -520,7 +544,7 @@ class Team_members extends MY_Controller {
     /* edit employee */
 
     function edit_modal_form() {
-        $this->validate_user_role_permission("hrs_employee_edit");
+        $this->with_permission("staff_update", true);
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -560,7 +584,7 @@ class Team_members extends MY_Controller {
 
     /* set rfid */
     function rfid_modal() {
-        $this->validate_user_role_permission("hrs_employee_edit");
+        $this->with_permission("staff_update", true);
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -579,6 +603,7 @@ class Team_members extends MY_Controller {
         if( !$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
 			redirect("forbidden");
 		}
+        $this->with_permission("staff_update", true);
 
         validate_submitted_data(array(
             "user_id" => "required|numeric"
@@ -597,7 +622,7 @@ class Team_members extends MY_Controller {
     }
 
     function update_user_form($user_id) {
-        $this->validate_user_role_permission("hrs_employee_edit");
+        $this->with_permission("staff_update", true);
 
         validate_submitted_data(array(
             "first_name" => "required",
@@ -678,14 +703,14 @@ class Team_members extends MY_Controller {
     /* open invitation modal */
 
     function invitation_modal() {
-        $this->validate_user_role_permission("hrs_employee_invite");
+        $this->with_permission("staff_invite", true);
 
         $this->load->view('team_members/invitation_modal');
     }
 
     //send a team member invitation to an email address
     function send_invitation() {
-        $this->validate_user_role_permission("hrs_employee_invite");
+        $this->with_permission("staff_invite", true);
 
         validate_submitted_data(array(
             "email[]" => "required|valid_email"
@@ -819,12 +844,12 @@ class Team_members extends MY_Controller {
         }
 
         $action_btn = "";
-        if (($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_edit")) && $this->login_user->id != $data->id && get_array_value($options, "status") != "deleted") {
+        if ( $this->with_permission("staff_update") && $this->login_user->id != $data->id && get_array_value($options, "status") != "deleted") {
             $action_btn = modal_anchor(get_uri("hrs/team_members/edit_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_employee'), "data-post-id" => $data->id));
             $action_btn .= modal_anchor(get_uri("hrs/team_members/rfid_modal"), "<i class='fa fa-barcode'></i>", array("class" => "edit", "title" => lang('set_rfid'), "data-post-id" => $data->id));
         }
 
-        if (($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_delete")) && $this->login_user->id != $data->id) {
+        if ( $this->with_permission("staff_delete") && $this->login_user->id != $data->id) {
             if(get_array_value($options, "status") != "deleted") {
                 $action_btn .= js_anchor("<i class='fa fa-times fa-fw'></i>", 
                     array(
@@ -856,9 +881,7 @@ class Team_members extends MY_Controller {
 
     //delete a team member
     function delete() {
-        if (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "hrs_employee_delete")) {
-			redirect("forbidden");
-		}
+        $this->with_permission("staff_delete", true);
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -874,9 +897,7 @@ class Team_members extends MY_Controller {
     }
 
     function restore() {
-        if (!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "hrs_employee_delete")) {
-			redirect("forbidden");
-		}
+        $this->with_permission("staff_update", true);
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -918,7 +939,7 @@ class Team_members extends MY_Controller {
                 $show_attendance = false;
                 $show_leave = false;
 
-                $view_data["show_expense_info"] = (get_setting("module_expense") == "1" && $this->validate_user_role_permission('expense', true));
+                $view_data["show_expense_info"] = (get_setting("module_expense") == "1" && $this->with_permission('expense'));
 
                 //admin can access all members attendance and leave
                 //none admin users can only access to his/her own information 
@@ -984,7 +1005,7 @@ class Team_members extends MY_Controller {
                     $hide_send_message_button = false;
                 }
                 $view_data['hide_send_message_button'] = $hide_send_message_button;
-                $view_data['payroll_enabled'] = $this->validate_user_role_permission("payroll_enable", true);
+                $view_data['payroll_enabled'] = $this->with_permission("payroll");
 
                 $this->template->rander("team_members/view", $view_data);
             } else {
@@ -1068,7 +1089,7 @@ class Team_members extends MY_Controller {
         $view_data['sched_dropdown'] = $this->_get_schedule_dropdown();
 
         $view_data['user_id'] = $user_id;
-        $view_data['payroll_enabled'] = $this->validate_user_role_permission("payroll_enable", true);
+        $view_data['payroll_enabled'] = $this->with_permission("payroll");
         $job_info = $this->Users_model->get_job_info($user_id);
         $view_data['job_info'] = $job_info;
         $view_data['job_info']->job_title = $user_info->job_title;

@@ -80,7 +80,6 @@ class Zones extends MY_Controller {
     }
 
     function index($warehouse_id = 0){
-        $this->validate_user_module_permission("module_lds");
         $view_data['warehouse_id'] = $warehouse_id;
         if(!$warehouse_id) {
             $view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();

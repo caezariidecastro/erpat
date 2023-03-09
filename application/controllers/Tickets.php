@@ -7,6 +7,8 @@ class Tickets extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_ticket", true);
+
         $this->init_permission_checker("ticket");
 
         $this->load->model("Ticket_templates_model");
@@ -24,8 +26,6 @@ class Tickets extends MY_Controller {
 
     // load ticket list view
     function index() {
-        $this->check_module_availability("module_ticket");
-
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("tickets", $this->login_user->is_admin, $this->login_user->user_type);
 
         $view_data['show_project_reference'] = get_setting('project_reference_in_tickets');
@@ -58,8 +58,6 @@ class Tickets extends MY_Controller {
     }
 
     function view_browse() {
-        $this->check_module_availability("module_ticket");
-
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("tickets", $this->login_user->is_admin, $this->login_user->user_type);
 
         $view_data['show_project_reference'] = get_setting('project_reference_in_tickets');

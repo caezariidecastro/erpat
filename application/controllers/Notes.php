@@ -7,6 +7,8 @@ class Notes extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_note", true);
+
         $this->access_only_team_members();
         $this->load->model("Notes_model");
     }
@@ -41,8 +43,6 @@ class Notes extends MY_Controller {
 
     //load note list view
     function index() {
-        $this->check_module_availability("module_note");
-
         $this->template->rander("notes/index");
     }
 

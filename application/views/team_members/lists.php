@@ -1,18 +1,19 @@
 <div id="page-content" class="p20 clearfix">
     <div class="panel panel-default">
         <div class="page-title clearfix">
-            <h1><?php echo lang('users'); ?></h1>
             <div class="title-button-group">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-default btn-sm active mr-1"  title="<?php echo lang('list_view'); ?>"><i class="fa fa-bars"></i></button>
                     <?php echo anchor(get_uri("hrs/employee/view"), "<i class='fa fa-th-large'></i>", array("class" => "btn btn-default btn-sm")); ?>
                 </div> 
-                <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "users")); ?>
                 <?php
-                if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_invite")) {
+                if ($permit_edit) {
+                    echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('manage_labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "users"));
+                }
+                if ($permit_invite) {
                     echo modal_anchor(get_uri("hrs/team_members/invitation_modal"), "<i class='fa fa-envelope-o'></i> " . lang('send_invitation'), array("class" => "btn btn-default", "title" => lang('send_invitation')));
                 }
-                if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "hrs_employee_add")) {
+                if ($permit_add) {
                     echo modal_anchor(get_uri("hrs/team_members/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_employee'), array("class" => "btn btn-default", "title" => lang('add_team_member')));
                 }
                 ?>

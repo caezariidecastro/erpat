@@ -7,6 +7,8 @@ class Estimates extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_estimate", true);
+
         $this->init_permission_checker("estimate");
         $this->load->model("Services_model");
         $this->load->model("Invoice_items_model");
@@ -41,10 +43,7 @@ class Estimates extends MY_Controller {
 
     /* load estimate list view */
 
-    function index() {
-        $this->validate_user_module_permission("module_sms");
-        $this->check_module_availability("module_estimate");
-        
+    function index() {        
         //prepare assign to filter list
         $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang("assigned_to") . " -"));
 

@@ -103,7 +103,6 @@ class Services extends MY_Controller {
 
     //load note list view
     function index() {
-        $this->validate_user_module_permission("module_pms");
         $this->validate_access_to_items();
 
         $view_data['services_labels_dropdown'] = json_encode($this->make_labels_dropdown("services", "", true));

@@ -135,7 +135,6 @@ class Levels extends MY_Controller {
     }
 
     function index($rack_id = 0) {
-        $this->validate_user_module_permission("module_lds");
         //$view_data['warehouse_select2'] = $this->_get_warehouse_select2_data();
         //$view_data['zone_select2'] = $this->_get_zone_select2_data();
         //$view_data['rack_select2'] = $this->_get_rack_select2_data();

@@ -7,14 +7,14 @@ class Announcements extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_announcement", true);
+
         $this->init_permission_checker("announcement");
         $this->load->model("Announcements_model");
     }
 
     //show announcements list
     function index() {
-        $this->check_module_availability("module_announcement");
-
         $view_data["show_add_button"] = true;
         if ($this->access_type !== "all") {
             $view_data["show_add_button"] = false;

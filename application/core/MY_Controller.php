@@ -41,33 +41,34 @@ class MY_Controller extends CI_Controller {
     }
 
     /**
-     * Validate a module if currently enabled for this user.
+     * Check if the current user is with permission.
      */
-    protected function validate_user_module_permission($module) {
-        if(is_user_has_module_permission($module, $asbool = false)){
+    public function with_permission($permission, $redirect = false) {
+        $permission_lists = $this->login_user->permissions;
+        if( $this->login_user->is_admin || get_array_value($permission_lists, $permission) ){
             return true;
         }
 
-        if($asbool) {
-            return false;
-        } else {
+        if($redirect) {
             redirect("forbidden");
         }
+
+        return false;
     }
 
     /**
-     * Validate user permission if enabled for this sub module.
+     * Check if the module is enabled or not.
      */
-    protected function validate_user_role_permission($permission, $asbool = false) {
-        if(user_role_has_permission($permission)){
+    public function with_module($module_name, $redirect = false) {
+        if ( get_setting($module_name) === "1" ) {
             return true;
         }
 
-        if($asbool) {
-            return false;
-        } else {
+        if($redirect) {
             redirect("forbidden");
         }
+
+        return false;
     }
 
     /**
@@ -222,13 +223,6 @@ class MY_Controller extends CI_Controller {
     //only allowed to access for admin users
     protected function access_only_clients() {
         if ($this->login_user->user_type != "client") {
-            redirect("forbidden");
-        }
-    }
-
-    //check module is enabled or not
-    protected function check_module_availability($module_name) {
-        if (get_setting($module_name) != "1") {
             redirect("forbidden");
         }
     }

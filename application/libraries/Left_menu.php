@@ -173,7 +173,6 @@ class Left_menu {
 
             $last_menu_item = ""; //store last menu item to the get the data on creating submenu
             $last_final_menu_item = ""; //store the last menu item of final left menu to add submenu to this item 
-            $parent_item_added_as_submenu = false;
 
             foreach ($custom_left_menu_items as $key => $value) {
                 $item_value_array = $this->_get_item_array_value($value, $left_menu_items);
@@ -185,19 +184,19 @@ class Left_menu {
                     //but if any other menu item which haven't any submenu, added as a submenu of a menu item which have submenu, that won't be added
 
                     $parent_item_array = $this->_get_item_array_value(get_array_value($custom_left_menu_items, $last_menu_item), $left_menu_items);
-                    if (!$parent_item_added_as_submenu && !isset($parent_item_array["submenu"])) {
+                    if (!isset($parent_item_array["submenu"])) {
                         $final_left_menu_items[$last_final_menu_item]["submenu"][] = $parent_item_array;
-                        $parent_item_added_as_submenu = true;
                     }
 
                     //add this item
-                    array_push($final_left_menu_items[$last_final_menu_item]["submenu"], $item_value_array);
+                    if($item_value_array) {
+                        array_push($final_left_menu_items[$last_final_menu_item]["submenu"], $item_value_array);
+                    }
                 } else {
                     $final_left_menu_items[] = $item_value_array;
                     $last_menu_item = $key;
                     $last_final_menu_item = end($final_left_menu_items);
                     $last_final_menu_item = key($final_left_menu_items);
-                    $parent_item_added_as_submenu = false;
                 }
             }
         }
@@ -286,9 +285,7 @@ class Left_menu {
             // Start: Module permissions workaround
 
             // STAFFING
-            if ($this->ci->login_user->is_admin || get_array_value($this->ci->login_user->permissions, "hide_team_members_list") != true) {
-                $sidebar_menu["employee"] = array("name" => "submenu_hrm_employee", "url" => "hrs/employee", "class" => "fa-circle");
-            }
+            
             $sidebar_menu["department"] = array("name" => "submenu_hrm_department", "url" => "hrs/department", "class" => "fa-circle");
             if ($this->ci->login_user->is_admin || (get_setting("module_attendance") == "1" && $access_timecard)) {
                 $sidebar_menu["attendance"] = array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance", "class" => "fa-circle");
@@ -305,6 +302,11 @@ class Left_menu {
             }
             $sidebar_menu["holidays"] = array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays", "class" => "fa-circle");
 
+            // STAFFING > Employee
+            if( $this->ci->with_module("module_employee") && ($this->ci->login_user->is_admin || $this->ci->with_permission("staff")) ) {
+                $sidebar_menu["employee"] = array("name" => "employee", "url" => "Team_members", "class" => "fa-circle");
+            }
+
             // FINANCE
             if ($this->ci->login_user->is_admin || (get_setting("module_invoice") == "1" && get_setting("module_expense") == "1" && ($access_expense || $access_invoice))) {
                 $sidebar_menu["summary"] = array("name" => "submenu_fas_summary", "url" => "fas/summary", "class" => "fa-circle");
@@ -315,7 +317,12 @@ class Left_menu {
             $sidebar_menu["payments"] = array("name" => "submenu_fas_payments", "url" => "fas/payments", "class" => "fa-circle");
             $sidebar_menu["contributions"] = array("name" => "submenu_fas_contributions", "url" => "fas/contributions", "class" => "fa-circle");
             $sidebar_menu["incentives"] = array("name" => "submenu_fas_incentives", "url" => "fas/incentives", "class" => "fa-circle");
-            $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "fas/payrolls", "class" => "fa-circle");
+
+            // FINANCE > Payroll
+            if( $this->ci->with_module("module_payroll") && ($this->ci->login_user->is_admin || $this->ci->with_permission("payroll")) ) {
+                $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "Payrolls", "class" => "fa-circle");
+            }
+
             $sidebar_menu["transfers"] = array("name" => "submenu_fas_transfers", "url" => "fas/transfers", "class" => "fa-circle");
             $sidebar_menu["accounts"] = array("name" => "submenu_fas_accounts", "url" => "fas/accounts", "class" => "fa-circle");
             $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");

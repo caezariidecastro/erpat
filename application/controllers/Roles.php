@@ -11,16 +11,16 @@ class Roles extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
-        $this->load->model("Ticket_types_model");
 
         $this->permission_lists = [ //empty, all, specific => team: 1, member: 23
-            //TODO: New and organize
-            array("payroll_enable", "Coming Soon", "Payroll", "Enabled", null),
-            array("payroll_view", "Coming Soon", "Payroll", "View", null),
-            array("payroll_add", "Coming Soon", "Payroll", "Add", null),
-            array("payroll_edit", "Coming Soon", "Payroll", "Edit", null),
-            array("payroll_remove", "Coming Soon", "Payroll","Remove", null),
+            //ACCOUNTING
+            array("payroll", "Coming Soon", "Payroll", "Enabled", null, true),
 
+            //STAFFING
+            array("staff", "Coming Soon", "Staff", "Enabled", null, true),
+            array("staff_invite", "Coming Soon", "Staff", "Invite", null),
+
+            
             //Security
             array("access_logs", "Coming Soon", "Human Resource", "Access Logs", null),
 
@@ -39,12 +39,6 @@ class Roles extends MY_Controller {
             array("module_lds", "Coming Soon", "Warehouse & Logistics", "Enabled", null),
             array("module_mes", "Coming Soon", "Manufacturing", "Enabled", null),
 
-            array("hrs_employee_view", "Coming Soon", "HR Employee", "View", null),
-            array("hrs_employee_invite", "Coming Soon", "HR Employee", "Invite", null),
-            array("hrs_employee_add", "Coming Soon", "HR Employee", "Add", null),
-            array("hrs_employee_edit", "Coming Soon", "HR Employee", "Edit", null),
-            array("hrs_employee_delete", "Coming Soon", "HR Employee", "Delete", null),
-
             //Important Access
             array("can_use_biometric", "Coming Soon", "Syntry Guard", "Enabled", null),
             array("can_use_payhp", "Coming Soon", "PayHP", "Enabled", null),
@@ -52,7 +46,6 @@ class Roles extends MY_Controller {
             //Default Permission
             array("estimate", "Coming Soon", "Accounting", "Estimates", null),
             array("expense", "Coming Soon", "Accounting", "Expenses", null),
-            array("payroll", "Coming Soon", "Accounting", "Payrolls", null),
 
             array("announcement", "Coming Soon", "General", "Manage Advisories", null),
             array("disable_event_sharing", "Coming Soon", "General", "Disable Event Sharing", null),
@@ -94,6 +87,18 @@ class Roles extends MY_Controller {
             array("help", "Coming Soon", "Help Center", "Enabled", null),
             array("knowledge_base", "Coming Soon", "Knowledge Base", "Enabled", null),
         ];
+
+        foreach($this->permission_lists as $item) {
+            if(count($item) >= 6 && $item[5] === true) {
+                $this->permission_lists[] = array($item[0]."_read", $item[1], $item[2], "View", null);
+
+                $this->permission_lists[] = array($item[0]."_create", $item[1], $item[2], "Create", null);
+                $this->permission_lists[] = array($item[0]."_update", $item[1], $item[2], "Edit", null);
+                $this->permission_lists[] = array($item[0]."_delete", $item[1], $item[2], "Remove", null);
+                
+                $this->permission_lists[] = array($item[0]."_ownly", $item[1], $item[2], "Owned Only", null);
+            }
+        }
     }
 
     //load the role view
@@ -193,6 +198,8 @@ class Roles extends MY_Controller {
 
             $view_data['members_and_teams_dropdown'] = json_encode(get_team_members_and_teams_select2_data_list());
             $ticket_types_dropdown = array();
+            $this->load->model("Ticket_types_model");
+
             $ticket_types = $this->Ticket_types_model->get_all_where(array("deleted" => 0))->result();
             foreach ($ticket_types as $type) {
                 $ticket_types_dropdown[] = array("id" => $type->id, "text" => $type->title);

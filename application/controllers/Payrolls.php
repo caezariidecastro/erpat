@@ -7,6 +7,9 @@ class Payrolls extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        //$this->with_module("payroll", true);
+        //$this->with_permission("payroll", true);
+
         $this->load->helper('payhp');
         $this->load->helper("biometric");
         $this->load->helper('utility');
@@ -57,7 +60,6 @@ class Payrolls extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_module_permission("module_fas");
         $view_data['account_select2'] = $this->_get_account_select2_data();
         $view_data['department_select2'] = $this->_get_team_select2_data();
         $this->template->rander("payrolls/index", $view_data);

@@ -7,6 +7,7 @@ class Leads extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_lead", true);
 
         //check permission to access this module
         $this->init_permission_checker("lead");
@@ -21,9 +22,7 @@ class Leads extends MY_Controller {
     /* load leads list view */
 
     function index() {
-        $this->validate_user_module_permission("module_mcs");
         $this->access_only_allowed_members();
-        $this->check_module_availability("module_lead");
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("leads", $this->login_user->is_admin, $this->login_user->user_type);
 
@@ -227,7 +226,6 @@ class Leads extends MY_Controller {
     /* load lead details view */
 
     function view($client_id = 0, $tab = "") {
-        $this->check_module_availability("module_lead");
         $this->access_only_allowed_members();
 
         if ($client_id) {
@@ -512,7 +510,6 @@ class Leads extends MY_Controller {
     }
 
     function contact_profile($contact_id = 0, $tab = "") {
-        $this->check_module_availability("module_lead");
         $this->access_only_allowed_members();
 
         $view_data['user_info'] = $this->Users_model->get_one($contact_id);
@@ -850,7 +847,6 @@ class Leads extends MY_Controller {
 
     function all_leads_kanban() {
         $this->access_only_allowed_members();
-        $this->check_module_availability("module_lead");
 
         $view_data['owners_dropdown'] = $this->_get_owners_dropdown("filter");
         $view_data['lead_sources'] = $this->Lead_source_model->get_details()->result();
@@ -860,7 +856,6 @@ class Leads extends MY_Controller {
 
     function all_leads_kanban_data() {
         $this->access_only_allowed_members();
-        $this->check_module_availability("module_lead");
 
         $options = array(
             "status" => $this->input->post('status'),
@@ -879,7 +874,6 @@ class Leads extends MY_Controller {
 
     function save_lead_sort_and_status() {
         $this->access_only_allowed_members();
-        $this->check_module_availability("module_lead");
 
         validate_submitted_data(array(
             "id" => "required|numeric"

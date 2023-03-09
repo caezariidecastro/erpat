@@ -7,6 +7,8 @@ class Estimate_requests extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_estimate_request", true);
+
         $this->init_permission_checker("estimate");
         $this->load->model("Estimates_model");
         $this->load->model("Estimate_forms_model");
@@ -16,8 +18,6 @@ class Estimate_requests extends MY_Controller {
 
     //load the estimate requests view
     function index() {
-        $this->check_module_availability("module_estimate_request");
-
         $this->access_only_allowed_members();
 
         //prepare assign to filter list

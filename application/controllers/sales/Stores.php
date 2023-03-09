@@ -38,8 +38,6 @@ class Stores extends MY_Controller {
 
     //load note list view
     function index() {
-        $this->validate_user_module_permission("module_sms");
-
         $view_data['category_select2'] = $this->_get_category_select2_data();
         $this->template->rander("stores/index", $view_data);
     }

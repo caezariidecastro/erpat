@@ -29,7 +29,6 @@ class Invoice_payments extends MY_Controller {
     /* load invoice list view */
 
     function index() {
-        $this->validate_user_module_permission("module_fas");
         if ($this->login_user->user_type === "staff") {
             $view_data['payment_method_dropdown'] = $this->get_payment_method_dropdown();
             $view_data["currencies_dropdown"] = $this->_get_currencies_dropdown();

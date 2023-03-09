@@ -43,7 +43,6 @@ class Contribution_categories extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_module_permission("module_fas");
         $view_data['category_select2'] = $this->_get_category_select2_data();
         $view_data['account_select2'] = $this->_get_account_select2_data();
         $view_data['user_select2'] = $this->_get_users_select2_data();

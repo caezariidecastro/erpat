@@ -69,8 +69,7 @@ class Schedule extends MY_Controller
     }
 
     function index() {
-        $this->check_module_availability("module_attendance");
-        $this->validate_user_module_permission("module_hrs");
+        $this->with_module("module_attendance");
 
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
         $this->template->rander("schedule/index", $view_data);

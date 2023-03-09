@@ -7,6 +7,8 @@ class Help extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_help", true);
+
         $this->access_only_team_members();
         $this->init_permission_checker("help");
         
@@ -16,11 +18,8 @@ class Help extends MY_Controller {
 
     //show help page
     function index() {
-        $this->check_module_availability("module_help");
-
         $type = "help";
         $view_data["type"] = $type;
-        $view_data['allowed_member'] = $this->validate_user_role_permission('help', true);
         $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
     }
 

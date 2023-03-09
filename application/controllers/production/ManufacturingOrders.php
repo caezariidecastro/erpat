@@ -37,7 +37,6 @@ class ManufacturingOrders extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_module_permission("module_mes");
         $view_data["warehouse_select2"] = $this->_get_warehouse_select2_data();
         $this->template->rander("manufacturing_orders/index", $view_data);
     }

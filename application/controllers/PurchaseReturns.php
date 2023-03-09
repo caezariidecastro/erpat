@@ -49,7 +49,6 @@ class PurchaseReturns extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_module_permission("module_mes");
         $view_data["vendor_select2"] = $this->_get_vendor_select2_data();
         $this->template->rander("purchase_returns/index", $view_data);
     }

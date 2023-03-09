@@ -7,6 +7,8 @@ class Leaves extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_leave", true);   
+
         $this->access_only_team_members();
         $this->load->model("Leave_credits_model");
         $this->load->model("Leave_types_model");
@@ -32,8 +34,6 @@ class Leaves extends MY_Controller {
     }
 
     function index() {
-        $this->validate_user_module_permission("module_hrs");
-        $this->check_module_availability("module_leave");        
         $this->template->rander("leaves/index");
     }
 
@@ -476,8 +476,6 @@ class Leaves extends MY_Controller {
 
     //view leave list of login user
     function leave_info() {
-        $this->check_module_availability("module_leave");
-
         $view_data['applicant_id'] = $this->login_user->id;
         if ($this->input->is_ajax_request()) {
             $this->load->view("team_members/leave_info", $view_data);

@@ -7,6 +7,8 @@ class Invoices extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_invoice", true);
+
         $this->init_permission_checker("invoice");
         $this->load->model("Inventory_model");
         $this->load->model("Deliveries_model");
@@ -84,9 +86,6 @@ class Invoices extends MY_Controller {
     /* load invoice list view */
 
     function index() {
-        $this->validate_user_module_permission("module_sms");
-        $this->check_module_availability("module_invoice");
-
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("invoices", $this->login_user->is_admin, $this->login_user->user_type);
 
         $view_data["can_edit_invoices"] = $this->can_edit_invoices();

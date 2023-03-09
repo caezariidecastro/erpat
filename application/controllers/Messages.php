@@ -7,6 +7,8 @@ class Messages extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_message", true);
+
         $this->init_permission_checker("message_permission");
     }
 
@@ -67,8 +69,7 @@ class Messages extends MY_Controller {
 
     function inbox($auto_select_index = "") {
         $this->check_message_user_permission();
-        $this->check_module_availability("module_message");
-
+        
         $view_data['mode'] = "inbox";
         $view_data['auto_select_index'] = $auto_select_index;
         $this->template->rander("messages/index", $view_data);
@@ -78,7 +79,6 @@ class Messages extends MY_Controller {
 
     function sent_items($auto_select_index = "") {
         $this->check_message_user_permission();
-        $this->check_module_availability("module_message");
 
         $view_data['mode'] = "sent_items";
         $view_data['auto_select_index'] = $auto_select_index;

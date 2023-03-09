@@ -7,6 +7,7 @@ class Overtime extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_overtime", true);
 
         //this module is accessible only to team members 
         $this->access_only_team_members();
@@ -45,9 +46,6 @@ class Overtime extends MY_Controller {
 
     //show overtime list view
     function index() {
-        $this->check_module_availability("module_overtime");
-        $this->validate_user_module_permission("module_hrs");
-
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
         $this->template->rander("overtime/index", $view_data);
     }
@@ -257,8 +255,6 @@ class Overtime extends MY_Controller {
 
     //load overtime overtime info view
     function overtime_info() {
-        $this->check_module_availability("module_overtime");
-
         $view_data['user_id'] = $this->login_user->id;
         $view_data['show_clock_in_out'] = true;
 

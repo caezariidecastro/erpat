@@ -11,7 +11,6 @@ class Holidays extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_module_permission("module_hrs");
         $this->template->rander("holidays/index");
     }
 
