@@ -9,7 +9,6 @@ class Left_menu {
 
     public function __construct() {
         $this->ci = & get_instance();
-        $this->ci->load->helper('role');
     }
 
     function get_available_items($type = "default") {
@@ -355,10 +354,10 @@ class Left_menu {
             $sidebar_menu["brands"] = array("name" => "submenu_ams_maker", "url" => "ams/brands", "class" => "fa-circle");
 
             // ENGAGE
-            if( check_module_enabled("module_epass") && current_has_permit("event_epass") ) {
+            if( module_enabled("module_epass") && current_has_permit("event_epass") ) {
                 $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
             }
-            if( check_module_enabled("module_raffle") && current_has_permit("raffle_draw") ) {
+            if( module_enabled("module_raffle") && current_has_permit("raffle_draw") ) {
                 $sidebar_menu["module_raffle"] = array("name" => "raffle_draw", "url" => "raffle_draw", "class" => "fa-circle");
             }
 
