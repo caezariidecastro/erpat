@@ -80,7 +80,6 @@ class Roles extends MY_Controller {
             array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
             array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
 
-            array("can_update_account", "New!", "HR Employee", "Update account and password.", null),
             array("can_update_contribution", "New!", "Payroll", "Able to update contributions.", null),
 
             array("ticket", "Coming Soon", "Default: Ticket", "Access", "dropdown"),
@@ -95,8 +94,6 @@ class Roles extends MY_Controller {
                 $this->permission_lists[] = array($item[0]."_create", $item[1], $item[2], "Create", null);
                 $this->permission_lists[] = array($item[0]."_update", $item[1], $item[2], "Edit", null);
                 $this->permission_lists[] = array($item[0]."_delete", $item[1], $item[2], "Remove", null);
-                
-                $this->permission_lists[] = array($item[0]."_ownly", $item[1], $item[2], "Owned Only", null);
             }
         }
     }

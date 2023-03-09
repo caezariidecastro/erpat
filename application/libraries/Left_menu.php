@@ -303,7 +303,7 @@ class Left_menu {
             $sidebar_menu["holidays"] = array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays", "class" => "fa-circle");
 
             // STAFFING > Employee
-            if( $this->ci->with_module("module_employee") && ($this->ci->login_user->is_admin || $this->ci->with_permission("staff")) ) {
+            if( module_enabled("module_employee") && current_has_permit("staff") ) {
                 $sidebar_menu["employee"] = array("name" => "employee", "url" => "Team_members", "class" => "fa-circle");
             }
 
@@ -319,7 +319,7 @@ class Left_menu {
             $sidebar_menu["incentives"] = array("name" => "submenu_fas_incentives", "url" => "fas/incentives", "class" => "fa-circle");
 
             // FINANCE > Payroll
-            if( $this->ci->with_module("module_payroll") && ($this->ci->login_user->is_admin || $this->ci->with_permission("payroll")) ) {
+            if( module_enabled("module_payroll") && current_has_permit("payroll") ) {
                 $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "Payrolls", "class" => "fa-circle");
             }
 
@@ -355,10 +355,10 @@ class Left_menu {
             $sidebar_menu["brands"] = array("name" => "submenu_ams_maker", "url" => "ams/brands", "class" => "fa-circle");
 
             // ENGAGE
-            if( check_module_enabled("module_epass") && ($this->ci->login_user->is_admin || user_role_has_permission("event_epass")) ) {
+            if( check_module_enabled("module_epass") && current_has_permit("event_epass") ) {
                 $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
             }
-            if( check_module_enabled("module_raffle") && ($this->ci->login_user->is_admin || user_role_has_permission("raffle_draw")) ) {
+            if( check_module_enabled("module_raffle") && current_has_permit("raffle_draw") ) {
                 $sidebar_menu["module_raffle"] = array("name" => "raffle_draw", "url" => "raffle_draw", "class" => "fa-circle");
             }
 
@@ -402,14 +402,14 @@ class Left_menu {
             $sidebar_menu["my_tasks"] = array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks", "class" => "fa-circle");
             $sidebar_menu["all_projects"] = array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects", "class" => "fa-circle");
 
-            // SECURITY
-            if( check_module_enabled("module_access") && ($this->ci->login_user->is_admin || user_role_has_permission("access_logs")) ) {
+            // SECURITY > ACCESS LOG
+            if( module_enabled("module_access") && current_has_permit("access_logs") ) {
                 $sidebar_menu["access_logs"] = array("name" => "access_logs", "url" => "access_logs", "class" => "fa-circle");
             }
 
             // End: Module permissions workaround
 
-            if ( get_setting("module_ticket") == "1" && user_role_has_permission('ticket') ) {
+            if ( get_setting("module_ticket") == "1" && current_has_permit('ticket') ) {
 
                 $ticket_badge = 0;
                 if ($this->ci->login_user->is_admin || $access_ticket === "all") {
@@ -422,11 +422,11 @@ class Left_menu {
                 $sidebar_menu["tickets"] = array("name" => "tickets", "url" => "tickets", "class" => "fa-circle", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
             }
 
-            if ( get_setting("module_help") == "1" && user_role_has_permission('help') ) {
+            if ( get_setting("module_help") == "1" && current_has_permit('help') ) {
                 $sidebar_menu["help"] = array("name" => "help_page_title", "url" => "help", "class" => "fa-circle");
             }
 
-            if ( get_setting("module_knowledge_base") == "1" && user_role_has_permission('knowledge_base') ) {
+            if ( get_setting("module_knowledge_base") == "1" && current_has_permit('knowledge_base') ) {
                 $sidebar_menu["knowledge_base"] = array("name" => "knowledge_base", "url" => "knowledge_base", "class" => "fa-circle");
             }
 

@@ -18,7 +18,7 @@
         <?php } ?>
         <span class="avatar avatar-lg"><img id="profile-image-preview" src="<?php echo get_avatar($user_info->image); ?>" alt="..."></span> 
         <h4 class=""><?php echo $user_info->first_name . " " . $user_info->last_name; ?></h4>
-        <?php if(user_has_permission($this->login_user->id, 'attendance')) { ?>
+        <?php if(user_has_permit($this->login_user->id, 'attendance')) { ?>
             <a href="<?= base_url("hrs/employee/qrcode/".$user_info->id); ?>" target="_blank"><strong style="color: white;">GET QRCODE</strong></a>
         <?php } ?>
         <?php echo form_close(); ?>

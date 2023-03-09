@@ -43,7 +43,7 @@ class MY_Controller extends CI_Controller {
     /**
      * Check if the current user is with permission.
      */
-    public function with_permission($permission, $redirect = false) {
+    protected function with_permission($permission, $redirect = false) {
         $permission_lists = $this->login_user->permissions;
         if( $this->login_user->is_admin || get_array_value($permission_lists, $permission) ){
             return true;
@@ -59,7 +59,7 @@ class MY_Controller extends CI_Controller {
     /**
      * Check if the module is enabled or not.
      */
-    public function with_module($module_name, $redirect = false) {
+    protected function with_module($module_name, $redirect = false) {
         if ( get_setting($module_name) === "1" ) {
             return true;
         }

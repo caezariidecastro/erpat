@@ -148,9 +148,8 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-        $view_data['permit_view'] = $this->with_permission("staff_view");
 
-        $this->template->rander("team_members/index", $view_data);
+        $this->template->rander("team_members/index");
     }
 
     public function lists() {
@@ -178,7 +177,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-        $this->with_permission("staff_view", true);
+        $this->with_permission("staff_read", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -196,7 +195,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-        $this->with_permission("staff_view", true);
+        $this->with_permission("staff_read", true);
 
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -239,7 +238,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-        $this->with_permission("staff_view", true);
+        $this->with_permission("staff_read", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -257,7 +256,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-        $this->with_permission("staff_view", true);
+        $this->with_permission("staff_read", true);
 
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -295,7 +294,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-        $this->with_permission("staff_view", true);
+        $this->with_permission("staff_read", true);
 
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
@@ -317,7 +316,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-        $this->with_permission("staff_view", true);
+        $this->with_permission("staff_read", true);
         
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -355,7 +354,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-        $this->with_permission("staff_view", true);
+        $this->with_permission("staff_read", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -373,7 +372,7 @@ class Team_members extends MY_Controller {
         if (!$this->can_view_team_members_list()) {
             redirect("forbidden");
         }
-        $this->with_permission("staff_view", true);
+        $this->with_permission("staff_read", true);
 
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -934,7 +933,7 @@ class Team_members extends MY_Controller {
                 $view_data['show_general_info'] = $can_update_team_members_info;
                 $view_data['show_job_info'] = false;
 
-                $view_data['show_account_settings'] = user_role_has_permission('can_update_account');
+                $view_data['show_account_settings'] = $this->with_permission('staff_update');
 
                 $show_attendance = false;
                 $show_leave = false;
@@ -1024,9 +1023,7 @@ class Team_members extends MY_Controller {
     }
 
     function qrcode($id) {
-        if(!user_has_permission($this->login_user->id, 'attendance')) {
-            redirect("forbidden");
-        }        
+        $this->with_permission("attendance");       
 
         $user_info = $this->Users_model->get_details(array("id" => $id))->row();
         if($user_info == null) {
@@ -1266,9 +1263,7 @@ class Team_members extends MY_Controller {
 
     //show account settings of a team member
     function account_settings($user_id) {
-        if( !user_role_has_permission('can_update_account') ) {
-            redirect("forbidden");
-        }
+        $this->with_permission('staff_update', true);
 
         $view_data['user_info'] = $this->Users_model->get_one($user_id);
         if ($view_data['user_info']->is_admin) {
@@ -1355,7 +1350,7 @@ class Team_members extends MY_Controller {
 
     //save account settings of a team member
     function save_account_settings($user_id) {
-        if( !user_role_has_permission('can_update_account') ) {
+        if( !$this->with_permission('staff_update') ) {
             echo json_encode(array("success" => false, 'message' => lang('no_permission')));
             exit();
         }
