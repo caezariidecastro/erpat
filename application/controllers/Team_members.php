@@ -1069,8 +1069,10 @@ class Team_members extends MY_Controller {
 
         $view_data['user_id'] = $user_id;
         $view_data['payroll_enabled'] = $this->validate_user_role_permission("payroll_enable", true);
-        $view_data['job_info'] = $this->Users_model->get_job_info($user_id);
+        $job_info = $this->Users_model->get_job_info($user_id);
+        $view_data['job_info'] = $job_info;
         $view_data['job_info']->job_title = $user_info->job_title;
+        $view_data['job_info']->daily_rate = get_daily_from_hourly($job_info->rate_per_hour, false);
         $this->load->view("team_members/job_info", $view_data);
     }
 
@@ -1110,13 +1112,15 @@ class Team_members extends MY_Controller {
 
         $user_id = $this->input->post('user_id');
 
+        $hourly_rate = get_hourly_from_daily($this->input->post('daily_rate'), false);
+
         $job_data = array(
             "user_id" => $user_id,
             "job_idnum" => $this->input->post('job_idnum'),
             "sched_id" => $this->input->post('sched_id'),
             "salary" => unformat_currency($this->input->post('salary')),
             "salary_term" => $this->input->post('salary_term'),
-            "rate_per_hour" => $this->input->post('rate_per_hour'),
+            "rate_per_hour" => $hourly_rate,
             "date_of_hire" => $this->input->post('date_of_hire'),
             "sss" => $this->input->post('sss'),
             "tin" => $this->input->post('tin'),

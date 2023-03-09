@@ -61,8 +61,21 @@
                     ));
                     ?>
                 </div>
-                <label for="rate_per_hour" class=" col-md-2"><?php echo lang('rate_per_hour'); ?></label>
+                <label for="daily_rate" class=" col-md-1"><?php echo lang('daily_rate')." (*)"; ?></label>
                 <div class=" col-md-2">
+                    <?php
+                    echo form_input(array(
+                        "id" => "daily_rate",
+                        "name" => "daily_rate",
+                        "type" => "number",
+                        "value" => $job_info->daily_rate ? convert_number_to_decimal($job_info->daily_rate) : 0,
+                        "class" => "form-control",
+                        "placeholder" => lang('daily_rate')
+                    ));
+                    ?>
+                </div>
+                <label for="rate_per_hour" class=" col-md-1"><?php echo lang('rate_per_hour'); ?></label>
+                <div class=" col-md-1">
                     <?php
                     echo form_input(array(
                         "id" => "rate_per_hour",
@@ -70,11 +83,12 @@
                         "type" => "number",
                         "value" => $job_info->rate_per_hour ? convert_number_to_decimal($job_info->rate_per_hour) : 0,
                         "class" => "form-control",
+                        "disabled" => true,
                         "placeholder" => lang('rate_per_hour')
                     ));
                     ?>
                 </div>
-                <label for="salary_term" class=" col-md-2"><?php echo lang('salary_term'); ?></label>
+                <label for="salary_term" class=" col-md-1"><?php echo lang('salary_term'); ?></label>
                 <div class="col-md-2">
                     <?= form_dropdown(
                         "salary_term", array(
@@ -300,6 +314,10 @@
             }
         });
         $("#job-info-form .select2").select2();
+
+        $("#daily_rate").change(() => {
+            $("#rate_per_hour").val($("#daily_rate").val()/8);
+        });
 
         setDatePicker("#date_of_hire");
 

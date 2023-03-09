@@ -959,3 +959,4 @@ $lang["access_syntry_help_text"] = "Enable this to enable Biometric Access.";
 $lang["new_pass"] = "New Password";
 $lang["confirm_pass"] = "Confirm Password";
 $lang["password_not_match"] = "Password do not match.";
+$lang["daily_rate"] = "Daily Rate";
