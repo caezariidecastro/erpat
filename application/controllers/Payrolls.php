@@ -408,7 +408,7 @@ class Payrolls extends MY_Controller {
     }
 
     function save_auto_contribution() {
-        $this->with_permission('can_update_contribution', true);
+        $this->with_permission('payroll_auto_contribution', true);
 
         $success = 0; $failed = 0;
 

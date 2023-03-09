@@ -15,7 +15,8 @@ class Roles extends MY_Controller {
         $this->permission_lists = [ //empty, all, specific => team: 1, member: 23
             //ACCOUNTING
             array("payroll", "Coming Soon", "Payroll", "Enabled", null, true),
-
+            array("payroll_auto_contribution", "Coming Soon", "Payroll", "Able to update contributions.", null, true),
+            
             //STAFFING
             array("staff", "Coming Soon", "Staff", "Enabled", null, true),
             array("staff_invite", "Coming Soon", "Staff", "Invite", null),
@@ -79,8 +80,6 @@ class Roles extends MY_Controller {
             array("attendance", "Coming Soon", "Default: Attendance", "Access", "dropdown"),
             array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
             array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
-
-            array("can_update_contribution", "New!", "Payroll", "Able to update contributions.", null),
 
             array("ticket", "Coming Soon", "Default: Ticket", "Access", "dropdown"),
             array("help", "Coming Soon", "Help Center", "Enabled", null),
