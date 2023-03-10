@@ -53,22 +53,22 @@ class Discipline_categories extends MY_Controller {
 
         $id = $this->input->post('id');
 
-        $contribution_data = array(
+        $data = array(
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
             "action" => $this->input->post('action'),
         );
 
         if(!$id){
-            $contribution_data["created_on"] = date('Y-m-d H:i:s');
-            $contribution_data["created_by"] = $this->login_user->id;
+            $data["created_on"] = date('Y-m-d H:i:s');
+            $data["created_by"] = $this->login_user->id;
         }
 
-        $contribution_id = $this->Discipline_categories_model->save($contribution_data, $id);
-        if ($contribution_id) {
-            $options = array("id" => $contribution_id);
-            $contribution_info = $this->Discipline_categories_model->get_details($options)->row();
-            echo json_encode(array("success" => true, "id" => $contribution_info->id, "data" => $this->_make_row($contribution_info), 'message' => lang('record_saved')));
+        $data_id = $this->Discipline_categories_model->save($data, $id);
+        if ($data_id) {
+            $options = array("id" => $data_id);
+            $data_info = $this->Discipline_categories_model->get_details($options)->row();
+            echo json_encode(array("success" => true, "id" => $data_info->id, "data" => $this->_make_row($data_info), 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }

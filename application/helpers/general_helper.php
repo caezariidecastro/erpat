@@ -1099,32 +1099,6 @@ if (!function_exists('get_payslip_id')) {
 }
 
 
-if (!function_exists('prepare_contribution_pdf')) {
-
-    function prepare_contribution_pdf($contribution_data) {
-        $ci = get_instance();
-        $ci->load->library('pdf');
-        $ci->pdf->setPrintHeader(false);
-        $ci->pdf->setPrintFooter(false);
-        $ci->pdf->SetCellPadding(1.5);
-        $ci->pdf->setImageScale(1.42);
-        $ci->pdf->AddPage();
-        $ci->pdf->SetFontSize(10);
-
-        if ($contribution_data) {
-
-            $html = $ci->load->view("contribution_entries/pdf", $contribution_data, true);
-            $ci->pdf->writeHTML($html, true, false, true, false, '');
-
-            $contribution_info = get_array_value($contribution_data, "contribution_info");
-            $pdf_file_name =  str_replace(" ", "-", $contribution_info->employee_name) . "-" .lang("contribution") . "-" . $contribution_info->created_on . ".pdf";
-
-            $ci->pdf->Output($pdf_file_name, "I");
-        }
-    }
-
-}
-
 if (!function_exists('prepare_incentive_pdf')) {
 
     function prepare_incentive_pdf($incentive_data) {

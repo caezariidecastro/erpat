@@ -15,12 +15,11 @@ class Roles extends MY_Controller {
         $this->permission_lists = [ //empty, all, specific => team: 1, member: 23
             //ACCOUNTING
             array("payroll", "Coming Soon", "Payroll", "Enabled", null, true),
-            array("payroll_auto_contribution", "Coming Soon", "Payroll", "Able to update contributions.", null, true),
+            array("payroll_auto_contribution", "Coming Soon", "Payroll", "Able to update contributions.", null),
             
             //STAFFING
             array("staff", "Coming Soon", "Staff", "Enabled", null, true),
             array("staff_invite", "Coming Soon", "Staff", "Invite", null),
-
             
             //Security
             array("access_logs", "Coming Soon", "Human Resource", "Access Logs", null),

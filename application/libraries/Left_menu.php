@@ -314,14 +314,12 @@ class Left_menu {
                 $sidebar_menu["expenses"] = array("name" => "submenu_fas_expenses", "url" => "fas/expenses", "class" => "fa-circle");
             }
             $sidebar_menu["payments"] = array("name" => "submenu_fas_payments", "url" => "fas/payments", "class" => "fa-circle");
-            $sidebar_menu["contributions"] = array("name" => "submenu_fas_contributions", "url" => "fas/contributions", "class" => "fa-circle");
             $sidebar_menu["incentives"] = array("name" => "submenu_fas_incentives", "url" => "fas/incentives", "class" => "fa-circle");
 
             // FINANCE > Payroll
             if( module_enabled("module_payroll") && current_has_permit("payroll") ) {
                 $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "Payrolls", "class" => "fa-circle");
             }
-
             $sidebar_menu["transfers"] = array("name" => "submenu_fas_transfers", "url" => "fas/transfers", "class" => "fa-circle");
             $sidebar_menu["accounts"] = array("name" => "submenu_fas_accounts", "url" => "fas/accounts", "class" => "fa-circle");
             $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");

@@ -122,11 +122,6 @@ $route["fas/expense_categories"] = "Expense_categories/index";
 $route["fas/expense_categories/(:any)"] = "Expense_categories/$1";
 $route["fas/expense_categories/(:any)/(:any)"] = "Expense_categories/$1/$2";
 
-$route['fas/contributions'] = 'Contribution_categories/index';
-$route["fas/contribution_categories/(:any)"] = "Contribution_categories/$1";
-$route["fas/contribution_entries/(:any)"] = "Contribution_entries/$1";
-$route["fas/contribution_entries/(:any)/(:any)"] = "Contribution_entries/$1/$2";
-
 $route['fas/incentives'] = 'incentive_categories/index';
 $route["fas/incentive_categories/(:any)"] = "Incentive_categories/$1";
 $route["fas/incentive_entries/(:any)"] = "Incentive_entries/$1";

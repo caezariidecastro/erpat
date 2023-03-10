@@ -86,11 +86,6 @@ class Expenses_model extends Crud_model {
             $join_custom_fields
         WHERE $expenses_table.deleted=0 $where
         AND $expenses_table.id NOT IN (
-            SELECT contribution_entries.expense_id
-            FROM contribution_entries
-            WHERE contribution_entries.deleted = 1 OR contribution_entries.status IN ('cancelled')
-        )
-        AND $expenses_table.id NOT IN (
             SELECT incentive_entries.expense_id
             FROM incentive_entries
             WHERE incentive_entries.deleted = 1 OR incentive_entries.status IN ('cancelled')

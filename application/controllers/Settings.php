@@ -719,7 +719,7 @@ class Settings extends MY_Controller {
         "module_hrs", 
             "module_department", "module_employee", "module_attendance", "module_overtime", "module_disciplinary", "module_leave", "module_holidays", "module_access",
         "module_fas", 
-            "module_summary", "module_payments", "module_expense", "module_contributions", "module_incentives", "module_payrolls", "module_accounts", "module_transfer", "module_balancesheet",
+            "module_summary", "module_payments", "module_expense", "module_incentives", "module_payrolls", "module_accounts", "module_transfer", "module_balancesheet",
         "module_mes", 
             "module_productions", "module_billofmaterials", "module_rawmaterials", "module_inventory", "module_products", "module_purchases", "module_returns", "module_supplier",
         "module_mcs", 

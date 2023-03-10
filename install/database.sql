@@ -408,42 +408,6 @@ CREATE TABLE `client_groups` (
   `deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `contribution_categories`
---
-
-CREATE TABLE `contribution_categories` (
-  `id` bigint(10) NOT NULL,
-  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `mode_of_payment` text COLLATE utf8_unicode_ci NOT NULL,
-  `created_on` datetime NOT NULL,
-  `created_by` bigint(10) NOT NULL,
-  `deleted` tinyint(4) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `contribution_entries`
---
-
-CREATE TABLE `contribution_entries` (
-  `id` bigint(10) NOT NULL,
-  `amount` decimal(10,2) NOT NULL,
-  `account_id` bigint(10) NOT NULL,
-  `expense_id` bigint(10) NOT NULL,
-  `user` bigint(10) NOT NULL,
-  `category` bigint(10) NOT NULL,
-  `status` enum('not paid','paid','cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'not paid',
-  `remarks` text COLLATE utf8_unicode_ci NOT NULL,
-  `signed_by` int(11) NOT NULL,
-  `created_on` datetime NOT NULL,
-  `created_by` bigint(10) NOT NULL,
-  `deleted` tinyint(4) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2441,7 +2405,6 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALU
 ('module_chat', '1', 'app', 0),
 ('module_clients', '1', 'app', 0),
 ('module_consumer', '1', 'modules', 0),
-('module_contributions', '1', 'modules', 0),
 ('module_css', '1', 'app', 0),
 ('module_customers', '1', 'modules', 0),
 ('module_delivery', '1', 'modules', 0),
@@ -3622,18 +3585,6 @@ ALTER TABLE `client_groups`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `contribution_categories`
---
-ALTER TABLE `contribution_categories`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `contribution_entries`
---
-ALTER TABLE `contribution_entries`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `custom_fields`
 --
 ALTER TABLE `custom_fields`
@@ -4434,18 +4385,6 @@ ALTER TABLE `clients`
 --
 ALTER TABLE `client_groups`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `contribution_categories`
---
-ALTER TABLE `contribution_categories`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `contribution_entries`
---
-ALTER TABLE `contribution_entries`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `custom_fields`

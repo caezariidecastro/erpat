@@ -51,7 +51,6 @@ $lang["submenu_fas_accounts"] = "Accounts";
 $lang["submenu_fas_transfers"] = "Transfers";
 $lang["submenu_fas_balancesheet"] = "Balance Sheet";
 $lang["submenu_fas_incentives"] = "Incentives";
-$lang["submenu_fas_contributions"] = "Contributions";
 $lang["submenu_fas_payroll"] = "Payroll";
 
 $lang["submenu_pms_all_projects"] = "All Projects";

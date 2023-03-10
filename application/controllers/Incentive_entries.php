@@ -129,7 +129,7 @@ class Incentive_entries extends MY_Controller {
         $amount = $this->input->post('amount');
         $user = $this->input->post('user');
 
-        $incentive_data = array(
+        $data = array(
             "user" => $user,
             "account_id" => $account_id,
             "amount" => $amount,
@@ -139,13 +139,13 @@ class Incentive_entries extends MY_Controller {
         );
 
         if(!$id){
-            $incentive_data["created_on"] = date('Y-m-d H:i:s');
-            $incentive_data["created_by"] = $this->login_user->id;
+            $data["created_on"] = date('Y-m-d H:i:s');
+            $data["created_by"] = $this->login_user->id;
         }
 
-        $contribution_data["expense_id"] = $this->save_expense($account_id, $amount, $user, $expense_id);
+        $data["expense_id"] = $this->save_expense($account_id, $amount, $user, $expense_id);
 
-        $contribution_id = $this->Contribution_entries_model->save($contribution_data, $id);
+        $data_id = $this->Incentive_entries_model->save($data, $id);
         if ($incentive_id) {
             $options = array("id" => $incentive_id);
             $incentive_info = $this->Incentive_entries_model->get_details($options)->row();
