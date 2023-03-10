@@ -6,8 +6,8 @@
         </div>
         <div class="panel-body">
             <div class="form-group">
-                <label for="first_name" class=" col-md-2"><?php echo lang('first_name'); ?></label>
-                <div class=" col-md-4">
+                <label for="first_name" class=" col-md-1"><?php echo lang('first_name'); ?></label>
+                <div class=" col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "first_name",
@@ -20,8 +20,20 @@
                     ));
                     ?>
                 </div>
-                <label for="last_name" class=" col-md-2"><?php echo lang('last_name'); ?></label>
-                <div class=" col-md-4">
+                <label for="middle_name" class=" col-md-1"><?php echo lang('middle_name'); ?></label>
+                <div class=" col-md-2">
+                    <?php
+                    echo form_input(array(
+                        "id" => "middle_name",
+                        "name" => "middle_name",
+                        "value" => $user_info->middle_name,
+                        "class" => "form-control",
+                        "placeholder" => lang('middle_name')
+                    ));
+                    ?>
+                </div>
+                <label for="last_name" class=" col-md-1"><?php echo lang('last_name'); ?></label>
+                <div class=" col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "last_name",
@@ -31,6 +43,18 @@
                         "placeholder" => lang('last_name'),
                         "data-rule-required" => true,
                         "data-msg-required" => lang("field_required")
+                    ));
+                    ?>
+                </div>
+                <label for="suffix_name" class=" col-md-1"><?php echo lang('suffix_name'); ?></label>
+                <div class=" col-md-2">
+                    <?php
+                    echo form_input(array(
+                        "id" => "suffix_name",
+                        "name" => "suffix_name",
+                        "value" => $user_info->suffix_name,
+                        "class" => "form-control",
+                        "placeholder" => lang('suffix_name'),
                     ));
                     ?>
                 </div>

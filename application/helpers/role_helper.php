@@ -19,7 +19,7 @@ if (!function_exists('current_has_permit')) {
 if (!function_exists('user_has_permit')) {
     function user_has_permit($userid, $permit_name, $redirect = false) {
         $ci = get_instance();
-        $permission_lists = unserialize($ci->login_user->permissions);
+        $permission_lists = @unserialize($ci->login_user->permissions);
 
         if( $ci->login_user->is_admin || get_array_value($permission_lists, $permit_name) ){
             return true;

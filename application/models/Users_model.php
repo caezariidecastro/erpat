@@ -9,6 +9,48 @@ class Users_model extends Crud_model {
         parent::__construct($this->table);
     }
 
+    function set_meta($user_id, $meta_key, $meta_val) {
+        $users_meta_table = $this->db->dbprefix('users_meta');
+
+        $where = array(
+            'user_id' => $user_id, 
+            'meta_key' => $meta_key
+        );
+
+        $data = array(
+            "meta_val" => $meta_val
+        );
+
+        $exists = $this->db->get_where($users_meta_table, $where);
+        if ($exists->num_rows()) {
+            $this->db->where('user_id', $user_id);
+            $this->db->where('meta_key', $meta_key);
+            return $this->db->update( $users_meta_table, $data );
+        } else {
+            $data['user_id'] = $user_id;
+            $data['meta_key'] = $meta_key;
+            return $this->db->insert( $users_meta_table, $data );
+        }
+    }
+
+    function get_meta($user_id, $meta_key) {
+        $users_meta_table = $this->db->dbprefix('users_meta');
+
+        //prepare full query string
+        $sql = "SELECT $users_meta_table.* 
+            FROM $users_meta_table
+            WHERE $users_meta_table.user_id='$user_id'
+                AND $users_meta_table.meta_key='$meta_key'
+                LIMIT 1";
+        $result = $this->db->query($sql);
+
+        if(!$row = $result->row()) {
+            return "";
+        }
+
+        return $row->meta_val;
+    }
+
     function authenticate($email, $password, $return_id = false) {
 
         $email = $this->db->escape_str($email);

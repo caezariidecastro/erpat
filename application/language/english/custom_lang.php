@@ -955,3 +955,6 @@ $lang["new_pass"] = "New Password";
 $lang["confirm_pass"] = "Confirm Password";
 $lang["password_not_match"] = "Password do not match.";
 $lang["daily_rate"] = "Daily Rate";
+
+$lang["suffix_name"] = "Name Suffix";
+$lang["middle_name"] = "Middle Name";

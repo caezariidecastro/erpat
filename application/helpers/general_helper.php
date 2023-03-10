@@ -2168,3 +2168,21 @@ if (!function_exists('get_warehouse_link')) {
     }
 
 }
+
+if (!function_exists('set_user_meta')) {
+    function set_user_meta($user_id, $meta_key, $meta_val) {
+        $ci = get_instance();
+
+        return $ci->Users_model
+            ->set_meta($user_id, $meta_key, $meta_val);
+    }
+}
+
+if (!function_exists('get_user_meta')) {
+    function get_user_meta($user_id, $meta_key) {
+        $ci = get_instance();
+
+        return $ci->Users_model
+            ->get_meta($user_id, $meta_key);
+    }
+}

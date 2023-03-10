@@ -1174,7 +1174,10 @@ class Team_members extends MY_Controller {
     function general_info($user_id) {
         $this->update_only_allowed_members($user_id);
 
-        $view_data['user_info'] = $this->Users_model->get_one($user_id);
+        $user_info = $this->Users_model->get_one($user_id);
+        $user_info->middle_name = get_user_meta($user_id, "middle_name");
+        $user_info->suffix_name = get_user_meta($user_id, "suffix_name");
+        $view_data['user_info'] = $user_info;
         $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("team_members", $user_id, $this->login_user->is_admin, $this->login_user->user_type)->result();
 
         $this->load->view("team_members/general_info", $view_data);
@@ -1213,6 +1216,16 @@ class Team_members extends MY_Controller {
         save_custom_fields("team_members", $user_id, $this->login_user->is_admin, $this->login_user->user_type);
 
         if ($user_info_updated) {
+            if($middle_name = $this->input->post('middle_name')) {
+                set_user_meta($user_id, "middle_name", $middle_name);
+            } else {
+                set_user_meta($user_id, "middle_name", NULL);
+            }
+            if($suffix_name = $this->input->post('suffix_name')) {
+                set_user_meta($user_id, "suffix_name", $suffix_name);
+            } else {
+                set_user_meta($user_id, "suffix_name", NULL);
+            }
             echo json_encode(array("success" => true, 'message' => lang('record_updated')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
