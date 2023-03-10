@@ -60,7 +60,7 @@ class MY_Controller extends CI_Controller {
      * Check if the module is enabled or not.
      */
     protected function with_module($module_name, $redirect = false) {
-        if ( get_setting($module_name) === "1" ) {
+        if ( $this->Settings_model->get_setting($module_name) === "1" ) {
             return true;
         }
 

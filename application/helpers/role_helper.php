@@ -35,7 +35,9 @@ if (!function_exists('user_has_permit')) {
 
 if (!function_exists('module_enabled')) {
     function module_enabled($module_name, $redirect = false) {
-        if ( get_setting($module_name) === "1" ) {
+        $ci = get_instance();
+        
+        if ( $ci->Settings_model->get_setting($module_name) === "1" ) {
             return true;
         }
 

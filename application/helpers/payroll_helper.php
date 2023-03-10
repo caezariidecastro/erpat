@@ -41,7 +41,7 @@ if (!function_exists('get_hourly_from_monthly')) {
 
 if (!function_exists('get_monthly_from_hourly')) {
     function get_monthly_from_hourly($hourly_rate, $hours_per_day = 8.0, $days_per_year = 261, $to_currency = true) {
-        $monthly_salary = ($hourly_rate * $hours_per_day) * ($days_per_year/12);
+        $monthly_salary = ((int)$hourly_rate * $hours_per_day) * ($days_per_year/12);
         if($to_currency) {
             return to_currency($monthly_salary);
         } else {
@@ -198,6 +198,19 @@ if (!function_exists('get_sss_contribution')) {
                 $current = 0;
                 break;
         }
+
+        if($to_currency) {
+            return to_currency($current);
+        }
+            
+        return $current;
+    }
+}
+
+if (!function_exists('get_phealth_contribution')) {
+    function get_phealth_contribution($monthly_salary, $to_currency = true) {
+        
+        $current = $monthly_salary * 0.04;
 
         if($to_currency) {
             return to_currency($current);

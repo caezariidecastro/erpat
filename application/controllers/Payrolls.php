@@ -418,35 +418,38 @@ class Payrolls extends MY_Controller {
             $data = $deductions;
 
             $hourly_rate = get_hourly_rate($user->id, false);
-            $monthly_salary = get_monthly_from_hourly($hourly_rate, 8, 260, false);
+            $monthly_salary = get_monthly_from_hourly($hourly_rate, 8, 261, false);
+            log_message("error", $monthly_salary);
 
             for($i=0; $i<count($data); $i++) {
-                if($data[$i][0] == "sss_contri") {
-                    $data[$i][2] = get_sss_contribution($monthly_salary, false)/4; //weekly
-                    $data[$i][3] = get_sss_contribution($monthly_salary, false)/2; //biweekly
-                    $data[$i][4] = get_sss_contribution($monthly_salary, false); //monthly
-                }
-                if($data[$i][0] == "pagibig_contri") {
-                    $data[$i][2] = convert_number_to_decimal((200/2)/2); //weekly
-                    $data[$i][3] = convert_number_to_decimal((200/2)); //biweekly
-                    $data[$i][4] = convert_number_to_decimal((200)); //monthly
-                }
-                if($data[$i][0] == "philhealth_contri") {
-                    $data[$i][2] = convert_number_to_decimal(($monthly_salary*0.04)/4); //weekly
-                    $data[$i][3] = convert_number_to_decimal(($monthly_salary*0.04)/2); //biweekly
-                    $data[$i][4] = convert_number_to_decimal(($monthly_salary*0.04)); //monthly
-                }
-                if($data[$i][0] == "hmo_contri") {
-                    $data[$i][2] = $data[$i][2];
-                }
-                if($data[$i][0] == "company_loan") {
-                    $data[$i][2] = $data[$i][2];
-                }
-                if($data[$i][0] == "sss_loan") {
-                    $data[$i][2] = $data[$i][2];
-                }
-                if($data[$i][0] == "hdmf_loan") {
-                    $data[$i][2] = $data[$i][2];
+                if(is_numeric($monthly_salary) && $monthly_salary > 0) {
+                    if($data[$i][0] == "sss_contri") {
+                        $data[$i][2] = get_sss_contribution($monthly_salary, false)/4; //weekly
+                        $data[$i][3] = get_sss_contribution($monthly_salary, false)/2; //biweekly
+                        $data[$i][4] = get_sss_contribution($monthly_salary, false); //monthly
+                    }
+                    if($data[$i][0] == "pagibig_contri") {
+                        $data[$i][2] = convert_number_to_decimal((200)/4); //weekly
+                        $data[$i][3] = convert_number_to_decimal((200/2)); //biweekly
+                        $data[$i][4] = convert_number_to_decimal((200)); //monthly
+                    }
+                    if($data[$i][0] == "philhealth_contri") {
+                        $data[$i][2] = get_phealth_contribution($monthly_salary, false)/4; //weekly
+                        $data[$i][3] = get_phealth_contribution($monthly_salary, false)/2; //biweekly
+                        $data[$i][4] = get_phealth_contribution($monthly_salary, false); //monthly
+                    }
+                    if($data[$i][0] == "hmo_contri") {
+                        $data[$i][2] = $data[$i][2];
+                    }
+                    if($data[$i][0] == "company_loan") {
+                        $data[$i][2] = $data[$i][2];
+                    }
+                    if($data[$i][0] == "sss_loan") {
+                        $data[$i][2] = $data[$i][2];
+                    }
+                    if($data[$i][0] == "hdmf_loan") {
+                        $data[$i][2] = $data[$i][2];
+                    }
                 }
             }
 
@@ -783,8 +786,9 @@ class Payrolls extends MY_Controller {
     }
 
     protected function processPayHP( $data ) {
-        $monthly_salary = get_monthly_from_hourly($data->hourly_rate, 8, 260, false) / 2;
-        return (new PayHP($data->hourly_rate, array(), $monthly_salary))
+        $monthly_salary = get_monthly_from_hourly($data->hourly_rate, 8, 261, false);
+
+        return (new PayHP($data->hourly_rate, array(), $monthly_salary, "biweekly"))
             ->addEarnings('allowance', $data->allowance)
             ->addEarnings('incentive', $data->incentive)
             ->addEarnings('bonus', $data->bonus_month)
