@@ -986,41 +986,6 @@ CREATE TABLE `holidays` (
   `deleted` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `incentive_categories`
---
-
-CREATE TABLE `incentive_categories` (
-  `id` bigint(10) NOT NULL,
-  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `created_on` datetime NOT NULL,
-  `created_by` bigint(10) NOT NULL,
-  `deleted` tinyint(4) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `incentive_entries`
---
-
-CREATE TABLE `incentive_entries` (
-  `id` bigint(10) NOT NULL,
-  `amount` decimal(10,2) NOT NULL,
-  `user` bigint(10) NOT NULL,
-  `remarks` text COLLATE utf8_unicode_ci NOT NULL,
-  `signed_by` bigint(10) NOT NULL,
-  `category` bigint(10) NOT NULL,
-  `account_id` bigint(10) NOT NULL,
-  `expense_id` bigint(10) NOT NULL,
-  `status` enum('not paid','paid','cancelled') COLLATE utf8_unicode_ci NOT NULL,
-  `created_on` datetime NOT NULL,
-  `created_by` bigint(10) NOT NULL,
-  `deleted` tinyint(4) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2421,7 +2386,6 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALU
 ('module_fas_accounts', '1', 'app', 0),
 ('module_fas_balancesheet', '1', 'app', 0),
 ('module_fas_contributions', '1', 'app', 0),
-('module_fas_incentives', '1', 'app', 0),
 ('module_fas_payments', '1', 'app', 0),
 ('module_fas_payroll', '1', 'app', 0),
 ('module_fas_summary', '1', 'app', 0),
@@ -2434,7 +2398,6 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALU
 ('module_hrm_employee', '1', 'app', 0),
 ('module_hrm_holidays', '1', 'app', 0),
 ('module_hrs', '1', 'app', 0),
-('module_incentives', '1', 'modules', 0),
 ('module_inventory', '1', 'modules', 0),
 ('module_invoice', '1', 'app', 0),
 ('module_item_transfer', '1', 'modules', 0),
@@ -3752,18 +3715,6 @@ ALTER TABLE `holidays`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `incentive_categories`
---
-ALTER TABLE `incentive_categories`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `incentive_entries`
---
-ALTER TABLE `incentive_entries`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `inventory`
 --
 ALTER TABLE `inventory`
@@ -4546,18 +4497,6 @@ ALTER TABLE `help_categories`
 -- AUTO_INCREMENT for table `holidays`
 --
 ALTER TABLE `holidays`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `incentive_categories`
---
-ALTER TABLE `incentive_categories`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `incentive_entries`
---
-ALTER TABLE `incentive_entries`
   MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
 
 --

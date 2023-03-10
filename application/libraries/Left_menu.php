@@ -314,7 +314,6 @@ class Left_menu {
                 $sidebar_menu["expenses"] = array("name" => "submenu_fas_expenses", "url" => "fas/expenses", "class" => "fa-circle");
             }
             $sidebar_menu["payments"] = array("name" => "submenu_fas_payments", "url" => "fas/payments", "class" => "fa-circle");
-            $sidebar_menu["incentives"] = array("name" => "submenu_fas_incentives", "url" => "fas/incentives", "class" => "fa-circle");
 
             // FINANCE > Payroll
             if( module_enabled("module_payroll") && current_has_permit("payroll") ) {

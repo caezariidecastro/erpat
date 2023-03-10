@@ -84,12 +84,7 @@ class Expenses_model extends Crud_model {
         LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table ON tax_table.id = $expenses_table.tax_id
         LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table2 ON tax_table2.id = $expenses_table.tax_id2
             $join_custom_fields
-        WHERE $expenses_table.deleted=0 $where
-        AND $expenses_table.id NOT IN (
-            SELECT incentive_entries.expense_id
-            FROM incentive_entries
-            WHERE incentive_entries.deleted = 1 OR incentive_entries.status IN ('cancelled')
-        )";
+        WHERE $expenses_table.deleted=0 $where";
         return $this->db->query($sql);
     }
 

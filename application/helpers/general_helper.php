@@ -1098,33 +1098,6 @@ if (!function_exists('get_payslip_id')) {
 
 }
 
-
-if (!function_exists('prepare_incentive_pdf')) {
-
-    function prepare_incentive_pdf($incentive_data) {
-        $ci = get_instance();
-        $ci->load->library('pdf');
-        $ci->pdf->setPrintHeader(false);
-        $ci->pdf->setPrintFooter(false);
-        $ci->pdf->SetCellPadding(1.5);
-        $ci->pdf->setImageScale(1.42);
-        $ci->pdf->AddPage();
-        $ci->pdf->SetFontSize(10);
-
-        if ($incentive_data) {
-
-            $html = $ci->load->view("incentive_entries/pdf", $incentive_data, true);
-            $ci->pdf->writeHTML($html, true, false, true, false, '');
-
-            $incentive_info = get_array_value($incentive_data, "incentive_info");
-            $pdf_file_name =  str_replace(" ", "-", $incentive_info->employee_name) . "-" .lang("incentive") . "-" . $incentive_info->created_on . ".pdf";
-
-            $ci->pdf->Output($pdf_file_name, "I");
-        }
-    }
-
-}
-
 /**
  * get all data to make an estimate
  * 
@@ -1222,14 +1195,6 @@ if (!function_exists('get_payroll_id')) {
 
     function get_payroll_id($id) {
         return get_id_name($id, lang("payroll")." #", 4);
-    }
-
-}
-
-if (!function_exists('get_incentive_id')) {
-
-    function get_incentive_id($id) {
-        return get_id_name($id, lang("incentive")." #", 4);
     }
 
 }

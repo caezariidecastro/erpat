@@ -50,7 +50,6 @@ $lang["submenu_fas_expenses"] = "Expenses";
 $lang["submenu_fas_accounts"] = "Accounts";
 $lang["submenu_fas_transfers"] = "Transfers";
 $lang["submenu_fas_balancesheet"] = "Balance Sheet";
-$lang["submenu_fas_incentives"] = "Incentives";
 $lang["submenu_fas_payroll"] = "Payroll";
 
 $lang["submenu_pms_all_projects"] = "All Projects";
@@ -139,9 +138,6 @@ $lang["action"] = "Action";
 $lang["date_occurred"] = "Date occurred";
 $lang["witness"] = "Witness";
 
-// Human Resource > Incentives
-$lang["incentives"] = "Incentives";
-$lang["incentive"] = "Incentive";
 $lang["signed_by"] = "Signed by";
 $lang["remarks"] = "Remarks";
 
