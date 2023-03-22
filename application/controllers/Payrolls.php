@@ -14,6 +14,8 @@ class Payrolls extends MY_Controller {
         $this->load->helper("biometric");
         $this->load->helper('utility');
 
+        $this->load->library('Amount_In_Words');
+
         $this->load->model("Payrolls_model");
         $this->load->model("Payslips_model");
         $this->load->model("Leave_credits_model");
@@ -1236,7 +1238,6 @@ class Payrolls extends MY_Controller {
         $view_data["payslip"] = $payslip;
         $view_data["summary"] = $this->processPayHP( $payslip )->calculate();
 
-        $this->load->library('amount_in_words');
         $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
 
         $this->load->view('payrolls/preview', $view_data);
@@ -1296,7 +1297,6 @@ class Payrolls extends MY_Controller {
             $view_data["payslip"] = $payslip;
             $view_data["summary"] = $this->processPayHP( $payslip )->calculate();
 
-            $this->load->library('amount_in_words');
             $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
 
             $this->prepare_payslip_pdf($view_data);
