@@ -8,6 +8,7 @@
             source: '<?php echo_uri("hrs/attendance/list_data/"); ?>',
             order: [[2, "desc"]],
             filterDropdown: [
+                {name: "department_id", class: "w200", options: <?= json_encode($department_select2) ?>},
                 {name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>}
             ],
             rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}}],

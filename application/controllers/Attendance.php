@@ -25,6 +25,17 @@ class Attendance extends MY_Controller {
         $this->load->helper("biometric");
     }
 
+    protected function _get_team_select2_data() {
+        $teams = $this->Team_model->get_details()->result();
+        $team_select2 = array(array('id' => '', 'text'  => '- Departments -'));
+
+        foreach($teams as $team){
+            $team_select2[] = array('id' => $team->id, 'text'  => $team->title);
+        }
+
+        return $team_select2;
+    }
+
     //check ip restriction for none admin users
     private function check_allowed_ip() {
         if (!$this->login_user->is_admin) {
@@ -51,6 +62,7 @@ class Attendance extends MY_Controller {
     //show attendance list view
     function index() {
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data['department_select2'] = $this->_get_team_select2_data();
         $this->template->rander("attendance/index", $view_data);
     }
 
@@ -341,12 +353,14 @@ class Attendance extends MY_Controller {
         $start_date = $this->input->post('start_date');
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
+        $department_id = $this->input->post('department_id');
 
         $options = array(
             "start_date" => $start_date, 
             "end_date" => $end_date, 
             "login_user_id" => $this->login_user->id, 
             "user_id" => $user_id, 
+            "department_id" => $department_id,
             "access_type" => $this->access_type, 
             "allowed_members" => $this->allowed_members,
             "active_only" => true, 
@@ -441,6 +455,7 @@ class Attendance extends MY_Controller {
     //load the custom date view of attendance list 
     function custom() {
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data['department_select2'] = $this->_get_team_select2_data();
         $this->load->view("attendance/custom_list", $view_data);
     }
 
@@ -486,6 +501,7 @@ class Attendance extends MY_Controller {
     //load the custom date view of attendance list 
     function summary() {
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data['department_select2'] = $this->_get_team_select2_data();
         $this->load->view("attendance/summary_list", $view_data);
     }
 
@@ -495,8 +511,17 @@ class Attendance extends MY_Controller {
         $start_date = $this->input->post('start_date');
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
+        $department_id = $this->input->post('department_id');
 
-        $options = array("start_date" => $start_date, "end_date" => $end_date, "login_user_id" => $this->login_user->id, "user_id" => $user_id, "access_type" => $this->access_type, "allowed_members" => $this->allowed_members);
+        $options = array(
+            "start_date" => $start_date, 
+            "end_date" => $end_date, 
+            "login_user_id" => $this->login_user->id, 
+            "user_id" => $user_id, 
+            "department_id" => $department_id,
+            "access_type" => $this->access_type, 
+            "allowed_members" => $this->allowed_members
+        );
         $list_data = $this->Attendance_model->get_details($options)->result();
 
         $result = array();
@@ -623,6 +648,7 @@ class Attendance extends MY_Controller {
     //load the attendance summary details tab
     function export() {
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data['department_select2'] = $this->_get_team_select2_data();
         $this->load->view("attendance/export_list", $view_data);
     }
 
@@ -632,12 +658,14 @@ class Attendance extends MY_Controller {
         $start_date = $this->input->post('start_date');
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
+        $department_id = $this->input->post('department_id');
 
         $options = array(
             "start_date" => $start_date,
             "end_date" => $end_date,
             "login_user_id" => $this->login_user->id,
             "user_id" => $user_id,
+            "department_id" => $department_id,
             "access_type" => $this->access_type,
             "allowed_members" => $this->allowed_members,
             // "summary_details" => true

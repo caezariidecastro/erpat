@@ -7,7 +7,10 @@
         $("#attendance-export-table").appTable({
             source: '<?php echo_uri("hrs/attendance/export_list_data/"); ?>',
             order: [[0, "asc"]],
-            filterDropdown: [{name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>}],
+            filterDropdown: [
+                {name: "department_id", class: "w200", options: <?= json_encode($department_select2) ?>},
+                {name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>}
+            ],
             rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}}],
             columns: [
                 {visible: false, searchable: false},

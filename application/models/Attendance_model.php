@@ -89,6 +89,11 @@ class Attendance_model extends Crud_model {
             $where .= " AND $attendnace_table.user_id=$user_id";
         }
 
+        $department_id = get_array_value($options, "department_id");
+        if ($department_id) {
+            $where .= " AND $team_table.id=$department_id";
+        }
+
         $active_only = get_array_value($options, "active_only");
         if ($active_only) {
             $where .= " AND $users_table.status='active'";
@@ -126,6 +131,7 @@ class Attendance_model extends Crud_model {
         $sql = "SELECT $attendnace_table.*,  $created_by_user, $users_table.image as created_by_avatar, $users_table.id as user_id, $users_table.job_title as user_job_title $teams_lists 
         FROM $attendnace_table
         LEFT JOIN $users_table ON $users_table.id = $attendnace_table.user_id
+        LEFT JOIN $team_table ON $team_table.deleted='0' AND (FIND_IN_SET($attendnace_table.user_id, $team_table.heads) OR FIND_IN_SET($attendnace_table.user_id, $team_table.members))
         WHERE $attendnace_table.deleted=0 $where
         ORDER BY $attendnace_table.in_time DESC";
         return $this->db->query($sql);
