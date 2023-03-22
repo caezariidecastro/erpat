@@ -2,7 +2,7 @@
 
 class PayHP {
 
-    protected $term_table = 'biweekly';
+    protected $term_table = 'weekly';
 
     //CONSTANTS VARIABLES
     protected $overtime_rate = 0.25;
@@ -33,6 +33,7 @@ class PayHP {
 
     //Work Schedule
     protected $sched_hour = 0.0;
+    protected $worked_hour = 0.0;
     protected $absent_hour = 0.0;
     protected $late_hour = 0.0;
     protected $over_hour = 0.0;
@@ -79,7 +80,7 @@ class PayHP {
      * @var value decimal(1,2) in decimal.
      * @var array overtime_rate, restday_rate, legalhd_rate, spclhd_rate.
      */
-    function __construct( $hourly_rate, $rates, $expected_compensation = 0, $term = "biweekly" ) {
+    function __construct( $hourly_rate, $rates, $expected_compensation = 0, $term = "weekly" ) {
         $this->hourly_rate = $hourly_rate;
         $this->overtime_rate = isset($rates['overtime_rate']) && is_numeric($rates['overtime_rate'])?$rates['overtime_rate']:$this->overtime_rate;
         $this->nightdiff_rate = isset($rates['nightdiff_rate']) && is_numeric($rates['nightdiff_rate'])?$rates['nightdiff_rate']:$this->nightdiff_rate;
@@ -130,6 +131,9 @@ class PayHP {
         switch($type) {
             case $type == "schedule":
                 $this->sched_hour += is_numeric($value)?$value:0;
+                break;
+            case $type == "worked":
+                $this->worked += is_numeric($value)?$value:0;
                 break;
             case $type == "absent":
                 $this->absent_hour += is_numeric($value)?$value:0;
@@ -345,11 +349,17 @@ class PayHP {
     }
 
     function basicPay() {
+        $regular = $this->sched_hour * $this->hourly_rate;
+
         if($this->expected_compensation > 0) {
-            return $this->expected_compensation;
-        } else {
-            return $this->sched_hour * $this->hourly_rate;
-        }        
+            if($this->term = 'weekly') {
+                return $this->expected_compensation / 4;
+            } else if($this->term = 'biweekly') {
+                return $this->expected_compensation / 2;
+            } 
+        }
+        
+        return $regular; //includes monthly
     }
 
     //Optional
@@ -358,7 +368,7 @@ class PayHP {
     }
 
     function hoursPaid() {
-        $regular_pay = ($this->sched_hour - $this->unworkHour()) * $this->hourly_rate;
+        $regular_pay = $this->worked * $this->hourly_rate;
         return $regular_pay + $this->ptoPay() + $this->overtimePay() + $this->nightdiffPay() + $this->specialPay();
     }
 

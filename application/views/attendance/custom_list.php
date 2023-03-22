@@ -29,6 +29,7 @@
                 {title: "<?php echo lang("out_time"); ?>", "class": "text-center w10p"},
                 {title: "<?php echo lang("duration"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("worked"); ?>", "class": "w5p text-right"},
+                {title: "<?php echo lang("overtime"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("idle"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("lates"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("overbreak"); ?>", "class": "w5p text-right"},

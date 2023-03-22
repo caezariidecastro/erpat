@@ -443,6 +443,7 @@ class Attendance extends MY_Controller {
             $data->out_time ? format_to_time( $data->out_time ) : "-",
             $attd->getTotalDuration(),
             strval($attd->getTotalWork()), 
+            strval($attd->getTotalOvertime()), 
             strval($attd->getTotalAbsent()), 
             strval($attd->getTotalLates()), 
             strval($attd->getTotalOverbreak()), 

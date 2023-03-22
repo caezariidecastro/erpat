@@ -202,7 +202,10 @@ class Schedule extends MY_Controller
         $id = (int)$this->input->post('id');
         
         if($id !== 0) {
-            $view_data['model_info'] = $this->Schedule_model->get_details(array("id" => $id))->row();
+            $view_data['model_info'] = $this->Schedule_model->get_details(array(
+                "id" => $data->sched_id,
+                "deleted" => true
+            ))->row();
             $view_data['model_info'] = $this->processOne($view_data['model_info']);
         }
 

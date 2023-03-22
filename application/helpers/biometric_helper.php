@@ -65,6 +65,16 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
+    public function getTotalOvertime() {
+        $total = 0;
+        foreach($this->attd_data as $data) {
+            if( is_numeric($data['overtime']) ) {
+                $total += $data['overtime'];
+            }
+        }
+        return convert_number_to_decimal($total);
+    }
+
     public function getTotalAbsent() {
         $total = 0; //max($this->sched_hours - $this->getTotalWork(), 0);
         foreach($this->attd_data as $data) {
@@ -112,7 +122,10 @@ class BioMeet {
             foreach($this->attendance as $data) {
 
                 //Get the instance of the schedule.
-                $cur_sched = $this->ci->Schedule_model->get_details(array("id" => $data->sched_id))->row();
+                $cur_sched = $this->ci->Schedule_model->get_details(array(
+                    "id" => $data->sched_id,
+                    "deleted" => true
+                ))->row();
 
                 //Important attendance primary data.
                 $from_time = strtotime( convert_date_utc_to_local($data->in_time) );
@@ -123,6 +136,7 @@ class BioMeet {
                 $schedule = 0;
                 $duration = 0;
                 $worked = 0;
+                $overtime = 0;
                 $nonworked = 0;
                 $lates = 0;
                 $over = 0;
@@ -228,22 +242,32 @@ class BioMeet {
                         }
                     }
 
-                    //worked, Get the worked hours: b = z-a;
-                    $worked = convert_number_to_decimal( max(($this->hours_per_day-$nonworked), 0) );
-
-                    //TODO: Add pre and post OT as regular pay.
-                    $pre_ot = convert_seconds_to_hour_decimal( max($sched_in-$from_time, 0) );
-                    $worked += $pre_ot<1 ? $pre_ot:1;
-
-                    $post_ot = convert_seconds_to_hour_decimal( max($to_time-$sched_out, 3600) );
-                    $worked += $post_ot<1 ? $post_ot:1;
-
                     //idle, Get non worked hours: a = x+y
                     $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
+
+                    //Add pre and post OT as regular pay.
+                    $pre_ot = convert_seconds_to_hour_decimal( max($sched_in-$from_time, 0) );
+                    $overtime += $pre_ot>=0.3333 ? $pre_ot:0; //20min greater
+                    $post_ot = convert_seconds_to_hour_decimal( max($to_time-$sched_out, 0) );
+                    $overtime += $post_ot>=0.3333 ? $post_ot:0; //20min greater
+
+                    //Make sure that if nonworked is non zero deduct.
+                    $worked = convert_number_to_decimal( max(($this->hours_per_day-$nonworked), 0) );
+
+                    //Make sure overtime is deducted.
+                    $worked = convert_number_to_decimal( max(($worked-$overtime), 0) );
+
+                    //Make sure that worked is zero if zero.
+                    $worked = convert_number_to_decimal($worked>0?$worked:0);
+
+                    if($worked <= 0) {
+                        $nonworked = convert_number_to_decimal( max($this->hours_per_day, 0) );
+                    }
 
                     if($this->on_debug && $duration == 0) {
                         $duration = 'Invalid';
                         $worked = "Invalid";
+                        $overtime = "Invalid";
                         $nonworked = 'Invalid';
                         $lates = 'Invalid';
                         $over = 'Invalid';
@@ -253,6 +277,7 @@ class BioMeet {
                     if($this->on_debug) {
                         $duration = 'Pending';
                         $worked = 'Pending';
+                        $overtime = "Pending";
                         $nonworked = 'Pending';
                         $over = 'Pending';
                         $under = 'Pending';
@@ -268,6 +293,7 @@ class BioMeet {
                     "duration" => $duration,
                     "schedule" => $schedule,
                     "worked" => $worked,
+                    "overtime" => $overtime,
                     "absent" => $nonworked,
                     "lates" => $lates,
                     "over" => $over,

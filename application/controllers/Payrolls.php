@@ -475,6 +475,7 @@ class Payrolls extends MY_Controller {
             "end_date" => $payroll_info->end_date,
             "access_type" => "all",
         ))->result();
+        
         $attd = (new BioMeet($this, array(), true))
             ->setSchedHour($payroll_info->sched_hours)
             ->setAttendance($attendance)
@@ -505,6 +506,8 @@ class Payrolls extends MY_Controller {
             "lates" => $attd->getTotalLates(), //lates
             "overbreak" => $attd->getTotalOverbreak(), //overbreak
             "undertime" => $attd->getTotalUndertime(), //undertime
+
+            "reg_ot" => $attd->getTotalOvertime(), //overtime
 
             //tin?
             "sss" => get_deduct_val($deductions, "sss_contri", $payroll_info->tax_table),
@@ -786,9 +789,11 @@ class Payrolls extends MY_Controller {
     }
 
     protected function processPayHP( $data ) {
+
+        //TODO: The settings should come from payroll info.
         $monthly_salary = get_monthly_from_hourly($data->hourly_rate, 8, 261, false);
 
-        return (new PayHP($data->hourly_rate, array(), $monthly_salary, "biweekly"))
+        return (new PayHP($data->hourly_rate, array(), $monthly_salary, "weekly"))
             ->addEarnings('allowance', $data->allowance)
             ->addEarnings('incentive', $data->incentive)
             ->addEarnings('bonus', $data->bonus_month)
@@ -797,6 +802,7 @@ class Payrolls extends MY_Controller {
             ->addEarnings('other', $data->add_other)
 
             ->setHour('schedule', $data->schedule)
+            ->setHour('worked', $data->worked)
             ->setHour('absent', $data->absent)
             ->setHour('late', $data->lates)
             ->setHour('overbreak', $data->overbreak)
