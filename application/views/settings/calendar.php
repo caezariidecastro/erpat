@@ -127,6 +127,22 @@
                             ?>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="overtime_trigger" class=" col-md-2"><?php echo lang('overtime_trigger'); ?></label>
+                        <div class="col-md-2">
+                            <?php
+                            $overtime_trigger = get_setting('overtime_trigger');
+                            echo form_input(array(
+                                "id" => "overtime_trigger",
+                                "name" => "overtime_trigger",
+                                "value" => $overtime_trigger ? $overtime_trigger:0,
+                                "class" => "form-control",
+                                "placeholder" => lang('overtime_trigger'),
+                            ));
+                            ?>
+                        </div>
+                        <label class=" col-md-2"><?php echo lang('hours'); ?></label>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
@@ -151,6 +167,17 @@
         $("#weekends").select2({
             multiple: true,
             data: <?php echo (json_encode($days_dropdown)); ?>
+        });
+
+        function overtimeTriggerRefresh() {
+            let curVal = $("#overtime_trigger").val();
+            let newVal = parseFloat(curVal).toFixed(2);
+            $("#overtime_trigger").val(newVal);
+        }
+        overtimeTriggerRefresh();
+
+        $("#overtime_trigger").change(() => {
+            overtimeTriggerRefresh();
         });
     });
 </script>

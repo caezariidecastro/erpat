@@ -958,3 +958,5 @@ $lang["daily_rate"] = "Daily Rate";
 
 $lang["suffix_name"] = "Name Suffix";
 $lang["middle_name"] = "Middle Name";
+
+$lang["overtime_trigger"] = "Overtime Trigger";

@@ -245,12 +245,13 @@ class BioMeet {
                     //idle, Get non worked hours: a = x+y
                     $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
 
-                    //Add pre and post OT as regular pay.
+                    //Add pre and post OT as regular pay. TODO: Make this configurable.
+                    $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
                     $pre_ot = convert_seconds_to_hour_decimal( max($sched_in-$from_time, 0) );
-                    $overtime += $pre_ot>=0.3333 ? $pre_ot:0; //20min greater
+                    $overtime += $pre_ot>=$overtime_trigger ? $pre_ot:0; //60min greater
                     $post_ot = convert_seconds_to_hour_decimal( max($to_time-$sched_out, 0) );
-                    $overtime += $post_ot>=0.3333 ? $post_ot:0; //20min greater
-
+                    $overtime += $post_ot>=$overtime_trigger ? $post_ot:0; //60min greater
+                    
                     //Make sure that if nonworked is non zero deduct.
                     $worked = convert_number_to_decimal( max(($this->hours_per_day-$nonworked), 0) );
 
@@ -311,7 +312,7 @@ class BioMeet {
 
                     $schedule = $this->hours_per_day;
                     $duration = convert_seconds_to_hour_decimal(max($to_time-$from_time, 0));
-                    
+
                     if($duration <= 5) {
                         $worked = $duration;
                     } else {
