@@ -5,7 +5,7 @@ class BioMeet {
     protected $ci = null;
     protected $on_debug = false;
 
-    protected $sched_hours = 87.00;
+    protected $sched_hours = 40.00;
     protected $hours_per_day = 8.00;
     protected $lunch_break = 1.00;
     protected $attendance = [];
@@ -76,7 +76,7 @@ class BioMeet {
     }
 
     public function getTotalAbsent() {
-        $total = 0; //max($this->sched_hours - $this->getTotalWork(), 0);
+        $total = 0;
         foreach($this->attd_data as $data) {
             if( is_numeric($data['absent']) ) {
                 $total += $data['absent'];
@@ -309,26 +309,26 @@ class BioMeet {
                     $from_time = strtotime( convert_date_utc_to_local($data->in_time) );
                     $to_time = strtotime( convert_date_utc_to_local($data->out_time) );
 
-                    //duration, Actual time in hours decimal.
-                    $duration = max($to_time-$from_time, 0);
-
-                    $schedule = 0; //pending
-
-                    $worked = convert_seconds_to_hour_decimal( $duration ) > 9 ? 8.00 : (convert_seconds_to_hour_decimal( $duration ) - 1.00);
+                    $schedule = $this->hours_per_day;
+                    $duration = convert_seconds_to_hour_decimal(max($to_time-$from_time, 0));
                     
-                    $nonworked = 8.00-$worked;
+                    if($duration <= 5) {
+                        $worked = $duration;
+                    } else {
+                        $worked = max($duration-$this->lunch_break, 0);
+                    }
+                    $worked = convert_seconds_to_hour_decimal($worked);
 
-                    $lates = 0; //pending
-                    $over = 0; //pending
-                    $under = 0; //pending
+                    $under = $schedule-$worked;
+                    $nonworked = $under;
 
                     $this->attd_data[] = array(
                         "duration" => $duration,
                         "schedule" => $schedule,
                         "worked" => $worked,
                         "absent" => $nonworked,
-                        "lates" => $lates,
-                        "over" => $over,
+                        "lates" => 0, //no tracking
+                        "over" => 0, //no tracking
                         "under" => $under
                     );
                 }
