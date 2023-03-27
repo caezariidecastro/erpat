@@ -115,6 +115,16 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
+    public function getTotalBonuspay() {
+        $total = 0;
+        foreach($this->attd_data as $data) {
+            if( is_numeric($data['bonus']) ) {
+                $total += $data['bonus'];
+            }
+        }
+        return convert_number_to_decimal($total);
+    }
+
     public function calculate() {
 
         if( get_setting('attendance_calc_mode') == "complex" ) {
@@ -130,7 +140,6 @@ class BioMeet {
                 //Important attendance primary data.
                 $from_time = strtotime( convert_date_utc_to_local($data->in_time) );
                 $to_time = is_date_exists($data->out_time) ? strtotime( convert_date_utc_to_local($data->out_time) ) : null;
-                $is_ongoing = $to_time ? true:false;
 
                 //Store important attendance metrics.
                 $schedule = 0;
@@ -141,6 +150,10 @@ class BioMeet {
                 $lates = 0;
                 $over = 0;
                 $under = 0;
+                $bonus = 0;
+
+                $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
+                $bonuspay_trigger = number_with_decimal(max(get_setting('bonuspay_trigger'), 0));
 
                 $current_schedin = null;
                 $current_schedout = null;
@@ -163,6 +176,11 @@ class BioMeet {
                 //Get lates: x = diff_time(in_time, sched_in)
                 $lates = convert_seconds_to_hour_decimal( max($from_time-$sched_in, 0) );
 
+                // Pre Bonus Pay
+                $pre_bonus = convert_seconds_to_hour_decimal( max($sched_in-$from_time, 0) );
+                $pre_bonus = $pre_bonus>=$bonuspay_trigger?$bonuspay_trigger:0;
+                $bonus += number_with_decimal($pre_bonus);
+
                 if( $data->out_time ) {
                     //First! If no schedule make sure to have an actual in and out as official schedule.
                     $sched_day_out = convert_date_utc_to_local($data->out_time, 'Y-m-d'); //local
@@ -183,10 +201,15 @@ class BioMeet {
 
                     //undertime, Get undertime: y = diff_time(sched_end, out_time)
                     $under = convert_seconds_to_hour_decimal( max($sched_out-$to_time, 0) );
+
+                    // Post Bonus Pay
+                    $post_bonus = convert_seconds_to_hour_decimal( max($to_time-$sched_out, 0) );
+                    $post_bonus = $post_bonus>=$bonuspay_trigger?$bonuspay_trigger:0;
+                    $bonus += number_with_decimal($post_bonus);
                     
                     //Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
                     $schedule = convert_seconds_to_hour_decimal( max($sched_out-$sched_in, 0) );
-                    $this->hours_per_day = max(($schedule - $this->lunch_break), 0); //by default
+                    $this->hours_per_day = max(($schedule - $this->lunch_break), 8); //by default
                     
                     //Override schedule and hours per day according to schedule.
                     if($current_schedin && $current_schedout) {
@@ -246,7 +269,6 @@ class BioMeet {
                     $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
 
                     //Add pre and post OT as regular pay. TODO: Make this configurable.
-                    $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
                     $pre_ot = convert_seconds_to_hour_decimal( max($sched_in-$from_time, 0) );
                     $overtime += $pre_ot>=$overtime_trigger ? $pre_ot:0; //60min greater
                     $post_ot = convert_seconds_to_hour_decimal( max($to_time-$sched_out, 0) );
@@ -255,8 +277,8 @@ class BioMeet {
                     //Make sure that if nonworked is non zero deduct.
                     $worked = convert_number_to_decimal( max(($this->hours_per_day-$nonworked), 0) );
 
-                    //Make sure overtime is deducted.
-                    $worked = convert_number_to_decimal( max(($worked-$overtime), 0) );
+                    // Add pre and post bonus pay to worked!
+                    $worked += $bonus;
 
                     //Make sure that worked is zero if zero.
                     $worked = convert_number_to_decimal($worked>0?$worked:0);
@@ -273,6 +295,7 @@ class BioMeet {
                         $lates = 'Invalid';
                         $over = 'Invalid';
                         $under = 'Invalid';
+                        $bonus = 'Invalid';
                     }
                 } else {
                     if($this->on_debug) {
@@ -282,6 +305,7 @@ class BioMeet {
                         $nonworked = 'Pending';
                         $over = 'Pending';
                         $under = 'Pending';
+                        $bonus = 'Invalid';
                     }
                 }
 
@@ -298,7 +322,8 @@ class BioMeet {
                     "absent" => $nonworked,
                     "lates" => $lates,
                     "over" => $over,
-                    "under" => $under
+                    "under" => $under,
+                    "bonus" => $bonus
                 );
             } 
 

@@ -30,7 +30,7 @@
                 {title: "<?php echo lang("duration"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("worked"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("overtime"); ?>", "class": "w5p text-right"},
-                {title: "<?php echo lang("idle"); ?>", "class": "w5p text-right"},
+                {title: "<?php echo lang("bonus"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("lates"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("overbreak"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("undertime"); ?>", "class": "w5p text-right"},
@@ -45,7 +45,8 @@
                 {column: 16, dataType: 'number'},
                 {column: 17, dataType: 'number'},
                 {column: 18, dataType: 'number'},
-                {column: 19, dataType: 'number'}
+                {column: 19, dataType: 'number'},
+                {column: 20, dataType: 'number'}
             ],
             tableRefreshButton: true,
         });

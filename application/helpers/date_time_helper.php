@@ -703,3 +703,17 @@ if (!function_exists('get_sched_title')) {
     }
     
 }
+
+/**
+ * convert timestamp to date with timezone.
+ * 
+ * @param string $format
+ * @return local date
+ */
+if (!function_exists('convert_timestamp_to_date')) {
+
+    function convert_timestamp_to_date($timestamp, $format = "Y-m-d H:i:s") {
+        return date($format, $timestamp);
+    }
+
+}

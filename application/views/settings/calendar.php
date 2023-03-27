@@ -143,6 +143,22 @@
                         </div>
                         <label class=" col-md-2"><?php echo lang('hours'); ?></label>
                     </div>
+                    <div class="form-group">
+                        <label for="bonuspay_trigger" class=" col-md-2"><?php echo lang('bonuspay_trigger'); ?></label>
+                        <div class="col-md-2">
+                            <?php
+                            $bonuspay_trigger = get_setting('bonuspay_trigger');
+                            echo form_input(array(
+                                "id" => "bonuspay_trigger",
+                                "name" => "bonuspay_trigger",
+                                "value" => $bonuspay_trigger ? $bonuspay_trigger:0,
+                                "class" => "form-control",
+                                "placeholder" => lang('bonuspay_trigger'),
+                            ));
+                            ?>
+                        </div>
+                        <label class=" col-md-2"><?php echo lang('hours'); ?></label>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
@@ -175,9 +191,18 @@
             $("#overtime_trigger").val(newVal);
         }
         overtimeTriggerRefresh();
-
         $("#overtime_trigger").change(() => {
             overtimeTriggerRefresh();
+        });
+
+        function bonuspayTriggerRefresh() {
+            let curVal = $("#bonuspay_trigger").val();
+            let newVal = parseFloat(curVal).toFixed(2);
+            $("#bonuspay_trigger").val(newVal);
+        }
+        bonuspayTriggerRefresh();
+        $("#bonuspay_trigger").change(() => {
+            bonuspayTriggerRefresh();
         });
     });
 </script>

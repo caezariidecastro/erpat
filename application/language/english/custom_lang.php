@@ -551,6 +551,7 @@ $lang["disable_access_help_message"] = "User will not be able to use the said mo
 
 $lang["worked"] = "Worked";
 $lang["idle"] = "Idle";
+$lang["bonus"] = "Bonus";
 $lang["lates"] = "Lates";
 $lang["undertime"] = "Undertime";
 
@@ -960,3 +961,4 @@ $lang["suffix_name"] = "Name Suffix";
 $lang["middle_name"] = "Middle Name";
 
 $lang["overtime_trigger"] = "Overtime Trigger";
+$lang["bonuspay_trigger"] = "Bonuspay Trigger";

@@ -17,7 +17,7 @@
                 {title: "<?php echo lang("department"); ?>", "class": "w15p text-center"},
                 {title: "<?php echo lang("duration"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("worked"); ?>", "class": "w5p text-right"},
-                {title: "<?php echo lang("idle"); ?>", "class": "w5p text-right"},
+                {title: "<?php echo lang("bonus"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("lates"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("overbreak"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("undertime"); ?>", "class": "w5p text-right"}

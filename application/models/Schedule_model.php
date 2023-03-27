@@ -15,7 +15,7 @@ class Schedule_model extends Crud_model {
         $where= " true ";
         $deleted=get_array_value($options, "deleted");
         if($deleted){
-            $where .= " AND $schedule.deleted=1";
+            $where .= " AND ($schedule.deleted=0 OR $schedule.deleted=1)";
         } else {
             $where .= " AND $schedule.deleted=0";
         }

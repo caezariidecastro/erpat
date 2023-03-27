@@ -444,7 +444,7 @@ class Attendance extends MY_Controller {
             $attd->getTotalDuration(),
             strval($attd->getTotalWork()), 
             strval($attd->getTotalOvertime()), 
-            strval($attd->getTotalAbsent()), 
+            strval($attd->getTotalBonuspay()), 
             strval($attd->getTotalLates()), 
             strval($attd->getTotalOverbreak()), 
             strval($attd->getTotalUndertime()),
