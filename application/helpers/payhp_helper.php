@@ -133,7 +133,10 @@ class PayHP {
                 $this->sched_hour += is_numeric($value)?$value:0;
                 break;
             case $type == "worked":
-                $this->worked += is_numeric($value)?$value:0;
+                $this->worked_hour += is_numeric($value)?$value:0;
+                break;
+            case $type == "bonus":
+                $this->worked_hour += is_numeric($value)?$value:0;
                 break;
             case $type == "absent":
                 $this->absent_hour += is_numeric($value)?$value:0;
@@ -353,9 +356,11 @@ class PayHP {
 
         if($this->expected_compensation > 0) {
             if($this->term = 'weekly') {
-                return $this->expected_compensation / 4;
+                $regular = $this->expected_compensation / 4;
             } else if($this->term = 'biweekly') {
-                return $this->expected_compensation / 2;
+                $regular = $this->expected_compensation / 2;
+            } else if($this->term = 'monthly') {
+                $regular = $this->expected_compensation;
             } 
         }
         
@@ -368,7 +373,7 @@ class PayHP {
     }
 
     function hoursPaid() {
-        $regular_pay = $this->worked * $this->hourly_rate;
+        $regular_pay = $this->worked_hour * $this->hourly_rate;
         return $regular_pay + $this->ptoPay() + $this->overtimePay() + $this->nightdiffPay() + $this->specialPay();
     }
 
