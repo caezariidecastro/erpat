@@ -124,6 +124,7 @@
             ],
             summation: [
                 {column: 2, dataType: 'number'},
+                {column: 3, dataType: 'currency'},
                 {column: 4, dataType: 'currency'},
                 {column: 5, dataType: 'currency'},
                 {column: 6, dataType: 'currency'},
@@ -135,8 +136,15 @@
                     var id = $( this ).attr('id');
                     var page = $( this ).attr('name');
 
+                    let dataJson = {};
+                    if(page === 'check') {
+                        dataJson.start_date = $( this ).data("start_date");
+                        dataJson.end_date = $( this ).data("end_date");
+                    }
+                    
                     $.ajax({
                         url: "<?php echo get_uri("payrolls/"); ?>"+page+'/'+id,
+                        data: dataJson,
                         success: function (result) {
                             appLoader.hide();
                             const pageName = page.charAt(0).toUpperCase() + page.slice(1)+' <?= lang('payslip'); ?>';

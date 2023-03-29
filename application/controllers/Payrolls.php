@@ -711,15 +711,21 @@ class Payrolls extends MY_Controller {
     }
 
     function payslip_list_data($payroll_id = 0) {
+
+        //Get payroll instance
+        $payroll = $this->Payrolls_model->get_details(array(
+            "id" => $payroll_id
+        ))->row();
         
         $list_data = $this->Payslips_model->get_details(array(
             'payroll_id' => $payroll_id,
             'user_id' => $this->input->post('user_select2_filter'),
             'department_id' => $this->input->post('department_select2_filter'),
         ))->result();
+
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = $this->_make_payslip_row($data);
+            $result[] = $this->_make_payslip_row($data, $payroll);
         }
         echo json_encode(array("data" => $result));
     }
@@ -738,7 +744,7 @@ class Payrolls extends MY_Controller {
         return $labeled_status;
     }
 
-    function _make_payslip_row( $payslip ) {
+    function _make_payslip_row( $payslip, $payroll ) {
 
         $data = $this->Payslips_model->get_details(array(
             "id" => $payslip->id
@@ -747,6 +753,8 @@ class Payrolls extends MY_Controller {
         $summary = $this->processPayHP( $data )->calculate();
 
         $preview = modal_anchor(get_uri("payrolls/preview/".$data->id), get_payslip_id($data->id, $data->payroll), array( "title" => lang('preview_payslip'), "data-post-payroll_id" => $data->id));
+
+        $check = '<li role="presentation">' . "<a href='#' id='$data->id' name='check' data-start_date='$payroll->start_date' data-end_date='$payroll->end_date' class='override_btn role-row link' style='border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;'><i class='fa fa-calendar'></i>  ".lang('check_logs')."</a>" . '</li>';
 
         $view = '<li role="presentation">' . "<a href='#' id='$data->id' name='preview' class='override_btn role-row link' style='border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;'><i class='fa fa-eye'></i>  ".lang('view_pdf')."</a>" . '</li>';
 
@@ -774,7 +782,7 @@ class Payrolls extends MY_Controller {
                             <i class="fa fa-cogs"></i>&nbsp;
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu pull-right" role="menu">' . $view . $pdf . $override . $signe . $cancel . $delete . '</ul>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $check . $view . $pdf . $override . $signe . $cancel . $delete . '</ul>
                     </span>';
 
         return array(
@@ -1304,5 +1312,12 @@ class Payrolls extends MY_Controller {
         } else {
             show_404();
         }
+    }
+
+    function check($user_id = 0) {
+        $view_data['user_id'] = $user_id;
+        $view_data['start_date'] = $this->input->get("start_date");
+        $view_data['end_date'] = $this->input->get("end_date");
+        $this->load->view('payrolls/attendance', $view_data);
     }
 }

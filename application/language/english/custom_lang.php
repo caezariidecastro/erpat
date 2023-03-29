@@ -966,3 +966,5 @@ $lang["bonuspay_trigger"] = "Bonuspay Trigger";
 
 $lang["nightpay_start_trigger"] = "Nightpay Start Trigger";
 $lang["nightpay_end_trigger"] = "Nightpay End Trigger";
+
+$lang["check_logs"] = "Check Logs";
