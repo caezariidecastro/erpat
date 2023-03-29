@@ -125,6 +125,16 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
+    public function getTotalNightpay() {
+        $total = 0;
+        foreach($this->attd_data as $data) {
+            if( is_numeric($data['night']) ) {
+                $total += $data['night'];
+            }
+        }
+        return convert_number_to_decimal($total);
+    }
+
     public function calculate() {
 
         if( get_setting('attendance_calc_mode') == "complex" ) {
@@ -151,7 +161,8 @@ class BioMeet {
                 $over = 0;
                 $under = 0;
                 $bonus = 0;
-
+                $night = 0;
+                
                 $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
                 $bonuspay_trigger = number_with_decimal(max(get_setting('bonuspay_trigger'), 0));
 
@@ -210,7 +221,14 @@ class BioMeet {
                     //Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
                     $schedule = convert_seconds_to_hour_decimal( max($sched_out-$sched_in, 0) );
                     $this->hours_per_day = max(($schedule - $this->lunch_break), 8); //by default
-                    
+
+                    $night_diff_secs = get_night_differential(
+                        convert_timestamp_to_date($sched_in), 
+                        convert_timestamp_to_date($sched_out));
+
+                    //Get
+                    $night = convert_seconds_to_hour_decimal( $night_diff_secs );
+
                     //Override schedule and hours per day according to schedule.
                     if($current_schedin && $current_schedout) {
                         //Get the hours per day minus the lunch break.
@@ -296,6 +314,7 @@ class BioMeet {
                         $over = 'Invalid';
                         $under = 'Invalid';
                         $bonus = 'Invalid';
+                        $night = 'Invalid';
                     }
                 } else {
                     if($this->on_debug) {
@@ -305,7 +324,8 @@ class BioMeet {
                         $nonworked = 'Pending';
                         $over = 'Pending';
                         $under = 'Pending';
-                        $bonus = 'Invalid';
+                        $bonus = 'Pending';
+                        $night = 'Pending';
                     }
                 }
 
@@ -323,7 +343,8 @@ class BioMeet {
                     "lates" => $lates,
                     "over" => $over,
                     "under" => $under,
-                    "bonus" => $bonus
+                    "bonus" => $bonus,
+                    "night" => $night,
                 );
             } 
 

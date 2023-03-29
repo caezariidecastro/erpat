@@ -159,6 +159,37 @@
                         </div>
                         <label class=" col-md-2"><?php echo lang('hours'); ?></label>
                     </div>
+
+                    <div class="form-group">
+                        <label for="nightpay_start_trigger" class=" col-md-2"><?= lang("nightpay_start_trigger")  ?></label>
+                        <div class="col-md-2">
+                            <?php
+                                $nightpay_start_trigger = get_setting('nightpay_start_trigger', "22:00:00");
+                                echo form_input(array(
+                                    "id" => "nightpay_start_trigger",
+                                    "name" => "nightpay_start_trigger",
+                                    "value" => $nightpay_start_trigger ? $nightpay_start_trigger:0,
+                                    "class" => "form-control",
+                                    "placeholder" => lang('nightpay_start_trigger'),
+                                ));
+                            ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nightpay_end_trigger" class=" col-md-2"><?= lang("nightpay_end_trigger")  ?></label>
+                        <div class="col-md-2">
+                            <?php
+                                $nightpay_end_trigger = get_setting('nightpay_end_trigger', "06:00:00");
+                                echo form_input(array(
+                                    "id" => "nightpay_end_trigger",
+                                    "name" => "nightpay_end_trigger",
+                                    "value" => $nightpay_end_trigger ? $nightpay_end_trigger:0,
+                                    "class" => "form-control",
+                                    "placeholder" => lang('nightpay_end_trigger'),
+                                ));
+                            ?>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
@@ -204,5 +235,7 @@
         $("#bonuspay_trigger").change(() => {
             bonuspayTriggerRefresh();
         });
+
+        setTimePicker("#nightpay_start_trigger, #nightpay_end_trigger");
     });
 </script>

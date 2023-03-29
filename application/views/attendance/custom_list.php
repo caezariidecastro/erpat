@@ -31,14 +31,15 @@
                 {title: "<?php echo lang("worked"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("overtime"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("bonus"); ?>", "class": "w5p text-right"},
+                {title: "<?php echo lang("night"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("lates"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("overbreak"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("undertime"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("info"); ?>", "class": "text-center w50"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18],
-            xlsColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18],
+            printColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+            xlsColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19],
             summation: [
                 {column: 14, dataType: 'time'},
                 {column: 15, dataType: 'number'},

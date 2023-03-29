@@ -552,6 +552,7 @@ $lang["disable_access_help_message"] = "User will not be able to use the said mo
 $lang["worked"] = "Worked";
 $lang["idle"] = "Idle";
 $lang["bonus"] = "Bonus";
+$lang["night"] = "Night";
 $lang["lates"] = "Lates";
 $lang["undertime"] = "Undertime";
 
@@ -962,3 +963,6 @@ $lang["middle_name"] = "Middle Name";
 
 $lang["overtime_trigger"] = "Overtime Trigger";
 $lang["bonuspay_trigger"] = "Bonuspay Trigger";
+
+$lang["nightpay_start_trigger"] = "Nightpay Start Trigger";
+$lang["nightpay_end_trigger"] = "Nightpay End Trigger";

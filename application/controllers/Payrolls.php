@@ -510,6 +510,7 @@ class Payrolls extends MY_Controller {
             "undertime" => $attd->getTotalUndertime(), //undertime
 
             "reg_ot" => $attd->getTotalOvertime(), //overtime
+            "reg_nd" => $attd->getTotalNightpay(), //Nightpay
 
             //tin?
             "sss" => get_deduct_val($deductions, "sss_contri", $payroll_info->tax_table),
