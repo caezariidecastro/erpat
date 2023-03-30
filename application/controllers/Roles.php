@@ -16,6 +16,7 @@ class Roles extends MY_Controller {
             //ACCOUNTING
             array("payroll", "Coming Soon", "Payroll", "Enabled", null, true),
             array("payroll_auto_contribution", "Coming Soon", "Payroll", "Able to update contributions.", null),
+            array("compensation_tax_table", "Coming Soon", "Payroll", "Able to modify the tax table.", null),
             
             //STAFFING
             array("staff", "Coming Soon", "Staff", "Enabled", null, true),

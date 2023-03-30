@@ -7,7 +7,8 @@ class Taxes extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->access_only_admin();
+        $this->with_permission('compensation_tax_table', true);
+        
         $this->load->model("Taxes_model");
     }
 
@@ -58,10 +59,6 @@ class Taxes extends MY_Controller {
 
     function save_daily_tax() {
 
-        // validate_submitted_data(array(
-        //     "percentage" => "required"
-        // ));
-
         $daily_tax_table = array();
         for($i=1; $i<=6; $i++) {
             $daily_tax_table[] = array(
@@ -104,10 +101,6 @@ class Taxes extends MY_Controller {
 
     function save_weekly_tax() {
 
-        // validate_submitted_data(array(
-        //     "percentage" => "required"
-        // ));
-
         $weekly_tax_table = array();
         for($i=1; $i<=6; $i++) {
             $weekly_tax_table[] = array(
@@ -149,10 +142,6 @@ class Taxes extends MY_Controller {
     }
 
     function save_biweekly_tax() {
-
-        // validate_submitted_data(array(
-        //     "percentage" => "required"
-        // ));
 
         $biweekly_tax_table = array();
         for($i=1; $i<=6; $i++) {

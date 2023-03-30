@@ -511,7 +511,7 @@ class PayHP {
     }
 
     /**
-     * Get the tax due based on compensation.
+     * Get the tax due based on compensation. TODO: Should be retrieved from the tax form dynamic data.
      */
     function taxDue() {
 
