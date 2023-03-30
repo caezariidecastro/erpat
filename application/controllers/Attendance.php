@@ -426,7 +426,9 @@ class Attendance extends MY_Controller {
         $info_link = $note_link.$sched_link;
 
         //Get job info for computation of total hours.
-        $attd = (new BioMeet($this, array(), true))->addAttendance($data)->calculate();
+        $attd = (new BioMeet($this, array(), true))
+            ->addAttendance($data)
+            ->calculate();
 
         //Get the break time.
         $btime = serialized_breaktime($data->break_time, '-');
@@ -670,53 +672,38 @@ class Attendance extends MY_Controller {
             "department_id" => $department_id,
             "access_type" => $this->access_type,
             "allowed_members" => $this->allowed_members,
-            // "summary_details" => true
         );
-        
+
         $list_data = $this->Attendance_model->get_details($options)->result();
 
         $result = array();
-        $list_temp = array();
-        $last_user = NULL;
-        $list_user = [];
-        $list_total = [];
-
         foreach ($list_data as $data) {
-            if( $data->out_time && max(strtotime($data->out_time)-strtotime($data->in_time), 0) > 0 ) {
-                $single = $this->_make_compute_row( $data );
+            if( is_date_exists($data->out_time) ) {
 
-                if ( !in_array($data->user_id, $list_user) ) {
-                    $list_user[] = $data->user_id;
+                $attd = (new BioMeet($this, array(), true))
+                    ->addAttendance($data)
+                    ->calculate();
 
-                    $result[] = [
-                        $data->user_id."-b".$data->id,
-                        $single[0]."<br>".$single[1], //name
-                        "", //department
-                        "", //duration total
-                        "", //work total
-                        "", //idle total
-                        "", //late total
-                        "", //overbreak total
-                        "" //under total
-                    ];
+                $image_url = get_avatar($data->created_by_avatar);
+                $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
 
-                    $last_user = $data->user_id;
-                }
-
-                $result[] = [
-                    $data->user_id."-b".$data->id,
-                    "", //name and department
-                    format_to_custom( $single[8], 'Y-m-d' ), //date
-                    convert_seconds_to_time_format($single[2]), //duration total
-                    $single[3], //work total
-                    $single[4], //idle total
-                    $single[5], //late total
-                    $single[6], //overbreak total
-                    $single[7] //under total
-                ];
+                $result[] = array(
+                    $data->user_id.".".$data->id,
+                    get_team_member_profile_link($data->user_id, $user),
+                    $data->team_list,
+                    format_to_date($data->in_time),
+                    $attd->getTotalDuration(),
+                    strval($attd->getTotalWork()), 
+                    strval($attd->getTotalOvertime()), 
+                    strval($attd->getTotalBonuspay()), 
+                    strval($attd->getTotalNightpay()), 
+                    strval($attd->getTotalLates()), 
+                    strval($attd->getTotalOverbreak()), 
+                    strval($attd->getTotalUndertime()),
+                );
             }
         }
-
+        
         echo json_encode(array("data" => $result));
     }
 
