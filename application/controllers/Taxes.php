@@ -37,12 +37,7 @@ class Taxes extends MY_Controller {
     }
 
     function list_daily() {
-        $result = $this->Settings_model->get_setting("daily_tax_table", "payroll");
-        if($result) {
-            $result = unserialize($result);
-        } else {
-            $result = $this->Taxes_model->get_daily_raw_default();
-        }
+        $result = get_compensation_tax('daily');
 
         $current = [];
         foreach($result as $item) {
@@ -79,12 +74,7 @@ class Taxes extends MY_Controller {
     }
 
     function list_weekly() {
-        $result = $this->Settings_model->get_setting("weekly_tax_table", "payroll");
-        if($result) {
-            $result = unserialize($result);
-        } else {
-            $result = $this->Taxes_model->get_weekly_raw_default();
-        }
+        $result = get_compensation_tax('weekly');
 
         $current = [];
         foreach($result as $item) {
@@ -121,12 +111,7 @@ class Taxes extends MY_Controller {
     }
 
     function list_biweekly() {
-        $result = $this->Settings_model->get_setting("biweekly_tax_table", "payroll");
-        if($result) {
-            $result = unserialize($result);
-        } else {
-            $result = $this->Taxes_model->get_biweekly_raw_default();
-        }
+        $result = get_compensation_tax('biweekly');
 
         $current = [];
         foreach($result as $item) {
@@ -163,12 +148,7 @@ class Taxes extends MY_Controller {
     }
 
     function list_monthly() {
-        $result = $this->Settings_model->get_setting("monthly_tax_table", "payroll");
-        if($result) {
-            $result = unserialize($result);
-        } else {
-            $result = $this->Taxes_model->get_monthly_raw_default();
-        }
+        $result = get_compensation_tax('monthly');
 
         $current = [];
         foreach($result as $item) {

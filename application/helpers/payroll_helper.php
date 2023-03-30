@@ -310,3 +310,42 @@ if (!function_exists('cell_input')) {
         return "<input type='$type' id='$key' name='$key' value='$val' class='cell_input $class' $disabled style='text-align: right; border: 1px solid #d2d2d2; padding: 5px;'/>";
     }
 }
+
+if (!function_exists('get_compensation_tax')) {
+    function get_compensation_tax($table = 'daily') {
+        $ci = get_instance();
+        $result = false;
+
+        if($table === 'daily') {
+            $result = $ci->Settings_model->get_setting("daily_tax_table", "payroll");
+            if($result) {
+                $result = unserialize($result);
+            } else {
+                $result = $ci->Taxes_model->get_daily_raw_default();
+            }
+        } else if($table === 'weekly') {
+            $result = $ci->Settings_model->get_setting("weekly_tax_table", "payroll");
+            if($result) {
+                $result = unserialize($result);
+            } else {
+                $result = $ci->Taxes_model->get_weekly_raw_default();
+            }
+        } else if($table === 'biweekly') {
+            $result = $ci->Settings_model->get_setting("biweekly_tax_table", "payroll");
+            if($result) {
+                $result = unserialize($result);
+            } else {
+                $result = $ci->Taxes_model->get_biweekly_raw_default();
+            }
+        } else if($table === 'monthly') {
+            $result = $ci->Settings_model->get_setting("monthly_tax_table", "payroll");
+            if($result) {
+                $result = unserialize($result);
+            } else {
+                $result = $ci->Taxes_model->get_monthly_raw_default();
+            }
+        }
+
+        return $result;
+    }
+}
