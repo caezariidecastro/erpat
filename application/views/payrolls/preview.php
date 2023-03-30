@@ -192,7 +192,9 @@
                 <ul style="font-size: x-small; font-weight: 100; ">
                     <li></li>
                     <li style="text-align: center;">
-                        <img style="width: auto; max-height: 50px;" src="<?php echo get_file_from_setting('site_logo', true); ?>" alt="">
+                        <?php if( file_exists( FCPATH.get_file_from_setting('site_logo', true) ) ) { ?>
+                            <img style="width: auto; max-height: 50px;" src="<?= get_file_from_setting('site_logo', true) ?>" alt="">
+                        <?php } ?>
                     </li>
                     <li style="text-align: center;">
                         <span><?= get_setting('company_address') ?></span>
