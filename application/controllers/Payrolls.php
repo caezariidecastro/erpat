@@ -761,7 +761,7 @@ class Payrolls extends MY_Controller {
 
         $preview = modal_anchor(get_uri("payrolls/preview/".$data->id), get_payslip_id($data->id, $data->payroll), array( "title" => lang('preview_payslip'), "data-post-payroll_id" => $data->id));
 
-        $check = '<li role="presentation">' . "<a href='#' id='$data->id' name='check' data-start_date='$payroll->start_date' data-end_date='$payroll->end_date' class='override_btn role-row link' style='border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;'><i class='fa fa-calendar'></i>  ".lang('check_logs')."</a>" . '</li>';
+        $check = '<li role="presentation">' . "<a href='#' id='$data->user' name='check' data-start_date='$payroll->start_date' data-end_date='$payroll->end_date' class='override_btn role-row link' style='border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;'><i class='fa fa-calendar'></i>  ".lang('check_logs')."</a>" . '</li>';
 
         $view = '<li role="presentation">' . "<a href='#' id='$data->id' name='preview' class='override_btn role-row link' style='border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;'><i class='fa fa-eye'></i>  ".lang('view_pdf')."</a>" . '</li>';
 
