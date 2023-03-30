@@ -795,7 +795,6 @@ class Payrolls extends MY_Controller {
             get_team_member_profile_link($data->user, $data->employee_name, array("target" => "_blank")), //user link
 
             $data->work_hour, //work_hour            
-            to_currency( $summary['gross_pay'] ), 
             to_currency( $summary['tax_due'] ),  
             "<strong ".($summary['net_pay']<=0?"style='color: red;'":"").">".to_currency( $summary['net_pay'] )."</strong>", 
 

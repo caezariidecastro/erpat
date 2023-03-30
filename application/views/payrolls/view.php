@@ -116,18 +116,15 @@
                 {title: '<?php echo lang("payslip_id") ?>', "class": "w10p"},
                 {title: '<?php echo lang("employee") ?>', "class": "w15p", "iDataSort": 1},
                 {title: '<?php echo lang("work_hour") ?>', "class": "text-right w10p"},
-                {title: '<?php echo lang("gross_pay") ?>', "class": "text-right w10p"},
                 {title: '<?php echo lang("tax_due") ?>', "class": "text-right w10p"},
-                {title: '<?php echo lang("net_pay") ?>'},
-                {title: '<?php echo lang("status") ?>'},
+                {title: '<?php echo lang("net_pay") ?>', "class": "text-right w10p"},
+                {title: '<?php echo lang("status") ?>', "class": "text-right w10p"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w10p", visible: optionVisibility}
             ],
             summation: [
                 {column: 2, dataType: 'number'},
                 {column: 3, dataType: 'currency'},
                 {column: 4, dataType: 'currency'},
-                {column: 5, dataType: 'currency'},
-                {column: 6, dataType: 'currency'},
             ],
             //tableRefreshButton: true,
             onInitComplete: function () {
