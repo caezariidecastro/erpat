@@ -547,6 +547,7 @@ class Payrolls extends MY_Controller {
             
         foreach($payslips as $current) {
             $payslip = $this->generate_payslip($payroll_info, $current->user);
+            unset($payslip['leave_credit']);
             $this->Payslips_model->update_where( $payslip, array("id"=>$current->id) );
         }
 
@@ -575,6 +576,7 @@ class Payrolls extends MY_Controller {
                 continue;
             }
             $payslip = $this->generate_payslip($payroll_info, $user_id);
+            unset($payslip['leave_credit']);
 
             //To create a payslip for that user in a list.
             $this->Payslips_model->save( $payslip, $payslip->id );
