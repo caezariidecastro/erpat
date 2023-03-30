@@ -811,6 +811,11 @@ class Payrolls extends MY_Controller {
         $monthly_salary = get_monthly_from_hourly($data->hourly_rate, 8, 261, false);
 
         return (new PayHP($data->hourly_rate, array(), $monthly_salary, "weekly"))
+            ->setTaxTable('daily', get_compensation_tax('daily'))
+            ->setTaxTable('weekly', get_compensation_tax('weekly'))
+            ->setTaxTable('biweekly', get_compensation_tax('biweekly'))
+            ->setTaxTable('monthly', get_compensation_tax('monthly'))
+
             ->addEarnings('allowance', $data->allowance)
             ->addEarnings('incentive', $data->incentive)
             ->addEarnings('bonus', $data->bonus_month)
@@ -858,8 +863,7 @@ class Payrolls extends MY_Controller {
             ->deductLoan('sss', $data->sss_loan)
 
             ->deductOther('adjust', $data->deduct_adjust)
-            ->deductOther('other', $data->deduct_other)
-            ;
+            ->deductOther('other', $data->deduct_other);
     }
 
     function override( $payslip_id = 0 ) {
@@ -1224,6 +1228,7 @@ class Payrolls extends MY_Controller {
         $payroll = $this->Payrolls_model->get_details(array(
             "id" => $payslip->payroll
         ))->row();
+
         $payslip->pay_date = format_to_custom($payroll->pay_date, "F d, Y");
         $payslip->pay_period= format_to_custom($payroll->start_date, "F d-").format_to_custom($payroll->end_date, "d Y");
 

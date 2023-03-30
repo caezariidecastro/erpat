@@ -14,12 +14,16 @@ class PayHP {
     //DYNAMIC VARIABLES
     protected $hourly_rate = 0.0;
 
-    protected $compensation_level = 0;
     protected $expected_compensation = 0;
-
+    protected $compensation_level = 0;
     protected $train_range = 0.00;
     protected $tax_on_train_range = 0.00;
     protected $rate_in_excess = 0.00;
+
+    protected $daily_tax_table = array();
+    protected $weekly_tax_table = array();
+    protected $biweekly_tax_table = array();
+    protected $monthly_tax_table = array();
 
     //Taxable
     protected $incentives = 0.0;
@@ -89,6 +93,22 @@ class PayHP {
         $this->spclhd_rate = isset($rates['spclhd_rate']) && is_numeric($rates['spclhd_rate'])?$rates['spclhd_rate']:$this->spclhd_rate;
         $this->expected_compensation = $expected_compensation;
         $this->term_table = $term;
+        return $this;
+    }
+
+    /**
+     * Set all the relavant tax table like weekly or monthly.
+     */
+    function setTaxTable($type, $object) {
+        if($type === 'daily') {
+            $this->daily_tax_table = $object;
+        } else if($type === 'weekly') {
+            $this->weekly_tax_table = $object;
+        } else if($type === 'biweekly') {
+            $this->biweekly_tax_table = $object;
+        } else if($type === 'monthly') {
+            $this->monthly_tax_table = $object;
+        }
         return $this;
     }
 
@@ -308,6 +328,7 @@ class PayHP {
             "totat_contribution" => $this->totalContribution(),
             "total_loan" => $this->totalLoans(),
 
+            "monthly_salary" => $this->expected_compensation,
             "basic_pay" => $this->basicPay(),
             "unwork_deduction" => $this->deductPay(),
             "hours_paid" => $this->hoursPaid(),
@@ -487,8 +508,6 @@ class PayHP {
         return $this->netTaxable() + $this->nontaxAdditional();
     }
 
-    //DEDUCTIONS SUMMARY
-
     /**
      * Get the total contributions of the employee.
      */
@@ -515,135 +534,69 @@ class PayHP {
      */
     function taxDue() {
 
-        $this->train_range = 0.00;
-        $this->tax_on_train_range = 0.00;
-        $this->rate_in_excess = 0.00;
-
+        $tax_due = 0;
         $current_compensation = $this->netTaxable();
 
-        if($this->term = 'monthly') {
-            switch(true) {
-                case $current_compensation <=  20833.00: //1
-                    $this->compensation_level = 1;
-                    $this->train_range = 20833.00;
-                    $this->tax_on_train_range = 0.00;
-                    $this->rate_in_excess = 0.00;
-                    break;
-                case $current_compensation > 20833.00 && $current_compensation <= 33333.00: //2
-                    $this->compensation_level = 2;
-                    $this->train_range = 20833.00;
-                    $this->tax_on_train_range = 0.00;
-                    $this->rate_in_excess = 0.15;
-                    break;
-                case $current_compensation > 33333.00 && $current_compensation <= 66667.00: //3
-                    $this->compensation_level = 3;
-                    $this->train_range = 33333.00;
-                    $this->tax_on_train_range = 1875.00;
-                    $this->rate_in_excess = 0.20;
-                    break;
-                case $current_compensation > 66667.00 && $current_compensation <= 166667.00: //4
-                    $this->compensation_level = 4;
-                    $this->train_range = 66667.00;
-                    $this->tax_on_train_range = 8541.80;
-                    $this->rate_in_excess = 0.25;
-                    break;
-                case $current_compensation > 166667.00 && $current_compensation <= 666667.00: //5
-                    $this->compensation_level = 5;
-                    $this->train_range = 166667.00;
-                    $this->tax_on_train_range = 33541.80;
-                    $this->rate_in_excess = 0.30;
-                    break;
-                case $current_compensation > 666667.00: //6
-                    $this->compensation_level = 6;
-                    $this->train_range = 666667.00;
-                    $this->tax_on_train_range = 183541.80;
-                    $this->rate_in_excess = 0.35;
-                    break;
-                default:
-                    break;
-            } 
-        } else if($this->term = 'biweekly') {
-            switch(true) {
-                case $current_compensation <=  10417.00: //1
-                    $this->compensation_level = 1;
-                    $this->train_range = 10417.00;
-                    $this->tax_on_train_range = 0.00;
-                    $this->rate_in_excess = 0.00;
-                    break;
-                case $current_compensation > 10417.00 && $current_compensation <= 16667.00: //2
-                    $this->compensation_level = 2;
-                    $this->train_range = 10417.01;
-                    $this->tax_on_train_range = 0.00;
-                    $this->rate_in_excess = 0.15;
-                    break;
-                case $current_compensation > 16667.00 && $current_compensation <= 33333.00: //3
-                    $this->compensation_level = 3;
-                    $this->train_range = 16667.00;
-                    $this->tax_on_train_range = 937.50;
-                    $this->rate_in_excess = 0.20;
-                    break;
-                case $current_compensation > 33333.00 && $current_compensation <= 83333.00: //4
-                    $this->compensation_level = 4;
-                    $this->train_range = 33333.00;
-                    $this->tax_on_train_range = 4270.70;
-                    $this->rate_in_excess = 0.25;
-                    break;
-                case $current_compensation > 83333.00 && $current_compensation <= 333333.00: //5
-                    $this->compensation_level = 5;
-                    $this->train_range = 83333.00;
-                    $this->tax_on_train_range = 16770.70;
-                    $this->rate_in_excess = 0.30;
-                    break;
-                case $current_compensation > 333333.00: //6
-                    $this->compensation_level = 6;
-                    $this->train_range = 333333.00;
-                    $this->tax_on_train_range = 91770.70;
-                    $this->rate_in_excess = 0.35;
-                    break;
-                default:
-                    break;
-            } 
+        //get the current tax table for this payroll.
+        $tax_table = false;
+        if($this->term = 'daily') {
+            $tax_table = $this->daily_tax_table;
         } else if($this->term = 'weekly') {
+            $tax_table = $this->weekly_tax_table;
+        } else if($this->term = 'biweekly') {
+            $tax_table = $this->biweekly_tax_table;
+        } else if($this->term = 'monthly') {
+            $tax_table = $this->monthly_tax_table;
+        }
+
+        // set the tax row value.
+        if($tax_table) {
+
+            $this->compensation_level = 0;
+            $this->train_range = 0.00;
+            $this->tax_on_train_range = 0.00;
+            $this->rate_in_excess = 0.00;
+
             switch(true) {
-                case $current_compensation <=  4808.00: //1
-                    $this->compensation_level = 1;
-                    $this->train_range = 4808.00;
-                    $this->tax_on_train_range = 0.00;
-                    $this->rate_in_excess = 0.00;
+                case $current_compensation <=  floatval($tax_table[0][1]): //1
+                    $this->compensation_level = floatval($tax_table[0][0]);
+                    $this->train_range = floatval($tax_table[0][1]);
+                    $this->tax_on_train_range = floatval($tax_table[0][3]);
+                    $this->rate_in_excess = floatval($tax_table[0][4]);
                     break;
-                case $current_compensation > 4808.00 && $current_compensation <= 7692.00: //2
-                    $this->compensation_level = 2;
-                    $this->train_range = 4808.01;
-                    $this->tax_on_train_range = 0.00;
-                    $this->rate_in_excess = 0.15;
+                case $current_compensation > floatval($tax_table[1][1]) && $current_compensation <= floatval($tax_table[1][2]): //2
+                    $this->compensation_level = floatval($tax_table[1][0]);
+                    $this->train_range = floatval($tax_table[1][1]);
+                    $this->tax_on_train_range = floatval($tax_table[1][3]);
+                    $this->rate_in_excess = floatval($tax_table[1][4]);
                     break;
-                case $current_compensation > 7692.00 && $current_compensation <= 15385.00: //3
-                    $this->compensation_level = 3;
-                    $this->train_range = 7692.00;
-                    $this->tax_on_train_range = 432.60;
-                    $this->rate_in_excess = 0.20;
+                case $current_compensation > floatval($tax_table[2][1]) && $current_compensation <= floatval($tax_table[2][2]): //3
+                    $this->compensation_level = floatval($tax_table[2][0]);
+                    $this->train_range = floatval($tax_table[2][1]);
+                    $this->tax_on_train_range = floatval($tax_table[2][3]);
+                    $this->rate_in_excess = floatval($tax_table[2][4]);
                     break;
-                case $current_compensation > 15385.00 && $current_compensation <= 38462.00: //4
-                    $this->compensation_level = 4;
-                    $this->train_range = 15385.00;
-                    $this->tax_on_train_range = 1971.20;
-                    $this->rate_in_excess = 0.25;
+                case $current_compensation > floatval($tax_table[3][1]) && $current_compensation <= floatval($tax_table[3][2]): //4
+                    $this->compensation_level = floatval($tax_table[3][0]);
+                    $this->train_range = floatval($tax_table[3][1]);
+                    $this->tax_on_train_range = floatval($tax_table[3][3]);
+                    $this->rate_in_excess = floatval($tax_table[3][4]);
                     break;
-                case $current_compensation > 38462.00 && $current_compensation <= 153846.00: //5
-                    $this->compensation_level = 5;
-                    $this->train_range = 38462.00;
-                    $this->tax_on_train_range = 7740.45;
-                    $this->rate_in_excess = 0.30;
+                case $current_compensation > floatval($tax_table[4][1]) && $current_compensation <= floatval($tax_table[4][2]): //5
+                    $this->compensation_level = floatval($tax_table[4][0]);
+                    $this->train_range = floatval($tax_table[4][1]);
+                    $this->tax_on_train_range = floatval($tax_table[4][3]);
+                    $this->rate_in_excess = floatval($tax_table[4][4]);
                     break;
-                case $current_compensation > 153846.00: //6
-                    $this->compensation_level = 6;
-                    $this->train_range = 153846.00;
-                    $this->tax_on_train_range = 42355.65;
-                    $this->rate_in_excess = 0.35;
+                case $current_compensation > floatval($tax_table[5][1]): //6
+                    $this->compensation_level = floatval($tax_table[5][0]);
+                    $this->train_range = floatval($tax_table[5][1]);
+                    $this->tax_on_train_range = floatval($tax_table[5][3]);
+                    $this->rate_in_excess = floatval($tax_table[5][4]);
                     break;
                 default:
                     break;
-            } 
+            }
         }
 
         $in_excess_of_range = $current_compensation - $this->train_range;

@@ -1,7 +1,7 @@
 <?php
     $payslip = array(
         "fullname" => $payslip->fullname,
-        "basic_salary" => to_currency($payslip->salary),
+        "monthly_salary" => to_currency($summary['monthly_salary']),
         "leave_credit" => convert_number_to_decimal($payslip->leave_credit),
 
         "job_title" => $payslip->job_title,
@@ -192,7 +192,7 @@
                 <ul style="font-size: x-small; font-weight: 100; ">
                     <li></li>
                     <li style="text-align: center;">
-                        <img style="width: auto; max-height: 50px;" src="<?php echo get_file_from_setting('invoice_logo', true); ?>" alt="">
+                        <img style="width: auto; max-height: 50px;" src="<?php echo get_file_from_setting('site_logo', true); ?>" alt="">
                     </li>
                     <li style="text-align: center;">
                         <span><?= get_setting('company_address') ?></span>
@@ -216,7 +216,7 @@
                         Full Name: <span style="color: #454545;"><?= $payslip['fullname'] ?></span>
                     </li>
                     <li style="line-height: 25px;">
-                        Basic Salary: <span style="color: #454545;"><?= $payslip['basic_salary'] ?></span>
+                        Monthly Salary: <span style="color: #454545;"><?= $payslip['monthly_salary'] ?></span>
                     </li>
                     <li style="line-height: 25px;">
                         Leave Credits: <span style="color: #454545;"><?= $payslip['leave_credit'] ?></span>
