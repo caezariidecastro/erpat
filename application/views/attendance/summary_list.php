@@ -13,23 +13,29 @@
             ],
             rangeDatepicker: [{startDate: {name: "start_date", value: moment().format("YYYY-MM-DD")}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}}],
             columns: [
-                {title: "<?php echo lang("employee"); ?>", "class": "w20p"},
+                {visible: false, searchable: false},
+                {title: "<?php echo lang("employee"); ?>", "class": "w20p", "iDataSort": 0},
                 {title: "<?php echo lang("department"); ?>", "class": "w15p text-center"},
                 {title: "<?php echo lang("duration"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("worked"); ?>", "class": "w5p text-right"},
+                {title: "<?php echo lang("overtime"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("bonus"); ?>", "class": "w5p text-right"},
+                {title: "<?php echo lang("night"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("lates"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("overbreak"); ?>", "class": "w5p text-right"},
-                {title: "<?php echo lang("undertime"); ?>", "class": "w5p text-right"}
+                {title: "<?php echo lang("undertime"); ?>", "class": "w5p text-right"},
             ],
-            printColumns: [0, 1, 2, 3, 4, 5, 6],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6],
+            printColumns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            xlsColumns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             summation: [
-                {column: 2, dataType: 'time'},
-                {column: 3, dataType: 'number'},
+                {column: 3, dataType: 'time'},
                 {column: 4, dataType: 'number'},
                 {column: 5, dataType: 'number'},
-                {column: 6, dataType: 'number'}
+                {column: 6, dataType: 'number'},
+                {column: 7, dataType: 'number'},
+                {column: 8, dataType: 'number'},
+                {column: 9, dataType: 'number'},
+                {column: 10, dataType: 'number'}
             ],
             tableRefreshButton: true,
         });

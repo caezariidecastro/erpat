@@ -532,121 +532,57 @@ class Attendance extends MY_Controller {
         $list_temp = array();
 
         foreach ($list_data as $data) {
-            if( $data->out_time && max(strtotime($data->out_time)-strtotime($data->in_time), 0) > 0 ) {
-                $single = $this->_make_compute_row( $data );
+            if( is_date_exists($data->out_time) ) {
+
+                $attd = (new BioMeet($this, array(), true))
+                    ->addAttendance($data)
+                    ->calculate();
+
+                $image_url = get_avatar($data->created_by_avatar);
+                $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
 
                 if( isset($list_temp[$data->user_id]) ) {
-                    $list_temp[$data->user_id][2] += (double)$single[2];
-                    $list_temp[$data->user_id][3] += (double)$single[3];
-                    $list_temp[$data->user_id][4] += (double)$single[4];
-                    $list_temp[$data->user_id][5] += (double)$single[5];
-                    $list_temp[$data->user_id][6] += (double)$single[6];
-                    $list_temp[$data->user_id][7] += (double)$single[7];
+                    $list_temp[$data->user_id][2] += (double)$attd->getTotalDuration();
+                    $list_temp[$data->user_id][3] += (double)$attd->getTotalWork();
+                    $list_temp[$data->user_id][4] += (double)$attd->getTotalOvertime();
+                    $list_temp[$data->user_id][5] += (double)$attd->getTotalBonuspay();
+                    $list_temp[$data->user_id][6] += (double)$attd->getTotalNightpay();
+                    $list_temp[$data->user_id][7] += (double)$attd->getTotalLates();
+                    $list_temp[$data->user_id][8] += (double)$attd->getTotalOverbreak();
+                    $list_temp[$data->user_id][9] += (double)$attd->getTotalUndertime();
                 } else {
                     $list_temp[$data->user_id] = array();
-                    $list_temp[$data->user_id][0] = $single[0];
-                    $list_temp[$data->user_id][1] = $single[1];
-                    $list_temp[$data->user_id][2] = (double)$single[2];
-                    $list_temp[$data->user_id][3] = (double)$single[3];
-                    $list_temp[$data->user_id][4] = (double)$single[4];
-                    $list_temp[$data->user_id][5] = (double)$single[5];
-                    $list_temp[$data->user_id][6] = (double)$single[6];
-                    $list_temp[$data->user_id][7] = (double)$single[7];
+                    $list_temp[$data->user_id][0] = get_team_member_profile_link($data->user_id, $user);
+                    $list_temp[$data->user_id][1] = $data->team_list;
+                    $list_temp[$data->user_id][2] = (double)$attd->getTotalDuration();
+                    $list_temp[$data->user_id][3] = (double)$attd->getTotalWork();
+                    $list_temp[$data->user_id][4] = (double)$attd->getTotalOvertime();
+                    $list_temp[$data->user_id][5] = (double)$attd->getTotalBonuspay();
+                    $list_temp[$data->user_id][6] = (double)$attd->getTotalNightpay();
+                    $list_temp[$data->user_id][7] = (double)$attd->getTotalLates();
+                    $list_temp[$data->user_id][8] = (double)$attd->getTotalOverbreak();
+                    $list_temp[$data->user_id][9] = (double)$attd->getTotalUndertime();
                 }
             }
         }
 
         foreach ($list_temp as $key => $item) {
-            $item[2] = convert_seconds_to_time_format($item[2]);
-            $item[3] = strval($item[3]);
-            $item[4] = strval($item[4]);
-            $item[5] = strval($item[5]);
-            $item[6] = strval($item[6]);
-            $item[7] = strval($item[7]);
-            $result[] = $item;
+            $row = array();
+            $row[0] = $key;
+            $row[1] = $item[0];
+            $row[2] = $item[1];
+            $row[3] = convert_seconds_to_time_format( $item[2] * 3600 ); //to hours
+            $row[4] = strval($item[3]);
+            $row[5] = strval($item[4]);
+            $row[6] = strval($item[5]);
+            $row[7] = strval($item[6]);
+            $row[8] = strval($item[7]);
+            $row[9] = strval($item[8]);
+            $row[10] = strval($item[9]);
+            $result[] = $row;
         }
 
         echo json_encode(array("data" => $result));
-    }
-
-    private function _make_compute_row($data) {
-        $image_url = get_avatar($data->created_by_avatar);
-        $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
-
-        //Important attendance triggers.
-        $to_time = is_date_exists($data->out_time) ? 
-            strtotime($data->out_time) : null;
-        $from_time = strtotime($data->in_time);
-
-        //Get the instance of the schedule.
-        $cur_sched = $this->Schedule_model->get_details(array("id" => $data->sched_id))->row();
-
-        //If no schedule make sure to have an actual in and out as official schedule.
-        $sched_day = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
-        $sched_in = $data->in_time;
-
-        //Get the current day schedule instance based on in time.
-        $day_name = format_to_custom($data->in_time, 'D'); $has_sched_in = false;
-        if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
-            $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
-            $sched_in = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
-            $has_sched_in = true;
-        }
-        $sched_in = strtotime($sched_in);
-        
-        //Get lates: x = diff_time(in_time, sched_in)
-        $lates = convert_seconds_to_hour_decimal( max($from_time-$sched_in, 0) );
-
-        if( $data->out_time ) {
-
-            //If no schedule make sure to have an actual in and out as official schedule.
-            $sched_day = convert_date_utc_to_local($data->out_time, 'Y-m-d'); //local
-            $sched_out = $data->out_time;
-
-            //Get the current day schedule instance based on in time.
-            $day_name = format_to_custom($data->out_time, 'D'); $has_sched_out = false;
-            if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
-                $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
-                $sched_out = convert_date_local_to_utc(  $sched_day .' '. $sched_time );
-                $has_sched_out = true;
-            }
-            $sched_out = strtotime($sched_out);
-            
-            //Actual time in hours decimal.
-            $actual = max($to_time-$from_time, 0);
-
-            //Get undertime: y = diff_time(sched_end, out_time)
-            $under = convert_seconds_to_hour_decimal( max($sched_out-$to_time, 0) );
-			
-			//Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
-            $sched_hours = convert_seconds_to_hour_decimal( max($sched_end-$sched_in, 0) );
-
-            //Get non worked hours: a = x+y
-            $nonworked = convert_number_to_decimal( max(($lates+$under), 0) );
-
-            //Default hours per day
-            $hours_per_day = 8.00;
-            if($has_sched_in && $has_sched_out) {
-                $hours_per_day = convert_number_to_decimal(max($sched_out - $sched_in, 0));
-            }
-            //Get the worked hours: b = z-a;
-            $worked = convert_number_to_decimal( max(($hours_per_day-$nonworked), 0) );
-
-            //Current duration of actual
-            $duration = $actual;
-        }
-
-        return array(
-            get_team_member_profile_link($data->user_id, $user),
-            $data->team_list,
-            $duration,
-            $worked, 
-            $nonworked, 
-            $lates, 
-            0, //TODO: Overbreak
-            $under,
-            $data->in_time,
-        );
     }
 
     //load the attendance summary details tab
@@ -703,7 +639,7 @@ class Attendance extends MY_Controller {
                 );
             }
         }
-        
+
         echo json_encode(array("data" => $result));
     }
 
