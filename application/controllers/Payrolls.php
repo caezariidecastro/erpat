@@ -22,6 +22,7 @@ class Payrolls extends MY_Controller {
         $this->load->model("Accounts_model");
         $this->load->model("Attendance_model");
         $this->load->model("Payment_methods_model");
+        $this->load->model("Leave_credits_model");
 
         $this->load->model("Expenses_model");
         $this->load->model("Expense_categories_model");
@@ -495,12 +496,16 @@ class Payrolls extends MY_Controller {
             $payslip_id = $payslip->id;
         }
 
+        $leave_credit = $this->Leave_credits_model->get_balance(array(
+            "user_id" => $user_id
+        ));
+
         return array(
             "id" => $payslip_id,
             "payroll" => $payroll_info->id,
             "user" => $user_id,
             "hourly_rate" => $job_info->rate_per_hour,
-            //"leave_credit" => $user_id, //hourly_rate
+            "leave_credit" => $leave_credit['balance'], //hourly_rate
 
             "schedule" => $payroll_info->sched_hours,//$attd->getTotalSchedule(), //schedule
             "worked" => $attd->getTotalWork(), //work
