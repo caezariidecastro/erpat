@@ -211,6 +211,7 @@ class PayHP {
 
     /**
      * Set all the hour variables for overtime with night differential.
+     * TODO: SOON TO BE DEPRECATED.
      * @var value decimal(10,2) in hours
      * @var type regular, restday, legalhd, specialhd
      */
@@ -345,12 +346,18 @@ class PayHP {
         );
     }
 
-    //EARNINGS SUMMARY
-
+    /**
+     * Get all the unworked hours if there is late, over break, under time, and idle time.
+     * You can call setHour('absent', hours), to automatically deduct to the basic pay.
+     */
     function unworkHour() {
         return $this->absent_hour + $this->late_hour + $this->over_hour + $this->under_hour;
     }
-
+    
+    /**
+     * By default, basic pay is computed with the scheduled hours x the hourly rate.
+     * This can be overriden if the expected_compensation is set, term mush all be set.
+     */
     function basicPay() {
         $regular = $this->sched_hour * $this->hourly_rate;
 
@@ -364,23 +371,19 @@ class PayHP {
             } 
         }
         
-        return $regular; //includes monthly
+        return $regular;
     }
 
-    //Optional
-    function deductPay() {
-        return $this->unworkHour() * $this->hourly_rate;
-    }
-
-    function hoursPaid() {
-        $regular_pay = $this->worked_hour * $this->hourly_rate;
-        return $regular_pay + $this->ptoPay() + $this->overtimePay() + $this->nightdiffPay() + $this->specialPay();
-    }
-
+    /**
+     * This is a an official leave that will be paid by the company.
+     */
     function ptoPay() {
         return $this->pto_hour * $this->hourly_rate;
     }
 
+    /**
+     * The hours paid in excess to the scheduled hour.
+     */
     function overtimePay() {
         $sub_total = 0.00;
 
@@ -398,6 +401,9 @@ class PayHP {
         return $sub_total * $this->hourly_rate;
     }
 
+    /**
+     * The night differential is by default 10pm to 6am.
+     */
     function nightdiffPay() {
         $sub_total = 0.00;
 
@@ -415,6 +421,10 @@ class PayHP {
         return $sub_total * $this->hourly_rate;
     }
 
+    /**
+     * The special pay is the combination of night diff and overtime pay.
+     * TODO: SOON TO BE DEPRECATED.
+     */
     function specialPay() {
         $sub_total = 0.00;
         
@@ -433,38 +443,76 @@ class PayHP {
         return $sub_total * $this->hourly_rate;
     }
 
+    /**
+     * Hour's paid is the worked hours x the hourly rate plus all the differential pays
+     * like the paid timeoff, overtime, nightdiff, and special pay.
+     */
+    function hoursPaid() {
+        $regular_pay = $this->worked_hour * $this->hourly_rate;
+        return $regular_pay + $this->ptoPay() + $this->overtimePay() + $this->nightdiffPay() + $this->specialPay();
+    }
+
+    /**
+     * This deduction is a product of unworked hours x the hourly rate.
+     */
+    function deductPay() {
+        return $this->unworkHour() * $this->hourly_rate;
+    }
+    
+    /**
+     * Get all the taxable earnings which is the other earnings.
+     */
     function taxableAdditional() {
         return $this->add_other;
     }
 
+    /**
+     * Get the non-taxable additional like allowance, adjustment, etc.
+     */
     function nontaxAdditional() {
         return $this->allowance + $this->incentives + $this->month13th + $this->bonus + $this->add_adjust;
     }
 
+    /**
+     * Get the total taxample earnings which includeds hours paid and taxable additional.
+     */
     function netTaxable() {
-        return $this->hoursPaid() + $this->taxableAdditional(); //TODO TO CONFIRM IF SOME IN ADDITIONAL IS INCLUDED.
+        return $this->hoursPaid() + $this->taxableAdditional();
     }
 
+    /**
+     * Get the netTaxable plus the non taxable.
+     */
     function grossPay() {
         return $this->netTaxable() + $this->nontaxAdditional();
     }
 
     //DEDUCTIONS SUMMARY
 
+    /**
+     * Get the total contributions of the employee.
+     */
     function totalContribution() {
         return $this->sss_contri + $this->pagibig_contri + $this->phealth_contri + $this->hmo_contri;
     }
 
+    /**
+     * Get the total loans of the employee.
+     */
     function totalLoans() {
         return $this->com_loan + $this->sss_loan + $this->pagibig_loan;
     }
 
+    /**
+     * Get all other deduction and adjustment.
+     */
     function otherDeductions() {
         return $this->deduct_adjust + $this->deduct_other;
     }
 
-    //FINAL
-
+    /**
+     * Get the tax due based on compensation.
+     */
     function taxDue() {
 
         $this->train_range = 0.00;
@@ -605,14 +653,23 @@ class PayHP {
         return max($tax_due, 0); //tax due
     }
 
+    /**
+     * 
+     */
     function totalEarnings() {
-        return $this->basicPay() + $this->ptoPay() + $this->overtimePay() + $this->nightdiffPay() + $this->specialPay() + $this->taxableAdditional() + $this->nontaxAdditional();
+        return $this->grossPay(); //trace back, added the differential and etc.
     }
 
+    /**
+     * Calculate totalDeductions starting from tax dues, contribution, loans, deductions like unworked, and other deductions.
+     */
     function totalDeductions() {
-        return $this->deductPay() + $this->taxDue() + $this->totalContribution() + $this->totalLoans() + $this->otherDeductions();
+        return $this->taxDue() + $this->totalContribution() + $this->totalLoans() + $this->deductPay() + $this->otherDeductions();
     }
 
+    /**
+     * Compute the total compensation that the employee will received!
+     */
     function netPay() {
         return $this->totalEarnings() - $this->totalDeductions();
     }
