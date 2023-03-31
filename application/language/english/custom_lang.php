@@ -969,3 +969,5 @@ $lang["nightpay_end_trigger"] = "Nightpay End Trigger";
 
 $lang["check_logs"] = "Check Logs";
 $lang["compensation_tax_table"] = "Compensation Tax Table";
+
+$lang["whitelisted"] = "Whitelisted";

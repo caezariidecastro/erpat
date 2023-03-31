@@ -95,11 +95,26 @@ class Settings extends MY_Controller {
             $view_data['timezone_dropdown'][$zone] = $zone;
         }
 
+        $team_members = $this->Users_model->get_all_where(array(
+            "deleted" => 0, 
+            "status" => "active",
+            "user_type" => "staff"
+        ))->result();
+        $members_dropdown = array();
+        foreach ($team_members as $team_member) {
+            $fullname = $team_member->first_name . " " . $team_member->last_name;
+            if(get_setting('name_format') == "lastfirst") {
+                $fullname = $team_member->last_name.", ".$team_member->first_name;
+            }
+            $members_dropdown[] = array("id" => $team_member->id, "text" => $fullname);
+        }
+        $view_data['members_dropdown'] = json_encode($members_dropdown);
+
         $this->template->rander("settings/calendar", $view_data);
     }
 
     function save_calendar_settings() {
-        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "breaktime_tracking", "auto_clockout", "overtime_trigger", "bonuspay_trigger", "nightpay_start_trigger", "nightpay_end_trigger");
+        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "breaktime_tracking", "auto_clockout", "whitelisted", "overtime_trigger", "bonuspay_trigger", "nightpay_start_trigger", "nightpay_end_trigger");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);

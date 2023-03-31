@@ -116,7 +116,7 @@
                     </div>
                     <div class="form-group">
                         <label for="auto_clockout" class=" col-md-2"><?php echo lang('auto_clockout'); ?></label>
-                        <div class="col-md-10">
+                        <div class="col-md-2">
                             <?php
                             echo form_dropdown(
                                 "auto_clockout", array(
@@ -125,6 +125,9 @@
                                 ), get_setting('auto_clockout'), "class='select2 mini'"
                             );
                             ?>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" value="<?php echo get_setting('whitelisted') ?>" name="whitelisted" id="team_members_dropdown" class="w100p validate-hidden"  placeholder="<?php echo lang('whitelisted'); ?>"  />    
                         </div>
                     </div>
                     <div class="form-group">
@@ -237,5 +240,10 @@
         });
 
         setTimePicker("#nightpay_start_trigger, #nightpay_end_trigger");
+
+        $("#team_members_dropdown").select2({
+            multiple: true,
+            data: <?php echo ($members_dropdown); ?>
+        });
     });
 </script>
