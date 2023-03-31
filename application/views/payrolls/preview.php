@@ -11,15 +11,18 @@
         "earnings" => [
             array(
                 "name" => "Basic Pay",
-                "value" => to_currency($summary['basic_pay'])
+                "value" => to_currency($summary['basic_pay']),
+                "prefix" => "(".$summary['worked_hour']." hrs)"
             ),
             array(
                 "name" => "Overtime Pay",
-                "value" => to_currency($summary['overtime_pay'])
+                "value" => to_currency($summary['overtime_pay']),
+                "prefix" => "(".$summary['overtime_hour']." hrs)"
             ),
             array(
                 "name" => "Night Differential",
-                "value" => to_currency($summary['nightdiff_pay'])
+                "value" => to_currency($summary['nightdiff_pay']),
+                "prefix" => "(".$summary['nightdiff_hour']." hrs)"
             ),
             array(
                 "name" => "Overtime ND",
@@ -252,10 +255,10 @@
             <th width="24.7%" style="text-align: center;"><strong style="color: #262626;">Deductions</strong></th>
         </tr>
         <?php foreach($payslip['earnings'] as $earns) { ?>
-            <?php if($earns['value'] != to_currency("0") ) { ?>
+            <?php if($earns['value'] !== "P 0.00" && $earns['value'] !== "(0 hrs) P 0.00") { ?>
             <tr style="color: #454545;">
                 <td><?= $earns['name'] ?></td>
-                <td style="text-align: right;"><?= $earns['value'] ?></td>
+                <td style="text-align: right;"><?= $earns['prefix'] ?> <?= $earns['value'] ?></td>
                 <td style="text-align: right;">-</td>
             </tr>
             <?php } ?>

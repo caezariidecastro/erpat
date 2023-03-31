@@ -333,6 +333,10 @@ class PayHP {
             "unwork_deduction" => $this->deductPay(),
             "hours_paid" => $this->hoursPaid(),
 
+            "worked_hour" => $this->worked_hour,
+            "overtime_hour" => $this->regular_ot,
+            "nightdiff_hour" => $this->regular_nd,
+
             "allowance" => $this->allowance,
             "incentives" => $this->incentives,
             "bonus" => $this->bonus,
