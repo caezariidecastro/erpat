@@ -37,12 +37,12 @@ class Schedule_model extends Crud_model {
         $job_info = $this->db->dbprefix('team_member_job_info');
         $sql = "SELECT sched_id FROM $job_info 
             WHERE deleted=0 AND user_id='$user_id'";
-        $result = $this->db->query($sql);
+        $row = $this->db->query($sql)->row();
 
-        if( $result && count($result->result()) > 0 ) {
-            return $result->result()[0]->sched_id;
+        if( isset( $row ) ) {
+            return $row->sched_id;
         } else {
-            return 0;
+            return false;
         }
     }
 
