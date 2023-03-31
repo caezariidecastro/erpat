@@ -15,11 +15,107 @@ class Attendance_model extends Crud_model {
         $now = get_current_utc_time();
         $whitelisted = get_setting('whitelisted');
 
+        // Auto clouckout greater than number of clocked hours.
         $sql = "UPDATE attendance SET out_time=in_time, status='clockout', note='System Clockout' 
             WHERE (status='incomplete' OR out_time = NULL) 
                 AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 >= 20
-                AND user_id NOT IN (".$whitelisted.")";
+                AND user_id NOT IN (".$whitelisted.")"; //TODO: Make the autoclock out be a settings.
         $this->db->query($sql);
+
+        //get list of user in autoclocked out.
+        $autoclockout_list = get_setting("auto_clockin_employee", "none");
+        $lists = explode(",",  $autoclockout_list);
+
+        //loop and clock in who has 1m > greated thant schedule
+        foreach($lists as $user_id) {
+            $this->clock_out_by_schedule($user_id);
+        }
+    }
+
+    function auto_clocked_in() {
+        //get list of user in autoclocked in.
+        $autoclockin_list = get_setting("auto_clockin_employee", "none");
+        $lists = explode(",",  $autoclockin_list);
+
+        //loop and clock in who has 1m > greated thant schedule
+        foreach($lists as $user_id) {
+            $this->clock_in_by_schedule($user_id);
+        }
+    }
+
+    protected function clock_in_by_schedule($user_id) {
+        // get the current sched id.
+        if(!$sched_id = $this->Schedule_model->getUserSchedId($user_id)) {
+            return;
+        }
+
+        // get the local time and day name.
+        $current_local_time = get_my_local_time();
+        $day_name = format_to_custom($current_local_time, 'D', false, true);
+        $sched_date_in = convert_date_format($current_local_time, 'Y-m-d');
+
+        // get the current user schedule by id.
+        $cur_sched = $this->Schedule_model->get_details(array(
+            "id" => $sched_id,
+            "deleted" => true
+        ))->row();
+        
+        //check if there is a schedule for today. get the schedule day name object.
+        if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
+            $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
+            $scheduled_clocked_in = $sched_date_in .' '. $sched_time; //local
+            $scheduled_clocked_in = convert_date_local_to_utc($scheduled_clocked_in); //utc
+
+            //check if user is clocked in.
+            if($this->current_clock_in_record($user_id) === false) { 
+                $data = array(
+                    "sched_id" => $sched_id,
+                    "in_time" => $scheduled_clocked_in,
+                    "status" => "incomplete",
+                    "user_id" => $user_id
+                );
+
+                $this->save($data);
+            }
+        }
+    }
+
+    protected function clock_out_by_schedule($user_id) {
+        // get the current sched id.
+        if(!$sched_id = $this->Schedule_model->getUserSchedId($user_id)) {
+            return;
+        }
+
+        // get the local time and day name.
+        $current_local_time = get_my_local_time();
+        $day_name = format_to_custom($current_local_time, 'D', false, true);
+        $sched_date_out = convert_date_format($current_local_time, 'Y-m-d');
+
+        // get the current user schedule by id.
+        $cur_sched = $this->Schedule_model->get_details(array(
+            "id" => $sched_id,
+            "deleted" => true
+        ))->row();
+        
+        //check if there is a schedule for today. get the schedule day name object.
+        if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
+            $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
+            $scheduled_clocked_out = $sched_date_out .' '. $sched_time; //local
+            $scheduled_clocked_out = convert_date_local_to_utc($scheduled_clocked_out); //utc
+
+            $count_start = strtotime($scheduled_clocked_out);
+            $count_end = strtotime(get_current_utc_time());
+
+            //check if user is clocked in.
+            if(max(($count_end-$count_start), 0) > 0 && $attendance = $this->current_clock_in_record($user_id)) { 
+                $data = array(
+                    "out_time" => $scheduled_clocked_out,
+                    "status" => "pending",
+                );
+
+                $this->save($data, $attendance->id);
+            }
+        }
     }
 
     function current_clock_in_record($user_id) {

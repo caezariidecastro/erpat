@@ -717,3 +717,20 @@ if (!function_exists('convert_timestamp_to_date')) {
     }
 
 }
+
+/**
+ * Convert the date to new specified format.
+ * 
+ * @param string $date
+ * @param string $format
+ * @return datetime date
+ */
+if (!function_exists('convert_date_format')) {
+    function convert_date_format($date = "", $format = "Y-m-d H:i:s") {
+        if (!$date) {
+            return false;
+        }
+
+        return date($format, strtotime($date));
+    }
+}
