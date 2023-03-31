@@ -981,7 +981,10 @@ class Payrolls extends MY_Controller {
             ),
             array(
                 "key" => "hourly_rate",
-                "value" => convert_number_to_decimal($data->hourly_rate)
+                "value" => convert_number_to_decimal($data->hourly_rate),
+                "disabled" => true,
+                "type" => "text",
+                "class" => "disabled",
             ),
         ];
 
