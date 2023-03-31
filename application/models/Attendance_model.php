@@ -40,7 +40,10 @@ class Attendance_model extends Crud_model {
 
         //loop and clock in who has 1m > greated thant schedule
         foreach($lists as $user_id) {
-            $this->clock_in_by_schedule($user_id);
+            // check if user have attendance today. will not work if detected in out greater than 1 sec.
+            if( $this->current_clock_in_record($user_id) === false && convert_seconds_to_hour_decimal( $this->get_today_clocked_duration($user_id)) <= 0  ) {
+                $this->clock_in_by_schedule($user_id);
+            }
         }
     }
 
@@ -67,8 +70,11 @@ class Attendance_model extends Crud_model {
             $scheduled_clocked_in = $sched_date_in .' '. $sched_time; //local
             $scheduled_clocked_in = convert_date_local_to_utc($scheduled_clocked_in); //utc
 
+            $count_start = strtotime($scheduled_clocked_in);
+            $count_end = strtotime(get_current_utc_time());
+
             //check if user is clocked in.
-            if($this->current_clock_in_record($user_id) === false) { 
+            if( max(($count_end-$count_start), 0) > 0 ) { 
                 $data = array(
                     "sched_id" => $sched_id,
                     "in_time" => $scheduled_clocked_in,
@@ -82,15 +88,18 @@ class Attendance_model extends Crud_model {
     }
 
     protected function clock_out_by_schedule($user_id) {
-        // get the current sched id.
-        if(!$sched_id = $this->Schedule_model->getUserSchedId($user_id)) {
+        $attendance = $this->current_clock_in_record($user_id);
+        if(!isset($attendance->id)) {
             return;
         }
-
+        
         // get the local time and day name.
         $current_local_time = get_my_local_time();
         $day_name = format_to_custom($current_local_time, 'D', false, true);
         $sched_date_out = convert_date_format($current_local_time, 'Y-m-d');
+
+        // get the current sched id.
+        $sched_id = $attendance->sched_id;
 
         // get the current user schedule by id.
         $cur_sched = $this->Schedule_model->get_details(array(
@@ -106,9 +115,9 @@ class Attendance_model extends Crud_model {
 
             $count_start = strtotime($scheduled_clocked_out);
             $count_end = strtotime(get_current_utc_time());
-
+            
             //check if user is clocked in.
-            if(max(($count_end-$count_start), 0) > 0 && $attendance = $this->current_clock_in_record($user_id)) { 
+            if(max(($count_end-$count_start), 0) > 0) { 
                 $data = array(
                     "out_time" => $scheduled_clocked_out,
                     "status" => "pending",
@@ -129,6 +138,24 @@ class Attendance_model extends Crud_model {
             return $result->row();
         } else {
             return false;
+        }
+    }
+
+    function get_today_clocked_duration($user_id) {
+        $attendnace_table = $this->db->dbprefix('attendance');
+        $now_utc = get_current_utc_time('Y-m-d');
+        $sql = "SELECT IFNULL( SUM(TIME_TO_SEC(TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time))), 0) total_sec
+        FROM $attendnace_table 
+        WHERE $attendnace_table.deleted=0 
+            AND $attendnace_table.status='pending' 
+            AND $attendnace_table.user_id=$user_id
+            AND DATE($attendnace_table.in_time) = '$now_utc'";
+        $result = $this->db->query($sql);
+
+        if ($result->num_rows()) {
+            return $result->row()->total_sec;
+        } else {
+            return 0;
         }
     }
 
