@@ -214,6 +214,22 @@
                             ?>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="days_per_year" class=" col-md-2"><?= lang("days_per_year")  ?></label>
+                        <div class="col-md-2">
+                            <?php
+                                $days_per_year = get_setting('days_per_year', 260);
+                                echo form_input(array(
+                                    "id" => "days_per_year",
+                                    "name" => "days_per_year",
+                                    "value" => $days_per_year,
+                                    "class" => "form-control",
+                                    "placeholder" => lang('days_per_year'),
+                                ));
+                            ?>
+                        </div>
+                        <label class=" col-md-2"><?php echo lang('days'); ?></label>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>

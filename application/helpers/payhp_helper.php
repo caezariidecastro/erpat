@@ -2,7 +2,7 @@
 
 class PayHP {
 
-    protected $term_table = 'weekly';
+    protected $term = 'weekly';
 
     //CONSTANTS VARIABLES
     protected $overtime_rate = 0.25;
@@ -42,7 +42,6 @@ class PayHP {
     protected $late_hour = 0.0;
     protected $over_hour = 0.0;
     protected $under_hour = 0.0;
-    
     protected $pto_hour = 0.0;
 
     //Overtime Pay
@@ -84,7 +83,7 @@ class PayHP {
      * @var value decimal(1,2) in decimal.
      * @var array overtime_rate, restday_rate, legalhd_rate, spclhd_rate.
      */
-    function __construct( $hourly_rate, $rates, $expected_compensation = 0, $term = "weekly" ) {
+    function __construct( $hourly_rate, $rates, $expected_compensation = 0, $term_table = "weekly" ) {
         $this->hourly_rate = $hourly_rate;
         $this->overtime_rate = isset($rates['overtime_rate']) && is_numeric($rates['overtime_rate'])?$rates['overtime_rate']:$this->overtime_rate;
         $this->nightdiff_rate = isset($rates['nightdiff_rate']) && is_numeric($rates['nightdiff_rate'])?$rates['nightdiff_rate']:$this->nightdiff_rate;
@@ -92,7 +91,7 @@ class PayHP {
         $this->legalhd_rate = isset($rates['legalhd_rate']) && is_numeric($rates['legalhd_rate'])?$rates['legalhd_rate']:$this->legalhd_rate;
         $this->spclhd_rate = isset($rates['spclhd_rate']) && is_numeric($rates['spclhd_rate'])?$rates['spclhd_rate']:$this->spclhd_rate;
         $this->expected_compensation = $expected_compensation;
-        $this->term_table = $term;
+        $this->term = $term_table;
         return $this;
     }
 

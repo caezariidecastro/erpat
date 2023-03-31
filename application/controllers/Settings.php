@@ -114,7 +114,7 @@ class Settings extends MY_Controller {
     }
 
     function save_calendar_settings() {
-        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "breaktime_tracking", "whitelisted_breaktime_tracking", "auto_clockout", "whitelisted_autoclockout", "autoclockout_trigger_hour", "auto_clockin_employee", "overtime_trigger", "bonuspay_trigger", "nightpay_start_trigger", "nightpay_end_trigger");
+        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "breaktime_tracking", "whitelisted_breaktime_tracking", "auto_clockout", "whitelisted_autoclockout", "autoclockout_trigger_hour", "auto_clockin_employee", "overtime_trigger", "bonuspay_trigger", "nightpay_start_trigger", "nightpay_end_trigger", "days_per_year");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);

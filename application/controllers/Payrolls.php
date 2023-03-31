@@ -421,8 +421,7 @@ class Payrolls extends MY_Controller {
             $data = $deductions;
 
             $hourly_rate = get_hourly_rate($user->id, false);
-            $monthly_salary = get_monthly_from_hourly($hourly_rate, 8, 261, false);
-            log_message("error", $monthly_salary);
+            $monthly_salary = get_monthly_from_hourly($hourly_rate, false);
 
             for($i=0; $i<count($data); $i++) {
                 if(is_numeric($monthly_salary) && $monthly_salary > 0) {
@@ -808,7 +807,7 @@ class Payrolls extends MY_Controller {
     protected function processPayHP( $data ) {
 
         //TODO: The settings should come from payroll info.
-        $monthly_salary = get_monthly_from_hourly($data->hourly_rate, 8, 261, false);
+        $monthly_salary = get_monthly_from_hourly($data->hourly_rate, false);
 
         return (new PayHP($data->hourly_rate, array(), $monthly_salary, "weekly"))
             ->setTaxTable('daily', get_compensation_tax('daily'))

@@ -29,8 +29,8 @@ if (!function_exists('get_hourly_rate')) {
 }
 
 if (!function_exists('get_hourly_from_monthly')) {
-    function get_hourly_from_monthly($monthly_salary, $hours_per_day = 8.0, $days_per_year = 260, $to_currency = true) {
-        $hourly_rate = ($monthly_salary / ($days_per_year/12)) / $hours_per_day ;
+    function get_hourly_from_monthly($monthly_salary, $to_currency = true) {
+        $hourly_rate = ($monthly_salary / (get_setting('days_per_year', 260)/12)) / 8.0 ;
         if($to_currency) {
             return to_currency($hourly_rate);
         } else {
@@ -40,8 +40,8 @@ if (!function_exists('get_hourly_from_monthly')) {
 }
 
 if (!function_exists('get_monthly_from_hourly')) {
-    function get_monthly_from_hourly($hourly_rate, $hours_per_day = 8.0, $days_per_year = 261, $to_currency = true) {
-        $monthly_salary = ((int)$hourly_rate * $hours_per_day) * ($days_per_year/12);
+    function get_monthly_from_hourly($hourly_rate, $to_currency = true) {
+        $monthly_salary = (floatval($hourly_rate) * 8.0) * (get_setting('days_per_year', 260)/12);
         if($to_currency) {
             return to_currency($monthly_salary);
         } else {
