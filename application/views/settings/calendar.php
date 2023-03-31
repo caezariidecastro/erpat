@@ -129,7 +129,19 @@
                             );
                             ?>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-2">
+                            <?php
+                                $autoclockout_trigger_hour = get_setting('autoclockout_trigger_hour', 12.00);
+                                echo form_input(array(
+                                    "id" => "autoclockout_trigger_hour",
+                                    "name" => "autoclockout_trigger_hour",
+                                    "value" => $autoclockout_trigger_hour,
+                                    "class" => "form-control",
+                                    "placeholder" => lang('trigger_hour'),
+                                ));
+                            ?>
+                        </div>
+                        <div class="col-md-6">
                             <input type="text" value="<?php echo get_setting('whitelisted_autoclockout') ?>" name="whitelisted_autoclockout" id="team_members_dropdown_autoclockout" class="w100p validate-hidden"  placeholder="<?php echo lang('whitelisted'); ?>"  />    
                         </div>
                     </div>
@@ -246,6 +258,16 @@
         bonuspayTriggerRefresh();
         $("#bonuspay_trigger").change(() => {
             bonuspayTriggerRefresh();
+        });
+
+        function clockoutTriggerRefresh() {
+            let curVal = $("#autoclockout_trigger_hour").val();
+            let newVal = parseFloat(curVal).toFixed(2);
+            $("#autoclockout_trigger_hour").val(newVal);
+        }
+        clockoutTriggerRefresh();
+        $("#autoclockout_trigger_hour").change(() => {
+            clockoutTriggerRefresh();
         });
 
         setTimePicker("#nightpay_start_trigger, #nightpay_end_trigger");

@@ -976,3 +976,5 @@ $lang["type_employee_name"] = "Type Employee Name";
 $lang["auto_clockin"] = "Auto Clock-IN";
 
 $lang["site_admin_email"] = "Site Admin Email";
+
+$lang["trigger_hour"] = "Trigger Hour";
