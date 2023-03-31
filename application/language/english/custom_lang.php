@@ -980,3 +980,4 @@ $lang["site_admin_email"] = "Site Admin Email";
 $lang["trigger_hour"] = "Trigger Hour";
 
 $lang["days_per_year"] = "Days Per Year";
+$lang["pto"] = "Paid Timeoff";

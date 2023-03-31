@@ -1,7 +1,7 @@
 <?php
     $payslip = array(
         "fullname" => $payslip->fullname,
-        "monthly_salary" => to_currency($summary['monthly_salary']),
+        "monthly_salary" => $summary['monthly_salary'],
         "leave_credit" => convert_number_to_decimal($payslip->leave_credit),
 
         "job_title" => $payslip->job_title,
@@ -12,17 +12,17 @@
             array(
                 "name" => "Basic Pay",
                 "value" => to_currency($summary['basic_pay']),
-                "prefix" => "(".$summary['worked_hour']." hrs)"
+                "prefix" => "(".convert_number_to_decimal($summary['worked_hour'])." hrs)"
             ),
             array(
                 "name" => "Overtime Pay",
                 "value" => to_currency($summary['overtime_pay']),
-                "prefix" => "(".$summary['overtime_hour']." hrs)"
+                "prefix" => "(".convert_number_to_decimal($summary['overtime_hour'])." hrs)"
             ),
             array(
                 "name" => "Night Differential",
                 "value" => to_currency($summary['nightdiff_pay']),
-                "prefix" => "(".$summary['nightdiff_hour']." hrs)"
+                "prefix" => "(".convert_number_to_decimal($summary['nightdiff_hour'])." hrs)"
             ),
             array(
                 "name" => "Overtime ND",

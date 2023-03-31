@@ -5,16 +5,15 @@ class PayHP {
     protected $term = 'weekly';
 
     //CONSTANTS VARIABLES
-    protected $overtime_rate = 0.25;
-    protected $nightdiff_rate = 0.10;
-    protected $restday_rate = 0.30;
-    protected $legalhd_rate = 1.00;
-    protected $spclhd_rate = 0.44;
+    protected $overtime_rate = 1.25;
+    protected $nightdiff_rate = 1.10;
+    protected $restday_rate = 1.30;
+    protected $legalhd_rate = 2.00;
+    protected $spclhd_rate = 1.44;
 
     //DYNAMIC VARIABLES
     protected $hourly_rate = 0.0;
 
-    protected $expected_compensation = 0;
     protected $compensation_level = 0;
     protected $train_range = 0.00;
     protected $tax_on_train_range = 0.00;
@@ -83,23 +82,44 @@ class PayHP {
      * @var value decimal(1,2) in decimal.
      * @var array overtime_rate, restday_rate, legalhd_rate, spclhd_rate.
      */
-    function __construct( $hourly_rate, $rates, $expected_compensation = 0, $term_table = "weekly" ) {
-        $this->hourly_rate = $hourly_rate;
-        $this->overtime_rate = isset($rates['overtime_rate']) && is_numeric($rates['overtime_rate'])?$rates['overtime_rate']:$this->overtime_rate;
-        $this->nightdiff_rate = isset($rates['nightdiff_rate']) && is_numeric($rates['nightdiff_rate'])?$rates['nightdiff_rate']:$this->nightdiff_rate;
-        $this->restday_rate = isset($rates['restday_rate']) && is_numeric($rates['restday_rate'])?$rates['restday_rate']:$this->restday_rate;
-        $this->legalhd_rate = isset($rates['legalhd_rate']) && is_numeric($rates['legalhd_rate'])?$rates['legalhd_rate']:$this->legalhd_rate;
-        $this->spclhd_rate = isset($rates['spclhd_rate']) && is_numeric($rates['spclhd_rate'])?$rates['spclhd_rate']:$this->spclhd_rate;
-        $this->expected_compensation = $expected_compensation;
-        $this->term = $term_table;
+    function __construct() {
         return $this;
     }
 
     /**
-     * Set all the relavant tax table like weekly or monthly.
+     * Set the hourly rate for this payslip.
+     */
+    function setHourlyRate($hourly_rate) {
+        $this->hourly_rate = $hourly_rate;
+        return $this;
+    }
+
+    /**
+     * Set the differential rates like overtime or nightdiff rates.
+     */
+    function setDiffRates($type, $value = 0) {
+        if($type === 'overtime') {
+            $this->overtime_rate = $object;
+        } else if($type === 'nightdiff') {
+            $this->nightdiff_rate = $object;
+        } else if($type === 'restday') {
+            $this->restday_rate = $object;
+        } else if($type === 'legalhd') {
+            $this->legalhd_rate = $object;
+        } else if($type === 'spclhd') {
+            $this->spclhd_rate = $object;
+        }
+        return $this;
+    }
+
+    /**
+     * Set all the relavant tax table like weekly or monthly. 
+     * You can also set the target term using term as type.
      */
     function setTaxTable($type, $object) {
-        if($type === 'daily') {
+        if($type === 'term') {
+            $this->term = $object;
+        } else if($type === 'daily') {
             $this->daily_tax_table = $object;
         } else if($type === 'weekly') {
             $this->weekly_tax_table = $object;
@@ -327,7 +347,7 @@ class PayHP {
             "totat_contribution" => $this->totalContribution(),
             "total_loan" => $this->totalLoans(),
 
-            "monthly_salary" => $this->expected_compensation,
+            "monthly_salary" => get_monthly_from_hourly($this->hourly_rate),
             "basic_pay" => $this->basicPay(),
             "unwork_deduction" => $this->deductPay(),
             "hours_paid" => $this->hoursPaid(),
@@ -380,19 +400,18 @@ class PayHP {
     
     /**
      * By default, basic pay is computed with the scheduled hours x the hourly rate.
-     * This can be overriden if the expected_compensation is set, term mush all be set.
      */
     function basicPay() {
-        $regular = $this->sched_hour * $this->hourly_rate;
 
-        if($this->expected_compensation > 0) {
-            if($this->term = 'weekly') {
-                $regular = $this->expected_compensation / 4;
-            } else if($this->term = 'biweekly') {
-                $regular = $this->expected_compensation / 2;
-            } else if($this->term = 'monthly') {
-                $regular = $this->expected_compensation;
-            } 
+        $monthy_salary = get_monthly_from_hourly($this->hourly_rate, false);
+        if($this->term == 'daily') {
+            $regular = convert_number_to_decimal(floatval($this->hourly_rate) * 8);
+        } else if($this->term == 'weekly') {
+            $regular = $monthy_salary / 4;
+        } else if($this->term == 'biweekly') {
+            $regular = $monthy_salary / 2;
+        } else if($this->term == 'monthly') {
+            $regular = $monthy_salary;
         }
         
         return $regular;
@@ -542,13 +561,13 @@ class PayHP {
 
         //get the current tax table for this payroll.
         $tax_table = false;
-        if($this->term = 'daily') {
+        if($this->term == 'daily') {
             $tax_table = $this->daily_tax_table;
-        } else if($this->term = 'weekly') {
+        } else if($this->term == 'weekly') {
             $tax_table = $this->weekly_tax_table;
-        } else if($this->term = 'biweekly') {
+        } else if($this->term == 'biweekly') {
             $tax_table = $this->biweekly_tax_table;
-        } else if($this->term = 'monthly') {
+        } else if($this->term == 'monthly') {
             $tax_table = $this->monthly_tax_table;
         }
 

@@ -1090,7 +1090,7 @@ class Team_members extends MY_Controller {
         $job_info = $this->Users_model->get_job_info($user_id);
         $view_data['job_info'] = $job_info;
         $view_data['job_info']->job_title = $user_info->job_title;
-        $view_data['job_info']->daily_rate = get_daily_from_hourly($job_info->rate_per_hour, false);
+        $view_data['job_info']->daily_rate = convert_number_to_decimal(floatval($job_info->rate_per_hour) * 8);
         $this->load->view("team_members/job_info", $view_data);
     }
 
@@ -1130,7 +1130,7 @@ class Team_members extends MY_Controller {
 
         $user_id = $this->input->post('user_id');
 
-        $hourly_rate = get_hourly_from_daily($this->input->post('daily_rate'), false);
+        $hourly_rate = convert_number_to_decimal(floatval($this->input->post('daily_rate')) / 8);
 
         $job_data = array(
             "user_id" => $user_id,

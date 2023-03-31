@@ -1,12 +1,35 @@
 <?php
 
+/**
+ * Get the monthly salary using user id.
+ */
 if (!function_exists('get_monthly_salary')) {
     function get_monthly_salary($user_id, $to_currency = true) {
         $ci = get_instance();
         $job_info = $ci->Users_model->get_job_info($user_id);
-        $monthly_salary = $job_info?$job_info->salary:0;
+        
+        $monthly_salary = 0;
+        if( isset($job_info->rate_per_hour) ) {
+            $monthly_salary = get_monthly_from_hourly($job_info->rate_per_hour * 8);
+        }
 
-        if($job_info && $to_currency) {
+        if($to_currency) {
+            return to_currency($monthly_salary);
+        }
+        
+        return $monthly_salary;
+    }
+}
+
+/**
+ * Get the monthly salary with hourly rate
+ */
+if (!function_exists('get_monthly_from_hourly')) {
+    function get_monthly_from_hourly($hourly_rate, $to_currency = true) {
+        $monthly_salary = (floatval($hourly_rate) * 8.0) * (get_setting('days_per_year', 260)/12);
+        $monthly_salary = floor($monthly_salary/1) * 1;
+
+        if($to_currency) {
             return to_currency($monthly_salary);
         } else {
             return $monthly_salary;
@@ -14,61 +37,24 @@ if (!function_exists('get_monthly_salary')) {
     }
 }
 
+/**
+ * Get the hourly rate using the user id.
+ */
 if (!function_exists('get_hourly_rate')) {
     function get_hourly_rate($user_id, $to_currency = true) {
         $ci = get_instance();
         $job_info = $ci->Users_model->get_job_info($user_id);
-        $hourly_rate = $job_info?$job_info->rate_per_hour:0;
 
-        if($job_info && $to_currency) {
-            return to_currency($hourly_rate);
-        } else {
-            return $hourly_rate;
+        $hourly_rate = 0;
+        if( isset($job_info->rate_per_hour) ) {
+            $hourly_rate = $job_info->rate_per_hour;
         }
-    }
-}
 
-if (!function_exists('get_hourly_from_monthly')) {
-    function get_hourly_from_monthly($monthly_salary, $to_currency = true) {
-        $hourly_rate = ($monthly_salary / (get_setting('days_per_year', 260)/12)) / 8.0 ;
         if($to_currency) {
             return to_currency($hourly_rate);
-        } else {
-            return $hourly_rate;
         }
-    }
-}
-
-if (!function_exists('get_monthly_from_hourly')) {
-    function get_monthly_from_hourly($hourly_rate, $to_currency = true) {
-        $monthly_salary = (floatval($hourly_rate) * 8.0) * (get_setting('days_per_year', 260)/12);
-        if($to_currency) {
-            return to_currency($monthly_salary);
-        } else {
-            return $monthly_salary;
-        }
-    }
-}
-
-if (!function_exists('get_hourly_from_daily')) {
-    function get_hourly_from_daily($daily_rate, $to_currency = true, $hours_per_day = 8.0) {
-        $hourly_rate = $daily_rate/$hours_per_day;
-        if($to_currency) {
-            return to_currency($hourly_rate);
-        } else {
-            return $hourly_rate;
-        }
-    }
-}
-
-if (!function_exists('get_daily_from_hourly')) {
-    function get_daily_from_hourly($hourly_rate, $to_currency = true, $hours_per_day = 8.0) {
-        $daily_rate = $hourly_rate * $hours_per_day;
-        if($to_currency) {
-            return to_currency($daily_rate);
-        } else {
-            return $daily_rate;
-        }
+        
+        return $hourly_rate;
     }
 }
 

@@ -547,6 +547,7 @@ class Payrolls extends MY_Controller {
         foreach($payslips as $current) {
             $payslip = $this->generate_payslip($payroll_info, $current->user);
             unset($payslip['leave_credit']);
+
             $this->Payslips_model->update_where( $payslip, array("id"=>$current->id) );
         }
 
@@ -565,6 +566,7 @@ class Payrolls extends MY_Controller {
             "id" => $payroll_info->department
         ))->row();
 
+        //get all users unique within the department heads or members.
         $users = get_team_all_unique($department->heads, $department->members);
         
         //schedule hours for this date.
@@ -574,6 +576,7 @@ class Payrolls extends MY_Controller {
             if(!$this->Users_model->is_user_active($user_id)) {
                 continue;
             }
+
             $payslip = $this->generate_payslip($payroll_info, $user_id);
             unset($payslip['leave_credit']);
 
@@ -756,7 +759,7 @@ class Payrolls extends MY_Controller {
             "id" => $payslip->id
         ))->row();
 
-        $summary = $this->processPayHP( $data )->calculate();
+        $summary = $this->processPayHP( $data, $payroll->tax_table )->calculate();
 
         $preview = modal_anchor(get_uri("payrolls/preview/".$data->id), get_payslip_id($data->id, $data->payroll), array( "title" => lang('preview_payslip'), "data-post-payroll_id" => $data->id));
 
@@ -804,12 +807,16 @@ class Payrolls extends MY_Controller {
         );
     }
 
-    protected function processPayHP( $data ) {
+    protected function processPayHP( $data, $tax_table ) {
 
         //TODO: The settings should come from payroll info.
         $monthly_salary = get_monthly_from_hourly($data->hourly_rate, false);
 
-        return (new PayHP($data->hourly_rate, array(), $monthly_salary, "weekly"))
+        return (new PayHP()) 
+            ->setHourlyRate($data->hourly_rate)
+            ->setTaxTable("term", $tax_table)
+            //TODO: Set scheduled hours?
+
             ->setTaxTable('daily', get_compensation_tax('daily'))
             ->setTaxTable('weekly', get_compensation_tax('weekly'))
             ->setTaxTable('biweekly', get_compensation_tax('biweekly'))
@@ -871,13 +878,17 @@ class Payrolls extends MY_Controller {
             "id" => $payslip_id
         ))->row();
 
+        $payroll = $this->Payrolls_model->get_details(array(
+            "id" => $data->payroll
+        ))->row();
+
         $view_data["payslip_id"] = $payslip_id;
         $view_data["fullname"] = $data->employee_name;
         $view_data["job_title"] = $data->job_title;
         $view_data["department"] = $data->department_name;
         $view_data["salary"] = to_currency($data->salary_amount);
 
-        $summary = $this->processPayHP( $data )->calculate();
+        $summary = $this->processPayHP( $data, $payroll->tax_table )->calculate();
 
         $view_data["biometrics"] = [
             array(
@@ -903,6 +914,10 @@ class Payrolls extends MY_Controller {
             array(
                 "key" => "undertime",
                 "value" => $data->undertime
+            ),
+            array(
+                "key" => "pto",
+                "value" => $data->pto
             ),
         ];
 
@@ -1126,10 +1141,9 @@ class Payrolls extends MY_Controller {
 
         $action = $this->input->post('action');
 
-        //TODO: Save here
+        //TODO: Save here and calculate
         if($action === "save") {
             $payslip_data = array(
-                "hourly_rate" => $this->input->post('hourly_rate'),
                 "pto" => $this->input->post('pto'),
 
                 "schedule" => $this->input->post('schedule'),
@@ -1174,6 +1188,7 @@ class Payrolls extends MY_Controller {
                 "legal_ot_nd" => $this->input->post('legal_hd_ot_nd'),
                 "spcl_ot_nd" => $this->input->post('special_hd_ot_nd'),
             );
+
             $this->Payslips_model->save($payslip_data, $payslip_id);
         }
         
@@ -1258,7 +1273,7 @@ class Payrolls extends MY_Controller {
         $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
 
         $view_data["payslip"] = $payslip;
-        $view_data["summary"] = $this->processPayHP( $payslip )->calculate();
+        $view_data["summary"] = $this->processPayHP( $payslip, $payroll->tax_table )->calculate();
 
         $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
 
@@ -1317,7 +1332,7 @@ class Payrolls extends MY_Controller {
             $payslip->{unworked_deductions} = max($payslip->absent, 0);
     
             $view_data["payslip"] = $payslip;
-            $view_data["summary"] = $this->processPayHP( $payslip )->calculate();
+            $view_data["summary"] = $this->processPayHP( $payslip, $payroll->tax_table )->calculate();
 
             $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
 
