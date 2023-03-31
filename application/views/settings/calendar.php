@@ -103,7 +103,7 @@
                     </div>
                     <div class="form-group">
                         <label for="breaktime_tracking" class=" col-md-2"><?php echo lang('breaktime_tracking'); ?></label>
-                        <div class="col-md-10">
+                        <div class="col-md-2">
                             <?php
                             echo form_dropdown(
                                 "breaktime_tracking", array(
@@ -112,6 +112,9 @@
                                 ), get_setting('breaktime_tracking'), "class='select2 mini'"
                             );
                             ?>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" value="<?php echo get_setting('whitelisted_breaktime_tracking') ?>" name="whitelisted_breaktime_tracking" id="team_members_dropdown_breaktime_tracking" class="w100p validate-hidden"  placeholder="<?php echo lang('whitelisted'); ?>"  />    
                         </div>
                     </div>
                     <div class="form-group">
@@ -127,7 +130,7 @@
                             ?>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" value="<?php echo get_setting('whitelisted') ?>" name="whitelisted" id="team_members_dropdown" class="w100p validate-hidden"  placeholder="<?php echo lang('whitelisted'); ?>"  />    
+                            <input type="text" value="<?php echo get_setting('whitelisted_autoclockout') ?>" name="whitelisted_autoclockout" id="team_members_dropdown_autoclockout" class="w100p validate-hidden"  placeholder="<?php echo lang('whitelisted'); ?>"  />    
                         </div>
                     </div>
                     <div class="form-group">
@@ -241,7 +244,7 @@
 
         setTimePicker("#nightpay_start_trigger, #nightpay_end_trigger");
 
-        $("#team_members_dropdown").select2({
+        $("#team_members_dropdown_breaktime_tracking, #team_members_dropdown_autoclockout").select2({
             multiple: true,
             data: <?php echo ($members_dropdown); ?>
         });
