@@ -134,6 +134,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="auto_clockin" class=" col-md-2"><?php echo lang('auto_clockin'); ?></label>
+                        <div class="col-md-10">
+                            <input type="text" value="<?php echo get_setting('auto_clockin_employee') ?>" name="auto_clockin_employee" id="team_members_dropdown_autoclockin" class="w100p validate-hidden"  placeholder="<?php echo lang('type_employee_name'); ?>"  />    
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="overtime_trigger" class=" col-md-2"><?php echo lang('overtime_trigger'); ?></label>
                         <div class="col-md-2">
                             <?php
@@ -244,7 +250,7 @@
 
         setTimePicker("#nightpay_start_trigger, #nightpay_end_trigger");
 
-        $("#team_members_dropdown_breaktime_tracking, #team_members_dropdown_autoclockout").select2({
+        $("#team_members_dropdown_breaktime_tracking, #team_members_dropdown_autoclockout, #team_members_dropdown_autoclockin").select2({
             multiple: true,
             data: <?php echo ($members_dropdown); ?>
         });

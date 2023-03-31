@@ -971,3 +971,6 @@ $lang["check_logs"] = "Check Logs";
 $lang["compensation_tax_table"] = "Compensation Tax Table";
 
 $lang["whitelisted"] = "Whitelisted";
+
+$lang["type_employee_name"] = "Type Employee Name";
+$lang["auto_clockin"] = "Auto Clock-IN";
