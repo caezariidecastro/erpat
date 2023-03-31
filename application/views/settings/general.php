@@ -100,6 +100,22 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="site_admin_email" class=" col-md-2"><?php echo lang('site_admin_email'); ?></label>
+                        <div class=" col-md-10">
+                            <?php
+                            echo form_input(array(
+                                "id" => "site_admin_email",
+                                "name" => "site_admin_email",
+                                "value" => get_setting('site_admin_email'),
+                                "class" => "form-control",
+                                "placeholder" => lang('site_admin_email'),
+                                "data-rule-required" => true,
+                                "data-msg-required" => lang("field_required"),
+                            ));
+                            ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="language" class=" col-md-2"><?php echo lang('language'); ?></label>
                         <div class="col-md-10">
                             <?php

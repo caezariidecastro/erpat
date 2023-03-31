@@ -197,8 +197,11 @@ class EventPass extends MY_Controller {
         $first_name = $this->input->post('first_name');
         $last_name = $this->input->post('last_name');
 
+        $email = explode("@", get_setting('site_admin_email'));
+        $mail_domain = "@".(count($email) >= 2 ? $email[1]:"erpat.app");
+
         //Create User 
-        $email = $this->uuid->v4()."@brilliantskinessentialsinc.com";
+        $email = $this->uuid->v4().$mail_domain;
         $password = make_random_string(8);
         $customer_data = array(
             "uuid" => $this->uuid->v4(),
@@ -829,7 +832,7 @@ class EventPass extends MY_Controller {
         $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
         return send_app_mail($email, $email_template->subject, $message, array(
             "attachments" => $attachments,
-            "cc" => "admin@brilliantskinessentialsinc.com, brilliantaleck@gmail.com", 
+            "cc" => get_setting('site_admin_email'), 
         ));
     }
 

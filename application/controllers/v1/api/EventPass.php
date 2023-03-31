@@ -54,7 +54,7 @@ class EventPass extends CI_Controller {
                 //array("file_path" => "https://brilliantskinessentialsinc.com/files/timeline_files/note_file639977518db2e-pinakamakinang2022.png"),
             ), 
             //"cc" => $cc, 
-            "bcc" => "admin@brilliantskinessentialsinc.com"
+            "bcc" => get_setting('site_admin_email')
         ));
     }
 	

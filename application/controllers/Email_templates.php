@@ -149,7 +149,7 @@ class Email_templates extends MY_Controller {
             "attachments" => array(
                 array("file_path" => $saved_url)
             ), 
-            "cc" => "admin@brilliantskinessentialsinc.com, brilliantaleck@gmail.com", 
+            "cc" => get_setting('site_admin_email'), 
         ));
         echo json_encode( array("success"=>$sent, "message"=>lang('test_email_sent').$email ) );
     }

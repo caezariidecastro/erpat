@@ -23,7 +23,7 @@ class Settings extends MY_Controller {
     }
 
     function save_general_settings() {
-        $settings = array("site_logo", "favicon", "show_background_image_in_signin_page", "show_logo_in_signin_page", "site_title", "language", "enable_training",);
+        $settings = array("site_logo", "favicon", "show_background_image_in_signin_page", "show_logo_in_signin_page", "site_title", "site_admin_email", "language", "enable_training",);
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);
