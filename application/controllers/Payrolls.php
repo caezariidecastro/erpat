@@ -494,8 +494,7 @@ class Payrolls extends MY_Controller {
             ->setSchedHour($payroll_info->sched_hours)
             ->setAttendance($attendance)
             ->calculate();
-
-        $deductions = get_user_deductions($user_id, true);
+        
         $job_info = $this->Users_model->get_job_info($user_id);
 
         $payslip = $this->Payslips_model->get_one_where(array(
@@ -510,6 +509,9 @@ class Payrolls extends MY_Controller {
         $leave_credit = $this->Leave_credits_model->get_balance(array(
             "user_id" => $user_id
         ));
+
+        $deductions = get_user_deductions($user_id, true);
+        $contribution = get_contribution_by_category($deductions, $payroll_info->tax_table);
 
         return array(
             "id" => $payslip_id,
@@ -529,14 +531,14 @@ class Payrolls extends MY_Controller {
             "reg_nd" => $attd->getTotalNightpay(), //Nightpay
 
             //tin?
-            "sss" => get_deduct_val($deductions, "sss_contri", $payroll_info->tax_table),
-            "pagibig" => get_deduct_val($deductions, "pagibig_contri", $payroll_info->tax_table),
-            "phealth" => get_deduct_val($deductions, "philhealth_contri", $payroll_info->tax_table),
-            "hmo" => get_deduct_val($deductions, "hmo_contri", $payroll_info->tax_table),
+            "sss" => convert_number_to_decimal($contribution['sss_contri']),
+            "pagibig" => convert_number_to_decimal($contribution['pagibig_contri']),
+            "phealth" => convert_number_to_decimal($contribution['philhealth_contri']),
+            "hmo" => convert_number_to_decimal($contribution['hmo_contri']),
 
-            "com_loan" => get_deduct_val($deductions, "company_loan", $payroll_info->tax_table),
-            "sss_loan" => get_deduct_val($deductions, "sss_loan", $payroll_info->tax_table),
-            "hdmf_loan" => get_deduct_val($deductions, "hdmf_loan", $payroll_info->tax_table),
+            "com_loan" => convert_number_to_decimal($contribution['company_loan']),
+            "sss_loan" => convert_number_to_decimal($contribution['sss_loan']),
+            "hdmf_loan" => convert_number_to_decimal($contribution['hdmf_loan']),
         );
     }
 
