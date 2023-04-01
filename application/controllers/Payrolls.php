@@ -339,28 +339,29 @@ class Payrolls extends MY_Controller {
         $actives = $this->Users_model->get_all_active();
         $filter = $this->input->post('category_select2_filter');
         $filter = $filter?$filter:"weekly"; //Temp: should be daily
+
         foreach($actives as $user) {
             $deductions = get_user_deductions($user->id, true);
             $contribution = get_contribution_by_category($deductions, $filter);
             $lists[] = [
                 $user->id,
                 get_team_member_profile_link($user->id, $user->user_name),
-                cell_input('sss_contri_'.$user->id, $contribution['sss_contri'], 'text', 'cell-class cell-class-'.$user->id, true),
-                cell_input('pagibig_contri_'.$user->id, $contribution['pagibig_contri'], 'text', 'cell-class cell-class-'.$user->id, true),
-                cell_input('philhealth_contri_'.$user->id, $contribution['philhealth_contri'], 'text', 'cell-class cell-class-'.$user->id, true),
-                cell_input('hmo_contri_'.$user->id, $contribution['hmo_contri'], 'text', 'cell-class cell-class-'.$user->id, true),
-                cell_input('company_loan_'.$user->id, $contribution['company_loan'], 'text', 'cell-class cell-class-'.$user->id, true),
-                cell_input('sss_loan_'.$user->id, $contribution['sss_loan'], 'text', 'cell-class cell-class-'.$user->id, true),
-                cell_input('hdmf_loan_'.$user->id, $contribution['hdmf_loan'], 'text', 'cell-class cell-class-'.$user->id, true),
+                cell_input('sss_contri_'.$user->id, convert_number_to_decimal($contribution['sss_contri']), 'number', 'cell-class cell-class-'.$user->id, true),
+                cell_input('pagibig_contri_'.$user->id, convert_number_to_decimal($contribution['pagibig_contri']), 'number', 'cell-class cell-class-'.$user->id, true),
+                cell_input('philhealth_contri_'.$user->id, convert_number_to_decimal($contribution['philhealth_contri']), 'number', 'cell-class cell-class-'.$user->id, true),
+                cell_input('hmo_contri_'.$user->id, convert_number_to_decimal($contribution['hmo_contri']), 'number', 'cell-class cell-class-'.$user->id, true),
+                cell_input('company_loan_'.$user->id, convert_number_to_decimal($contribution['company_loan']), 'number', 'cell-class cell-class-'.$user->id, true),
+                cell_input('sss_loan_'.$user->id, convert_number_to_decimal($contribution['sss_loan']), 'number', 'cell-class cell-class-'.$user->id, true),
+                cell_input('hdmf_loan_'.$user->id, convert_number_to_decimal($contribution['hdmf_loan']), 'number', 'cell-class cell-class-'.$user->id, true),
 
-                js_anchor("<i class='fa fa-pencil fa-fw'></i>", array('id' => "edit-".$user->id, 'name' => $user->id, 'title' => lang('edit'), "class" => "cell-edit", "style"=>"padding: 3px; border-radius: 50%; background-color: #eaeaea; border: 1px solid;")).
-                js_anchor("<i class='fa fa-save fa-fw'></i>", array('id' => "save-".$user->id, 'name' => $user->id, 'title' => lang('save'), "class" => "cell-save hide", "style"=>"padding: 3px; border-radius: 50%; background-color: #eaeaea; border: 1px solid;"))
+                js_anchor("<i class='fa fa-pencil fa-fw'></i>", array('id' => "cell-edit-".$user->id, "data-filter" => $filter, 'name' => $user->id, 'title' => lang('edit'), "class" => "cell-style cell-edit")).
+                js_anchor("<i class='fa fa-save fa-fw'></i>", array('id' => "cell-save-".$user->id, "data-filter" => $filter, 'name' => $user->id, 'title' => lang('save'), "class" => "cell-style cell-save hide"))
             ];
         }
         echo json_encode(array("data"=>$lists));
     }
 
-    function save_weekly() {
+    function save_contribution() {
         if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
 			redirect("forbidden");
 		}
@@ -369,27 +370,38 @@ class Payrolls extends MY_Controller {
         $deductions = get_user_deductions($user_id, true);
         $data = $deductions;
 
+        $filter = $this->input->post('filter');
+        if($filter == 'monthly') {
+            $filter = 4;
+        } else if($filter == 'biweekly') {
+            $filter = 3;
+        } else if($filter == 'weekly') {
+            $filter = 2;
+        } else {
+            $filter = 1;
+        }
+
         for($i=0; $i<count($data); $i++) {
             if($data[$i][0] == "sss_contri") {
-                $data[$i][2] = $this->input->post('sss_contri');
+                $data[$i][$filter] = $this->input->post('sss_contri');
             }
             if($data[$i][0] == "pagibig_contri") {
-                $data[$i][2] = $this->input->post('pagibig_contri');
+                $data[$i][$filter] = $this->input->post('pagibig_contri');
             }
             if($data[$i][0] == "philhealth_contri") {
-                $data[$i][2] = $this->input->post('philhealth_contri');
+                $data[$i][$filter] = $this->input->post('philhealth_contri');
             }
             if($data[$i][0] == "hmo_contri") {
-                $data[$i][2] = $this->input->post('hmo_contri');
+                $data[$i][$filter] = $this->input->post('hmo_contri');
             }
             if($data[$i][0] == "company_loan") {
-                $data[$i][2] = $this->input->post('company_loan');
+                $data[$i][$filter] = $this->input->post('company_loan');
             }
             if($data[$i][0] == "sss_loan") {
-                $data[$i][2] = $this->input->post('sss_loan');
+                $data[$i][$filter] = $this->input->post('sss_loan');
             }
             if($data[$i][0] == "hdmf_loan") {
-                $data[$i][2] = $this->input->post('hdmf_loan');
+                $data[$i][$filter] = $this->input->post('hdmf_loan');
             }
         }
 

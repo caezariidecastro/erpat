@@ -11,10 +11,17 @@
     .cell-class{
         max-width: 100px;
     }
+    .cell-style {
+        padding: 3px; 
+        border-radius: 50%; 
+        background-color: #eaeaea; 
+        border: 1px solid;
+    }
 </style>
 
 <script type="text/javascript">
     $(document).ready(function () {
+
         $("#contribution-table").appTable({
             source: '<?php echo_uri("payrolls/contribution_lists") ?>',
             filterDropdown: [
@@ -35,67 +42,69 @@
             rowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 const dataId = aData[0];
             }, onInitComplete() {
+
+                $("#category_select2_filter").on('change', function() {
+                    //filter by selected value on second column
+                    //table.column(1).search($(this).val()).draw();
+                    console.log($(this).val());
+                }); 
+
                 var table = $('#contribution-table').DataTable();
-                $('#contribution-table tbody').on( 'click', 'tr', function () {
-                    //console.log( table.row( this ).index() );
-                } );
-
-                $('.cell-edit').on( 'click', function () {
-                    var id = $( this ).attr('name');
-                    $('.cell-class-'+id).removeAttr('disabled');
-                    $('#edit-'+id).addClass('hide');
-                    $('#save-'+id).removeClass('hide');
-                } );
-
-                $('.cell-save').on( 'click', function () {
-                    var id = $( this ).attr('name');
-
-                    appLoader.show();
-
-                    //Get the data
-                    const data = {
-                        'filter': $('#category_select2_filter').val(),
-                        'user_id': id,
-                        'sss_contri': $('#sss_contri_'+id).val(),
-                        'pagibig_contri': $('#pagibig_contri_'+id).val(),
-                        'philhealth_contri': $('#philhealth_contri_'+id).val(),
-                        'hmo_contri': $('#hmo_contri_'+id).val(),
-                        'company_loan': $('#company_loan_'+id).val(),
-                        'sss_loan': $('#sss_loan_'+id).val(),
-                        'hdmf_loan': $('#hdmf_loan_'+id).val(),
-                    };
-
-                    //TODO: Ajax request!
-                    $.ajax({
-                        url: "<?= base_url() ?>/payrolls/save_weekly",
-                        method: "POST",
-                        data: data,
-                        dataType: "json",
-                        success: function(response){
-                            if(response.success){
-                                appAlert.success(response.message);
-                            } else {
-                                appAlert.error(response.message);
-                            }
-
-                            //Done saving.
-                            $('.cell-class-'+id).attr('disabled', "true");
-                            $('#save-'+id).addClass('hide');
-                            $('#edit-'+id).removeClass('hide');
-                            appLoader.hide();
-                        }
-                    })
-                } );
-            }
-            //printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            //xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            //summation: [{column: 6, dataType: 'number'}],
-            //tableRefreshButton: true,
-        }); 
                 
-        //$(".dataTable:visible").appTable({newData: result.data, dataId: result.id});
-        // setInterval(function(){
-        //     $("#payrolls-tabs").find("li.active").text() == "Contributions" ? $('#add_payrolls_button').show() : $('#add_payrolls_button').hide()
-        // }, 200)
+                let refresh = function() {
+                    $('.cell-edit').on( 'click', function () {
+                        var id = $( this ).attr('name');
+                        $('.cell-class-'+id).removeAttr('disabled');
+                        $('#cell-edit-'+id).addClass('hide');
+                        $('#cell-save-'+id).removeClass('hide');
+                    } );
+
+                    $('.cell-save').on( 'click', function () {
+                        var id = $( this ).attr('name');
+                        var filter = $( this ).attr('data-filter');
+
+                        appLoader.show();
+
+                        //Get the data
+                        const data = {
+                            'user_id': id,
+                            'filter': filter,
+                            'sss_contri': $('#sss_contri_'+id).val(),
+                            'pagibig_contri': $('#pagibig_contri_'+id).val(),
+                            'philhealth_contri': $('#philhealth_contri_'+id).val(),
+                            'hmo_contri': $('#hmo_contri_'+id).val(),
+                            'company_loan': $('#company_loan_'+id).val(),
+                            'sss_loan': $('#sss_loan_'+id).val(),
+                            'hdmf_loan': $('#hdmf_loan_'+id).val(),
+                        };
+                        
+                        //TODO: Ajax request!
+                        $.ajax({
+                            url: "<?= base_url() ?>/payrolls/save_contribution",
+                            method: "POST",
+                            data: data,
+                            dataType: "json",
+                            success: function(response){
+                                if(response.success){
+                                    appAlert.success(response.message);
+                                } else {
+                                    appAlert.error(response.message);
+                                }
+
+                                //Done saving.
+                                $('.cell-class-'+id).attr('disabled', "true");
+                                $('#cell-edit-'+id).removeClass('hide');
+                                $('#cell-save-'+id).addClass('hide');
+
+                                appLoader.hide();
+                            }
+                        })
+                    } );
+                }
+                table.on( 'init.dt', refresh );
+                table.on( 'draw', refresh );
+            },
+            tableRefreshButton: true,
+        }); 
     });
 </script>
