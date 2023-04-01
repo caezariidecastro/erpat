@@ -315,11 +315,43 @@
         });
         $("#job-info-form .select2").select2();
 
-        $("#daily_rate").change(() => {
-            $("#rate_per_hour").val($("#daily_rate").val()/8);
-        });
-
         setDatePicker("#date_of_hire");
 
+        function roundToDecimal(num) {
+            return Math.round(num * 100) / 100
+        }
+
+        //from daily
+        function dailyRateRefresh() {
+            let curVal = $("#daily_rate").val();
+            let newVal = parseFloat(curVal).toFixed(2);
+            let hourRate = roundToDecimal( newVal/8 );
+
+            let daysPerYear = <?= get_setting('days_per_year', 260) ?>;
+            let dailyRate = newVal * (daysPerYear/12);
+
+            $("#rate_per_hour").val( roundToDecimal(hourRate) );
+            $("#salary").val( roundToDecimal(dailyRate) ); //compute here.
+            
+        }
+        $("#daily_rate").change(() => {
+            dailyRateRefresh();
+        });
+
+        //from monthly
+        function monthlySalaryRefresh() {
+            let curVal = $("#salary").val();
+            let newVal = parseFloat(curVal).toFixed(2);
+
+            let daysPerYear = <?= get_setting('days_per_year', 260) ?>;
+            let dailyRate = roundToDecimal( (newVal*12)/daysPerYear );
+
+            $("#daily_rate").val( dailyRate ); //compute here.
+            let hourRate = roundToDecimal( dailyRate/8 );
+            $("#rate_per_hour").val( hourRate );
+        }
+        $("#salary").change(() => {
+            monthlySalaryRefresh();
+        });
     });
 </script>    

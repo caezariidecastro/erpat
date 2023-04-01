@@ -1131,12 +1131,13 @@ class Team_members extends MY_Controller {
         $user_id = $this->input->post('user_id');
 
         $hourly_rate = convert_number_to_decimal(floatval($this->input->post('daily_rate')) / 8);
+        $monthly_salary = convert_number_to_decimal($this->input->post('salary'));
 
         $job_data = array(
             "user_id" => $user_id,
             "job_idnum" => $this->input->post('job_idnum'),
             "sched_id" => $this->input->post('sched_id'),
-            "salary" => unformat_currency($this->input->post('salary')),
+            "salary" => $monthly_salary,
             "salary_term" => $this->input->post('salary_term'),
             "rate_per_hour" => $hourly_rate,
             "date_of_hire" => $this->input->post('date_of_hire'),
