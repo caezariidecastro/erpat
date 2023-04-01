@@ -12,6 +12,7 @@ class PayHP {
     protected $spclhd_rate = 1.44;
 
     //DYNAMIC VARIABLES
+    protected $monthly_salary = 0;
     protected $hourly_rate = 0.0;
 
     protected $compensation_level = 0;
@@ -83,6 +84,14 @@ class PayHP {
      * @var array overtime_rate, restday_rate, legalhd_rate, spclhd_rate.
      */
     function __construct() {
+        return $this;
+    }
+
+    /**
+     * Set the monthly salary for this payslip.
+     */
+    function setMonthlySalary($monthly_salary) {
+        $this->monthly_salary = $monthly_salary;
         return $this;
     }
 
@@ -347,7 +356,7 @@ class PayHP {
             "totat_contribution" => $this->totalContribution(),
             "total_loan" => $this->totalLoans(),
 
-            "monthly_salary" => get_monthly_from_hourly($this->hourly_rate),
+            "monthly_salary" => to_currency($this->monthly_salary),
             "basic_pay" => $this->basicPay(),
             "unwork_deduction" => $this->deductPay(),
             "hours_paid" => $this->hoursPaid(),
@@ -403,18 +412,22 @@ class PayHP {
      */
     function basicPay() {
 
-        $monthy_salary = get_monthly_from_hourly($this->hourly_rate, false);
+        $monthly_salary = get_monthly_from_hourly($this->hourly_rate, false);
+        if($this->monthly_salary) {
+            $monthly_salary = convert_number_to_decimal($this->monthly_salary);
+        }
+        
         if($this->term == 'daily') {
             $regular = convert_number_to_decimal(floatval($this->hourly_rate) * 8);
         } else if($this->term == 'weekly') {
-            $regular = $monthy_salary / 4;
+            $regular = $monthly_salary / 4;
         } else if($this->term == 'biweekly') {
-            $regular = $monthy_salary / 2;
+            $regular = $monthly_salary / 2;
         } else if($this->term == 'monthly') {
-            $regular = $monthy_salary;
+            $regular = $monthly_salary;
         }
         
-        return $regular;
+        return convert_number_to_decimal($regular);
     }
 
     /**
@@ -491,7 +504,13 @@ class PayHP {
      * like the paid timeoff, overtime, nightdiff, and special pay.
      */
     function hoursPaid() {
-        $regular_pay = $this->worked_hour * $this->hourly_rate;
+        $basicpay_calculation = get_setting('basic_pay_calculation', 'hourly_based');
+        if($basicpay_calculation == 'hourly_based') {
+            $regular_pay = $this->worked_hour * $this->hourly_rate;
+        } else { //scheduled_based
+            $regular_pay = $this->basicPay();
+        }
+        
         return $regular_pay + $this->ptoPay() + $this->overtimePay() + $this->nightdiffPay() + $this->specialPay();
     }
 

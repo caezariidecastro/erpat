@@ -822,11 +822,10 @@ class Payrolls extends MY_Controller {
     }
 
     protected function processPayHP( $data, $tax_table ) {
-
-        //TODO: The settings should come from payroll info.
-        $monthly_salary = get_monthly_from_hourly($data->hourly_rate, false);
+        $monthly_salary = get_monthly_salary($data->user, false);
 
         return (new PayHP()) 
+            ->setMonthlySalary($monthly_salary)
             ->setHourlyRate($data->hourly_rate)
             ->setTaxTable("term", $tax_table)
             //TODO: Set scheduled hours?

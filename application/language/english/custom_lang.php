@@ -981,3 +981,5 @@ $lang["trigger_hour"] = "Trigger Hour";
 
 $lang["days_per_year"] = "Days Per Year";
 $lang["pto"] = "Paid Timeoff";
+
+$lang["basic_pay_calculation"] = "Basicpay Calculation";

@@ -6,7 +6,7 @@
 
         "job_title" => $payslip->job_title,
         "department" => $payslip->department,
-        "directorate" => "None",
+        "date_hired" => get_date_hired($payslip->user),
 
         "earnings" => [
             array(
@@ -32,7 +32,8 @@
         "deductions" => array(
             array(
                 "name" => "No Work Deductions",
-                "value" => to_currency($summary['unwork_deduction'])
+                "value" => to_currency($summary['unwork_deduction']),
+                "prefix" => "(".convert_number_to_decimal($payslip->absent)." hrs)"
             ),
             array(
                 "name" => "Compensation Tax",
@@ -233,7 +234,7 @@
                         Department: <span style="color: #454545;"><?= $payslip['department'] ?></span>
                     </li>
                     <li style="line-height: 25px;">
-                        Unworked: <span style="color: #454545;">(<?= $payslip['unwork_hours'] ?> hrs) <?= $payslip['unwork_deductions'] ?></span>
+                        Date Hired: <span style="color: #454545;"><?= $payslip['date_hired'] ?></span>
                     </li>
                     <li></li>
                 </ul>
@@ -260,12 +261,12 @@
 
         <!-- Allowance, Incentives, 13 Month, Bonus, Adjustment-->
         <?php foreach($payslip['deductions'] as $deducts) { ?>
-            <?php if($deducts['value'] != to_currency("0") ) { ?>
-            <tr style="color: #454545;">
-                <td><?= $deducts['name'] ?></td>
-                <td style="text-align: right;">-</td>
-                <td style="text-align: right;"><?= $deducts['value'] ?></td>
-            </tr>
+            <?php if($deducts['value'] !== "P 0.00" && $deducts['value'] !== "(0 hrs) P 0.00") { ?>
+                <tr style="color: #454545;">
+                    <td><?= $deducts['name'] ?></td>
+                    <td style="text-align: right;">-</td>
+                    <td style="text-align: right;"><?= $deducts['prefix'] ?> <?= $deducts['value'] ?></td>
+                </tr>
             <?php } ?>
         <?php } ?>
         

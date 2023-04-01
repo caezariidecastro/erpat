@@ -91,6 +91,20 @@
                             ?>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="basic_pay_calculation" class=" col-md-2"><?php echo lang('basic_pay_calculation'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_dropdown(
+                                    "basic_pay_calculation", array(
+                                "hourly_based" => "Base on Work Hour",
+                                "scheduled_based" => "Base on Schedule",
+                                    ), get_setting('basic_pay_calculation', 'hourly_based'), "class='select2 mini'"
+                            );
+                            ?>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>

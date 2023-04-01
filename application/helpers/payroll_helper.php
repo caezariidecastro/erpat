@@ -8,9 +8,9 @@ if (!function_exists('get_monthly_salary')) {
         $ci = get_instance();
         $job_info = $ci->Users_model->get_job_info($user_id);
         
-        $monthly_salary = 0;
-        if( isset($job_info->rate_per_hour) ) {
-            $monthly_salary = get_monthly_from_hourly($job_info->rate_per_hour * 8);
+        $monthly_salary = get_monthly_from_hourly($job_info->rate_per_hour * 8);
+        if( isset($job_info->salary) ) {
+            $monthly_salary = convert_number_to_decimal($job_info->salary);
         }
 
         if($to_currency) {
@@ -333,5 +333,21 @@ if (!function_exists('get_compensation_tax')) {
         }
 
         return $result;
+    }
+}
+
+/**
+ * Get the monthly salary using user id.
+ */
+if (!function_exists('get_date_hired')) {
+    function get_date_hired($user_id, $format = "d F Y") {
+        $ci = get_instance();
+        $job_info = $ci->Users_model->get_job_info($user_id);
+        
+        if( is_date_exists($job_info->date_of_hire) ) {
+            return convert_date_format($job_info->date_of_hire, $format);
+        }
+        
+        return "-";
     }
 }

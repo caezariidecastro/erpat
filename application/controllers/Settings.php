@@ -131,7 +131,7 @@ class Settings extends MY_Controller {
     }
 
     function save_finance_settings() {
-        $settings = array("default_currency", "currency_symbol", "currency_position", "decimal_separator", "no_of_decimals", "attendance_calc_mode");
+        $settings = array("default_currency", "currency_symbol", "currency_position", "decimal_separator", "no_of_decimals", "attendance_calc_mode", "basic_pay_calculation");
 
         foreach ($settings as $setting) {
             foreach ($settings as $setting) {
