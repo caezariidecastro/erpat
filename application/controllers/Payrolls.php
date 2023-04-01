@@ -657,7 +657,7 @@ class Payrolls extends MY_Controller {
         $this->load->library('pdf');
         $this->pdf->setPrintHeader(false);
         $this->pdf->setPrintFooter(false);
-        $this->pdf->SetCellPadding(1);
+        $this->pdf->SetCellPadding(0.7);
         $this->pdf->setImageScale(2.0);
         $this->pdf->AddPage();
         $this->pdf->SetFontSize(9);
@@ -666,7 +666,7 @@ class Payrolls extends MY_Controller {
             $html = $this->load->view("payrolls/preview", $data, true);
             $this->pdf->writeHTML($html, true, false, true, false, '');
 
-            $fullname = get_array_value($data, "fullname");
+            $fullname = $data['payslip']->employee_name;
             $file_name =  str_replace(" ", "-", $fullname).".pdf";
 
             $this->pdf->Output($file_name, "I");
@@ -1280,19 +1280,6 @@ class Payrolls extends MY_Controller {
         $this->load->view('payrolls/preview', $view_data);
     }
 
-    function payslip($id = 0) {
-        if ($id) {
-            //$view_data['user_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
-            //$view_data['payment_methods_dropdown'] = array("" => "-") + $this->Payment_methods_model->get_dropdown_list(array("title"), "id", array("available_on_payroll" => 1, "deleted" => 0));
-            //$view_data['account_dropdown'] = array("" => "-") + $this->Accounts_model->get_dropdown_list(array("name"), "id", array("deleted" => 0));
-
-            $view_data["payroll_info"] = $this->Payrolls_model->get_details(array("id" => $id))->row();
-            $this->prepare_payslip_pdf($view_data);
-        } else {
-            show_404();
-        }
-    }
-
     function download_pdf($id = 0, $mode = "download") {
         if ($id) {
             $payslip = $this->Payslips_model->get_details(array(
@@ -1329,7 +1316,7 @@ class Payrolls extends MY_Controller {
             $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
             //TODO: Get the signiture
 
-            $payslip->{unworked_deductions} = max($payslip->absent, 0);
+            $payslip->unworked_deductions = max($payslip->absent, 0);
     
             $view_data["payslip"] = $payslip;
             $view_data["summary"] = $this->processPayHP( $payslip, $payroll->tax_table )->calculate();

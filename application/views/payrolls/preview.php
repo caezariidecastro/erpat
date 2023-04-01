@@ -145,6 +145,9 @@
             "value" => to_currency($summary['deduct_other'])
         );
     }
+
+    $theme_color = adjustBrightness("#".get_setting("default_theme_color"), 100);
+    $theme_color_bg = adjustBrightness($theme_color, 20);
 ?>
 
 <style>
@@ -157,7 +160,7 @@
     td, th {
         border: 1px solid grey;
         text-align: left;
-        padding: 5px;
+        padding: 2px;
     }
 
     tr:nth-child(even) {
@@ -172,26 +175,17 @@
         background-color: #f7f7f7;
     }
 
-    .heading-color {
-        background-color: #d4e8fa;
-    }
-
-    .column-color {
-        background-color: #c2e3ff;
-    }
-
     .body-color {
         background-color: #edf5fa;
     }
 </style>
-<?php $footer_color = "#c2e3ff"; ?>
 
 <div class="background-color" style="border: 2px solid grey;">
     
     <!-- HEADING -->
     <table>
         <tr>
-            <th width="98.8%" style="border: none;">
+            <th width="98.8%" style="border: none; border-bottom: 2px solid grey;">
                 <ul style="font-size: x-small; font-weight: 100; ">
                     <li></li>
                     <li style="text-align: center;">
@@ -212,7 +206,7 @@
     </table>
 
     <!-- GENERAL -->
-    <table class="heading-color">
+    <table style="background-color: <?= $theme_color_bg ?>;">
         <tr>
             <th width="49.5%">
                 <ul style="font-weight: 100;">
@@ -249,7 +243,7 @@
 
     <!-- DESCRIPTION -->
     <table class="body-color">
-        <tr class="column-color">
+        <tr style="background-color: <?= $theme_color ?>;">
             <th width="49.5%" style="text-align: center;"><strong style="color: #262626;">Description</strong></th>
             <th width="24.8%" style="text-align: center;"><strong style="color: #262626;">Earnings</strong></th>
             <th width="24.7%" style="text-align: center;"><strong style="color: #262626;">Deductions</strong></th>
@@ -284,17 +278,17 @@
 
     <!-- BANK & SUMMARY -->
     <table style="background-color: white;">
-        <tr style="background-color: <?= $footer_color ?>;">
+        <tr style="background-color: <?= $theme_color_bg ?>;">
             <th width="49.5%">
                 <ul style="font-weight: 100;" >
                     <li ></li>
-                    <li style="line-height: 35px;">
+                    <li style="line-height: 30px;">
                         Bank Name: <span style="color: #454545;"><?= $payslip['bank_name'] ?></span>
                     </li>
-                    <li style="line-height: 35px;">
+                    <li style="line-height: 30px;">
                         Account Name: <span style="color: #454545;"><?= $payslip['account_name'] ?></span>
                     </li>
-                    <li style="line-height: 35px;">
+                    <li style="line-height: 30px;">
                         Account Number: <span style="color: #454545;"><?= $payslip['account_number'] ?></span>
                     </li>
                     <li ></li>
@@ -307,10 +301,10 @@
                         <th width="49.5%" style="border: none;"></th>
                     </tr>
                     <tr style="background-color: <?= $footer_color ?>;">
-                        <td style="border: none; text-align: right; font-size: 20px;">
+                        <td style="border: none; text-align: right; font-size: 14px;">
                             <strong>NET PAY: </strong>
                         </td>
-                        <td style="border: none; text-align: left; font-size: 20px;">
+                        <td style="border: none; text-align: left; font-size: 14px;">
                             <strong><?= $payslip['net_pay'] ?></strong>
                         </td>
                     </tr>
@@ -318,7 +312,7 @@
                 <table >
                     <tr>
                         <th width="100%" style="border: none;">
-                            <p style="text-align: center; font-size: 14px; line-height: 14px; font-style: italic; font-weight: 100;">
+                            <p style="text-align: center; font-size: 10px; line-height: 7px; font-style: italic; font-weight: 100;">
                                 <span style="color: #454545;"><?= $payslip['amount_in_words'] ?></span>
                             </p>
                         </th>
@@ -327,13 +321,19 @@
                 <table >
                     <tr>
                         <th width="49.5%" style="border: none;">
-                            <p style="text-align: center; font-size: 15px; line-height: 15px;">
-                                Pay Period: <span style="color: #454545; font-weight: 100;"><?= $payslip['pay_period'] ?></span>
+                            <p style="text-align: center; font-size: 12px; line-height: 12px;">
+                                <span style="color: #454545; font-weight: 100;"><?= $payslip['pay_period'] ?></span>
+                            </p>
+                            <p style="text-align: center; font-size: 10px; line-height: 0;">
+                                Pay Period
                             </p>
                         </th>
                         <th width="49.5%" style="border: none;">
-                            <p style="text-align: center; font-size: 15px; line-height: 15px;">
-                                Payment Date: <span style="color: #454545; font-weight: 100;"><?= $payslip['payment_date'] ?></span>
+                            <p style="text-align: center; font-size: 12px; line-height: 12px;">
+                                <span style="color: #454545; font-weight: 100;"><?= $payslip['payment_date'] ?></span>
+                            </p>
+                            <p style="text-align: center; font-size: 10px; line-height: 0;">
+                                Payment Date
                             </p>
                         </th>
                     </tr>
@@ -350,16 +350,16 @@
     <table style="background-color: white;">
         <tr>
             <th width="49.5%">
-                <p style="text-align: center; color: #ff6f6f; font-size: 2em;">CONFIDENTIAL</p>
+                <p style="text-align: center; color: #ff6f6f; font-size: 2em; line-height: 25px;">CONFIDENTIAL</p>
             </th>
             <th width="49.5%">
-                <small style="text-align: left;">
+                <p style="text-align: left; font-size: 10px; line-height: 10px;">
                     Certified true and correct:
-                </small>
-                <p style="text-align: center; font-size: 20px;">
+                </p>
+                <p style="text-align: center; font-size: 18px; line-height: 10px;">
                     <?= $payslip['accountant_name'] ?>
                 </p>
-                <p style="text-align: center; font-size: 15px; line-height: 20px; font-weight: 200; border-top: 1px solid grey;">
+                <p style="text-align: center; font-size: 12px; line-height: 18px; font-weight: 200; border-top: 1px solid grey;">
                     Head, HR/Accounting   
                 </p>
             </th>
