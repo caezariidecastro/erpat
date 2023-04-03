@@ -1460,6 +1460,25 @@ class Settings extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
     }
+
+    function run_cron_command() {
+        $this->load->library('cron_job');
+
+        ini_set('max_execution_time', 300); //execute maximum 300 seconds 
+        //wait at least 5 minute befor starting new cron job
+        $last_cron_job_time = get_setting('last_cron_job_time');
+
+        $current_time = strtotime(get_current_utc_time());
+		
+        if ($last_cron_job_time == "" || ($current_time > ($last_cron_job_time + 60))) {
+            $this->cron_job->run();
+            $this->Settings_model->save_setting("last_cron_job_time", $current_time);
+
+            echo json_encode(array("success" => true, "data" => get_my_local_time('d/m/Y h:i:s A'), 'message' => lang('record_updated')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('cron_cannot_be_executed_please_wait_1_min')));
+        }
+    }
 }
 
 /* End of file general_settings.php */

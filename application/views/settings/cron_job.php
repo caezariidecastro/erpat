@@ -40,7 +40,7 @@
                                 $status_class = "label-danger";
                             }
 
-                            echo "<span class='label $status_class large'>" . $text . "</span>";
+                            echo "<span id='last_cron_job_time' class='label $status_class large'>" . $text . "</span>";
                             ?>
                         </div>
                     </div> 
@@ -51,12 +51,17 @@
                         </div>
                     </div> 
                     <div class="form-group clearfix">
-                        <label  class=" col-md-2">cPanel Cron Job Command *</label>
+                        <label  class=" col-md-2">Cron Job Command *</label>
                         <div class=" col-md-10">
                             <div>
                                 <?php echo "<pre>wget -q -O- " . get_uri("cron") . "</pre>"; ?>
                             </div>
                         </div>
+                    </div> 
+                    <div class="form-group clearfix">
+                        <?php echo form_open(get_uri("settings/run_cron_command"), array("id" => "cron-settings-form", "class" => "general-form dashed-row", "role" => "form")); ?>
+                        <button type="submit" class="btn btn-primary"><span class="fa fa-fire"></span> <?php echo lang('run_cron_command'); ?></button>
+                        <?php echo form_close(); ?>
                     </div> 
                 </div>
 
@@ -65,3 +70,19 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#cron-settings-form").appForm({
+            isModal: false,
+            onSuccess: function (result) {
+                $('#last_cron_job_time').text(result.data);
+                appAlert.success(result.message, {duration: 5000});
+            },
+            onError: function(result) {
+                appLoader.hide();
+                appAlert.error(result.message, {duration: 5000});
+            }
+        });
+    });
+</script>
