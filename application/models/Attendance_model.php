@@ -13,14 +13,16 @@ class Attendance_model extends Crud_model {
     //Clock out all user more than time out.
     function auto_clockout() {
         $now = get_current_utc_time();
-        $whitelisted = get_setting('whitelisted');
+        $whitelisted = get_setting('whitelisted_autoclockout');
 
         // Auto clouckout greater than number of clocked hours.
         $trigger = floatval(get_setting('autoclockout_trigger_hour', 12.00));
         $sql = "UPDATE attendance SET out_time=in_time, status='clockout', note='System Clockout' 
-            WHERE out_time = NULL
-                AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 >= $trigger
-                AND user_id NOT IN (".$whitelisted.")";
+            WHERE out_time IS NULL
+                AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 >= $trigger ";
+        if( isset($whitelisted) ) {
+            $sql .= "AND user_id NOT IN (".$whitelisted.")";
+        }
         $this->db->query($sql);
 
         //get list of user in autoclocked out.
