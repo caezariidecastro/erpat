@@ -20,7 +20,7 @@ class Attendance_model extends Crud_model {
         $sql = "UPDATE attendance SET out_time=in_time, status='clockout', note='System Clockout' 
             WHERE out_time IS NULL
                 AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 >= $trigger ";
-        if( isset($whitelisted) ) {
+        if( !empty($whitelisted) ) {
             $sql .= "AND user_id NOT IN (".$whitelisted.")";
         }
         $this->db->query($sql);

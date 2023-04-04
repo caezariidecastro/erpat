@@ -300,6 +300,7 @@ if (!function_exists('cell_input')) {
 if (!function_exists('get_compensation_tax')) {
     function get_compensation_tax($table = 'daily') {
         $ci = get_instance();
+        $ci->load->model('Taxes_model');
         $result = false;
 
         if($table === 'daily') {

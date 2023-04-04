@@ -11,45 +11,45 @@
         "earnings" => [
             array(
                 "name" => "Basic Pay",
-                "value" => to_currency($summary['basic_pay']),
+                "value" => $summary['basic_pay'],
                 "prefix" => "(".convert_number_to_decimal($summary['worked_hour'])." hrs)"
             ),
             array(
                 "name" => "Overtime Pay",
-                "value" => to_currency($summary['overtime_pay']),
+                "value" => $summary['overtime_pay'],
                 "prefix" => "(".convert_number_to_decimal($summary['overtime_hour'])." hrs)"
             ),
             array(
                 "name" => "Night Differential",
-                "value" => to_currency($summary['nightdiff_pay']),
+                "value" => $summary['nightdiff_pay'],
                 "prefix" => "(".convert_number_to_decimal($summary['nightdiff_hour'])." hrs)"
             ),
             array(
                 "name" => "Overtime ND",
-                "value" => to_currency($summary['special_pay'])
+                "value" => $summary['special_pay']
             )
         ],
         "deductions" => array(
             array(
                 "name" => "No Work Deductions",
-                "value" => to_currency($summary['unwork_deduction']),
+                "value" => $summary['unwork_deduction'],
                 "prefix" => "(".convert_number_to_decimal($payslip->absent)." hrs)"
             ),
             array(
                 "name" => "Compensation Tax",
-                "value" => to_currency($summary['tax_due'])
+                "value" => $summary['tax_due']
             ),
             array(
                 "name" => "SSS Contribution",
-                "value" => to_currency($summary['sss_contri'])
+                "value" => $summary['sss_contri']
             ),
             array(
                 "name" => "PAGIBIG Contribution",
-                "value" => to_currency($summary['pagibig_contri'])
+                "value" => $summary['pagibig_contri']
             ),
             array(
                 "name" => "PhilHealth Contribution",
-                "value" => to_currency($summary['phealth_contri'])
+                "value" => $summary['phealth_contri']
             ),
         ),
 
@@ -250,10 +250,10 @@
             <th width="24.7%" style="text-align: center;"><strong style="color: #262626;">Deductions</strong></th>
         </tr>
         <?php foreach($payslip['earnings'] as $earns) { ?>
-            <?php if($earns['value'] !== "P 0.00" && $earns['value'] !== "(0 hrs) P 0.00") { ?>
+            <?php if($earns['value'] > 0) { ?>
             <tr style="color: #454545;">
                 <td><?= $earns['name'] ?></td>
-                <td style="text-align: right;"><?= $earns['prefix'] ?> <?= $earns['value'] ?></td>
+                <td style="text-align: right;"><?= $earns['prefix'] ?> <?= to_currency($earns['value']) ?></td>
                 <td style="text-align: right;">-</td>
             </tr>
             <?php } ?>
@@ -261,11 +261,11 @@
 
         <!-- Allowance, Incentives, 13 Month, Bonus, Adjustment-->
         <?php foreach($payslip['deductions'] as $deducts) { ?>
-            <?php if($deducts['value'] !== "P 0.00" && $deducts['value'] !== "(0 hrs) P 0.00") { ?>
+            <?php if($deducts['value'] > 0) { ?>
                 <tr style="color: #454545;">
                     <td><?= $deducts['name'] ?></td>
                     <td style="text-align: right;">-</td>
-                    <td style="text-align: right;"><?= $deducts['prefix'] ?> <?= $deducts['value'] ?></td>
+                    <td style="text-align: right;"><?= $deducts['prefix'] ?> <?= to_currency($deducts['value']) ?></td>
                 </tr>
             <?php } ?>
         <?php } ?>
