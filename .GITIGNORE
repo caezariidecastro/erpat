@@ -33,6 +33,7 @@ files/stores_images/*
 files/epass_qrcodes/*
 files/profile_images/*
 files/project_files/*
+files/system_files/*
 !files/system/default-invoice-logo.png
 !files/system/default-stie-logo.png
 !files/system/import-clients-sample.xlsx
