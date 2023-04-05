@@ -33,7 +33,7 @@ class ImageEditor {
         $img = $manager->canvas(900, 1500, '#3d3d3d');
 
         //Background
-        $background = $manager->make( get_setting("system_file_path")."epass.jpg" )->resize(900, 1500);
+        $background = $manager->make( get_setting("system_default_path")."epass.jpg" )->resize(900, 1500);
         $img->insert($background, 'top', 0, 0); 
 
         // QRCode
@@ -43,7 +43,7 @@ class ImageEditor {
 
         // UUID
         $img->text($epass['uuid'], 450, 1040, function($font) {
-            $font->file( getcwd()."/".get_setting("system_file_path")."/Myriad_Pro_Regular.ttf" );
+            $font->file( getcwd()."/".get_setting("system_default_path")."/Myriad_Pro_Regular.ttf" );
             $font->size(33);
             $font->color('#ffffff');
             $font->align('center');
@@ -52,7 +52,7 @@ class ImageEditor {
 
         // Fullname
         $img->text($epass['fname'], 450, 1170, function($font) {
-            $font->file( getcwd()."/".get_setting("system_file_path")."/Myriad_Pro_Bold.ttf" );
+            $font->file( getcwd()."/".get_setting("system_default_path")."/Myriad_Pro_Bold.ttf" );
             $font->size(55);
             $font->color('#fa00b9');
             $font->align('center');
@@ -61,14 +61,14 @@ class ImageEditor {
         
         // area
         // $img->text($epass['area'], 75, 920, function($font) {
-        //     $font->file( getcwd()."/".get_setting("system_file_path")."/Myriad_Pro_Regular.ttf" );
+        //     $font->file( getcwd()."/".get_setting("system_default_path")."/Myriad_Pro_Regular.ttf" );
         //     $font->size(30);
         //     $font->color('#ffffff');
         //     $font->align('left');
         //     $font->valign('top');
         // });  
         $img->text($epass['area'], 450, 1270, function($font) {
-            $font->file( getcwd()."/".get_setting("system_file_path")."/Myriad_Pro_Bold.ttf" );
+            $font->file( getcwd()."/".get_setting("system_default_path")."/Myriad_Pro_Bold.ttf" );
             $font->size(50);
             $font->color('#ffffff');
             $font->align('center');
@@ -77,7 +77,7 @@ class ImageEditor {
 
         // seat
         // $img->text($epass['seat'], 575, 920, function($font) {
-        //     $font->file( getcwd()."/".get_setting("system_file_path")."/Myriad_Pro_Regular.ttf" );
+        //     $font->file( getcwd()."/".get_setting("system_default_path")."/Myriad_Pro_Regular.ttf" );
         //     $font->size(30);
         //     $font->color('#ffffff');
         //     $font->align('right');

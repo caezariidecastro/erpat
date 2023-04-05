@@ -1535,9 +1535,9 @@ if (!function_exists("get_file_from_setting")) {
                     return get_source_url_of_file($file, get_setting("system_file_path"), "thumbnail", $only_file_path_with_slash, $only_file_path_with_slash, $show_full_size_thumbnail);
                 } else {
                     if ($only_file_path_with_slash) {
-                        return "/" . (get_setting("system_file_path") . $setting_value);
+                        return "/" . (get_setting("system_default_path") . $setting_value);
                     } else {
-                        return get_file_uri(get_setting("system_file_path") . $setting_value);
+                        return get_file_uri(get_setting("system_default_path") . $setting_value);
                     }
                 }
             }

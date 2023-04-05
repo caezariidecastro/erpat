@@ -1310,7 +1310,7 @@ class Leads extends MY_Controller {
     }
 
     function download_sample_excel_file() {
-        download_app_files(get_setting("system_file_path"), serialize(array(array("file_name" => "import-leads-sample.xlsx"))));
+        download_app_files(get_setting("system_default_path"), serialize(array(array("file_name" => "import-leads-sample.xlsx"))));
     }
 
 }

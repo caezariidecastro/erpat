@@ -69,7 +69,8 @@ $config['product_image_path'] = 'files/products_images/';
 $config['barcode_image_path'] = 'files/barcode_images/';
 $config['timeline_file_path'] = 'files/timeline_files/';
 $config['project_file_path'] = 'files/project_files/';
-$config['system_file_path'] = 'files/system/';
+$config['system_file_path'] = 'files/system_files/';
+$config['system_default_path'] = 'files/system/';
 
 
 /*

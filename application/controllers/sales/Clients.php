@@ -1495,7 +1495,7 @@ class Clients extends MY_Controller {
 
     function download_sample_excel_file() {
         $this->access_only_allowed_members();
-        download_app_files(get_setting("system_file_path"), serialize(array(array("file_name" => "import-clients-sample.xlsx"))));
+        download_app_files(get_setting("system_default_path"), serialize(array(array("file_name" => "import-clients-sample.xlsx"))));
     }
 
     function gdpr() {

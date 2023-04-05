@@ -52,7 +52,7 @@ if ($timepicker_interval) {
     AppHelper.settings.notificationSoundVolume = "<?php echo get_setting("user_" . $user_id . "_notification_sound_volume"); ?>";
     AppHelper.settings.disableKeyboardShortcuts = "<?php echo get_setting('user_' . $user_id . '_disable_keyboard_shortcuts'); ?>";
     AppHelper.userId = "<?php echo $user_id; ?>";
-    AppHelper.notificationSoundSrc = "<?php echo get_file_uri(get_setting("system_file_path") . "notification.mp3"); ?>";
+    AppHelper.notificationSoundSrc = "<?php echo get_file_uri(get_setting("system_default_path") . "notification.mp3"); ?>";
 
     //push notification
     AppHelper.settings.enablePushNotification = "<?php echo get_setting("enable_push_notification"); ?>";
