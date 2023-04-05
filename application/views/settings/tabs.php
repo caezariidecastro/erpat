@@ -27,7 +27,7 @@ $settings_menu = array(
     ),
     "client" => array(
         array("name" => "client_permissions", "url" => "settings/client_permissions"),
-        array("name" => "client_groups", "url" => "client_groups"),
+        array("name" => "client_groups", "url" => "sales/client_groups"),
         array("name" => "dashboard", "url" => "dashboard/client_default_dashboard"),
         array("name" => "client_left_menu", "url" => "left_menus/index/client_default"),
         array("name" => "client_projects", "url" => "settings/client_projects"),
