@@ -731,26 +731,20 @@ class Settings extends MY_Controller {
 
         $settings = array(
             "module_timeline", "module_event", "module_todo", "module_note", "module_message", "module_chat", "module_announcement", 
-        "module_hrs", 
             "module_department", "module_employee", "module_attendance", "module_overtime", "module_disciplinary", "module_leave", "module_holidays", "module_access",
-        "module_fas", 
             "module_summary", "module_payments", "module_expense", "module_payroll", "module_accounts", "module_transfer", "module_balancesheet",
-        "module_mes", 
             "module_productions", "module_billofmaterials", "module_rawmaterials", "module_inventory", "module_products", "module_purchases", "module_returns", "module_supplier",
-        "module_mcs", 
             "module_lead", "module_epass",
-        "module_lds", 
             "module_delivery", "module_warehouse", "module_item_transfer", "module_vehicles", "module_driver", "module_consumer",
-        "module_sms", 
             "module_pos", "module_giftcard", "module_coupons", "module_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_customers",
-        "module_ams",
             "module_assets", "module_asset_category", "module_location", "module_vendors", "module_brands", 
-        "module_pms", 
             "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 
-        "module_ticket", 
+        
         
         //TODO: ROLES
-        "module_page", "module_help", "module_knowledge_base",
+
+        //HELP CENTER
+        "module_ticket", "module_page", "module_help", "module_knowledge_base",
         );
 
         foreach ($settings as $setting) {

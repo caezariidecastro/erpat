@@ -34,16 +34,6 @@ class Roles extends MY_Controller {
             array("epass_create", "Coming Soon", "Event Pass", "Create", null),
             array("raffle_draw", "Coming Soon", "Raffle Draw", "Enabled", null),
 
-            //TODO: Soon to be remove
-            array("module_hrs", "Coming Soon", "Human Resource", "Enabled", null),
-            array("module_mcs", "Coming Soon", "Marketing", "Enabled", null),
-            array("module_sms", "Coming Soon", "Sales", "Enabled", null),
-            array("module_fas", "Coming Soon", "Accounting", "Enabled", null),
-            array("module_pms", "Coming Soon", "Project Planning", "Enabled", null),
-            array("module_ams", "Coming Soon", "Manufacturing", "Enabled", null),
-            array("module_lds", "Coming Soon", "Warehouse & Logistics", "Enabled", null),
-            array("module_mes", "Coming Soon", "Manufacturing", "Enabled", null),
-
             //Important Access
             array("can_use_biometric", "Coming Soon", "Syntry Guard", "Enabled", null),
             array("can_use_payhp", "Coming Soon", "PayHP", "Enabled", null),
@@ -58,6 +48,19 @@ class Roles extends MY_Controller {
             array("client", "Coming Soon", "Marketing", "Clients", null),
             array("lead", "Coming Soon", "Marketing", "Leads", null),
             
+            array("can_view_team_members_contact_info", "Coming Soon", "HR Employee", "View Contacts", null),
+            array("can_view_team_members_social_links", "Coming Soon", "HR Employee", "View Social Links", null),
+            array("can_delete_leave_application", "Coming Soon", "HR Employee", "Delete Leave Application", null),
+
+            array("message_permission", "Coming Soon", "Default: Message", "Access", "dropdown"),
+            array("leave", "Coming Soon", "Default: Leave", "Access", "dropdown"),
+            array("attendance", "Coming Soon", "Default: Attendance", "Access", "dropdown"),
+            array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
+            array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
+
+            //TODO: ROLES
+
+            //PLANNING
             array("can_manage_all_projects", "Coming Soon", "Planning", "Manage All Projects", null),
             array("can_create_projects", "Coming Soon", "Planning", "Create Project", null),
             array("can_edit_projects", "Coming Soon", "Planning", "Edit Projects", null),
@@ -73,18 +76,6 @@ class Roles extends MY_Controller {
             array("can_edit_milestones", "Coming Soon", "Planning", "Edit Milestone", null),
             array("can_delete_milestones", "Coming Soon", "Planning", "Delete Milestone", null),
             array("can_delete_files", "Coming Soon", "Planning", "Delete Files", null),
-
-            array("can_view_team_members_contact_info", "Coming Soon", "HR Employee", "View Contacts", null),
-            array("can_view_team_members_social_links", "Coming Soon", "HR Employee", "View Social Links", null),
-            array("can_delete_leave_application", "Coming Soon", "HR Employee", "Delete Leave Application", null),
-
-            array("message_permission", "Coming Soon", "Default: Message", "Access", "dropdown"),
-            array("leave", "Coming Soon", "Default: Leave", "Access", "dropdown"),
-            array("attendance", "Coming Soon", "Default: Attendance", "Access", "dropdown"),
-            array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
-            array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
-
-            //TODO: ROLES
 
             //HELP CENTER
             array("ticket", "Coming Soon", "Default: Ticket", "Access", "dropdown"), 
