@@ -8,7 +8,7 @@ class Tickets extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->with_module("module_ticket", true);
-
+        $this->with_permission("ticket", true);
         $this->init_permission_checker("ticket");
 
         $this->load->model("Ticket_templates_model");
@@ -897,7 +897,7 @@ class Tickets extends MY_Controller {
     private function _get_ticket_types_dropdown_list_for_filter() {
 
         $where = array();
-        if ($this->login_user->user_type === "staff" && $this->access_type !== "all") {
+        if ($this->login_user->user_type === "staff" && $this->access_type !== "all" && !empty($this->allowed_ticket_types)) {
             $where = array("where_in" => array("id" => $this->allowed_ticket_types));
         }
 

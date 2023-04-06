@@ -677,9 +677,10 @@ class Settings extends MY_Controller {
            'gantt' => 'Planning',
            'project_timesheet' => 'Planning',
 
-           'ticket' => 'Support',
-           
            //TODO: ROLES
+
+           //HELP CENTER
+           'ticket' => 'Support',
            'page' => 'Content', //Done
            'help' => 'Support', //Done
            'knowledge_base' => 'Content', //Done
