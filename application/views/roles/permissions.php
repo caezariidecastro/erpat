@@ -51,7 +51,10 @@
                 {title: '<?php echo lang("actions"); ?>'},
                 {title: '<?php echo lang("changes"); ?>'},
             ], onInitComplete: function () {
-                setTimeout(() => {
+
+                var table = $('#permission-table').DataTable();
+
+                let refresh = function() {
                     $("#leave_specific_dropdown, #attendance_specific_dropdown, #timesheet_manage_permission_specific_dropdown,  #team_member_update_permission_specific_dropdown, #message_permission_specific_dropdown").select2({
                         multiple: true,
                         formatResult: teamAndMemberSelect2Format,
@@ -88,9 +91,9 @@
                     });
 
                     $(".select2").select2();
-                    
-                    console.log("Permissions loaded!");
-                }, 100);
+                }
+                table.on( 'init.dt', refresh );
+                table.on( 'draw', refresh );
             },
             tableRefreshButton: true,
         });
