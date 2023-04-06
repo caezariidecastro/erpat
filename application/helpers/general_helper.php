@@ -1842,7 +1842,7 @@ if (!function_exists('can_access_messages_module')) {
         $client_message_users = get_setting("client_message_users");
         $client_message_users_array = explode(",", $client_message_users);
 
-        if (($ci->login_user->user_type === "staff" && ($ci->login_user->is_admin || get_array_value($ci->login_user->permissions, "message_permission") !== "no" || in_array($ci->login_user->id, $client_message_users_array))) || ($ci->login_user->user_type === "client" && $client_message_users)) {
+        if (($ci->login_user->user_type === "staff" && ($ci->login_user->is_admin || get_array_value($ci->login_user->permissions, "message_permission") !== "" || in_array($ci->login_user->id, $client_message_users_array))) || ($ci->login_user->user_type === "client" && $client_message_users)) {
             $can_chat = true;
         }
 

@@ -426,7 +426,7 @@ class Messages extends MY_Controller {
                 $view_data['show_clients_list'] = true;
             }
 
-            if (get_array_value($this->login_user->permissions, "message_permission") !== "no") {
+            if (get_array_value($this->login_user->permissions, "message_permission") !== "") {
                 //user can send message to team members
                 $view_data['show_users_list'] = true;
             }

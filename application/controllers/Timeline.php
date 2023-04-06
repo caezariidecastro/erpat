@@ -18,7 +18,7 @@ class Timeline extends MY_Controller {
 
         $view_data['team_members'] = "";
         $this->init_permission_checker("message_permission");
-        if (get_array_value($this->login_user->permissions, "message_permission") !== "no") {
+        if (get_array_value($this->login_user->permissions, "message_permission") !== "") {
             $view_data['team_members'] = $this->Messages_model->get_users_for_messaging($this->get_user_options_for_query("staff"))->result();
         }
 

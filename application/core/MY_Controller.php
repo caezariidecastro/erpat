@@ -140,8 +140,10 @@ class MY_Controller extends CI_Controller {
                 $module_permission = get_array_value($this->login_user->permissions, $group . "_specific");
                 $permissions = explode(",", $module_permission);
 
+                $specifics = array("leave", "attendance", "overtime", "team_member_update_permission", "timesheet_manage_permission", "message_permission");
+
                 //check the accessable users list
-                if ($group === "leave" || $group === "attendance" || $group === "overtime" || $group === "team_member_update_permission" || $group === "timesheet_manage_permission" || $group == "message_permission") {
+                if ( in_array($group, $specifics) ) {
                     $info->allowed_members = $this->prepare_allowed_members_array($permissions, $this->login_user->id);
                 } else if ($group === "ticket") {
                     //check the accessable ticket types
@@ -594,7 +596,7 @@ class MY_Controller extends CI_Controller {
             $client_message_users = get_setting("client_message_users");
             $client_message_users_array = explode(",", $client_message_users);
 
-            if (!$this->login_user->is_admin && get_array_value($this->login_user->permissions, "message_permission") == "no" && !in_array($this->login_user->id, $client_message_users_array)) {
+            if (!$this->login_user->is_admin && get_array_value($this->login_user->permissions, "message_permission") == "" && !in_array($this->login_user->id, $client_message_users_array)) {
                 $accessable = false;
             }
         } else {
@@ -651,7 +653,7 @@ class MY_Controller extends CI_Controller {
                 $permissions = is_array($user_permissions) ? $user_permissions : array();
             }
 
-            if (get_array_value($permissions, "message_permission") == "no") {
+            if (get_array_value($permissions, "message_permission") == "") {
                 //user doesn't have permission to send any message
                 return false;
             } else if (get_array_value($permissions, "message_permission") == "specific") {

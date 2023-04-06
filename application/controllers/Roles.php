@@ -84,8 +84,10 @@ class Roles extends MY_Controller {
             array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
             array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
 
-            array("ticket", "Coming Soon", "Default: Ticket", "Access", "dropdown"),
+            //TODO: ROLES
 
+            //HELP CENTER
+            array("ticket", "Coming Soon", "Default: Ticket", "Access", "dropdown"), 
             array("page", "Coming Soon", "Web Pages", "Enabled", null, true),
             array("help", "Coming Soon", "Help Center", "Enabled", null, true, true),
             array("knowledge_base", "Coming Soon", "Knowledge Base", "Enabled", null, true, true),
@@ -237,7 +239,7 @@ class Roles extends MY_Controller {
 
             if( $permit[4] == "dropdown" ) { 
                 $option =  '<select id="'.$permit[0].'" name="'.$permit[0].'" class="toggle_specific select-permission" style="margin-bottom: 5px;">
-                                <option value="no" '.($current == "no"?'selected="selected"':'').'>
+                                <option value="" '.($current == ""?'selected="selected"':'').'>
                                     Disable
                                 </option>
                                 <option value="all" '.($current == "all"?'selected="selected"':'').'>

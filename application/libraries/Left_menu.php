@@ -255,7 +255,7 @@ class Left_menu {
 
             $client_message_users = get_setting("client_message_users");
             $client_message_users_array = explode(",", $client_message_users);
-            $access_messages = ($this->ci->login_user->is_admin || get_array_value($permissions, "message_permission") !== "no" || in_array($this->ci->login_user->id, $client_message_users_array));
+            $access_messages = ($this->ci->login_user->is_admin || get_array_value($permissions, "message_permission") !== "" || in_array($this->ci->login_user->id, $client_message_users_array));
 
             if (module_enabled("module_timeline") == "1") {
                 $sidebar_menu["timeline"] = array("name" => "timeline", "url" => "timeline", "class" => " fa-comments font-18");
