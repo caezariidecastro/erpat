@@ -738,10 +738,13 @@ class Settings extends MY_Controller {
             "module_delivery", "module_warehouse", "module_item_transfer", "module_vehicles", "module_driver", "module_consumer",
             "module_pos", "module_giftcard", "module_coupons", "module_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_customers",
             "module_assets", "module_asset_category", "module_location", "module_vendors", "module_brands", 
-            "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 
+            "module_clients", "module_services", 
         
         
         //TODO: ROLES
+
+        //PLANNING
+        "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet",
 
         //HELP CENTER
         "module_ticket", "module_page", "module_help", "module_knowledge_base",

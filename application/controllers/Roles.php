@@ -56,25 +56,29 @@ class Roles extends MY_Controller {
             array("leave", "Coming Soon", "Default: Leave", "Access", "dropdown"),
             array("attendance", "Coming Soon", "Default: Attendance", "Access", "dropdown"),
             array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
-            array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
 
             //TODO: ROLES
 
             //PLANNING
+            //projects
             array("can_manage_all_projects", "Coming Soon", "Planning", "Manage All Projects", null),
             array("can_create_projects", "Coming Soon", "Planning", "Create Project", null),
             array("can_edit_projects", "Coming Soon", "Planning", "Edit Projects", null),
             array("can_delete_projects", "Coming Soon", "Planning", "Delete Projects", null),
             array("can_add_remove_project_members", "Coming Soon", "Manage Project Members", "Enabled", null),
+            //task
             array("can_create_tasks", "Coming Soon", "Planning", "Create Task", null),
             array("can_edit_tasks", "Coming Soon", "Planning", "Edit Task", null),
             array("can_delete_tasks", "Coming Soon", "Planning", "Delete Task", null),
+            array("can_update_only_assigned_tasks_status", "Coming Soon", "Edit His/Her Task Only", "Enabled", null),
             array("can_comment_on_tasks", "Coming Soon", "Planning", "Can Comment on Task", null),
             array("show_assigned_tasks_only", "Coming Soon", "Planning", "View His/Her Task Only", null),
-            array("can_update_only_assigned_tasks_status", "Coming Soon", "Edit His/Her Task Only", "Enabled", null),
+            //milestone
             array("can_create_milestones", "Coming Soon", "Planning", "Create Milestone", null),
             array("can_edit_milestones", "Coming Soon", "Planning", "Edit Milestone", null),
             array("can_delete_milestones", "Coming Soon", "Planning", "Delete Milestone", null),
+            //other
+            array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
             array("can_delete_files", "Coming Soon", "Planning", "Delete Files", null),
 
             //HELP CENTER

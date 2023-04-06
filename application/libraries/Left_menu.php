@@ -389,15 +389,7 @@ class Left_menu {
             $sidebar_menu["stores"] = array("name" => "stores", "url" => "sales/Stores", "class" => "fa-circle");
             $sidebar_menu["products"] = array("name" => "submenu_pid_products", "url" => "sales/ProductEntries", "class" => "fa-circle");
 
-            // PLANNING
-            if (module_enabled("module_gantt")) {
-                $sidebar_menu["view_gantts"] = array("name" => "submenu_pms_view_gantts", "url" => "pms/view_gantts", "class" => "fa-circle");
-            }
-            if (module_enabled("module_project_timesheet")) {
-                $sidebar_menu["timesheets"] = array("name" => "submenu_pms_timesheets", "url" => "pms/timesheets", "class" => "fa-circle");
-            }
-            $sidebar_menu["my_tasks"] = array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks", "class" => "fa-circle");
-            $sidebar_menu["all_projects"] = array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects", "class" => "fa-circle");
+            
 
             // SECURITY > ACCESS LOG
             if( module_enabled("module_access") && current_has_permit("access_logs") ) {
@@ -405,6 +397,25 @@ class Left_menu {
             }
 
             // End: Module permissions workaround
+
+            // PLANNING
+            if (module_enabled("module_allprojects") && current_has_permit('can_manage_all_projects')) {
+                $sidebar_menu["all_projects"] = array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects", "class" => "fa-circle");
+            }
+
+            if (module_enabled("module_mytask") && current_has_permit('can_manage_all_projects')) {
+                $sidebar_menu["my_tasks"] = array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks", "class" => "fa-circle");
+            }
+
+            if (module_enabled("module_gantt") && current_has_permit('can_manage_all_projects')) {
+                $sidebar_menu["view_gantts"] = array("name" => "submenu_pms_view_gantts", "url" => "pms/view_gantts", "class" => "fa-circle");
+            }
+
+            if (module_enabled("module_project_timesheet") && current_has_permit('can_manage_all_projects')) {
+                $sidebar_menu["timesheets"] = array("name" => "submenu_pms_timesheets", "url" => "pms/timesheets", "class" => "fa-circle");
+            }
+
+            // HELP CENTER
 
             if ( module_enabled("module_ticket") == "1" && current_has_permit('ticket') ) {
 
