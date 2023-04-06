@@ -11,22 +11,8 @@ class Knowledge_base extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-
-        $this->login_user = new stdClass();
-        $login_user_id = $this->Users_model->login_user_id();
-        if ($login_user_id) {
-            //initialize login users required information
-            $this->login_user = $this->Users_model->get_access_info($login_user_id);
-
-            //initialize login users access permissions
-            if ($this->login_user->permissions) {
-                $permissions = unserialize($this->login_user->permissions);
-                $this->login_user->permissions = is_array($permissions) ? $permissions : array();
-            } else {
-                $this->login_user->permissions = array();
-            }
-        }
-        $this->init_permission_checker("knowledge_base");
+        $this->with_module("module_knowledge_base", true);
+        $this->with_permission("knowledge_base", true);
 
         $this->load->model("Help_categories_model");
         $this->load->model("Help_articles_model");
@@ -34,11 +20,12 @@ class Knowledge_base extends MY_Controller {
 
     //show knowledge base page
     function index() {
-        $this->with_module("module_knowledge_base");
-
         $type = "knowledge_base";
         $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => $type, "only_active_categories" => true))->result();
         $view_data["type"] = $type;
+        $view_data["list_articles"] = $this->with_permission($type, false, true);
+        $view_data["list_categories"] = $this->with_permission($type."_category", false, true);
+
         if (isset($this->login_user->id)) {
             $view_data['external'] = true;
             $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
@@ -136,12 +123,15 @@ class Knowledge_base extends MY_Controller {
     function view_articles() {
         $view_data["type"] = "knowledge_base";
         $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => "knowledge_base", "only_active_categories" => true))->result();
+        $view_data["article_create"] = $this->with_permission("knowledge_base_create");
         $this->load->view("help_and_knowledge_base/articles/tab-panel", $view_data);
     }
 
     //show help articles list
     function  view_categories() {
         $view_data["type"] = "knowledge_base";
+        $view_data["create_category"] = $this->with_permission("knowledge_base_category_create");
+
         $this->load->view("help_and_knowledge_base/categories/tab-panel", $view_data);
     }
 }

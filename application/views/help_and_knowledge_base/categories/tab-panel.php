@@ -2,9 +2,11 @@
     <div class="panel panel-default">
         <div class="page-title clearfix">
             <h4> <?php echo lang('manage'); ?></h4>
-            <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("help/category_modal_form/" . $type), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'))); ?>
-            </div>
+            <?php if($create_category ) { ?>
+                <div class="title-button-group">
+                    <?php echo modal_anchor(get_uri("help/category_modal_form/" . $type), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'))); ?>
+                </div>
+            <?php } ?>
         </div>
         <div class="table-responsive">
             <table id="category-table" class="display" cellspacing="0" width="100%">            

@@ -41,12 +41,44 @@ class MY_Controller extends CI_Controller {
     }
 
     /**
-     * Check if the current user is with permission.
+     * Check if the current user has permission else return object info.
      */
-    protected function with_permission($permission, $redirect = false) {
+    protected function check_permission($permission) {
         $permission_lists = $this->login_user->permissions;
         if( $this->login_user->is_admin || get_array_value($permission_lists, $permission) ){
+            return;
+        } 
+        
+        echo json_encode(array("success" => false, "message"=>lang('permission_denied'))); 
+        exit;
+    }
+
+    /**
+     * Check if the current user is with permission.
+     */
+    protected function with_permission($permission, $redirect = false, $allAccess = false) {
+        $permission_lists = $this->login_user->permissions;
+        
+        if( $this->login_user->is_admin){
             return true;
+        }
+
+        if($allAccess) {
+            if(get_array_value($permission_lists, $permission."_create")) {
+                return true;
+            }
+
+            if(get_array_value($permission_lists, $permission."_update")) {
+                return true;
+            }
+
+            if(get_array_value($permission_lists, $permission."_delete")) {
+                return true;
+            }
+        } else {
+            if(get_array_value($permission_lists, $permission)) {
+                return true;
+            }
         }
 
         if($redirect) {
@@ -240,18 +272,6 @@ class MY_Controller extends CI_Controller {
                 return true;
             }
         }
-    }
-
-    //check who has permission to view team members list
-    protected function can_view_team_members_list() {
-        if ($this->login_user->user_type == "staff") {
-            if (get_array_value($this->login_user->permissions, "hide_team_members_list") == "1") {
-                return false;
-            } else {
-                return true; //all members can see team members except the selected roles
-            }
-        }
-        return false;
     }
 
     //get currency dropdown list

@@ -343,7 +343,6 @@ class Left_menu {
             }
             $sidebar_menu["lead_status"] = array("name" => "submenu_mcs_status", "url" => "mcs/lead_status", "class" => "fa-circle");
             $sidebar_menu["lead_source"] = array("name" => "submenu_mcs_source", "url" => "mcs/lead_source", "class" => "fa-circle");
-            $sidebar_menu["pages"] = array("name" => "pages", "url" => "pages", "class" => "fa-circle");
 
             // ASSETS
             $sidebar_menu["entries"] = array("name" => "submenu_ams_assets", "url" => "ams/entries", "class" => "fa-circle");
@@ -418,6 +417,10 @@ class Left_menu {
                 }
 
                 $sidebar_menu["tickets"] = array("name" => "tickets", "url" => "tickets", "class" => "fa-circle", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+            }
+
+            if ( module_enabled("module_page") == "1" && current_has_permit('page') ) {
+                $sidebar_menu["pages"] = array("name" => "pages", "url" => "pages", "class" => "fa-circle");
             }
 
             if ( module_enabled("module_help") == "1" && current_has_permit('help') ) {

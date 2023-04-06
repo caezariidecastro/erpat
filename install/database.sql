@@ -2418,7 +2418,7 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALU
 ('module_mytask', '1', 'app', 0),
 ('module_note', '1', 'app', 0),
 ('module_overtime', '1', 'app', 0),
-('module_pages', '1', 'modules', 0),
+('module_page', '1', 'modules', 0),
 ('module_payments', '1', 'modules', 0),
 ('module_payroll', '1', 'modules', 0),
 ('module_pid_billofmaterials', '1', 'app', 0),

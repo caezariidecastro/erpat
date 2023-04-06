@@ -133,16 +133,14 @@ class Dashboard extends MY_Controller {
             $widget["closed_tickets"] = true;
         }
 
-        if ($this->can_view_team_members_list()) {
-            $widget["all_team_members"] = true;
-        }
+        $widget["all_team_members"] = true;
 
-        if ($this->can_view_team_members_list() && $show_attendance && $access_timecards->access_type === "all") {
+        if ($show_attendance && $access_timecards->access_type === "all") {
             $widget["clocked_in_team_members"] = true;
             $widget["clocked_out_team_members"] = true;
         }
 
-        if ($this->can_view_team_members_list() && $show_message) {
+        if ($show_message) {
             $widget["latest_online_team_members"] = true;
         }
 

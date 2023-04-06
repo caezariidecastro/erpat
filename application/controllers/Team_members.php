@@ -7,6 +7,7 @@ class Team_members extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("module_employee", true);
         $this->with_permission("staff", true);
 
         $this->access_only_team_members();
@@ -145,17 +146,18 @@ class Team_members extends MY_Controller {
     }
 
     public function index() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
+        $this->with_permission("staff", true);
 
-        $this->template->rander("team_members/index");
+        $view_data["staff_view_personal_background"] = $this->with_permission("staff_view_personal_background");
+        $view_data["staff_view_job_description"] = $this->with_permission("staff_view_job_description");
+        $view_data["staff_view_bank_info"] = $this->with_permission("staff_view_bank_info");
+        $view_data["staff_view_contribution_details"] = $this->with_permission("staff_view_contribution_details");
+
+        $this->template->rander("team_members/index", $view_data);
     }
 
     public function lists() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
+        $this->with_permission("staff", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -174,10 +176,7 @@ class Team_members extends MY_Controller {
     }
 
     public function personal_view() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
-        $this->with_permission("staff_read", true);
+        $this->with_permission("staff_view_personal_background", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -192,10 +191,7 @@ class Team_members extends MY_Controller {
     }
 
     public function personal_view_data() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
-        $this->with_permission("staff_read", true);
+        $this->with_permission("staff_view_personal_background", true);
 
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -235,10 +231,7 @@ class Team_members extends MY_Controller {
     }
 
     public function job_view() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
-        $this->with_permission("staff_read", true);
+        $this->with_permission("staff_view_job_description", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -253,10 +246,7 @@ class Team_members extends MY_Controller {
     }
 
     public function job_view_data() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
-        $this->with_permission("staff_read", true);
+        $this->with_permission("staff_view_job_description", true);
 
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -291,14 +281,7 @@ class Team_members extends MY_Controller {
     }
 
     public function bank_view() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
-        $this->with_permission("staff_read", true);
-
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
+        $this->with_permission("staff_view_bank_info", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -313,10 +296,7 @@ class Team_members extends MY_Controller {
     }
 
     public function bank_view_data() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
-        $this->with_permission("staff_read", true);
+        $this->with_permission("staff_view_bank_info", true);
         
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -351,15 +331,10 @@ class Team_members extends MY_Controller {
     }
 
     public function contribution_view() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
-        $this->with_permission("staff_read", true);
+        $this->with_permission("staff_view_contribution_details", true);
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
-
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
-
         $view_data["usertype_dropdown"] = json_encode( $this->get_all_usertypes() );
         $view_data['users_labels_dropdown'] = json_encode($this->make_labels_dropdown("users", "", true));
         $view_data['department_select2'] = $this->_get_team_select2_data();
@@ -369,10 +344,7 @@ class Team_members extends MY_Controller {
     }
 
     public function contribution_view_data() {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
-        $this->with_permission("staff_read", true);
+        $this->with_permission("staff_view_contribution_details", true);
 
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -413,7 +385,6 @@ class Team_members extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
-
 
         $id = $this->input->post('id');
         $options = array(
@@ -763,9 +734,6 @@ class Team_members extends MY_Controller {
 
     //prepere the data for members list
     function list_data($type_of_user = "staff") {
-        if (!$this->can_view_team_members_list()) {
-            redirect("forbidden");
-        }
 
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
         $filter_user = $this->input->post("status");
@@ -916,7 +884,7 @@ class Team_members extends MY_Controller {
         if ($id * 1) {
 
             //if team member's list is disabled, but the user can see his/her own profile.
-            if (!$this->can_view_team_members_list() && $this->login_user->id != $id) {
+            if ($this->login_user->id != $id) {
                 redirect("forbidden");
             }
 
@@ -1011,11 +979,6 @@ class Team_members extends MY_Controller {
                 show_404();
             }
         } else {
-
-            if (!$this->can_view_team_members_list()) {
-                redirect("forbidden");
-            }
-
             //we don't have any specific id to view. show the list of team_member
             $view_data['team_members'] = $this->Users_model->get_details(array("user_type" => "staff", "status" => "active"))->result();
             $this->template->rander("team_members/profile_card", $view_data);

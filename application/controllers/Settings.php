@@ -616,7 +616,7 @@ class Settings extends MY_Controller {
            'message' => 'General',
            'chat' => 'General',
 
-           'employee' => 'Human Resource',
+           'employee' => 'Human Resource', //Done
            'department' => 'Human Resource',
            'access' => 'Human Resource',
            'attendance' => 'Human Resource',
@@ -678,10 +678,11 @@ class Settings extends MY_Controller {
            'project_timesheet' => 'Planning',
 
            'ticket' => 'Support',
-           'help' => 'Support',
-
-           'pages' => 'Content',
-           'knowledge_base' => 'Content',
+           
+           //TODO: ROLES
+           'page' => 'Content', //Done
+           'help' => 'Support', //Done
+           'knowledge_base' => 'Content', //Done
         );
         $result = array();
         foreach ($list_data as $key => $val) {
@@ -745,7 +746,10 @@ class Settings extends MY_Controller {
             "module_assets", "module_asset_category", "module_location", "module_vendors", "module_brands", 
         "module_pms", 
             "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 
-        "module_ticket", "module_help", "module_knowledge_base",
+        "module_ticket", 
+        
+        //TODO: ROLES
+        "module_page", "module_help", "module_knowledge_base",
         );
 
         foreach ($settings as $setting) {

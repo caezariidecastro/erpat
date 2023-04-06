@@ -19,8 +19,12 @@ class Roles extends MY_Controller {
             array("compensation_tax_table", "Coming Soon", "Payroll", "Able to modify the tax table.", null),
             
             //STAFFING
-            array("staff", "Coming Soon", "Staff", "Enabled", null, true),
-            array("staff_invite", "Coming Soon", "Staff", "Invite", null),
+            array("staff", "Coming Soon", "Staff Module", "List & View", null, true),
+            array("staff_invite", "Coming Soon", "Staff Email Invite", "Email", null),
+            array("staff_view_personal_background", "Coming Soon", "Staff Personal Background", "View", null),
+            array("staff_view_job_description", "Coming Soon", "Staff Job Description", "View", null),
+            array("staff_view_bank_info", "Coming Soon", "Staff Bank Info", "View", null),
+            array("staff_view_contribution_details", "Coming Soon", "Staff Contributions Details", "View", null),
             
             //Security
             array("access_logs", "Coming Soon", "Human Resource", "Access Logs", null),
@@ -73,7 +77,6 @@ class Roles extends MY_Controller {
             array("can_view_team_members_contact_info", "Coming Soon", "HR Employee", "View Contacts", null),
             array("can_view_team_members_social_links", "Coming Soon", "HR Employee", "View Social Links", null),
             array("can_delete_leave_application", "Coming Soon", "HR Employee", "Delete Leave Application", null),
-            array("hide_team_members_list", "Coming Soon", "HR Employee", "Hide Team Member List", null),
 
             array("message_permission", "Coming Soon", "Default: Message", "Access", "dropdown"),
             array("leave", "Coming Soon", "Default: Leave", "Access", "dropdown"),
@@ -82,17 +85,23 @@ class Roles extends MY_Controller {
             array("timesheet_manage_permission", "Coming Soon", "Default: Timesheet", "Access", "dropdown"),
 
             array("ticket", "Coming Soon", "Default: Ticket", "Access", "dropdown"),
-            array("help", "Coming Soon", "Help Center", "Enabled", null),
-            array("knowledge_base", "Coming Soon", "Knowledge Base", "Enabled", null),
+
+            array("page", "Coming Soon", "Web Pages", "Enabled", null, true),
+            array("help", "Coming Soon", "Help Center", "Enabled", null, true, true),
+            array("knowledge_base", "Coming Soon", "Knowledge Base", "Enabled", null, true, true),
         ];
 
         foreach($this->permission_lists as $item) {
-            if(count($item) >= 6 && $item[5] === true) {
-                $this->permission_lists[] = array($item[0]."_read", $item[1], $item[2], "View", null);
-
+            if(count($item) >= 6 && $item[5] === true) { //default root is read permission.
                 $this->permission_lists[] = array($item[0]."_create", $item[1], $item[2], "Create", null);
                 $this->permission_lists[] = array($item[0]."_update", $item[1], $item[2], "Edit", null);
                 $this->permission_lists[] = array($item[0]."_delete", $item[1], $item[2], "Remove", null);
+            }
+
+            if(count($item) >= 7 && $item[6] === true) { //default root is read permission.
+                $this->permission_lists[] = array($item[0]."_category_create", $item[1], $item[2], "Create Category", null);
+                $this->permission_lists[] = array($item[0]."_category_update", $item[1], $item[2], "Edit Category", null);
+                $this->permission_lists[] = array($item[0]."_category_delete", $item[1], $item[2], "Remove Category", null);
             }
         }
     }

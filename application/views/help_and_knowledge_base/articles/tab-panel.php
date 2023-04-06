@@ -3,8 +3,10 @@
         <div class="page-title clearfix">
             <h1><?php echo lang('manage'); ?></h1>
             <div class="title-button-group">
-                <?php
-                echo anchor(get_uri("help/article_form/".$type), "<i class='fa fa-plus-circle'></i> " . lang('add_article'), array("class" => "btn btn-default", "title" => lang('add_article')));
+                <?php 
+                    if($article_create) {
+                        echo anchor(get_uri("help/article_form/".$type), "<i class='fa fa-plus-circle'></i> " . lang('add_article'), array("class" => "btn btn-default", "title" => lang('add_article')));
+                    }
                 ?>
             </div>
         </div>

@@ -8,10 +8,8 @@ class Help extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->with_module("module_help", true);
+        $this->with_permission("help", true);
 
-        $this->access_only_team_members();
-        $this->init_permission_checker("help");
-        
         $this->load->model("Help_categories_model");
         $this->load->model("Help_articles_model");
     }
@@ -20,6 +18,9 @@ class Help extends MY_Controller {
     function index() {
         $type = "help";
         $view_data["type"] = $type;
+        $view_data["list_articles"] = $this->with_permission($type, false, true);
+        $view_data["list_categories"] = $this->with_permission($type."_category", false, true);
+
         $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
     }
 
@@ -90,12 +91,14 @@ class Help extends MY_Controller {
     function view_articles() {
         $view_data["type"] = "help";
         $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => "help", "only_active_categories" => true))->result();
+        $view_data["article_create"] = $this->with_permission("help_create");
         $this->load->view("help_and_knowledge_base/articles/tab-panel", $view_data);
     }
 
     //show help articles list
     function  view_categories() {
         $view_data["type"] = "help";
+        $view_data["create_category"] = $this->with_permission("help_category_create");
         $this->load->view("help_and_knowledge_base/categories/tab-panel", $view_data);
     }
 
@@ -116,8 +119,14 @@ class Help extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
-
         $id = $this->input->post('id');
+
+        if( isset($id) ) {
+            $this->with_permission($type."_category_update", true);
+        } else {
+            $this->with_permission($type."_category_create", true);
+        }
+
         $view_data['model_info'] = $this->Help_categories_model->get_one($id);
         $view_data['type'] = $type;
         $this->load->view('help_and_knowledge_base/categories/modal_form', $view_data);
@@ -130,12 +139,19 @@ class Help extends MY_Controller {
             "title" => "required",
             "type" => "required"
         ));
-
         $id = $this->input->post('id');
+        $type = $this->input->post('type');
+
+        if( isset($id) ) {
+            $this->check_permission($type."_category_update");
+        } else {
+            $this->check_permission($type."_category_create");
+        }
+
         $data = array(
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
-            "type" => $this->input->post('type'),
+            "type" => $type,
             "sort" => $this->input->post('sort'),
             "status" => $this->input->post('status')
         );
@@ -152,8 +168,11 @@ class Help extends MY_Controller {
         validate_submitted_data(array(
             "id" => "required|numeric"
         ));
-
         $id = $this->input->post('id');
+        $type = $this->input->get('type');
+
+        $this->check_permission($type."_category_delete");
+
         if ($this->input->post('undo')) {
             if ($this->Help_categories_model->delete($id, true)) {
                 echo json_encode(array("success" => true, "data" => $this->_category_row_data($id), "message" => lang('record_undone')));
@@ -188,13 +207,21 @@ class Help extends MY_Controller {
 
     //make a row of category row
     private function _make_category_row($data) {
+        $type = $data->type;
+        $option = "";
+        if($this->with_permission($type."_category_update")) {
+            $option .= modal_anchor(get_uri("help/category_modal_form/" . $type), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_category'), "data-post-id" => $data->id, "data-post-type" => $type));
+        }
+        if($this->with_permission($type."_category_delete")) {
+            $option .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("help/delete_category?type=".$data->type), "data-action" => "delete"));
+        }
+        
         return array(
             $data->title,
             $data->description ? $data->description : "-",
             lang($data->status),
-            $data->sort,
-            modal_anchor(get_uri("help/category_modal_form/" . $data->type), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_category'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("help/delete_category"), "data-action" => "delete"))
+            $data->sort, 
+            $option 
         );
     }
 
@@ -203,6 +230,7 @@ class Help extends MY_Controller {
         $view_data['model_info'] = $this->Help_articles_model->get_one($id);
         $view_data['type'] = $type;
         $view_data['categories_dropdown'] = $this->Help_categories_model->get_dropdown_list(array("title"), "id", array("type" => $type));
+        $view_data['create_article'] = $this->with_permission($type."_create", true);
         $this->template->rander('help_and_knowledge_base/articles/form', $view_data);
     }
 
@@ -216,7 +244,12 @@ class Help extends MY_Controller {
 
         $id = $this->input->post('id');
         $type = $this->input->post('type');
-        
+
+        if( isset($id) ) {
+            $this->with_permission($type."_update", true);
+        } else {
+            $this->with_permission($type."_create", true);
+        }
         
         $target_path = get_setting("timeline_file_path");
         $files_data = move_files_from_temp_dir_to_permanent_dir($target_path, "help");
@@ -261,11 +294,14 @@ class Help extends MY_Controller {
         validate_submitted_data(array(
             "id" => "required|numeric"
         ));
-
         $id = $this->input->post('id');
+        $type = $this->input->get('type');
+
+        $this->check_permission($type."_delete");
+        
         if ($this->input->post('undo')) {
             if ($this->Help_articles_model->delete($id, true)) {
-                echo json_encode(array("success" => true, "data" => $this->_article_row_data($id), "message" => lang('record_undone')));
+                echo json_encode(array("success" => true, "data" => $this->_article_row_data($id, $type), "message" => lang('record_undone')));
             } else {
                 echo json_encode(array("success" => false, lang('error_occurred')));
             }
@@ -283,27 +319,34 @@ class Help extends MY_Controller {
         $list_data = $this->Help_articles_model->get_details(array("type" => $type))->result();
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = $this->_make_article_row($data);
+            $result[] = $this->_make_article_row($data, $type);
         }
         echo json_encode(array("data" => $result));
     }
 
     //get a row of article row
-    private function _article_row_data($id) {
+    private function _article_row_data($id, $type) {
         $options = array("id" => $id);
         $data = $this->Help_articles_model->get_details($options)->row();
-        return $this->_make_article_row($data);
+        return $this->_make_article_row($data, $type);
     }
 
     //make a row of article row
-    private function _make_article_row($data) {
+    private function _make_article_row($data, $type) {
+        $option = "";
+        if($this->with_permission($type."_update")) {
+            $option .= anchor(get_uri("help/article_form/" . $data->type . "/" . $data->id), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_article')));
+        }
+        if($this->with_permission($type."_delete")) {
+            $option .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_article'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("help/delete_article"), "data-action" => "delete"));
+        }
+
         return array(
             anchor(get_uri("help/view/" . $data->id), $data->title),
             $data->category_title,
             lang($data->status),
             $data->total_views,
-            anchor(get_uri("help/article_form/" . $data->type . "/" . $data->id), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_article')))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_article'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("help/delete_article"), "data-action" => "delete"))
+            $option
         );
     }
     

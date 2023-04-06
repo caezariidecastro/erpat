@@ -986,3 +986,7 @@ $lang["basic_pay_calculation"] = "Basicpay Calculation";
 $lang["run_cron_command"] = "Run Cron Command";
 
 $lang["cron_cannot_be_executed_please_wait_1_min"] = "The cron command cannot be executed, please wait atleast 1 min and try to click this button again.";
+
+$lang["page"] = "Page";
+
+$lang["permission_denied"] = "Permission Denied! Contact your administrator to have access to this action.";

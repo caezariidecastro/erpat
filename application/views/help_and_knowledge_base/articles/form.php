@@ -10,7 +10,9 @@
                         <h1><?php echo lang('edit_article') . " (" . lang($type) . ")"; ?></h1>
                         <div class="title-button-group">
                             <?php echo anchor(get_uri("help/view/" . $model_info->id), "<i class='fa fa-external-link-square'></i> " . lang('view'), array("class" => "btn btn-default", "title" => lang('view'))); ?>
-                            <?php echo anchor(get_uri("help/article_form/" . $type), "<i class='fa fa-plus-circle'></i> " . lang('add_article'), array("class" => "btn btn-default", "title" => lang('add_article'))); ?>
+                            <?php if($create_article) { ?>
+                                <?php echo anchor(get_uri("help/article_form/" . $type), "<i class='fa fa-plus-circle'></i> " . lang('add_article'), array("class" => "btn btn-default", "title" => lang('add_article'))); ?>
+                            <?php } ?>
                         </div>
                     <?php } else { ?>
                         <h1><?php echo lang('add_article') . " (" . lang($type) . ")"; ?></h1>
