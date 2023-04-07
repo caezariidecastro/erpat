@@ -8,6 +8,7 @@
 
             foreach ($sidebar_menu as $main_menu) {
                 $submenu = get_array_value($main_menu, "submenu");
+                
                 if ((!isset($main_menu["submenu"])) || (isset($main_menu["name"]) && isset($submenu[1]) && count($submenu[1]) > 0)) {
                     $expend_class = $submenu ? " expand " : "";
                     $active_class = isset($main_menu["is_active_menu"]) ? "active" : "";
@@ -24,17 +25,19 @@
                     
                     //START HIDE MENU WITH NO CHILD
                     $should_display = true;
-                    foreach ($submenu as $s_menu) {
-                        if (isset($s_menu["name"])) {
-                            $s_menu['is_custom_menu_item'] = isset($s_menu['is_custom_menu_item']) ? true:false;
-                            if(isset($s_menu['name']) && $main_menu['name'] == $s_menu['name'] && $s_menu['is_custom_menu_item']) {
-                                continue;
+                    if($submenu) {
+                        foreach ($submenu as $s_menu) {
+                            if (isset($s_menu["name"])) {
+                                $s_menu['is_custom_menu_item'] = isset($s_menu['is_custom_menu_item']) ? true:false;
+                                if(isset($s_menu['name']) && $main_menu['name'] == $s_menu['name'] && $s_menu['is_custom_menu_item']) {
+                                    continue;
+                                }
+                                $should_display = false;
                             }
-                            $should_display = false;
                         }
-                    }
-                    if( $should_display ) {
-                        continue;
+                        if( $should_display ) {
+                            continue;
+                        }
                     }
                     //END HIDE MENU WITH NO CHILD
 
