@@ -647,9 +647,9 @@ class Settings extends MY_Controller {
            //ACCOUNTING
            'accounting_summary' => 'Finance',
            'balancesheet' => 'Finance',
-           'accounts' => 'Finance',
+           'account' => 'Finance',
            'transfer' => 'Finance',
-           'payments' => 'Finance',
+           'payment' => 'Finance',
            'expense' => 'Finance',
            'payroll' => 'Finance',
 
@@ -761,7 +761,7 @@ class Settings extends MY_Controller {
             "module_delivery", "module_item_transfer", "module_vehicle", "module_driver", 
 
             //ACCOUNTING
-            "module_accounting_summary", "module_balancesheet", "module_accounts", "module_transfer",  "module_payments", "module_expense", "module_payroll",  
+            "module_accounting_summary", "module_balancesheet", "module_account", "module_transfer",  "module_payment", "module_expense", "module_payroll",  
 
             //SALES
             "module_sales_summary", "module_invoice", "module_service", "module_product", "module_clients", "module_stores", //customer

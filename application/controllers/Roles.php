@@ -63,18 +63,18 @@ class Roles extends MY_Controller {
             array("driver", "Coming Soon", "Logistics: Drivers", "Enabled", null, true),
 
             //ACOUNTING
-            array("accounting_summary", "Coming Soon", "Accounting: Summary", "Enabled", null),
-            array("balance_sheet", "Coming Soon", "Accounting: Balance Sheet", "Enabled", null),
-            array("account", "Coming Soon", "Accounting: Accounts", "Enabled", null, true),
-            array("transfer", "Coming Soon", "Accounting: Transfers", "Enabled", null, true),
-            array("payment", "Coming Soon", "Accounting: Payments", "Enabled", null, true),
-            array("expense", "Coming Soon", "Accounting: Expenses", "Enabled", null, true),
-            array("payroll", "Coming Soon", "Accounting: Payrolls", "Enabled", null, true),
+            array("accounting_summary", "Coming Soon", "Finance: Summary", "Enabled", null),
+            array("balance_sheet", "Coming Soon", "Finance: Balance Sheet", "Enabled", null),
+            array("account", "Coming Soon", "Finance: Accounts", "Enabled", null, true),
+            array("transfer", "Coming Soon", "Finance: Transfers", "Enabled", null, true),
+            array("payment", "Coming Soon", "Finance: Payments", "Enabled", null, true),
+            array("expense", "Coming Soon", "Finance: Expenses", "Enabled", null, true),
+            array("tax", "Coming Soon", "Finance: Taxes", "Enabled", null, true),
 
-            array("can_use_payhp", "Coming Soon", "PayHP", "Enabled", null),
-            array("payroll", "Coming Soon", "Payroll", "Enabled", null, true),
-            array("payroll_auto_contribution", "Coming Soon", "Payroll", "Able to update contributions.", null),
-            array("compensation_tax_table", "Coming Soon", "Payroll", "Able to modify the tax table.", null),
+            array("can_use_payhp", "Coming Soon", "Finance: PayHP", "Enabled", null),
+            array("payroll", "Coming Soon", "Finance: Payroll", "Enabled", null, true),
+            array("payroll_auto_contribution", "Coming Soon", "Finance: Contribution", "Able to update contributions.", null),
+            array("compensation_tax_table", "Coming Soon", "Finance: Tax Table", "Able to modify the tax table.", null),
 
             //SALES
             array("sales_summary", "Coming Soon", "Sales: Summary", "Enabled", null),

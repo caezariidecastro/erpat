@@ -306,24 +306,6 @@ class Left_menu {
                 $sidebar_menu["employee"] = array("name" => "employee", "url" => "Team_members", "class" => "fa-circle");
             }
 
-            // FINANCE
-            if ($this->ci->login_user->is_admin || (module_enabled("module_invoice") == "1" && module_enabled("module_expense") == "1" && ($access_expense || $access_invoice))) {
-                $sidebar_menu["summary"] = array("name" => "submenu_fas_summary", "url" => "fas/summary", "class" => "fa-circle");
-            }
-            if ($this->ci->login_user->is_admin || (module_enabled("module_expense") == "1" && $access_expense)) {
-                $sidebar_menu["expenses"] = array("name" => "submenu_fas_expenses", "url" => "fas/expenses", "class" => "fa-circle");
-            }
-            $sidebar_menu["payments"] = array("name" => "submenu_fas_payments", "url" => "fas/payments", "class" => "fa-circle");
-
-            // FINANCE > Payroll
-            if( module_enabled("module_payroll") && current_has_permit("payroll") ) {
-                $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "Payrolls", "class" => "fa-circle");
-            }
-            $sidebar_menu["accounts"] = array("name" => "submenu_fas_accounts", "url" => "fas/accounts", "class" => "fa-circle");
-            if( module_enabled("module_payroll") && current_has_permit("compensation_tax_table") ) {
-                $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
-            }
-
             // INVENTORY
             $sidebar_menu["warehouses"] = array("name" => "warehouses", "url" => "inventory/Warehouses", "class" => "fa-circle");
             $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "inventory/Pallets", "class" => "fa-circle");   
@@ -335,6 +317,26 @@ class Left_menu {
 
             // End: Module permissions workaround
 
+
+            //FINANCE
+            if( module_enabled("module_accounting_summary") && current_has_permit("accounting_summary") ) {
+                $sidebar_menu["summary"] = array("name" => "submenu_fas_summary", "url" => "fas/summary", "class" => "fa-circle");
+            }
+            if( module_enabled("module_account") && current_has_permit("account") ) {
+                $sidebar_menu["accounts"] = array("name" => "submenu_fas_accounts", "url" => "fas/accounts", "class" => "fa-circle");
+            }
+            if( module_enabled("module_payment") && current_has_permit("payment") ) {
+                $sidebar_menu["payments"] = array("name" => "submenu_fas_payments", "url" => "fas/payments", "class" => "fa-circle");
+            }
+            if( module_enabled("module_expense") && current_has_permit("expense") ) {
+                $sidebar_menu["expenses"] = array("name" => "submenu_fas_expenses", "url" => "fas/expenses", "class" => "fa-circle");
+            }
+            if( module_enabled("module_payroll") && current_has_permit("payroll") ) {
+                $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "Payrolls", "class" => "fa-circle");
+            }
+            if( current_has_permit("tax") ) {
+                $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
+            }
 
             // PROCUREMENT
             if (module_enabled("module_purchase") && current_has_permit('purchase')) {
