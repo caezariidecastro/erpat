@@ -642,7 +642,7 @@ class Settings extends MY_Controller {
            //MANUFACTURING
            'productions' => 'Productions',
            'billofmaterials' => 'Productions',
-           'rawmaterials' => 'Productions',
+           'unit' => 'Productions',
 
            //ACCOUNTING
            'accounting_summary' => 'Finance',
@@ -755,7 +755,7 @@ class Settings extends MY_Controller {
             "module_purchases", "module_returns", "module_supplier",
 
             //MANUFACTURING
-            "module_productions", "module_billofmaterials", "module_rawmaterials",
+            "module_productions", "module_billofmaterials", "unit",
 
             //LOGISTICS
             "module_delivery", "module_item_transfer", "module_vehicle", "module_driver", 

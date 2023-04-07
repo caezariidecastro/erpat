@@ -332,7 +332,7 @@ class Left_menu {
             $sidebar_menu["suppliers"] = array("name" => "submenu_pid_supplier", "url" => "mes/suppliers", "class" => "fa-circle");
 
             // TOOLSET
-            $sidebar_menu["units"] = array("name" => "submenu_pid_units", "url" => "mes/units", "class" => "fa-circle");
+            
 
             // INVENTORY
             $sidebar_menu["warehouses"] = array("name" => "warehouses", "url" => "inventory/Warehouses", "class" => "fa-circle");
@@ -348,14 +348,15 @@ class Left_menu {
             // End: Module permissions workaround
 
             // PRODUCTION
-            if (module_enabled("module_delivery") && current_has_permit('delivery')) {
+            if (module_enabled("module_productions") && current_has_permit('production')) {
+                $sidebar_menu["manufacturing-orders"] = array("name" => "manufacturing_order", "url" => "production/ManufacturingOrders", "class" => "fa-circle");
             }
-            if (module_enabled("module_delivery") && current_has_permit('delivery')) {
-            }
-            if (module_enabled("module_delivery") && current_has_permit('delivery')) {
-            }
-            $sidebar_menu["manufacturing-orders"] = array("name" => "manufacturing_order", "url" => "production/ManufacturingOrders", "class" => "fa-circle");
-            $sidebar_menu["bill-of-materials"] = array("name" => "bill_of_materials", "url" => "production/BillOfMaterials", "class" => "fa-circle");  
+            if (module_enabled("module_billofmaterials") && current_has_permit('billofmaterial')) {
+                $sidebar_menu["bill-of-materials"] = array("name" => "bill_of_materials", "url" => "production/BillOfMaterials", "class" => "fa-circle"); 
+            }      
+            if (module_enabled("module_unit") && current_has_permit('unit')) {
+                $sidebar_menu["units"] = array("name" => "submenu_pid_units", "url" => "mes/units", "class" => "fa-circle"); 
+            }    
 
             // LOGISTICS
             if (module_enabled("module_delivery") && current_has_permit('delivery')) {

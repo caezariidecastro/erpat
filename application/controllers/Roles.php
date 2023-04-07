@@ -47,13 +47,14 @@ class Roles extends MY_Controller {
             array("inventory", "Coming Soon", "Distribution: Inventories", "Enabled", null, true),
 
             //PURCHASING
-            array("purchase", "Coming Soon", "Manufacturing: Purchases", "Enabled", null, true),
-            array("return", "Coming Soon", "Manufacturing: Returns", "Enabled", null, true),
-            array("supplier", "Coming Soon", "Manufacturing: Suppliers", "Enabled", null, true),
+            array("purchase", "Coming Soon", "Purchasing: Purchases", "Enabled", null, true),
+            array("return", "Coming Soon", "Purchasing: Returns", "Enabled", null, true),
+            array("supplier", "Coming Soon", "Purchasing: Suppliers", "Enabled", null, true),
 
             //MANUFACTURING
             array("production", "Coming Soon", "Manufacturing: Productions", "Enabled", null, true),
-            array("billofmaterial", "Coming Soon", "Manufacturing: Vehicles", "Enabled", null, true),
+            array("billofmaterial", "Coming Soon", "Manufacturing: Bill of Materials", "Enabled", null, true),
+            array("unit", "Coming Soon", "Manufacturing: Measurement Unit", "Enabled", null, true),
 
             //LOGISTICS
             array("delivery", "Coming Soon", "Logistics: Deliveries", "Enabled", null, true),
