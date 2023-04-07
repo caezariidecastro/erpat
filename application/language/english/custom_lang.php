@@ -981,3 +981,6 @@ $lang["cron_cannot_be_executed_please_wait_1_min"] = "The cron command cannot be
 $lang["page"] = "Page";
 
 $lang["permission_denied"] = "Permission Denied! Contact your administrator to have access to this action.";
+
+$lang["sales_summary"] = "Sales Summary";
+$lang["accounting_summary"] = "Accounting Summary";

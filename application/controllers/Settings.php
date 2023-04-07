@@ -651,7 +651,7 @@ class Settings extends MY_Controller {
            'driver' => 'Logistics',
 
            //ACCOUNTING
-           'summary' => 'Finance',
+           'accounting_summary' => 'Finance',
            'balancesheet' => 'Finance',
            'accounts' => 'Finance',
            'transfer' => 'Finance',
@@ -660,10 +660,10 @@ class Settings extends MY_Controller {
            'payroll' => 'Finance',
 
            //SALES
-           'sales_matrix' => 'Sales',
+           'sales_summary' => 'Sales',
            'invoice' => 'Sales',
-           'services' => 'Sales',  
-           'products' => 'Sales',
+           'service' => 'Sales',  
+           'product' => 'Sales',
            'clients' => 'Sales', //customer
            'stores' => 'Sales',
 
@@ -764,7 +764,7 @@ class Settings extends MY_Controller {
             "module_accounting_summary", "module_balancesheet", "module_accounts", "module_transfer",  "module_payments", "module_expense", "module_payroll",  
 
             //SALES
-            "module_sales_summary", "module_invoice", "module_services", "module_products", "module_clients", "module_stores", //customer
+            "module_sales_summary", "module_invoice", "module_service", "module_product", "module_clients", "module_stores", //customer
 
             //MARKETING
             "module_lead", "module_estimate", "module_estimate_request", "module_epass", "module_raffle",

@@ -359,25 +359,25 @@ class Left_menu {
 
 
             //SALES
-            if (module_enabled("module_lead") && current_has_permit('lead')) {
+            if (module_enabled("module_sales_summary") && current_has_permit('sales_summary')) {
                 $sidebar_menu["sales-matrix"] = array("name" => "sales_matrix", "url" => "sales/Sales_matrix", "class" => "fa-circle");
             }
-            if (module_enabled("module_invoice") && current_has_permit('lead')) {
+            if (module_enabled("module_invoice") && current_has_permit('invoice')) {
                 $sidebar_menu["invoices"] = array("name" => "submenu_sms_invoices", "url" => "sales/Invoices", "class" => "fa-circle");
             }
-            if (module_enabled("module_lead") && current_has_permit('lead')) {
+            if (module_enabled("module_service") && current_has_permit('service')) {
                 $sidebar_menu["services"] = array("name" => "submenu_sms_services", "url" => "sales/Services", "class" => "fa-circle");
             }
-            if (module_enabled("module_lead") && current_has_permit('lead')) {
+            if (module_enabled("module_product") && current_has_permit('product')) {
                 $sidebar_menu["products"] = array("name" => "submenu_pid_products", "url" => "sales/ProductEntries", "class" => "fa-circle");
             }
-            if (module_enabled("module_clients") && current_has_permit('lead')) {
+            if (module_enabled("module_clients") && current_has_permit('client')) {
                 $sidebar_menu["clients"] = array("name" => "clients", "url" => "sales/Clients", "class" => "fa-circle");
             }
-            if (module_enabled("module_clients") && current_has_permit('lead')) {
+            if (module_enabled("module_clients") && current_has_permit('client')) {
                 $sidebar_menu["customers"] = array("name" => "submenu_sms_customers", "url" => "sales/Customers", "class" => "fa-circle");
             }
-            if (module_enabled("module_stores") && current_has_permit('stores')) {
+            if (module_enabled("module_stores") && current_has_permit('store')) {
                 $sidebar_menu["stores"] = array("name" => "stores", "url" => "sales/Stores", "class" => "fa-circle");
             }
 
