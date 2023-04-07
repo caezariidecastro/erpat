@@ -319,15 +319,12 @@ class Left_menu {
             if( module_enabled("module_payroll") && current_has_permit("payroll") ) {
                 $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "Payrolls", "class" => "fa-circle");
             }
-            $sidebar_menu["transfers"] = array("name" => "submenu_fas_transfers", "url" => "fas/transfers", "class" => "fa-circle");
             $sidebar_menu["accounts"] = array("name" => "submenu_fas_accounts", "url" => "fas/accounts", "class" => "fa-circle");
             if( module_enabled("module_payroll") && current_has_permit("compensation_tax_table") ) {
                 $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
             }
 
-            // PRODUCTION
-            $sidebar_menu["manufacturing-orders"] = array("name" => "manufacturing_order", "url" => "production/ManufacturingOrders", "class" => "fa-circle");
-            $sidebar_menu["bill-of-materials"] = array("name" => "bill_of_materials", "url" => "production/BillOfMaterials", "class" => "fa-circle");            
+                      
 
             // PROCUREMENT
             $sidebar_menu["purchase-orders"] = array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders", "class" => "fa-circle");
@@ -341,11 +338,7 @@ class Left_menu {
             $sidebar_menu["warehouses"] = array("name" => "warehouses", "url" => "inventory/Warehouses", "class" => "fa-circle");
             $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "inventory/Pallets", "class" => "fa-circle");
 
-            // LOGISTICS
-            $sidebar_menu["deliveries"] = array("name" => "submenu_lms_delivery", "url" => "lds/deliveries", "class" => "fa-circle");
-            $sidebar_menu["lds_transfers"] = array("name" => "submenu_lms_transfers", "url" => "lds/transfers", "class" => "fa-circle");
-            $sidebar_menu["vehicles"] = array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles", "class" => "fa-circle");
-            $sidebar_menu["drivers"] = array("name" => "submenu_lms_drivers", "url" => "lds/drivers", "class" => "fa-circle");            
+                   
 
             // SECURITY > ACCESS LOG
             if( module_enabled("module_access") && current_has_permit("access_logs") ) {
@@ -354,9 +347,29 @@ class Left_menu {
 
             // End: Module permissions workaround
 
+            // PRODUCTION
+            if (module_enabled("module_delivery") && current_has_permit('delivery')) {
+            }
+            if (module_enabled("module_delivery") && current_has_permit('delivery')) {
+            }
+            if (module_enabled("module_delivery") && current_has_permit('delivery')) {
+            }
+            $sidebar_menu["manufacturing-orders"] = array("name" => "manufacturing_order", "url" => "production/ManufacturingOrders", "class" => "fa-circle");
+            $sidebar_menu["bill-of-materials"] = array("name" => "bill_of_materials", "url" => "production/BillOfMaterials", "class" => "fa-circle");  
 
-
-
+            // LOGISTICS
+            if (module_enabled("module_delivery") && current_has_permit('delivery')) {
+                $sidebar_menu["deliveries"] = array("name" => "submenu_lms_delivery", "url" => "lds/deliveries", "class" => "fa-circle");
+            }
+            if (current_has_permit('item_transfer')) {
+                $sidebar_menu["lds_transfers"] = array("name" => "submenu_lms_transfers", "url" => "lds/transfers", "class" => "fa-circle");
+            }
+            if (module_enabled("module_vehicle") && current_has_permit('vehicle')) {
+                $sidebar_menu["vehicles"] = array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles", "class" => "fa-circle");
+            }
+            if (module_enabled("module_driver") && current_has_permit('driver')) {
+                $sidebar_menu["drivers"] = array("name" => "submenu_lms_drivers", "url" => "lds/drivers", "class" => "fa-circle");   
+            }
 
             //SALES
             if (module_enabled("module_sales_summary") && current_has_permit('sales_summary')) {

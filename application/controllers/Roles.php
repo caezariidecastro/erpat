@@ -57,6 +57,7 @@ class Roles extends MY_Controller {
 
             //LOGISTICS
             array("delivery", "Coming Soon", "Logistics: Deliveries", "Enabled", null, true),
+            array("item_transfer", "Coming Soon", "Logistics: Transfers", "Enabled", null, true),
             array("vehicle", "Coming Soon", "Logistics: Vehicles", "Enabled", null, true),
             array("driver", "Coming Soon", "Logistics: Drivers", "Enabled", null, true),
 

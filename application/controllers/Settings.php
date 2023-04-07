@@ -644,12 +644,6 @@ class Settings extends MY_Controller {
            'billofmaterials' => 'Productions',
            'rawmaterials' => 'Productions',
 
-           //LOGISTICS
-           'delivery' => 'Logistics',
-           'item_transfer' => 'Logistics',
-           'vehicles' => 'Logistics',
-           'driver' => 'Logistics',
-
            //ACCOUNTING
            'accounting_summary' => 'Finance',
            'balancesheet' => 'Finance',
@@ -658,6 +652,12 @@ class Settings extends MY_Controller {
            'payments' => 'Finance',
            'expense' => 'Finance',
            'payroll' => 'Finance',
+
+           //LOGISTICS
+           'delivery' => 'Logistics',
+           'item_transfer' => 'Logistics',
+           'vehicle' => 'Logistics',
+           'driver' => 'Logistics',
 
            //SALES
            'sales_summary' => 'Sales',
@@ -758,7 +758,7 @@ class Settings extends MY_Controller {
             "module_productions", "module_billofmaterials", "module_rawmaterials",
 
             //LOGISTICS
-            "module_delivery", "module_item_transfer", "module_vehicles", "module_driver", 
+            "module_delivery", "module_item_transfer", "module_vehicle", "module_driver", 
 
             //ACCOUNTING
             "module_accounting_summary", "module_balancesheet", "module_accounts", "module_transfer",  "module_payments", "module_expense", "module_payroll",  
