@@ -306,10 +306,6 @@ class Left_menu {
                 $sidebar_menu["employee"] = array("name" => "employee", "url" => "Team_members", "class" => "fa-circle");
             }
 
-            // INVENTORY
-            $sidebar_menu["warehouses"] = array("name" => "warehouses", "url" => "inventory/Warehouses", "class" => "fa-circle");
-            $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "inventory/Pallets", "class" => "fa-circle");   
-
             // SECURITY > ACCESS LOG
             if( module_enabled("module_access") && current_has_permit("access_logs") ) {
                 $sidebar_menu["access_logs"] = array("name" => "access_logs", "url" => "access_logs", "class" => "fa-circle");
@@ -317,6 +313,13 @@ class Left_menu {
 
             // End: Module permissions workaround
 
+            //DISTRIBUTION
+            if( module_enabled("module_warehouse") && current_has_permit("warehouse") ) {
+                $sidebar_menu["warehouses"] = array("name" => "warehouses", "url" => "inventory/Warehouses", "class" => "fa-circle");
+            }
+            if( module_enabled("module_warehouse") && current_has_permit("warehouse") ) {
+                $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "inventory/Pallets", "class" => "fa-circle");  
+            }
 
             //FINANCE
             if( module_enabled("module_accounting_summary") && current_has_permit("accounting_summary") ) {
