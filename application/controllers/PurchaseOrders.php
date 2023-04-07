@@ -228,7 +228,7 @@ class PurchaseOrders extends MY_Controller {
     }
 
     private function _material_make_row($data, $vendor_id, $purchase_id) {
-        $title = "<div class='item-row strong mb5'>$data->title</div><span>" . $data->warehouse_name . "</span>";
+        $title = "<div class='item-row strong mb5'>$data->title</div>";
 
         return array(
             $title,
@@ -241,7 +241,7 @@ class PurchaseOrders extends MY_Controller {
     }
 
     function material_list_data($purchase_id = 0, $vendor_id = 0){
-        if($purchase_id && $vendor_id){
+        if($purchase_id){
             $list_data = $this->Purchase_order_materials_model->get_details(array(
                 "purchase_id" => $purchase_id
             ))->result();

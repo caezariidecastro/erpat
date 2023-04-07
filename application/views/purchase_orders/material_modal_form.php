@@ -104,7 +104,7 @@
             if(material_id){
                 $.ajax({
                     url: "<?php echo get_uri("sales/ProductEntries/get_item"); ?>",
-                    data: {id: material_id},
+                    data: {id: material_id, json: true},
                     cache: false,
                     type: 'POST',
                     dataType: "json",

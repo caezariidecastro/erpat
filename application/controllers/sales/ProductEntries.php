@@ -260,12 +260,12 @@ class ProductEntries extends MY_Controller {
         
         $id = $this->input->post("id");
         $json = $this->input->post("json");
-        if($id){
-            $data = $this->Inventory_item_entries_model->get_details(array("id" => $id))->row();
-            if($json){
-                echo json_encode(array("success" => true, "data" => $data));
-            }
-            return $data;
+        
+        $data = $this->Inventory_item_entries_model->get_details(array("id" => $id))->row();
+        if($json){
+            echo json_encode(array("success" => true, "data" => $data));
+            exit;
         }
+        return $data;
     }
 }
