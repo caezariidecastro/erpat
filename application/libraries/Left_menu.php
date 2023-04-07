@@ -337,21 +337,6 @@ class Left_menu {
             // TOOLSET
             $sidebar_menu["units"] = array("name" => "submenu_pid_units", "url" => "mes/units", "class" => "fa-circle");
 
-            // MARKETING
-            if ($this->ci->login_user->is_admin || (module_enabled("module_lead") == "1" && $access_lead)) {
-                $sidebar_menu["leads"] = array("name" => "submenu_mcs_leads", "url" => "mcs/leads", "class" => "fa-circle");
-            }
-            $sidebar_menu["lead_status"] = array("name" => "submenu_mcs_status", "url" => "mcs/lead_status", "class" => "fa-circle");
-            $sidebar_menu["lead_source"] = array("name" => "submenu_mcs_source", "url" => "mcs/lead_source", "class" => "fa-circle");
-            
-            // ENGAGE
-            if( module_enabled("module_epass") && current_has_permit("event_epass") ) {
-                $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
-            }
-            if( module_enabled("module_raffle") && current_has_permit("raffle_draw") ) {
-                $sidebar_menu["module_raffle"] = array("name" => "raffle_draw", "url" => "raffle_draw", "class" => "fa-circle");
-            }
-
             // INVENTORY
             $sidebar_menu["warehouses"] = array("name" => "warehouses", "url" => "inventory/Warehouses", "class" => "fa-circle");
             $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "inventory/Pallets", "class" => "fa-circle");
@@ -382,8 +367,6 @@ class Left_menu {
             $sidebar_menu["stores"] = array("name" => "stores", "url" => "sales/Stores", "class" => "fa-circle");
             $sidebar_menu["products"] = array("name" => "submenu_pid_products", "url" => "sales/ProductEntries", "class" => "fa-circle");
 
-            
-
             // SECURITY > ACCESS LOG
             if( module_enabled("module_access") && current_has_permit("access_logs") ) {
                 $sidebar_menu["access_logs"] = array("name" => "access_logs", "url" => "access_logs", "class" => "fa-circle");
@@ -391,6 +374,24 @@ class Left_menu {
 
             // End: Module permissions workaround
 
+
+            //MARKETING
+            if (module_enabled("module_lead") && current_has_permit('lead')) {
+                $sidebar_menu["leads"] = array("name" => "submenu_mcs_leads", "url" => "mcs/leads", "class" => "fa-circle");
+            }
+            if (module_enabled("module_lead") && current_has_permit('lead')) {
+                $sidebar_menu["lead_status"] = array("name" => "submenu_mcs_status", "url" => "mcs/lead_status", "class" => "fa-circle");
+            }
+            if (module_enabled("module_lead") && current_has_permit('lead')) {
+                $sidebar_menu["lead_source"] = array("name" => "submenu_mcs_source", "url" => "mcs/lead_source", "class" => "fa-circle");
+            }
+
+            if( module_enabled("module_epass") && current_has_permit("event_epass") ) {
+                $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
+            }
+            if( module_enabled("module_raffle") && current_has_permit("raffle_draw") ) {
+                $sidebar_menu["module_raffle"] = array("name" => "raffle_draw", "url" => "raffle_draw", "class" => "fa-circle");
+            }
 
             // ASSETS - GENERALIZED
             if (module_enabled("module_assets") && current_has_permit('asset')) {

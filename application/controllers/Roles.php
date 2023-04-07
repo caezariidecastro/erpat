@@ -29,11 +29,6 @@ class Roles extends MY_Controller {
             //Security
             array("access_logs", "Coming Soon", "Human Resource", "Access Logs", null),
 
-            //Marketing
-            array("event_epass", "Coming Soon", "Event Pass", "Enabled", null),
-            array("epass_create", "Coming Soon", "Event Pass", "Create", null),
-            array("raffle_draw", "Coming Soon", "Raffle Draw", "Enabled", null),
-
             //Important Access
             array("can_use_biometric", "Coming Soon", "Syntry Guard", "Enabled", null),
             array("can_use_payhp", "Coming Soon", "PayHP", "Enabled", null),
@@ -44,9 +39,6 @@ class Roles extends MY_Controller {
 
             array("announcement", "Coming Soon", "General", "Manage Advisories", null),
             array("disable_event_sharing", "Coming Soon", "General", "Disable Event Sharing", null),
-
-            array("client", "Coming Soon", "Marketing", "Clients", null),
-            array("lead", "Coming Soon", "Marketing", "Leads", null),
             
             array("can_view_team_members_contact_info", "Coming Soon", "HR Employee", "View Contacts", null),
             array("can_view_team_members_social_links", "Coming Soon", "HR Employee", "View Social Links", null),
@@ -58,6 +50,14 @@ class Roles extends MY_Controller {
             array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
 
             //TODO: ROLES
+
+            //SALES
+            array("client", "Coming Soon", "Marketing", "Clients", null),
+
+            //MARKETING
+            array("lead", "Coming Soon", "Marketing: Leads", "Enabled", null, true),
+            array("event_epass", "Coming Soon", "Marketing: Event Pass", "Enabled", null, true),
+            array("raffle_draw", "Coming Soon", "Marketing: Raffle Draw", "Enabled", null, true),
 
             //SAFEKEEP
             array("asset", "Coming Soon", "Assets: Entries", "Enabled", null, true, true),

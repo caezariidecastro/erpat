@@ -645,10 +645,6 @@ class Settings extends MY_Controller {
            'estimate' => 'Sales Marketing',
            'estimate_request' => 'Sales Marketing',
 
-           'lead' => 'Marketing',
-           'epass' => 'Marketing',
-           'raffle' => 'Marketing',
-
            'productions' => 'Productions',
            'billofmaterials' => 'Productions',
            'rawmaterials' => 'Productions',
@@ -665,19 +661,27 @@ class Settings extends MY_Controller {
            'item_transfer' => 'Logistics',
            'vehicles' => 'Logistics',
            'driver' => 'Logistics',
+
+
+           //TODO: ROLES
+
+            //MARKETING
+           'lead' => 'Marketing',
+           'epass' => 'Marketing',
+           'raffle' => 'Marketing',
            
+           //ASSETS
            'assets' => 'Storage',
            'asset_category' => 'Storage',
            'location' => 'Storage',
            'vendors' => 'Storage',
            'brands' => 'Storage',
 
+           //PLANNING
            'allprojects' => 'Planning',
            'mytask' => 'Planning',
            'gantt' => 'Planning',
            'project_timesheet' => 'Planning',
-
-           //TODO: ROLES
 
            //HELP CENTER
            'ticket' => 'Support',
@@ -734,13 +738,15 @@ class Settings extends MY_Controller {
             "module_department", "module_employee", "module_attendance", "module_overtime", "module_disciplinary", "module_leave", "module_holidays", "module_access",
             "module_summary", "module_payments", "module_expense", "module_payroll", "module_accounts", "module_transfer", "module_balancesheet",
             "module_productions", "module_billofmaterials", "module_rawmaterials", "module_inventory", "module_products", "module_purchases", "module_returns", "module_supplier",
-            "module_lead", "module_epass",
             "module_delivery", "module_warehouse", "module_item_transfer", "module_vehicles", "module_driver", "module_consumer",
             "module_pos", "module_giftcard", "module_coupons", "module_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_customers",
             "module_clients", "module_services", 
         
         
         //TODO: ROLES
+
+        //MARKETING
+        "module_lead", "module_epass", "module_raffle",
 
         //SAFEKEEP
         "module_assets", "module_asset_category", "module_location", "module_vendors", "module_brands", 
