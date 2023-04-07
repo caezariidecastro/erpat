@@ -634,10 +634,10 @@ class Settings extends MY_Controller {
            'warehouse' => 'Warehouse',
            'inventory' => 'Warehouse',
 
-           //PURCHASING
-           'purchases' => 'Purchasing',
-           'returns' => 'Purchasing',
-           'supplier' => 'Purchasing',
+           //PROCUREMENT
+           'purchase' => 'Procurement',
+           'return' => 'Procurement',
+           'supplier' => 'Procurement',
            
            //MANUFACTURING
            'productions' => 'Productions',
@@ -751,8 +751,8 @@ class Settings extends MY_Controller {
             //DISTRIBUTION
             "module_warehouse", "module_inventory",
 
-            //PURCHASING
-            "module_purchases", "module_returns", "module_supplier",
+            //PROCUREMENT
+            "module_purchase", "module_return", "module_supplier",
 
             //MANUFACTURING
             "module_productions", "module_billofmaterials", "unit",

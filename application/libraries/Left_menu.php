@@ -324,21 +324,9 @@ class Left_menu {
                 $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
             }
 
-                      
-
-            // PROCUREMENT
-            $sidebar_menu["purchase-orders"] = array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders", "class" => "fa-circle");
-            $sidebar_menu["purchase-returns"] = array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns", "class" => "fa-circle");
-            $sidebar_menu["suppliers"] = array("name" => "submenu_pid_supplier", "url" => "mes/suppliers", "class" => "fa-circle");
-
-            // TOOLSET
-            
-
             // INVENTORY
             $sidebar_menu["warehouses"] = array("name" => "warehouses", "url" => "inventory/Warehouses", "class" => "fa-circle");
-            $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "inventory/Pallets", "class" => "fa-circle");
-
-                   
+            $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "inventory/Pallets", "class" => "fa-circle");   
 
             // SECURITY > ACCESS LOG
             if( module_enabled("module_access") && current_has_permit("access_logs") ) {
@@ -346,6 +334,18 @@ class Left_menu {
             }
 
             // End: Module permissions workaround
+
+
+            // PROCUREMENT
+            if (module_enabled("module_purchase") && current_has_permit('purchase')) {
+                $sidebar_menu["purchase-orders"] = array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders", "class" => "fa-circle");
+            }
+            if (module_enabled("module_return") && current_has_permit('return')) {
+                $sidebar_menu["purchase-returns"] = array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns", "class" => "fa-circle");
+            }
+            if (module_enabled("module_supplier") && current_has_permit('supplier')) {
+                $sidebar_menu["suppliers"] = array("name" => "submenu_pid_supplier", "url" => "mes/suppliers", "class" => "fa-circle");
+            }
 
             // PRODUCTION
             if (module_enabled("module_productions") && current_has_permit('production')) {

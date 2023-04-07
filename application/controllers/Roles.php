@@ -46,10 +46,10 @@ class Roles extends MY_Controller {
             array("warehouse", "Coming Soon", "Distribution: Warehouses", "Enabled", null, true),
             array("inventory", "Coming Soon", "Distribution: Inventories", "Enabled", null, true),
 
-            //PURCHASING
-            array("purchase", "Coming Soon", "Purchasing: Purchases", "Enabled", null, true),
-            array("return", "Coming Soon", "Purchasing: Returns", "Enabled", null, true),
-            array("supplier", "Coming Soon", "Purchasing: Suppliers", "Enabled", null, true),
+            //PROCUREMENT
+            array("purchase", "Coming Soon", "Procurement: Purchases", "Enabled", null, true),
+            array("return", "Coming Soon", "Procurement: Returns", "Enabled", null, true),
+            array("supplier", "Coming Soon", "Procurement: Suppliers", "Enabled", null, true),
 
             //MANUFACTURING
             array("production", "Coming Soon", "Manufacturing: Productions", "Enabled", null, true),
