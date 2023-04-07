@@ -8,8 +8,9 @@ class Estimates extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->with_module("module_estimate", true);
+        $this->with_permission("estimate", true);
 
-        $this->init_permission_checker("estimate");
+        //$this->init_permission_checker("estimate");
         $this->load->model("Services_model");
         $this->load->model("Invoice_items_model");
         $this->load->model("Projects_model");
@@ -71,7 +72,8 @@ class Estimates extends MY_Controller {
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("estimates", $this->login_user->is_admin, $this->login_user->user_type);
 
         if ($this->login_user->user_type === "staff") {
-            $this->access_only_allowed_members();
+            //$this->access_only_allowed_members();
+            $view_data['enable_estimate_request'] = $this->with_permission("estimate_request");
 
             $this->template->rander("estimates/index", $view_data);
         } else {
@@ -97,7 +99,7 @@ class Estimates extends MY_Controller {
     /* load new estimate modal */
 
     function modal_form() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "numeric",
@@ -141,7 +143,7 @@ class Estimates extends MY_Controller {
     /* add, edit or clone an estimate */
 
     function save() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "numeric",
@@ -291,7 +293,7 @@ class Estimates extends MY_Controller {
     /* delete or undo an estimate */
 
     function delete() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -316,7 +318,7 @@ class Estimates extends MY_Controller {
     /* list of estimates, prepared for datatable  */
 
     function list_data() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("estimates", $this->login_user->is_admin, $this->login_user->user_type);
 
@@ -445,7 +447,7 @@ class Estimates extends MY_Controller {
     /* load estimate details view */
 
     function view($estimate_id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         if ($estimate_id) {
 
@@ -481,7 +483,7 @@ class Estimates extends MY_Controller {
     /* load discount modal */
 
     function discount_modal_form() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "estimate_id" => "required|numeric"
@@ -497,7 +499,7 @@ class Estimates extends MY_Controller {
     /* save discount */
 
     function save_discount() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "estimate_id" => "required|numeric",
@@ -527,7 +529,7 @@ class Estimates extends MY_Controller {
     /* load item modal */
 
     function item_modal_form() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -545,7 +547,7 @@ class Estimates extends MY_Controller {
     }
 
     function product_modal_form() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -565,7 +567,7 @@ class Estimates extends MY_Controller {
     /* add or edit an estimate item */
 
     function save_item() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "numeric",
@@ -619,7 +621,7 @@ class Estimates extends MY_Controller {
     /* delete or undo an estimate item */
 
     function delete_item() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -647,7 +649,7 @@ class Estimates extends MY_Controller {
     /* list of estimate items, prepared for datatable  */
 
     function item_list_data($estimate_id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $list_data = $this->Estimate_items_model->get_details(array("estimate_id" => $estimate_id))->result();
         $result = array();
@@ -770,12 +772,12 @@ class Estimates extends MY_Controller {
                 redirect("forbidden");
             }
         } else {
-            $this->access_only_allowed_members();
+            //$this->access_only_allowed_members();
         }
     }
 
     function get_estimate_status_bar($estimate_id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $view_data["estimate_info"] = $this->Estimates_model->get_details(array("id" => $estimate_id))->row();
         $view_data['consumer_info'] = $this->Users_model->get_one($view_data['estimate_info']->consumer_id);
@@ -784,7 +786,7 @@ class Estimates extends MY_Controller {
     }
 
     function send_estimate_modal_form($estimate_id) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         if ($estimate_id) {
             $options = array("id" => $estimate_id);
@@ -845,7 +847,7 @@ class Estimates extends MY_Controller {
     }
 
     function send_estimate() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "required|numeric"

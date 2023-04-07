@@ -8,8 +8,9 @@ class Estimate_requests extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->with_module("module_estimate_request", true);
+        $this->with_permission("estimate_request", true);
 
-        $this->init_permission_checker("estimate");
+        //$this->init_permission_checker("estimate");
         $this->load->model("Estimates_model");
         $this->load->model("Estimate_forms_model");
         $this->load->model("Estimate_requests_model");
@@ -18,7 +19,7 @@ class Estimate_requests extends MY_Controller {
 
     //load the estimate requests view
     function index() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         //prepare assign to filter list
         $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang("assigned_to") . " -"));
@@ -88,14 +89,14 @@ class Estimate_requests extends MY_Controller {
 
     // download files 
     function download_estimate_request_files($id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
         $info = $this->Estimate_requests_model->get_one($id);
         download_app_files(get_setting("timeline_file_path"), $info->files);
     }
 
     //prepare data for datatable for estimate request list
     function estimate_request_list_data() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $options = array("assigned_to" => $this->input->post("assigned_to"), "status" => $this->input->post("status"));
         $list_data = $this->Estimate_requests_model->get_details($options)->result();
@@ -189,7 +190,7 @@ class Estimate_requests extends MY_Controller {
 
     //delete/undo estimate request
     function delete_estimate_request() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
 
         validate_submitted_data(array(
@@ -257,14 +258,14 @@ class Estimate_requests extends MY_Controller {
 
     //load the estimate request froms view
     function estimate_forms() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $this->template->rander('estimate_requests/estimate_forms');
     }
 
     //add/edit form of estimate request form 
     function estimate_request_modal_form() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $view_data['model_info'] = $this->Estimate_forms_model->get_one($this->input->post('id'));
 
@@ -277,7 +278,7 @@ class Estimate_requests extends MY_Controller {
 
     //save/update estimate request form
     function save_estimate_request_form() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "numeric",
@@ -308,7 +309,7 @@ class Estimate_requests extends MY_Controller {
 
     //delete/undo estimate request form
     function delete_estimate_request_form() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
 
         validate_submitted_data(array(
@@ -334,7 +335,7 @@ class Estimate_requests extends MY_Controller {
 
     //prepare data for datatable for estimate forms list
     function estimate_forms_list_data() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $list_data = $this->Estimate_forms_model->get_details()->result();
         $result = array();
@@ -379,7 +380,7 @@ class Estimate_requests extends MY_Controller {
 
     //edit estimate request form
     function edit_estimate_form($id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $model_info = $this->Estimate_forms_model->get_one($id);
         $view_data['model_info'] = $model_info;
@@ -389,7 +390,7 @@ class Estimate_requests extends MY_Controller {
     //update assigne to field for estimate request
     function edit_estimate_request_modal_form() {
 
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
 
         validate_submitted_data(array(
@@ -407,7 +408,7 @@ class Estimate_requests extends MY_Controller {
 
     //update estimate request assigne to
     function update_estimate_request() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $id = $this->input->post('id');
 
@@ -430,7 +431,7 @@ class Estimate_requests extends MY_Controller {
 
     //update estimate request status
     function change_estimate_request_status($id, $status) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         if ($id && ($status == "processing" || $status == "estimated" || $status == "hold" || $status == "canceled")) {
             $data = array("status" => $status);
@@ -446,7 +447,7 @@ class Estimate_requests extends MY_Controller {
 
     //view estimate request form
     function preview_estimate_form($id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $model_info = $this->Estimate_forms_model->get_one($id);
         $view_data['model_info'] = $model_info;
@@ -455,7 +456,7 @@ class Estimate_requests extends MY_Controller {
 
     //add/edit form of estimate request form field 
     function estimate_form_field_modal_form($estimate_form_id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $view_data['model_info'] = $this->Custom_fields_model->get_one($this->input->post('id'));
         $view_data['estimate_form_id'] = $estimate_form_id;
@@ -464,7 +465,7 @@ class Estimate_requests extends MY_Controller {
 
     //save/update estimate request form field
     function save_estimate_form_field() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
 
         $id = $this->input->post('id');
@@ -556,7 +557,7 @@ class Estimate_requests extends MY_Controller {
 
     //update the sort value for the fields
     function update_form_field_sort_values($id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $sort_values = $this->input->post("sort_values");
         if ($sort_values) {
@@ -580,7 +581,7 @@ class Estimate_requests extends MY_Controller {
 
     //delete/undo estimate request form field
     function estimate_form_field_delete() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "required|numeric"

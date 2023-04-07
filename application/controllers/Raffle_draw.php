@@ -7,12 +7,13 @@ class Raffle_draw extends MY_Controller {
 
 	function __construct() {
        	parent::__construct();
+        $this->with_module("module_raffle", true);
+        $this->with_permission("raffle_draw", true);
+
         $this->load->library('encryption');
 		$this->load->model("Raffle_draw_model");
         $this->load->model("Events_model");
         $this->load->helper('utility');
-
-        $this->access_only_admin();
     }
 
     function get_event_select2_data() {

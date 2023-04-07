@@ -55,7 +55,7 @@
                 var table = $('#permission-table').DataTable();
 
                 let refresh = function() {
-                    $("#leave_specific_dropdown, #attendance_specific_dropdown, #timesheet_manage_permission_specific_dropdown,  #team_member_update_permission_specific_dropdown, #message_permission_specific_dropdown").select2({
+                    $("#leave_specific_dropdown, #attendance_specific_dropdown, #timesheet_manage_permission_specific_dropdown,  #team_member_update_permission_specific_dropdown, #message_permission_specific_dropdown, #lead_specific_dropdown").select2({
                         multiple: true,
                         formatResult: teamAndMemberSelect2Format,
                         formatSelection: teamAndMemberSelect2Format,
@@ -64,7 +64,7 @@
 
                     $('[data-toggle="tooltip"]').tooltip();
 
-                    var selectors = ["leave", "attendance", "timesheet", "team_member_update", "ticket", "message_permission", "team_member_update_permission", "timesheet_manage_permission"];
+                    var selectors = ["leave", "attendance", "timesheet", "team_member_update", "ticket", "message_permission", "team_member_update_permission", "timesheet_manage_permission", "lead"];
                     $.each(selectors, function (index, element) {
                         var id = element+"_specific_dropdown"; 
                         var val = $('#'+element).val();

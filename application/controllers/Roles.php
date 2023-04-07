@@ -13,49 +13,79 @@ class Roles extends MY_Controller {
         $this->access_only_admin();
 
         $this->permission_lists = [ //empty, all, specific => team: 1, member: 23
-            //ACCOUNTING
-            array("payroll", "Coming Soon", "Payroll", "Enabled", null, true),
-            array("payroll_auto_contribution", "Coming Soon", "Payroll", "Able to update contributions.", null),
-            array("compensation_tax_table", "Coming Soon", "Payroll", "Able to modify the tax table.", null),
-            
-            //STAFFING
-            array("staff", "Coming Soon", "Staff Module", "List & View", null, true),
-            array("staff_invite", "Coming Soon", "Staff Email Invite", "Email", null),
-            array("staff_view_personal_background", "Coming Soon", "Staff Personal Background", "View", null),
-            array("staff_view_job_description", "Coming Soon", "Staff Job Description", "View", null),
-            array("staff_view_bank_info", "Coming Soon", "Staff Bank Info", "View", null),
-            array("staff_view_contribution_details", "Coming Soon", "Staff Contributions Details", "View", null),
-            
-            //Security
-            array("access_logs", "Coming Soon", "Human Resource", "Access Logs", null),
 
-            //Important Access
-            array("can_use_biometric", "Coming Soon", "Syntry Guard", "Enabled", null),
-            array("can_use_payhp", "Coming Soon", "PayHP", "Enabled", null),
-
-            //Default Permission
-            array("estimate", "Coming Soon", "Accounting", "Estimates", null),
-            array("expense", "Coming Soon", "Accounting", "Expenses", null),
-
-            array("announcement", "Coming Soon", "General", "Manage Advisories", null),
+            //DEFAULT
             array("disable_event_sharing", "Coming Soon", "General", "Disable Event Sharing", null),
-            
+            array("announcement", "Coming Soon", "General", "Manage Advisories", null),
+            array("message_permission", "Coming Soon", "Default: Message", "Access", "dropdown"),
+
+            //SECURITY
+            array("access_logs", "Coming Soon", "Security: Access Logs", "Enabled", null, true),
+
+            //STAFFING
+            array("staff", "Coming Soon", "Staffing: Enabled", "List & View", null, true),
+            array("staff_invite", "Coming Soon", "Staffing: Email Invite", "Email", null),
+            array("staff_view_personal_background", "Coming Soon", "Staffing: Personal Background", "View", null),
+            array("staff_view_job_description", "Coming Soon", "Staffing: Job Description", "View", null),
+            array("staff_view_bank_info", "Coming Soon", "Staffing: Bank Info", "View", null),
+            array("staff_view_contribution_details", "Coming Soon", "Staffing: Contributions Details", "View", null),
+
+            array("can_use_biometric", "Coming Soon", "Syntry Guard", "Enabled", null),
+            array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
             array("can_view_team_members_contact_info", "Coming Soon", "HR Employee", "View Contacts", null),
             array("can_view_team_members_social_links", "Coming Soon", "HR Employee", "View Social Links", null),
             array("can_delete_leave_application", "Coming Soon", "HR Employee", "Delete Leave Application", null),
 
-            array("message_permission", "Coming Soon", "Default: Message", "Access", "dropdown"),
-            array("leave", "Coming Soon", "Default: Leave", "Access", "dropdown"),
-            array("attendance", "Coming Soon", "Default: Attendance", "Access", "dropdown"),
-            array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
+            array("department", "Coming Soon", "Staffing: Departments", "Enabled", null, true),
+            array("attendance", "Coming Soon", "Staffing: Attendances", "Enabled", null, true),
+            array("leave", "Coming Soon", "Staffing: Leave", "Access", "dropdown"),
+            array("holiday", "Coming Soon", "Staffing: Holiday", "Enabled", null, true),
+            array("deciplinary", "Coming Soon", "Staffing: Deciplinary", "Enabled", null, true),
 
-            //TODO: ROLES
+            //DISTRIBUTION
+            array("warehouse", "Coming Soon", "Distribution: Warehouses", "Enabled", null, true),
+            array("inventory", "Coming Soon", "Distribution: Inventories", "Enabled", null, true),
+
+            //PURCHASING
+            array("purchase", "Coming Soon", "Manufacturing: Purchases", "Enabled", null, true),
+            array("return", "Coming Soon", "Manufacturing: Returns", "Enabled", null, true),
+            array("supplier", "Coming Soon", "Manufacturing: Suppliers", "Enabled", null, true),
+
+            //MANUFACTURING
+            array("production", "Coming Soon", "Manufacturing: Productions", "Enabled", null, true),
+            array("billofmaterial", "Coming Soon", "Manufacturing: Vehicles", "Enabled", null, true),
+
+            //LOGISTICS
+            array("delivery", "Coming Soon", "Logistics: Deliveries", "Enabled", null, true),
+            array("vehicle", "Coming Soon", "Logistics: Vehicles", "Enabled", null, true),
+            array("driver", "Coming Soon", "Logistics: Drivers", "Enabled", null, true),
+
+            //ACOUNTING
+            array("accounting_summary", "Coming Soon", "Accounting: Summary", "Enabled", null),
+            array("balance_sheet", "Coming Soon", "Accounting: Balance Sheet", "Enabled", null),
+            array("account", "Coming Soon", "Accounting: Accounts", "Enabled", null, true),
+            array("transfer", "Coming Soon", "Accounting: Transfers", "Enabled", null, true),
+            array("payment", "Coming Soon", "Accounting: Payments", "Enabled", null, true),
+            array("expense", "Coming Soon", "Accounting: Expenses", "Enabled", null, true),
+            array("payroll", "Coming Soon", "Accounting: Payrolls", "Enabled", null, true),
+
+            array("can_use_payhp", "Coming Soon", "PayHP", "Enabled", null),
+            array("payroll", "Coming Soon", "Payroll", "Enabled", null, true),
+            array("payroll_auto_contribution", "Coming Soon", "Payroll", "Able to update contributions.", null),
+            array("compensation_tax_table", "Coming Soon", "Payroll", "Able to modify the tax table.", null),
 
             //SALES
-            array("client", "Coming Soon", "Marketing", "Clients", null),
+            array("sales_summary", "Coming Soon", "Sales: Summary", "Enabled", null),
+            array("invoice", "Coming Soon", "Sales: Invoices", "Enabled", null, true),
+            array("service", "Coming Soon", "Sales: Services", "Enabled", null, true),
+            array("product", "Coming Soon", "Sales: Products", "Enabled", null, true),
+            array("client", "Coming Soon", "Sales: Clients", "Enabled", null, true),
+            array("store", "Coming Soon", "Sales: Stores", "Enabled", null, true),
 
             //MARKETING
-            array("lead", "Coming Soon", "Marketing: Leads", "Enabled", null, true),
+            array("lead", "Coming Soon", "Marketing: Leads", "Access", null, true),
+            array("estimate", "Coming Soon", "Marketing: Estimates", "Enabled", null, true),
+            array("estimate_request", "Coming Soon", "Marketing: Estimates Request", "Enabled", null, true),
             array("event_epass", "Coming Soon", "Marketing: Event Pass", "Enabled", null, true),
             array("raffle_draw", "Coming Soon", "Marketing: Raffle Draw", "Enabled", null, true),
 

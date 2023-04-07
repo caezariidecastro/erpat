@@ -5,6 +5,10 @@ if (!function_exists('current_has_permit')) {
         $ci = get_instance();
         $permission_lists = $ci->login_user->permissions;
 
+        if( $ci->login_user->is_admin){
+            return true;
+        }
+
         if($allAccess) {
             if(get_array_value($permission_lists, $permit_name."_create")) {
                 return true;
@@ -35,7 +39,7 @@ if (!function_exists('user_has_permit')) {
         $ci = get_instance();
         $permission_lists = @unserialize($ci->login_user->permissions);
 
-        if( $this->login_user->is_admin){
+        if( $ci->login_user->is_admin){
             return true;
         }
 

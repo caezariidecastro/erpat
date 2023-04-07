@@ -607,7 +607,9 @@ class Settings extends MY_Controller {
     }
 
     function module_list() {
+        //TO REMOVE: 'overtime' => 'Human Resource',
         $list_data = array(
+            //DEFAULT
            'timeline' => 'General',
            'event' => 'General',
            'todo' => 'General',
@@ -616,59 +618,61 @@ class Settings extends MY_Controller {
            'message' => 'General',
            'chat' => 'General',
 
-           'employee' => 'Human Resource', //Done
+           //SECURITY
+           'access' => 'SECURITY',
+
+           //STAFFING
+           'employee' => 'Human Resource',
            'department' => 'Human Resource',
-           'access' => 'Human Resource',
            'attendance' => 'Human Resource',
            'schedule' => 'Human Resource',
-           'overtime' => 'Human Resource',
-           'disciplinary' => 'Human Resource',
            'leave' => 'Human Resource',
            'holidays' => 'Human Resource',
+           'disciplinary' => 'Human Resource',
 
-           'payroll' => 'HR Finance',
+           //DISTRIBUTION
+           'warehouse' => 'Warehouse',
+           'inventory' => 'Warehouse',
 
-           'summary' => 'Finance',
-           'payments' => 'Finance',
-           'expense' => 'Finance',
-           'accounts' => 'Finance',
-           'transfer' => 'Finance',
-           'balancesheet' => 'Finance',
-
-           'sales_matrix' => 'Sales Finance',
-           'invoice' => 'Sales Finance',
-           'customers' => 'Sales',
-           'consumer' => 'Sales',
-           'clients' => 'Sales', 
-           'services' => 'Sales',  
-
-           'estimate' => 'Sales Marketing',
-           'estimate_request' => 'Sales Marketing',
-
+           //PURCHASING
+           'purchases' => 'Purchasing',
+           'returns' => 'Purchasing',
+           'supplier' => 'Purchasing',
+           
+           //MANUFACTURING
            'productions' => 'Productions',
            'billofmaterials' => 'Productions',
            'rawmaterials' => 'Productions',
 
-           'warehouse' => 'Warehouse',
-           'products' => 'Warehouse',
-           'inventory' => 'Warehouse',
-           'returns' => 'Warehouse',
-
-           'purchases' => 'Purchasing',
-           'supplier' => 'Purchasing',
-
+           //LOGISTICS
            'delivery' => 'Logistics',
            'item_transfer' => 'Logistics',
            'vehicles' => 'Logistics',
            'driver' => 'Logistics',
 
+           //ACCOUNTING
+           'summary' => 'Finance',
+           'balancesheet' => 'Finance',
+           'accounts' => 'Finance',
+           'transfer' => 'Finance',
+           'payments' => 'Finance',
+           'expense' => 'Finance',
+           'payroll' => 'Finance',
 
-           //TODO: ROLES
+           //SALES
+           'sales_matrix' => 'Sales',
+           'invoice' => 'Sales',
+           'services' => 'Sales',  
+           'products' => 'Sales',
+           'clients' => 'Sales', //customer
+           'stores' => 'Sales',
 
             //MARKETING
            'lead' => 'Marketing',
            'epass' => 'Marketing',
            'raffle' => 'Marketing',
+           'estimate' => 'Marketing',
+           'estimate_request' => 'Marketing',
            
            //ASSETS
            'assets' => 'Storage',
@@ -732,30 +736,47 @@ class Settings extends MY_Controller {
     }
 
     function save_module_settings() {
+        //to remove: "module_overtime",  
 
         $settings = array(
-            "module_timeline", "module_event", "module_todo", "module_note", "module_message", "module_chat", "module_announcement", 
-            "module_department", "module_employee", "module_attendance", "module_overtime", "module_disciplinary", "module_leave", "module_holidays", "module_access",
-            "module_summary", "module_payments", "module_expense", "module_payroll", "module_accounts", "module_transfer", "module_balancesheet",
-            "module_productions", "module_billofmaterials", "module_rawmaterials", "module_inventory", "module_products", "module_purchases", "module_returns", "module_supplier",
-            "module_delivery", "module_warehouse", "module_item_transfer", "module_vehicles", "module_driver", "module_consumer",
-            "module_pos", "module_giftcard", "module_coupons", "module_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_customers",
-            "module_clients", "module_services", 
-        
-        
-        //TODO: ROLES
+            //DEFAULT
+            "module_timeline", "module_event", "module_todo", "module_note", "module_announcement", "module_message", "module_chat", 
 
-        //MARKETING
-        "module_lead", "module_epass", "module_raffle",
+            //SECURITY
+            "module_access",
 
-        //SAFEKEEP
-        "module_assets", "module_asset_category", "module_location", "module_vendors", "module_brands", 
+            //STAFFING
+            "module_employee", "module_department", "module_attendance", "module_schedule", "module_leave", "module_holidays", "module_disciplinary",
 
-        //PLANNING
-        "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet",
+            //DISTRIBUTION
+            "module_warehouse", "module_inventory",
 
-        //HELP CENTER
-        "module_ticket", "module_page", "module_help", "module_knowledge_base",
+            //PURCHASING
+            "module_purchases", "module_returns", "module_supplier",
+
+            //MANUFACTURING
+            "module_productions", "module_billofmaterials", "module_rawmaterials",
+
+            //LOGISTICS
+            "module_delivery", "module_item_transfer", "module_vehicles", "module_driver", 
+
+            //ACCOUNTING
+            "module_accounting_summary", "module_balancesheet", "module_accounts", "module_transfer",  "module_payments", "module_expense", "module_payroll",  
+
+            //SALES
+            "module_sales_summary", "module_invoice", "module_services", "module_products", "module_clients", "module_stores", //customer
+
+            //MARKETING
+            "module_lead", "module_estimate", "module_estimate_request", "module_epass", "module_raffle",
+
+            //SAFEKEEP
+            "module_assets", "module_asset_category", "module_location", "module_vendors", "module_brands", 
+
+            //PLANNING
+            "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet",
+
+            //HELP CENTER
+            "module_ticket", "module_page", "module_help", "module_knowledge_base",
         );
 
         foreach ($settings as $setting) {
