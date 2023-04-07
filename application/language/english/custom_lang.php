@@ -50,11 +50,11 @@ $lang["submenu_pms_timesheets"] = "Timesheets";
 $lang["clients"] = "Clients";
 $lang["submenu_sms_services"] = "Services";
 
-$lang["submenu_ams_assets"] = "Assets";
-$lang["submenu_ams_category"] = "Category";
-$lang["submenu_ams_location"] = "Location";
-$lang["submenu_ams_vendors"] = "Vendors";
-$lang["submenu_ams_maker"] = "Brands";
+$lang["asset_entries"] = "Asset Entries";
+$lang["asset_categories"] = "Asset Category";
+$lang["asset_location"] = "Asset Location";
+$lang["asset_vendor"] = "Asset Vendors";
+$lang["asset_brand"] = "Asset Brands";
 
 $lang["submenu_sms_pointofsale"] = "Point of Sale - Soon!";
 $lang["submenu_sms_estimates"] = "Estimates";

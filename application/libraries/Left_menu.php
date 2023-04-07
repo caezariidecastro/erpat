@@ -343,14 +343,7 @@ class Left_menu {
             }
             $sidebar_menu["lead_status"] = array("name" => "submenu_mcs_status", "url" => "mcs/lead_status", "class" => "fa-circle");
             $sidebar_menu["lead_source"] = array("name" => "submenu_mcs_source", "url" => "mcs/lead_source", "class" => "fa-circle");
-
-            // ASSETS
-            $sidebar_menu["entries"] = array("name" => "submenu_ams_assets", "url" => "ams/entries", "class" => "fa-circle");
-            $sidebar_menu["categories"] = array("name" => "submenu_ams_category", "url" => "ams/categories", "class" => "fa-circle");
-            $sidebar_menu["locations"] = array("name" => "submenu_ams_location", "url" => "ams/locations", "class" => "fa-circle");
-            $sidebar_menu["vendors"] = array("name" => "submenu_ams_vendors", "url" => "ams/vendors", "class" => "fa-circle");
-            $sidebar_menu["brands"] = array("name" => "submenu_ams_maker", "url" => "ams/brands", "class" => "fa-circle");
-
+            
             // ENGAGE
             if( module_enabled("module_epass") && current_has_permit("event_epass") ) {
                 $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
@@ -397,6 +390,24 @@ class Left_menu {
             }
 
             // End: Module permissions workaround
+
+
+            // ASSETS - GENERALIZED
+            if (module_enabled("module_assets") && current_has_permit('asset')) {
+                $sidebar_menu["entries"] = array("name" => "asset_entries", "url" => "ams/entries", "class" => "fa-circle");
+            }
+            if (module_enabled("module_asset_category") && current_has_permit('asset_category', false, true)) {
+                $sidebar_menu["categories"] = array("name" => "asset_categories", "url" => "ams/categories", "class" => "fa-circle");
+            }
+            if (module_enabled("module_location") && current_has_permit('location')) {
+                $sidebar_menu["locations"] = array("name" => "asset_location", "url" => "ams/locations", "class" => "fa-circle");
+            }
+            if (module_enabled("module_vendors") && current_has_permit('vendor')) {
+                $sidebar_menu["vendors"] = array("name" => "asset_vendor", "url" => "ams/vendors", "class" => "fa-circle");
+            }
+            if (module_enabled("module_brands") && current_has_permit('brand')) {
+                $sidebar_menu["brands"] = array("name" => "asset_brand", "url" => "ams/brands", "class" => "fa-circle");
+            }
 
             // PLANNING
             if (module_enabled("module_allprojects") && current_has_permit('can_manage_all_projects')) {

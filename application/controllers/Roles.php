@@ -59,6 +59,12 @@ class Roles extends MY_Controller {
 
             //TODO: ROLES
 
+            //SAFEKEEP
+            array("asset", "Coming Soon", "Assets: Entries", "Enabled", null, true, true),
+            array("location", "Coming Soon", "Assets: Locations", "Enabled", null, true),
+            array("vendor", "Coming Soon", "Assets: Vendors", "Enabled", null, true),
+            array("brand", "Coming Soon", "Assets: Brands", "Enabled", null, true),
+
             //PLANNING
             //projects
             array("can_manage_all_projects", "Coming Soon", "Planning", "Manage All Projects", null),
