@@ -30,7 +30,6 @@ class Roles extends MY_Controller {
             array("staff_view_bank_info", "Coming Soon", "Staffing: Bank Info", "View", null),
             array("staff_view_contribution_details", "Coming Soon", "Staffing: Contributions Details", "View", null),
 
-            array("can_use_biometric", "Coming Soon", "Syntry Guard", "Enabled", null),
             array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
             array("can_view_team_members_contact_info", "Coming Soon", "HR Employee", "View Contacts", null),
             array("can_view_team_members_social_links", "Coming Soon", "HR Employee", "View Social Links", null),
@@ -41,6 +40,8 @@ class Roles extends MY_Controller {
             array("leave", "Coming Soon", "Staffing: Leave", "Access", "dropdown"),
             array("holiday", "Coming Soon", "Staffing: Holiday", "Enabled", null, true),
             array("deciplinary", "Coming Soon", "Staffing: Deciplinary", "Enabled", null, true),
+
+            array("can_use_biometric", "Coming Soon", "Syntry Guard", "Enabled", null),
 
             //DISTRIBUTION
             array("warehouse", "Coming Soon", "Distribution: Warehouses", "Enabled", null, true),

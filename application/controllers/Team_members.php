@@ -881,12 +881,7 @@ class Team_members extends MY_Controller {
 
     //show team member's details view
     function view($id = 0, $tab = "") {
-        if ($id * 1) {
-
-            //if team member's list is disabled, but the user can see his/her own profile.
-            if ($this->login_user->id != $id) {
-                redirect("forbidden");
-            }
+        if ($id) {
 
             //we have an id. view the team_member's profie
             $options = array("id" => $id);
@@ -901,7 +896,7 @@ class Team_members extends MY_Controller {
                 $view_data['show_general_info'] = $can_update_team_members_info;
                 $view_data['show_job_info'] = false;
 
-                $view_data['show_account_settings'] = $this->with_permission('staff_update');
+                $view_data['show_account_settings'] = $this->can_update_team_members_info($id);
 
                 $show_attendance = false;
                 $show_leave = false;
