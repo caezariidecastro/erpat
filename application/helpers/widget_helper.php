@@ -568,7 +568,7 @@ if (!function_exists('count_total_time_widget')) {
         $view_data["total_hours_worked"] = to_decimal_format($info->timecard_total / 60 / 60);
         $view_data["total_project_hours"] = to_decimal_format($info->timesheet_total / 60 / 60);
 
-        $view_data["total_credits_balance"] = $ci->Leave_credits_model->get_balance($options)['balance'];
+        $view_data["total_credits_balance"] = $ci->Leave_credits_model->get_balance($options);
 
         $permissions = $ci->login_user->permissions;
 

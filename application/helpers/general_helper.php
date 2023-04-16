@@ -2022,7 +2022,7 @@ if (!function_exists('get_total_leave_credit_balance')) {
         $ci = get_instance();
         $ci->load->model("Leave_credits_model");
         $options = array("user_id" => $user_id ? $user_id : $ci->login_user->id);
-        return $ci->Leave_credits_model->get_balance($options)['balance'];
+        return $ci->Leave_credits_model->get_balance($options);
     }
 }
 

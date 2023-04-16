@@ -26,6 +26,7 @@
                 "name" => "counts",
                 "value" => $model_info->counts,
                 "type" => "number",
+                "min" => "0",
                 "class" => "form-control",
                 "placeholder" => lang('number_of_days'),
                 "autofocus" => true,

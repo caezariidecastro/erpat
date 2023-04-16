@@ -79,6 +79,7 @@ class Leave_credits extends MY_Controller {
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
         $action = $this->input->post('action');
+        $department_id = $this->input->post('department_select2_filter');
         
         $options = array(
             "start_date" => $start_date,
@@ -86,13 +87,14 @@ class Leave_credits extends MY_Controller {
             "login_user_id" => $this->login_user->id,
             "user_id" => $user_id,
             "action" => $action,
+            "department_id" => $department_id,
             //"access_type" => $this->access_type,
             //"allowed_members" => $this->allowed_members
         );
         $list_data = $this->Leave_credits_model->get_details($options)->result();
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = $this->_make_row($data);
+            $result[] = $this->_make_row($data, $action=="balance"?true:false);
         }
         echo json_encode(array("data" => $result));
     }
@@ -105,15 +107,21 @@ class Leave_credits extends MY_Controller {
     }
 
     //make a row of leave types row
-    private function _make_row($data) {
-        $label_column_text = $data->action == "debit" ? "DEBIT" : "CREDIT";
-        $label_column_color = $data->action == "debit" ? "#4f72ff" : "#ff4747";
-        $label_column_count = $data->action == "debit" ? $data->counts : "-".$data->counts;
+    private function _make_row($data, $balance = false) {
+        $label_column_text = $data->action == "debit" ? "ADDED" : "DEDUCTED";
+        $label_column_color = $data->action == "debit" ? "#8bc408" : "#ff4747";
+        $label_column_count = $data->action == "debit" ? $data->counts : ($data->counts*-1);
+
+        if($balance) {
+            $label_column_text = "BALANCE";
+            $label_column_color = "#4f72ff";
+            $label_column_count = $data->balance;
+        }
 
         return array(
             get_team_member_profile_link($data->user_id, $data->fullname, array("target" => "_blank")),
             "<span class='mt0 label' style='background-color:".$label_column_color.";' title=" . lang("label") . ">" . strtoupper($label_column_text) . "</span> ",
-            $label_column_count,
+            strval(convert_number_to_decimal($label_column_count)),
             $data->remarks ? $data->remarks : "-",
             $data->date_created ? $data->date_created : "-",
             get_team_member_profile_link($data->created_by, $data->creator, array("target" => "_blank")),

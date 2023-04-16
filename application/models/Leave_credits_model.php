@@ -12,6 +12,7 @@ class Leave_credits_model extends Crud_model {
     function get_details($options = array()) {
         $leave_credits_table = $this->db->dbprefix('leave_credits');
         $users_table = $this->db->dbprefix('users');
+        $team_table = $this->db->dbprefix('team');
 
         $where = "";
         $offset = convert_seconds_to_time_format(get_timezone_offset());
@@ -28,12 +29,26 @@ class Leave_credits_model extends Crud_model {
         if ($end_date) {
             $where .= " AND DATE(ADDTIME($leave_credits_table.date_created,'$offset'))<='$end_date'";
         }
-        $action = get_array_value($options, "action");
-        if ($action) {
-            $where .= " AND $leave_credits_table.action='$action'";
+
+        $department_id = get_array_value($options, "department_id");
+        if($department_id){
+            $teams_ids = "( SELECT GROUP_CONCAT($team_table.id) FROM $team_table WHERE $team_table.deleted='0' AND (FIND_IN_SET($leave_credits_table.user_id, $team_table.heads) OR FIND_IN_SET($leave_credits_table.user_id, $team_table.members) ) )";
+            $where .= " AND FIND_IN_SET('$department_id', $teams_ids) ";
         }
 
-        $sql = "SELECT $leave_credits_table.*, 
+        $query = "";
+        $action = get_array_value($options, "action");
+        if ($action) {
+            if($action == 'balance') {
+                $query = " (SUM(IF($leave_credits_table.action='debit',$leave_credits_table.counts,0)) 
+                - SUM(IF($leave_credits_table.action='credit',$leave_credits_table.counts,0))) as balance,";
+                $where .= " GROUP BY user_id";
+            } else {
+                $where .= " AND $leave_credits_table.action='$action'";
+            }
+        }
+
+        $sql = "SELECT $leave_credits_table.*, $query
             CONCAT(users_table.first_name, ' ',users_table.last_name) AS fullname, 
             CONCAT(creator_table.first_name, ' ',creator_table.last_name) AS creator
         FROM $leave_credits_table 
@@ -53,27 +68,18 @@ class Leave_credits_model extends Crud_model {
         }
 
         $sql = "SELECT 
-            SUM(IF($leave_credits_table.action='debit',$leave_credits_table.counts,0)) AS debits, 
-            SUM(IF($leave_credits_table.action='credit',$leave_credits_table.counts,0)) AS credits 
+            (SUM(IF($leave_credits_table.action='debit',$leave_credits_table.counts,0)) 
+                - SUM(IF($leave_credits_table.action='credit',$leave_credits_table.counts,0))) as balance
         FROM $leave_credits_table 
         WHERE $leave_credits_table.deleted=0 $where";
 
         $result = $this->db->query($sql);
         if($result->num_rows() > 0) {
             $row = $result->result();
-            return array (
-                "debit" => $row[0]->debits,
-                "credit" => $row[0]->credits,
-                "balance" => $row[0]->debits - $row[0]->credits
-            );
-        } else {
-            return array (
-                "debit" => 0,
-                "credit" => 0,
-                "balance" => 0
-            );
+            return $row[0]->balance;
         }
-        
+
+        return 0;
     }
 
 }

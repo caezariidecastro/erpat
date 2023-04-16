@@ -506,7 +506,7 @@ class Payrolls extends MY_Controller {
             $payslip_id = $payslip->id;
         }
 
-        $leave_credit = $this->Leave_credits_model->get_balance(array(
+        $leave_credit_balance = $this->Leave_credits_model->get_balance(array(
             "user_id" => $user_id
         ));
 
@@ -518,7 +518,7 @@ class Payrolls extends MY_Controller {
             "payroll" => $payroll_info->id,
             "user" => $user_id,
             "hourly_rate" => $job_info->rate_per_hour,
-            "leave_credit" => $leave_credit['balance'], //hourly_rate
+            "leave_credit" => $leave_credit_balance, //hourly_rate
 
             "schedule" => $payroll_info->sched_hours,//$attd->getTotalSchedule(), //schedule
             "worked" => $attd->getTotalWork(), //work
@@ -1268,10 +1268,10 @@ class Payrolls extends MY_Controller {
         $payslip->fullname = $user->first_name." ".$user->last_name;
         $payslip->job_title = $user->job_title;
 
-        $leave_credit = $this->Leave_credits_model->get_balance(array(
+        $leave_credit_balance = $this->Leave_credits_model->get_balance(array(
             "user_id" => $payslip->user
         ));
-        $payslip->leave_credit = $leave_credit['balance'];
+        $payslip->leave_credit = $leave_credit_balance;
 
         $team = $this->Team_model->get_teams($payslip->user)->row();//todo
         $payslip->department = $team?$team->title:"None";
@@ -1311,10 +1311,10 @@ class Payrolls extends MY_Controller {
             $payslip->fullname = $user->first_name." ".$user->last_name;
             $payslip->job_title = $user->job_title;
     
-            $leave_credit = $this->Leave_credits_model->get_balance(array(
+            $leave_credit_balance = $this->Leave_credits_model->get_balance(array(
                 "user_id" => $payslip->user
             ));
-            $payslip->leave_credit = $leave_credit['balance'];
+            $payslip->leave_credit = $leave_credit_balance;
     
             $team = $this->Team_model->get_teams($payslip->user)->row();//todo
             $payslip->department = $team?$team->title:"None";

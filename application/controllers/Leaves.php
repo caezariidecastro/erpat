@@ -13,6 +13,7 @@ class Leaves extends MY_Controller {
         $this->load->model("Leave_credits_model");
         $this->load->model("Leave_types_model");
         $this->load->model("Leave_applications_model");
+        $this->load->model("Team_model");
 
         $this->init_permission_checker("leave");
     }
@@ -31,6 +32,17 @@ class Leaves extends MY_Controller {
         if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "can_delete_leave_application") == "1") {
             return true;
         }
+    }
+
+    protected function _get_team_select2_data() {
+        $teams = $this->Team_model->get_details()->result();
+        $team_select2 = array(array('id' => '', 'text'  => '- Departments -'));
+
+        foreach($teams as $team){
+            $team_select2[] = array('id' => $team->id, 'text'  => $team->title);
+        }
+
+        return $team_select2;
     }
 
     function index() {
@@ -529,7 +541,7 @@ class Leaves extends MY_Controller {
         $fields = array("first_name", "last_name");
         $where = array("user_type" => "staff");
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
-        
+        $view_data['department_select2'] = $this->_get_team_select2_data();
         $this->load->view("leaves/leave_credits", $view_data);
     }
 
