@@ -984,3 +984,5 @@ $lang["permission_denied"] = "Permission Denied! Contact your administrator to h
 
 $lang["sales_summary"] = "Sales Summary";
 $lang["accounting_summary"] = "Accounting Summary";
+
+$lang["yearly_paid_time_off"] = "Yearly Paid Timeoff";

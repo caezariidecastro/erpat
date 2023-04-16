@@ -41,6 +41,45 @@ class Cron_job {
         } catch (Exception $e) {
             echo $e;
         }
+
+        try {
+            //* Should execute only first day of month.
+            //* Only once every month can be execute.
+
+            $last_monthly_first_day = get_setting('last_monthly_first_day_job_time');
+            $current_monthly_first_day = get_my_local_time('Ym');
+            
+            if($last_monthly_first_day != $current_monthly_first_day) {
+                //Load the helper and model class.
+                $this->ci->load->helper("leave");
+                $this->ci->load->model("Leave_credits_model");
+
+                //Get all list of user that is employed and active.
+                $option = array( "date_hired" => true );
+                $employees = $this->ci->Users_model->get_all_active($option);
+
+                //Loop all users and add the leave credits monthly grant.
+                foreach($employees as $user) {
+                    if($user->date_hired && $user->date_hired != "0000-00-00") {
+                        $credit_earning = get_monthly_leave_credit_earning($user->date_hired);
+
+                        $data = array(
+                            "user_id" => $user->id,
+                            "counts" => $credit_earning,
+                            "action" => 'debit',
+                            "remarks" => 'Monthly Credit Earning as Regular Employee.',
+                            "date_created" => get_current_utc_time(),
+                            "created_by" => 0,
+                        );
+                        $this->ci->Leave_credits_model->save($data);
+                    }
+                }
+                
+                $this->ci->Settings_model->save_setting("last_monthly_first_day_job_time", $current_monthly_first_day);
+            }
+        } catch (Exception $e) {
+            echo $e;
+        }
     }
 
     private function call_minutely_jobs() {

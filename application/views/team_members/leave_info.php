@@ -33,7 +33,6 @@ if (isset($page_type) && $page_type === "full") {
                     <?php echo modal_anchor(get_uri("hrs/leaves/modal_form_deduct_credit/".$applicant_id), "<i class='fa fa-minus-circle'></i> " . lang('remove_leave_credits'), array("class" => "btn btn-default", "title" => lang('leave_credit_deduct_form'))); ?>
                 </div>
             </div>
-            
         <?php } ?>
     </ul>
     <div class="tab-content">

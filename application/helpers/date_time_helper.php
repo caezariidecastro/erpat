@@ -8,7 +8,7 @@
 if (!function_exists('get_timezone_offset')) {
 
     function get_timezone_offset() {
-        $timeZone = new DateTimeZone(get_setting("timezone"));
+        $timeZone = new DateTimeZone(get_setting("timezone", "Asia/Manila"));
         $dateTime = new DateTime("now", $timeZone);
         return $timeZone->getOffset($dateTime);
     }
@@ -444,6 +444,24 @@ if (!function_exists('get_date_difference_in_days')) {
 
 }
 
+/**
+ * get date difference in month
+ * 
+ * $start_date && $end_date should be Y-m-d format
+ * 
+ * @return difference in month
+ */
+if (!function_exists('get_date_difference_in_months')) {
+
+    function get_date_difference_in_months($start_date, $end_date) {
+
+        $start = new DateTime($start_date);
+        $end = new DateTime($end_date);
+
+        return $end->diff($start)->format("%a")/30.417;
+    }
+
+}
 
 /**
  * is online user? if the last online <= 1 minute then we'll assume that the user is online

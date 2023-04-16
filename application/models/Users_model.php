@@ -485,12 +485,26 @@ class Users_model extends Crud_model {
         return $this->db->query($sql)->row()->total_active;
     }
 
-    function get_all_active() {
+    function get_all_active($options = array()) {
         $users = $this->db->dbprefix('users');
+        $job_info = $this->db->dbprefix('team_member_job_info');
 
-        $sql = "SELECT {$users}.id, CONCAT($users.first_name, ' ',$users.last_name) AS user_name
-        FROM $users 
-        WHERE {$users}.deleted=0 AND {$users}.status='active' AND {$users}.user_type='staff'";
+        $fields = "";
+        $from = "";
+
+        $date_hired = get_array_value($options, "date_hired");
+        if ($date_hired) {
+            $fields = ", $job_info.date_of_hire as date_hired";
+            $from = " LEFT JOIN $job_info ON $job_info.user_id=$users.id ";
+        }
+
+        $sql = "SELECT {$users}.id, CONCAT($users.first_name, ' ',$users.last_name) AS user_name $fields
+        FROM $users $from
+        WHERE {$users}.deleted=0 
+            AND {$users}.terminated=0 
+            AND {$users}.resigned=0 
+            AND {$users}.status='active' 
+            AND {$users}.user_type='staff'";
         return $this->db->query($sql)->result();
     }
 }

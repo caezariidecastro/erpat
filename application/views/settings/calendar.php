@@ -215,6 +215,22 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="yearly_paid_time_off" class=" col-md-2"><?php echo lang('yearly_paid_time_off'); ?></label>
+                        <div class="col-md-2">
+                            <?php
+                            $yearly_paid_time_off = get_setting('yearly_paid_time_off', 0);
+                            echo form_input(array(
+                                "id" => "yearly_paid_time_off",
+                                "name" => "yearly_paid_time_off",
+                                "value" => $yearly_paid_time_off,
+                                "class" => "form-control",
+                                "placeholder" => lang('yearly_paid_time_off'),
+                            ));
+                            ?>
+                        </div>
+                        <label class=" col-md-2"><?php echo lang('days'); ?></label>
+                    </div>
+                    <div class="form-group">
                         <label for="days_per_year" class=" col-md-2"><?= lang("days_per_year")  ?></label>
                         <div class="col-md-2">
                             <?php
