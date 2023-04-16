@@ -9,7 +9,7 @@
         <div class="col-md-6 text-center cover-widget">
             <div class="row p20">
                 <?php
-                    if ($this->login_user->id == $user_info->id || ($payroll_enabled && $show_total_hours_worked) ) {
+                    if ($this->login_user->is_admin || $this->login_user->id == $user_info->id || ($payroll_enabled && $show_total_hours_worked) ) {
                         get_user_job_offer($user_info->id);
                         count_total_time_widget($user_info->id);
                     }                
