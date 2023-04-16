@@ -76,10 +76,10 @@ class Leave_credits_model extends Crud_model {
         $result = $this->db->query($sql);
         if($result->num_rows() > 0) {
             $row = $result->result();
-            return $row[0]->balance;
+            return $row[0]->balance?$row[0]->balance:0.00;
         }
 
-        return 0;
+        return 0.00;
     }
 
 }

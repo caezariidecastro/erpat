@@ -150,6 +150,7 @@ $route["hrs/holidays/(:any)"] = "Holidays/$1";
 $route["hrs/leave_credits/(:any)"] = "Leave_credits/$1";
 $route["hrs/leave_types/(:any)"] = "Leave_types/$1";
 $route["hrs/leaves/(:any)"] = "Leaves/$1";
+$route["hrs/leaves/(:any)/(:any)"] = "Leaves/$1/$2";
 
 $route['hrs/department'] = 'Team/department';
 $route["hrs/team/(:any)"] = "Team/$1";

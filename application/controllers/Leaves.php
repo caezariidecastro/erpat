@@ -557,27 +557,30 @@ class Leaves extends MY_Controller {
     }
 
     //load leave type add form
-    function modal_form_add_credit() {
-        self::modal_form_credit("add");
+    function modal_form_add_credit($user_id = 0) {
+        self::modal_form_credit("add", $user_id);
     }
     
 
     //load leave type deduct form
-    function modal_form_deduct_credit() {
-        self::modal_form_credit("deduct");
+    function modal_form_deduct_credit($user_id = 0) {
+        self::modal_form_credit("deduct", $user_id);
     }
     
     //load leave type add/deduct form
-    function modal_form_credit($form_type) {
-        //show all members list to only admin and other members who has permission to manage all member's leave
-        //show only specific members list who has limited access
-        if ($this->access_type === "all") {
-            $where = array("user_type" => "staff");
+    function modal_form_credit($form_type, $user_id = 0) {
+        if ($user_id) {
+            $view_data['team_members_info'] = $this->Users_model->get_one($user_id);
         } else {
-            $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
+            //show all members list to only admin and other members who has permission to manage all member's leave
+            //show only specific members list who has limited access
+            if ($this->access_type === "all") {
+                $where = array("user_type" => "staff");
+            } else {
+                $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
+            }
+            $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
         }
-        $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
-
         $view_data['model_info'] = $this->Leave_types_model->get_one($this->input->post('id'));
 
         if($form_type === "add") {
