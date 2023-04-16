@@ -55,7 +55,7 @@ class Cron_job {
                 $this->ci->load->model("Leave_credits_model");
 
                 //Get all list of user that is employed and active.
-                $option = array( "date_hired" => true );
+                $option = array( "date_hired" => true, "is_regular" => true );
                 $employees = $this->ci->Users_model->get_all_active($option);
 
                 //Loop all users and add the leave credits monthly grant.

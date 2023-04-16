@@ -103,13 +103,13 @@
             <?php } ?>
             <div class="form-group">
                 <label for="sched_id" class=" col-md-2"><?php echo lang('current_schedule'); ?></label>
-                <div class=" col-md-4">
+                <div class=" col-md-2">
                     <?php
                     echo form_dropdown("sched_id", $sched_dropdown, $job_info->sched_id, "class='select2 validate-hidden' id='sched_id' ". "'");
                     ?>
                 </div>
                 <label for="date_of_hire" class=" col-md-2"><?php echo lang('date_of_hire'); ?></label>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <?php
                     echo form_input(array(
                         "id" => "date_of_hire",
@@ -120,6 +120,15 @@
                         "autocomplete" => "off"
                     ));
                     ?>
+                </div>
+                <label for="sched_id" class=" col-md-2"><?php echo lang('employment'); ?></label>
+                <div class="col-md-2">
+                    <?= form_dropdown(
+                        "employment_stage", array(
+                        "" => "- ".lang("select")." - ",
+                        "probationary" => lang("probationary"),
+                        "regular" => lang("regular"),
+                    ), get_user_meta($user_id, "employment_stage"), "class='select2 mini'"); ?>
                 </div>
             </div>
             <div class="form-group">

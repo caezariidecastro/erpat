@@ -488,14 +488,23 @@ class Users_model extends Crud_model {
     function get_all_active($options = array()) {
         $users = $this->db->dbprefix('users');
         $job_info = $this->db->dbprefix('team_member_job_info');
+        $users_meta = $this->db->dbprefix('users_meta');
 
         $fields = "";
         $from = "";
 
         $date_hired = get_array_value($options, "date_hired");
         if ($date_hired) {
-            $fields = ", $job_info.date_of_hire as date_hired";
-            $from = " LEFT JOIN $job_info ON $job_info.user_id=$users.id ";
+            $fields .= ", $job_info.date_of_hire as date_hired";
+            $from .= " LEFT JOIN $job_info ON $job_info.user_id=$users.id ";
+        }
+
+        $is_regular = get_array_value($options, "is_regular");
+        if ($is_regular) {
+            $fields .= ", $users_meta.meta_val as employment_stage";
+            $from .= " INNER JOIN $users_meta ON $users_meta.user_id=$users.id 
+                AND $users_meta.meta_key='employment_stage' 
+                AND $users_meta.meta_val='regular' ";
         }
 
         $sql = "SELECT {$users}.id, CONCAT($users.first_name, ' ',$users.last_name) AS user_name $fields
@@ -504,7 +513,7 @@ class Users_model extends Crud_model {
             AND {$users}.terminated=0 
             AND {$users}.resigned=0 
             AND {$users}.status='active' 
-            AND {$users}.user_type='staff'";
+            AND {$users}.user_type='staff' ";
         return $this->db->query($sql)->result();
     }
 }

@@ -986,3 +986,8 @@ $lang["sales_summary"] = "Sales Summary";
 $lang["accounting_summary"] = "Accounting Summary";
 
 $lang["yearly_paid_time_off"] = "Yearly Paid Timeoff";
+
+$lang["employment"] = "Employment";
+$lang["probationary"] = "Probationary";
+$lang["regular"] = "Regular";
+
