@@ -1012,3 +1012,5 @@ $lang["stage_name"] = "Stage Name";
 $lang["add_payment"] = "Add Payment";
 $lang["add_fee"] = "Add Fees";
 $lang["update_status"] = "Update Status";
+
+$lang["assigned_to"] = "Assigned To";

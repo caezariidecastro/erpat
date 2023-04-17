@@ -19,6 +19,7 @@
             source: '<?php echo_uri("hrs/schedule/list") ?>',
             columns: [
                 {title: "<?php echo lang("title"); ?>"},
+                {title: "<?php echo lang("assigned_to"); ?>"},
                 {title: "<?php echo lang("description"); ?>"},
                 {title: "<?php echo lang("monday"); ?>"},
                 {title: "<?php echo lang("tuesday"); ?>"},

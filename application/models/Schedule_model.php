@@ -11,8 +11,11 @@ class Schedule_model extends Crud_model {
 
     function get_details($options = array()) {
         $schedule = $this->db->dbprefix('schedule');
+        $job_info = $this->db->dbprefix('team_member_job_info');
         
+        $fields= "";
         $where= " true ";
+
         $deleted=get_array_value($options, "deleted");
         if($deleted){
             $where .= " AND ($schedule.deleted=0 OR $schedule.deleted=1)";
@@ -24,9 +27,15 @@ class Schedule_model extends Crud_model {
         if($id){
             $where .=" AND $schedule.id=$id";
         }
+
+        $assigned_to=get_array_value($options, "assigned_to");
+        if($assigned_to){
+            $fields .=", (SELECT GROUP_CONCAT($job_info.user_id) FROM $job_info WHERE $job_info.sched_id=$schedule.id) as assigned";
+        }
         
         $sql = "SELECT $schedule.*, 
                 TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS creator_name
+                $fields
             FROM $schedule 
                 LEFT JOIN users ON users.id = $schedule.created_by
             WHERE $where";

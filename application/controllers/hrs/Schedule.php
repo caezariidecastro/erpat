@@ -76,7 +76,8 @@ class Schedule extends MY_Controller
     }
 
     function list() {
-        $list_data = $this->Schedule_model->get_details()->result();
+        $option = array("assigned_to"=>true);
+        $list_data = $this->Schedule_model->get_details($option)->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -124,8 +125,12 @@ class Schedule extends MY_Controller
         $saturday = empty($data->sat) || $data->sat == null ? NULL : $this->dayserialize($data->sat);
         $sunday = empty($data->sun) || $data->sun == null ? NULL : $this->dayserialize($data->sun);
 
+        $head_count = $this->Users_model->get_actual_active($data->assigned);
+        $total_heads = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $head_count . "</span>";
+
         return array(
             $data->title,
+            modal_anchor(get_uri("hrs/team/heads_list"), $total_heads, array("title" => lang('assigned_to'), "data-post-heads" => $data->assigned)),
             nl2br($data->desc),
             $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday,
             convert_date_utc_to_local($data->date_created),
