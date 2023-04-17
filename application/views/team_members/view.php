@@ -60,7 +60,7 @@
             <li><a role="presentation" href="<?php echo_uri("hrs/team_members/projects_info/" . $user_info->id); ?>" data-target="#tab-projects-info"><?php echo lang('projects'); ?></a></li>
         <?php } ?> 
 
-        <?php if ($show_attendance && false) { ?>
+        <?php if ($show_attendance) { ?>
             <li><a role="presentation" href="<?php echo_uri("hrs/team_members/attendance_info/" . $user_info->id); ?>" data-target="#tab-attendance-info"> <?php echo lang('attendance'); ?></a></li>
         <?php } ?>
 

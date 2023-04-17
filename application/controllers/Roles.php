@@ -36,7 +36,7 @@ class Roles extends MY_Controller {
             array("can_delete_leave_application", "Coming Soon", "HR Employee", "Delete Leave Application", null),
 
             array("department", "Coming Soon", "Staffing: Departments", "Enabled", null, true),
-            array("attendance", "Coming Soon", "Staffing: Attendances", "Enabled", null, true),
+            array("attendance", "Coming Soon", "Staffing: Attendances", "Enabled", "dropdown", true),
             array("leave", "Coming Soon", "Staffing: Leave", "Access", "dropdown"),
             array("holiday", "Coming Soon", "Staffing: Holiday", "Enabled", null, true),
             array("deciplinary", "Coming Soon", "Staffing: Deciplinary", "Enabled", null, true),

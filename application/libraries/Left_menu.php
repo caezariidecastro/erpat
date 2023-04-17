@@ -248,7 +248,6 @@ class Left_menu {
             $access_invoice = get_array_value($permissions, "invoice");
             $access_client = get_array_value($permissions, "client");
             $access_lead = get_array_value($permissions, "lead");
-            $access_timecard = get_array_value($permissions, "attendance");
             $access_leave = get_array_value($permissions, "leave");
             $access_estimate = get_array_value($permissions, "estimate");
             $access_items = ($this->ci->login_user->is_admin || $access_invoice || $access_estimate);
@@ -286,10 +285,8 @@ class Left_menu {
             // STAFFING
             
             $sidebar_menu["department"] = array("name" => "submenu_hrm_department", "url" => "hrs/department", "class" => "fa-circle");
-            if ($this->ci->login_user->is_admin || (module_enabled("module_attendance") == "1" && $access_timecard)) {
+            if (module_enabled("module_attendance") && current_has_permit("attendance")) {
                 $sidebar_menu["attendance"] = array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance", "class" => "fa-circle");
-            } else if (module_enabled("module_attendance") == "1") {
-                $sidebar_menu["attendance"] = array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance/attendance_info", "class" => "fa-circle");
             }
             $sidebar_menu["overtime"] = array("name" => "submenu_hrm_overtime", "url" => "hrs/overtime", "class" => "fa-circle");
             $sidebar_menu["schedule"] = array("name" => "submenu_hrm_schedule", "url" => "hrs/schedule", "class" => "fa-circle");

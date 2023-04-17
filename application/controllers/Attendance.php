@@ -8,15 +8,13 @@ class Attendance extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->with_module("module_attendance", true);
-
-        //this module is accessible only to team members 
+        $this->with_permission("attendance", true);
         $this->access_only_team_members();
+        
+        $this->init_permission_checker("attendance");
 
         //we can set ip restiction to access this module. validate user access
         $this->check_allowed_ip();
-
-        //initialize managerial permission
-        $this->init_permission_checker("attendance");
 
         $this->load->model("Attendance_model");
         $this->load->model("Schedule_model");
