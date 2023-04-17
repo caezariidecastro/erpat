@@ -28,7 +28,7 @@
 
     <div class="form-group">
         <label for="title" class=" col-md-2"><?php echo lang('principal'); ?></label>
-        <div class=" col-md-4">
+        <div class=" col-md-10">
             <?php
             echo form_input(array(
                 "id" => "principal_amount",
@@ -41,6 +41,23 @@
                 "autofocus" => true,
                 "data-rule-required" => true,
                 "data-msg-required" => lang("field_required"),
+            ));
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="title" class=" col-md-2"><?php echo lang('interest_rate'); ?></label>
+        <div class=" col-md-4">
+            <?php
+            echo form_input(array(
+                "id" => "interest_rate",
+                "name" => "interest_rate",
+                "value" => $model_info->interest_rate,
+                "type" => "number",
+                "min" => "0",
+                "class" => "form-control",
+                "placeholder" => lang('interest_rate'),
+                "autofocus" => true,
             ));
             ?>
         </div>

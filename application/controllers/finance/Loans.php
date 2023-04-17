@@ -184,14 +184,25 @@ class Loans extends MY_Controller {
             "principal_amount" => "numeric|required",
             "months_to_pay" => "numeric|required",
         ));
+        $principal_amount = $this->input->post('principal_amount');
+        $months_to_pay = $this->input->post('months_to_pay');
+        $interest_rate = $this->input->post('interest_rate');
+
+        $interest_rate = $interest_rate?$interest_rate:0;
+        $interest = (max($interest_rate, 100)/100);
+        $interest_amt = $principal_amount * $interest;
+
+        $min_payment = ($principal_amount+$interest_amt)/$months_to_pay;
 
         $id = $this->input->post('id');
         $data = array(
             "category_id" => $this->input->post('category_id'),
             "borrower_id" => $this->input->post('borrower_id'),
             "cosigner_id" => $this->input->post('cosigner_id'),
-            "principal_amount" => $this->input->post('principal_amount'),
-            "months_topay" => $this->input->post('months_to_pay'),
+            "principal_amount" => $principal_amount,
+            "interest_rate" => $interest_rate,
+            "min_payment" => $min_payment,
+            "months_topay" => $months_to_pay,
             "days_before_due" => $this->input->post('days_before_due'),
             "penalty_rate" => $this->input->post('penalty_rate'),
             "remarks" => $this->input->post('remarks'),
@@ -317,21 +328,30 @@ class Loans extends MY_Controller {
             format_to_date($data->start_payment, true),
             $data->remarks ? $data->remarks : "-",
             get_team_member_profile_link($data->cosigner_id, $data->cosigner_name, array("target" => "_blank")),
-            modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i>", array("class" => "edit", "title" => lang('update_status'), "data-post-id" => $data->id)).modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money fa-fw'></i>", array("class" => "edit", "title" => lang('add_payment'), "data-post-id" => $data->id)).
-            modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-tag fa-fw'></i>", array("class" => "edit", "title" => lang('add_fee'), "data-post-id" => $data->id))
+            modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i>", array("class" => "edit", "title" => lang('update_status'), "data-post-id" => $data->id)).modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money fa-fw'></i>", array("class" => "edit", "title" => lang('add_payment'))).
+            modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-tag fa-fw'></i>", array("class" => "edit", "title" => lang('add_fee')))
             .js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete"), "data-action" => "delete"))
         );
     }
 
     function view_fees() {
         $view_data['loan_info'] = $this->Loans_model->get_details(array("id"=>$this->input->post('id')))->row();
-        $view_data['fees_detail'] = $this->Loan_fees_model->get_details(array("loan_id"=>$this->input->post('id')));
+        $fees_detail = $this->Loan_fees_model->get_details(array("loan_id"=>$this->input->post('id')));
+        foreach($fees_detail as $detail) {
+            $detail->title_link = modal_anchor(get_uri("finance/Loans/modal_form_fee"), $detail->title, array("class" => "edit", "title" => lang('edit_fee'), "data-post-id" => $detail->id));
+        }
+        $view_data['fees_detail'] = $fees_detail;
         $this->load->view('loans/fees_details', $view_data);
     }
 
     function view_payments() {
         $view_data['loan_info'] = $this->Loans_model->get_details(array("id"=>$this->input->post('id')))->row();
-        $view_data['payments_detail'] = $this->Loan_payments_model->get_details(array("loan_id"=>$this->input->post('id')));
+        $payments_detail = $this->Loan_payments_model->get_details(array("loan_id"=>$this->input->post('id')));
+        foreach($payments_detail as $detail) {
+            $detail_id_name = get_id_name($detail->id, date("Y", strtotime($detail->date_paid)).'-P', 4);
+            $detail->title_link = modal_anchor(get_uri("finance/Loans/modal_form_payment"), $detail_id_name, array("class" => "edit", "title" => lang('edit_payment'), "data-post-id" => $detail->id));
+        }
+        $view_data['payments_detail'] = $payments_detail;
         $this->load->view('loans/payments_details', $view_data);
     }
 

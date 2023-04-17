@@ -18,7 +18,7 @@
             echo form_input(array(
                 "id" => "date_paid",
                 "name" => "date_paid",
-                "value" => $model_info->date_paid,
+                "value" => convert_date_format($model_info->date_paid, "d/m/Y"),
                 "class" => "form-control",
                 "placeholder" => lang('date'),
                 "autocomplete" => "off",

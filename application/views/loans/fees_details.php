@@ -21,7 +21,7 @@
                         $total += $fee->amount;
                 ?>
                     <tr>
-                        <td> <?= strtoupper($fee->title) ?></td>
+                        <td> <?= $fee->title_link ?></td>
                         <td><?= to_currency($fee->amount); ?></td>
                     </tr>
                 <?php } ?>

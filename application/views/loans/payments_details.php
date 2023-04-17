@@ -28,7 +28,7 @@
                         }
                 ?>
                     <tr>
-                        <td> <?= format_to_date($payment->date_paid) ?></td>
+                        <td> <?= $payment->title_link ?></td>
                         <td><?= to_currency($payment->amount); ?></td>
                         <td><?= to_currency($penalty); ?></td>
                         <td><?= to_currency($payment->amount+$penalty); ?></td>
