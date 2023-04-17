@@ -13,6 +13,7 @@
             <table class="table dataTable display b-t">
                     <tr>
                         <td>Title</td>
+                        <td>Date</td>
                         <td>Amount</td>
                     </tr>
                 <?php 
@@ -22,11 +23,13 @@
                 ?>
                     <tr>
                         <td> <?= $fee->title_link ?></td>
+                        <td> <?= convert_date_format($fee->updated_at, "d M Y") ?></td>
                         <td><?= to_currency($fee->amount); ?></td>
                     </tr>
                 <?php } ?>
                     <tr>
-                        <td> <?= lang("total"); ?></td>
+                        <td> </td>
+                        <td> </td>
                         <td><strong><?= to_currency($total); ?></strong></td>
                     </tr>
             </table>

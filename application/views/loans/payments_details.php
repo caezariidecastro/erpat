@@ -12,6 +12,7 @@
         <div class="table-responsive mb15">
             <table class="table dataTable display b-t">
                 <tr>
+                    <td>ID</td>
                     <td>Date</td>
                     <td>Amount</td>
                     <td>Penalty</td>
@@ -29,13 +30,15 @@
                 ?>
                     <tr>
                         <td> <?= $payment->title_link ?></td>
+                        <td> <?= convert_date_format($payment->date_paid, "d M Y") ?> </td>
                         <td><?= to_currency($payment->amount); ?></td>
                         <td><?= to_currency($penalty); ?></td>
                         <td><?= to_currency($payment->amount+$penalty); ?></td>
                     </tr>
                 <?php } ?>
                     <tr>
-                        <td class="w200"> <?= lang("total"); ?></td>
+                        <td></td>
+                        <td></td>
                         <td><strong><?= to_currency($total); ?></strong></td>
                         <td><strong><?= to_currency($penalty); ?></strong></td>
                         <td><strong><?= to_currency($total+$penalty); ?></strong></td>

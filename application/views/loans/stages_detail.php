@@ -15,6 +15,7 @@
         <div class="table-responsive mb15">
             <table class="table dataTable display b-t">
                     <tr>
+                        <td>Date</td>
                         <td>Stage</td>
                         <td>Executed by</td>
                         <td>Remarks</td>
@@ -23,6 +24,7 @@
                     foreach($stages_detail as $stage) { 
                 ?>
                     <tr>
+                        <td> <?= convert_date_format($stage->timestamp, "d M Y") ?></td>
                         <td> <?= $stage->stage_name ?></td>
                         <td><?= $stage->executer_name ?></td>
                         <td><?= $stage->remarks ?></td>

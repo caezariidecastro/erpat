@@ -383,7 +383,7 @@ class Loans extends MY_Controller {
         $result = array();
         foreach ($list_data as $data) {
             $result[] = array(
-                get_id_name($data->loan_id, date("Y", strtotime($data->date_applied)).'-T', 4),
+                get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-T', 4),
                 $data->borrower_name,
                 $data->stage_name,
                 $data->remarks,
