@@ -257,7 +257,7 @@ class Attendance_model extends Crud_model {
             $created_by_user = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS created_by_user";
         }
 
-        $sql = "SELECT $attendnace_table.*,  $created_by_user, $users_table.image as created_by_avatar, $users_table.id as user_id, $users_table.job_title as user_job_title $teams_lists 
+        $sql = "SELECT DISTINCT $attendnace_table.id, $attendnace_table.*,  $created_by_user, $users_table.image as created_by_avatar, $users_table.id as user_id, $users_table.job_title as user_job_title $teams_lists 
         FROM $attendnace_table
         LEFT JOIN $users_table ON $users_table.id = $attendnace_table.user_id
         LEFT JOIN $team_table ON $team_table.deleted='0' AND (FIND_IN_SET($attendnace_table.user_id, $team_table.heads) OR FIND_IN_SET($attendnace_table.user_id, $team_table.members))
