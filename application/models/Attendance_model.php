@@ -13,7 +13,9 @@ class Attendance_model extends Crud_model {
     //Clock out all user more than time out.
     function auto_clockout() {
         $now = get_current_utc_time();
+        $autoclockout_list = get_setting("auto_clockin_employee");
         $whitelisted = get_setting('whitelisted_autoclockout');
+        $whitelisted .= $autoclockout_list?",".$autoclockout_list:"";
 
         // Auto clouckout greater than number of clocked hours.
         $trigger = floatval(get_setting('autoclockout_trigger_hour', 12.00));
@@ -26,7 +28,6 @@ class Attendance_model extends Crud_model {
         $this->db->query($sql);
 
         //get list of user in autoclocked out.
-        $autoclockout_list = get_setting("auto_clockin_employee", "");
         $lists = explode(",",  $autoclockout_list);
 
         //loop and clock in who has 1m > greated thant schedule
@@ -37,13 +38,14 @@ class Attendance_model extends Crud_model {
 
     function auto_clocked_in() {
         //get list of user in autoclocked in.
-        $autoclockin_list = get_setting("auto_clockin_employee", "none");
+        $autoclockin_list = get_setting("auto_clockin_employee");
         $lists = explode(",",  $autoclockin_list);
 
         //loop and clock in who has 1m > greated thant schedule
         foreach($lists as $user_id) {
             // check if user have attendance today. will not work if detected in out greater than 1 sec.
-            if( $this->current_clock_in_record($user_id) === false && convert_seconds_to_hour_decimal( $this->get_today_clocked_duration($user_id)) <= 0  ) {
+
+            if( !$this->current_clock_in_record($user_id) && $this->get_today_clocked_duration($user_id) == 0  ) {
                 $this->clock_in_by_schedule($user_id);
             }
         }
@@ -80,7 +82,7 @@ class Attendance_model extends Crud_model {
                 $data = array(
                     "sched_id" => $sched_id,
                     "in_time" => $scheduled_clocked_in,
-                    "status" => "incomplete",
+                    "status" => "pending",
                     "user_id" => $user_id
                 );
 
@@ -136,7 +138,7 @@ class Attendance_model extends Crud_model {
         FROM $attendnace_table
         WHERE $attendnace_table.deleted=0 AND $attendnace_table.user_id=$user_id AND $attendnace_table.out_time IS NULL";
         $result = $this->db->query($sql);
-        if ($result->num_rows()) {
+        if($result->num_rows()) {
             return $result->row();
         } else {
             return false;
@@ -145,13 +147,18 @@ class Attendance_model extends Crud_model {
 
     function get_today_clocked_duration($user_id) {
         $attendnace_table = $this->db->dbprefix('attendance');
-        $now_utc = get_current_utc_time('Y-m-d');
-        $sql = "SELECT IFNULL( SUM(TIME_TO_SEC(TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time))), 0) total_sec
+        $now_utc = get_current_utc_time();
+        $date_utc = get_current_utc_time('Y-m-d');
+        $sql = "SELECT TIME_TO_SEC(
+                IF($attendnace_table.out_time, 
+                    TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time),
+                    TIMEDIFF('$now_utc',$attendnace_table.in_time)
+                )
+            ) total_sec
         FROM $attendnace_table 
         WHERE $attendnace_table.deleted=0 
-            AND $attendnace_table.status='pending' 
             AND $attendnace_table.user_id=$user_id
-            AND DATE($attendnace_table.in_time) = '$now_utc'";
+            AND DATE($attendnace_table.in_time) = '$date_utc'";
         $result = $this->db->query($sql);
 
         if ($result->num_rows()) {
@@ -247,7 +254,7 @@ class Attendance_model extends Crud_model {
 
         $only_clocked_in_members = get_array_value($options, "only_clocked_in_members");
         if ($only_clocked_in_members) {
-            $where .= " AND $attendnace_table.status = 'incomplete'";
+            $where .= " AND $attendnace_table.out_time IS NULL";
         }
 
         $teams_lists = ", (SELECT GROUP_CONCAT($team_table.title) FROM $team_table WHERE deleted='0' AND (FIND_IN_SET($attendnace_table.user_id, $team_table.heads) OR FIND_IN_SET($attendnace_table.user_id, $team_table.members)) ) as team_list";
@@ -337,7 +344,7 @@ class Attendance_model extends Crud_model {
 
         $clocked_in = "SELECT $attendnace_table.user_id
         FROM $attendnace_table
-        WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='incomplete'
+        WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NULL
         GROUP BY $attendnace_table.user_id";
         $clocked_in_result = $this->db->query($clocked_in);
 
@@ -377,7 +384,7 @@ class Attendance_model extends Crud_model {
 
         $sql = "SELECT DATE_FORMAT($attendnace_table.in_time,'%d') AS day, SUM(TIME_TO_SEC(TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time))) total_sec
                 FROM $attendnace_table 
-                WHERE $attendnace_table.deleted=0 AND $attendnace_table.status!='incomplete' $where
+                WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NOT NULL $where
                 GROUP BY DATE($attendnace_table.in_time)";
         return $this->db->query($sql);
     }
@@ -410,7 +417,7 @@ class Attendance_model extends Crud_model {
 
         $attendance_sql = "SELECT  SUM(TIME_TO_SEC(TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time))) total_sec
                 FROM $attendnace_table 
-                WHERE $attendnace_table.deleted=0 AND $attendnace_table.status!='incomplete' $attendance_where";
+                WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NOT NULL $attendance_where";
         $info->timecard_total = $this->db->query($attendance_sql)->row()->total_sec;
 
         $timesheet_sql = "SELECT (SUM(TIME_TO_SEC(TIMEDIFF($timesheet_table.end_time,$timesheet_table.start_time))) + SUM((ROUND(($timesheet_table.hours * 60), 0)) * 60)) total_sec
@@ -450,7 +457,7 @@ class Attendance_model extends Crud_model {
 
         $sql = "SELECT $member_name, $users_table.last_online, $users_table.image, $users_table.id, $users_table.job_title
         FROM $users_table
-        WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' AND $users_table.id NOT IN (SELECT user_id from $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='incomplete') $where
+        WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' AND $users_table.id NOT IN (SELECT $attendnace_table.user_id FROM $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NULL) $where
         ORDER BY $users_table.first_name DESC";
         return $this->db->query($sql);
     }
@@ -479,7 +486,7 @@ class Attendance_model extends Crud_model {
 
         $sql = "SELECT $member_name, $users_table.image, $users_table.id, attendance_table.id AS attendance_id, attendance_table.in_time
         FROM $users_table
-        LEFT JOIN (SELECT user_id, id, in_time FROM $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='incomplete') AS attendance_table ON attendance_table.user_id=$users_table.id
+        LEFT JOIN (SELECT user_id, id, in_time FROM $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NULL) AS attendance_table ON attendance_table.user_id=$users_table.id
         WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' $where";
         return $this->db->query($sql);
     }

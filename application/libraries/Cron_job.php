@@ -98,7 +98,7 @@ class Cron_job {
 
     private function _is_minutely_job_runnable() {
         $last_minutely_job_time = get_setting('last_minutely_job_time');
-        if ($last_minutely_job_time == "" || ($this->current_time > ($last_minutely_job_time * 1 + 60))) {
+        if ($last_minutely_job_time == "" || ($this->current_time > ($last_minutely_job_time + 60))) {
             return true;
         }
     }
