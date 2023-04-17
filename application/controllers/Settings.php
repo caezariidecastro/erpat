@@ -607,7 +607,6 @@ class Settings extends MY_Controller {
     }
 
     function module_list() {
-        //TO REMOVE: 'overtime' => 'Human Resource',
         $list_data = array(
             //DEFAULT
            'timeline' => 'General',
@@ -737,7 +736,6 @@ class Settings extends MY_Controller {
     }
 
     function save_module_settings() {
-        //to remove: "module_overtime",  
 
         $settings = array(
             //DEFAULT

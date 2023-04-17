@@ -13,7 +13,6 @@ class Cron_job {
         $this->today = get_today_date();
         $this->ci = get_instance();
         $this->ci->load->model("Attendance_model");
-        $this->ci->load->model("Overtime_model");
         $this->ci->load->model("Tickets_model");
         $this->ci->load->model("Invoices_model");
         $this->ci->load->model("Invoice_items_model");
@@ -88,7 +87,6 @@ class Cron_job {
             //Run auto clockout if attendance is greater than 10hrs with note Sytem Logout.
             if(get_setting('auto_clockout')) {
                 $this->ci->Attendance_model->auto_clockout();
-                $this->ci->Overtime_model->auto_clockout();
             }
             if(get_setting('auto_clockin_employee')) {
                 $this->ci->Attendance_model->auto_clocked_in();

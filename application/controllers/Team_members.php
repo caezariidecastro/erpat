@@ -928,7 +928,6 @@ class Team_members extends MY_Controller {
 
                 //check module availability
                 $view_data['show_attendance'] = $show_attendance && get_setting("module_attendance") ? true : false;
-                $view_data['show_overtime'] = $show_attendance && get_setting("module_overtime") ? true : false;
                 $view_data['show_leave'] = $show_leave && get_setting("module_leave") ? true : false;
 
 
@@ -1440,30 +1439,6 @@ class Team_members extends MY_Controller {
     function attendance_summary($user_id) {
         $view_data["user_id"] = $user_id;
         $this->load->view("team_members/attendance_summary", $view_data);
-    }
-
-    //show overtime list of a team member
-    function overtime_info($user_id) {
-        if ($user_id) {
-            $view_data['user_id'] = $user_id;
-            $this->load->view("team_members/overtime_info", $view_data);
-        }
-    }
-
-    //show weekly overtime list of a team member
-    function weekly_overtime() {
-        $this->load->view("team_members/weekly_overtime");
-    }
-
-    //show weekly overtime list of a team member
-    function custom_range_overtime() {
-        $this->load->view("team_members/custom_range_overtime");
-    }
-
-    //show overtime summary of a team member
-    function overtime_summary($user_id) {
-        $view_data["user_id"] = $user_id;
-        $this->load->view("team_members/overtime_summary", $view_data);
     }
 
     //show leave list of a team member

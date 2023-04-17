@@ -140,7 +140,7 @@ class MY_Controller extends CI_Controller {
                 $module_permission = get_array_value($this->login_user->permissions, $group . "_specific");
                 $permissions = explode(",", $module_permission);
 
-                $specifics = array("leave", "attendance", "overtime", "team_member_update_permission", "timesheet_manage_permission", "message_permission");
+                $specifics = array("leave", "attendance", "team_member_update_permission", "timesheet_manage_permission", "message_permission");
 
                 //check the accessable users list
                 if ( in_array($group, $specifics) ) {
