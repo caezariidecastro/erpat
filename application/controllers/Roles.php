@@ -63,13 +63,14 @@ class Roles extends MY_Controller {
             array("vehicle", "Coming Soon", "Logistics: Vehicles", "Enabled", null, true),
             array("driver", "Coming Soon", "Logistics: Drivers", "Enabled", null, true),
 
-            //ACOUNTING
+            //FINANCE
             array("accounting_summary", "Coming Soon", "Finance: Summary", "Enabled", null),
             array("balance_sheet", "Coming Soon", "Finance: Balance Sheet", "Enabled", null),
             array("account", "Coming Soon", "Finance: Accounts", "Enabled", null, true),
             array("transfer", "Coming Soon", "Finance: Transfers", "Enabled", null, true),
             array("payment", "Coming Soon", "Finance: Payments", "Enabled", null, true),
             array("expense", "Coming Soon", "Finance: Expenses", "Enabled", null, true),
+            array("loan", "Coming Soon", "Finance: Loans", "Enabled", null, true),
             array("tax", "Coming Soon", "Finance: Taxes", "Enabled", null, true),
 
             array("can_use_payhp", "Coming Soon", "Finance: PayHP", "Enabled", null),

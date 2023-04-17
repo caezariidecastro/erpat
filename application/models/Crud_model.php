@@ -231,16 +231,19 @@ class Crud_model extends CI_Model {
         return $success;
     }
 
-    function get_dropdown_list($option_fields = array(), $key = "id", $where = array()) {
+    function get_dropdown_list($option_fields = array(), $key = "id", $where = array(), $add = false) {
         $where["deleted"] = 0;
         $list_data = $this->get_all_where($where, 0, 0, $option_fields[0])->result();
         $result = array();
         foreach ($list_data as $data) {
             $text = "";
             foreach ($option_fields as $option) {
-                $text .= $data->$option . " ";
+                $text .= $data->$option;
+                if($add == "loan") {
+                    $text = get_id_name($text, date("Y", strtotime($data->date_applied)).'-L', 4);
+                }
             }
-            $result[$data->$key] = $text;
+            $result[$data->$key] = $text . " ";
         }
         return $result;
     }
