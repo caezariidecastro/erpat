@@ -60,7 +60,7 @@ class Brands extends MY_Controller {
         );
 
         if(!$id){
-            $brand_data["created_on"] = date('Y-m-d H:i:s');
+            $brand_data["created_on"] = get_current_utc_time();
             $brand_data["created_by"] = $this->login_user->id;
         }
 

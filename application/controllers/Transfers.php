@@ -106,7 +106,7 @@ class Transfers extends MY_Controller {
 
         if(!$id){
             $transfer_data["reference_number"] = $this->input->post('reference_number');
-            $transfer_data["created_on"] = date('Y-m-d H:i:s');
+            $transfer_data["created_on"] = get_current_utc_time();
             $transfer_data["created_by"] = $this->login_user->id;
         }
 

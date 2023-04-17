@@ -56,7 +56,7 @@ class Accounts extends MY_Controller {
         );
 
         if(!$id){
-            $account_data["created_on"] = date('Y-m-d H:i:s');
+            $account_data["created_on"] = get_current_utc_time();
             $account_data["created_by"] = $this->login_user->id;
         }
 

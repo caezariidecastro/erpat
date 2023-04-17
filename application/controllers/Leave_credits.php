@@ -38,7 +38,7 @@ class Leave_credits extends MY_Controller {
         );
 
         if(!$id){
-            $data["date_created"] = date('Y-m-d H:i:s');
+            $data["date_created"] = get_current_utc_time();
             $data["created_by"] = $this->login_user->id;
         }
 

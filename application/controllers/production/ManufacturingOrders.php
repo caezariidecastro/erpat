@@ -110,7 +110,7 @@ class ManufacturingOrders extends MY_Controller {
         );
 
         if(!$id){
-            $production_data["created_on"] = date('Y-m-d H:i:s');
+            $production_data["created_on"] = get_current_utc_time();
             $production_data["created_by"] = $this->login_user->id;
         }
 

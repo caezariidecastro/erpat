@@ -56,7 +56,7 @@ class Holidays extends MY_Controller {
         );
 
         if(!$id){
-            $holiday_data["created_on"] = date('Y-m-d H:i:s');
+            $holiday_data["created_on"] = get_current_utc_time();
             $holiday_data["created_by"] = $this->login_user->id;
         }
 

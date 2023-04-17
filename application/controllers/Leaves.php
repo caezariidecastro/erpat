@@ -444,7 +444,7 @@ class Leaves extends MY_Controller {
                     "counts" => $applicatoin_info->total_days,
                     "action" => 'credit',
                     "remarks" => $leave_type[0]->title." - Approval",
-                    "date_created" => date('Y-m-d H:i:s'),
+                    "date_created" => get_current_utc_time(),
                     "created_by" => $this->login_user->id,
                 );
                 $this->Leave_credits_model->save($credit_data, null);

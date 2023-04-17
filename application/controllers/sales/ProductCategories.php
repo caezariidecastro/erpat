@@ -48,7 +48,7 @@ class ProductCategories extends MY_Controller {
         );
 
         if(!$id){
-            $contribution_data["created_on"] = date('Y-m-d H:i:s');
+            $contribution_data["created_on"] = get_current_utc_time();
             $contribution_data["created_by"] = $this->login_user->id;
         }
 

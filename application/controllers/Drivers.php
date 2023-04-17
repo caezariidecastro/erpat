@@ -83,7 +83,7 @@ class Drivers extends MY_Controller {
 
             $driver_data["disable_login"] = 1;
             $driver_data["password"] = password_hash($password, PASSWORD_DEFAULT);
-            $driver_data["created_at"] = date('Y-m-d H:i:s');
+            $driver_data["created_at"] = get_current_utc_time();
             $driver_data["created_by"] = $this->login_user->id;
 
             $this->email($first_name, $last_name, $email, $password);

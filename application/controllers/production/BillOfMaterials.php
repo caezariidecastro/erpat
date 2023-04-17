@@ -87,7 +87,7 @@ class BillOfMaterials extends MY_Controller {
         );
 
         if(!$id){
-            $bill_of_material_data["created_on"] = date('Y-m-d H:i:s');
+            $bill_of_material_data["created_on"] = get_current_utc_time();
             $bill_of_material_data["created_by"] = $this->login_user->id;
 
             if($this->Bill_of_materials_model->has_existing_bill_of_material($item_id)){
@@ -207,7 +207,7 @@ class BillOfMaterials extends MY_Controller {
             "material_inventory_id" => $material_inventory_id,
             "bill_of_material_id" => $bill_of_material_id,
             "quantity" => $this->input->post('quantity'),
-            "created_on" => date('Y-m-d H:i:s'),
+            "created_on" => get_current_utc_time(),
             "created_by" =>  $this->login_user->id,
         );
 

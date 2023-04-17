@@ -92,7 +92,7 @@ class PurchaseOrders extends MY_Controller {
         );
 
         if(!$id){
-            $purchase_order_data["created_on"] = date('Y-m-d H:i:s');
+            $purchase_order_data["created_on"] = get_current_utc_time();
             $purchase_order_data["created_by"] = $this->login_user->id;
         }
 

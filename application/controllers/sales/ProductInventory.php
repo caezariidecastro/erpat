@@ -135,7 +135,7 @@ class ProductInventory extends MY_Controller {
             "cost_price" => $item->cost_price,
             "selling_price" => $item->selling_price,
             "vendor" => $item->vendor,
-            "created_on" => date('Y-m-d H:i:s'),
+            "created_on" => get_current_utc_time(),
             "created_by" => $this->login_user->id
         );
 
@@ -170,7 +170,7 @@ class ProductInventory extends MY_Controller {
             "warehouse" => $warehouse_id,
             "stock" => $this->input->post('quantity'),
             "inventory_id" => $inventory_id,
-            "created_on" => date('Y-m-d H:i:s'),
+            "created_on" => get_current_utc_time(),
             "created_by" => $this->login_user->id
         );
 

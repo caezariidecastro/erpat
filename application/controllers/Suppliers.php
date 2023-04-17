@@ -107,7 +107,7 @@ class Suppliers extends MY_Controller {
         );
 
         if(!$id){
-            $vendor_data["created_on"] = date('Y-m-d H:i:s');
+            $vendor_data["created_on"] = get_current_utc_time();
             $vendor_data["created_by"] = $this->login_user->id;
         }
 
@@ -198,7 +198,7 @@ class Suppliers extends MY_Controller {
 
             $user_data["disable_login"] = "1";
             $user_data["password"] = $password;
-            $user_data["created_at"] = date('Y-m-d H:i:s');
+            $user_data["created_at"] = get_current_utc_time();
             $user_data["created_by"] = $this->login_user->id;
 
             if ($this->input->post('email_login_details')) {
