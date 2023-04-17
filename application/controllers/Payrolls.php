@@ -1259,8 +1259,8 @@ class Payrolls extends MY_Controller {
             "id" => $payslip->payroll
         ))->row();
 
-        $payslip->pay_date = format_to_custom($payroll->pay_date, "F d, Y");
-        $payslip->pay_period= format_to_custom($payroll->start_date, "F d-").format_to_custom($payroll->end_date, "d Y");
+        $payslip->pay_date = convert_date_format($payroll->pay_date, "F d, Y");
+        $payslip->pay_period= convert_date_format($payroll->start_date, "F d-").convert_date_format($payroll->end_date, "d Y");
 
         $user = $this->Users_model->get_details(array(
             "id" => $payslip->user
@@ -1302,8 +1302,8 @@ class Payrolls extends MY_Controller {
             $payroll = $this->Payrolls_model->get_details(array(
                 "id" => $payslip->payroll
             ))->row();
-            $payslip->pay_date = format_to_custom($payroll->pay_date, "F d, Y");
-            $payslip->pay_period= format_to_custom($payroll->start_date, "F d-").format_to_custom($payroll->end_date, "d Y");
+            $payslip->pay_date = convert_date_format($payroll->pay_date, "F d, Y");
+            $payslip->pay_period= convert_date_format($payroll->start_date, "F d-").convert_date_format($payroll->end_date, "d Y");
     
             $user = $this->Users_model->get_details(array(
                 "id" => $payslip->user

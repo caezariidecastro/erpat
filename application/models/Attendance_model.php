@@ -57,7 +57,7 @@ class Attendance_model extends Crud_model {
 
         // get the local time and day name.
         $current_local_time = get_my_local_time();
-        $day_name = format_to_custom($current_local_time, 'D', false, true);
+        $day_name = convert_date_format($current_local_time, 'D');
         $sched_date_in = convert_date_format($current_local_time, 'Y-m-d');
 
         // get the current user schedule by id.
@@ -97,7 +97,7 @@ class Attendance_model extends Crud_model {
         
         // get the local time and day name.
         $current_local_time = get_my_local_time();
-        $day_name = format_to_custom($current_local_time, 'D', false, true);
+        $day_name = convert_date_format($current_local_time, 'D');
         $sched_date_out = convert_date_format($current_local_time, 'Y-m-d');
 
         // get the current sched id.

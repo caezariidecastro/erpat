@@ -174,7 +174,7 @@ class BioMeet {
                 $sched_in = convert_date_utc_to_local($data->in_time);
 
                 //Second! Get the current day schedule instance based on in time.
-                $day_name = format_to_custom($sched_day_in, 'D', false, true);  //local
+                $day_name = convert_date_format($sched_day_in, 'D');  //local
                 if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
                     $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
                     $sched_in = $sched_day_in .' '. $sched_time; //local
