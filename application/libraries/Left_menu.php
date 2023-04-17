@@ -337,6 +337,9 @@ class Left_menu {
             if( module_enabled("module_payroll") && current_has_permit("payroll") ) {
                 $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "Payrolls", "class" => "fa-circle");
             }
+            if( module_enabled("module_loan") && current_has_permit("loan") ) {
+                $sidebar_menu["loans"] = array("name" => "loans", "url" => "finance/Loans", "class" => "fa-circle");
+            }
             if( current_has_permit("tax") ) {
                 $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
             }
