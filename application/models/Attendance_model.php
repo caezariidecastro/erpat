@@ -118,20 +118,25 @@ class Attendance_model extends Crud_model {
             $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
             $scheduled_clocked_out = $sched_date_out .' '. $sched_time; //local
 
+            //Actual time attendance.
+            $in_time = convert_date_utc_to_local($attendance->in_time);
+
             //Add 1 day if in_time is PM and Current is AM
-            $from_time = convert_date_format(convert_date_utc_to_local($attendance->in_time), 'a');
+            $from_time = convert_date_format($in_time, 'a');
             $to_time = convert_date_format($scheduled_clocked_out, 'a');
             if($from_time == "pm" && $to_time == "am") {
-                $sched_date_out = add_period_to_date($sched_date_out, 1); //add one day
+                $in_date = convert_date_format($in_time, 'Y-m-d');
+                $sched_date_out = add_period_to_date($in_date, 1); //add one day
                 $scheduled_clocked_out = $sched_date_out .' '. $sched_time; //local
             }
 
             $count_start = strtotime($scheduled_clocked_out);
             $count_end = strtotime($current_local_time);
             $time_diff_sec = max(($count_end-$count_start), 0);
+            log_message("error", $time_diff_sec);
             if($time_diff_sec > 0) { 
                 $data = array(
-                    "out_time" => $scheduled_clocked_out,
+                    "out_time" => convert_date_local_to_utc($scheduled_clocked_out),
                     "status" => "pending",
                 );
                 $this->save($data, $attendance->id);
