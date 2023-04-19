@@ -461,7 +461,8 @@ $lang["restore_team_member"] = "Restore employee";
 $lang["record_cannot_be_restored"] = "The record is in use, you can't restore the record!";
 $lang["record_restored"] = "The record has been restored.";
 
-$lang["edit_employee"] = "Edit";
+$lang["edit_employee"] = "Edit User";
+$lang["update_schedule"] = "Update Sched";
 
 // Schedule
 $lang["add_sched"] = "Add Schedule";
@@ -1014,3 +1015,5 @@ $lang["add_fee"] = "Add Fees";
 $lang["update_status"] = "Update Status";
 
 $lang["assigned_to"] = "Assigned To";
+
+$lang["restore"] = "Restore";

@@ -60,7 +60,7 @@
                 {title: "<?php echo lang("schedule") ?>"},
                 {title: "<?php echo lang("last_online") ?>", "class": "w10p"}
                 <?php echo $custom_field_headers; ?>,
-                {visible: visibleDelete, title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
+                {visible: visibleDelete, title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option w100"}
             ],
             printColumns: combineCustomFieldsColumns([0, 1, 2, 3, 4], '<?php echo $custom_field_headers; ?>'),
             xlsColumns: combineCustomFieldsColumns([0, 1, 2, 3, 4], '<?php echo $custom_field_headers; ?>'),

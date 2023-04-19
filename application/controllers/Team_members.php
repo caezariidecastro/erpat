@@ -520,8 +520,6 @@ class Team_members extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['schedule_dropdown'] = $this->_get_schedule_dropdown();
-
         $view_data['role_dropdown'] = $this->_get_roles_dropdown();
         
         $view_data['status_dropdown'] = $this->get_all_usertypes(false);
@@ -550,6 +548,51 @@ class Team_members extends MY_Controller {
         }  
 
         $this->load->view('team_members/edit_modal_form', $view_data);
+    }
+
+    function sched_modal_form() {
+        $this->with_permission("staff_update", true);
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $view_data['schedule_dropdown'] = $this->_get_schedule_dropdown();
+
+        $id = $this->input->post('id');
+        $options = array(
+            "id" => $id,
+        );
+        $view_data['model_info'] = $this->Users_model->get_details($options)->row();
+
+        $this->load->view('team_members/sched_modal_form', $view_data);
+    }
+
+    function update_schedule() {
+        if( !$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
+			redirect("forbidden");
+		}
+        $this->with_permission("staff_update", true);
+
+        validate_submitted_data(array(
+            "user_id" => "required|numeric"
+        ));
+
+        $user_id = $this->input->post('user_id');
+        $job_data = array(
+            "user_id" => $user_id,
+            "sched_id" => $this->input->post('schedule_id'),
+        );
+
+        if ($this->Users_model->save_job_info($job_data)) {
+            $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
+            $data = $this->Users_model->get_details(array("id" => $user_id, "custom_fields" => $custom_fields))->row();
+            $data = $this->_make_row($data, $custom_fields);
+
+            echo json_encode(array("success" => true, "id" => $user_id, "data" => $data, 'message' => lang('record_updated')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
     }
 
     /* set rfid */
@@ -658,12 +701,6 @@ class Team_members extends MY_Controller {
         $data = $this->_make_row($data, $custom_fields);
 
         if ($user_info_updated) {
-            $job_sched_data = array(
-                "user_id" => $user_id,
-                "sched_id" => $this->input->post('schedule')
-            );
-            $this->Users_model->save_job_info($job_sched_data);
-
             echo json_encode(array("success" => true, "id" => $user_id, "data" => $data, 'message' => lang('record_updated')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
@@ -811,30 +848,32 @@ class Team_members extends MY_Controller {
         }
 
         $action_btn = "";
-        if ( $this->with_permission("staff_update") && $this->login_user->id != $data->id && get_array_value($options, "status") != "deleted") {
-            $action_btn = modal_anchor(get_uri("hrs/team_members/edit_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_employee'), "data-post-id" => $data->id));
-            $action_btn .= modal_anchor(get_uri("hrs/team_members/rfid_modal"), "<i class='fa fa-barcode'></i>", array("class" => "edit", "title" => lang('set_rfid'), "data-post-id" => $data->id));
+
+        if ( $this->with_permission("staff_update") && get_array_value($options, "status") != "deleted") {
+            
+            $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/edit_modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit_employee'), array("title" => lang('edit_employee'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
+
+            $sched = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/sched_modal_form"), "<i class='fa fa-clock-o'></i> " . lang('update_schedule'), array("title" => lang('update_schedule'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
+
+            $rfid = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/rfid_modal"), "<i class='fa fa-barcode'></i> " . lang('set_rfid'), array("class" => "edit", "title" => lang('set_rfid'), "data-post-id" => $data->id)). '</li>';
         }
 
-        if ( $this->with_permission("staff_delete") && $this->login_user->id != $data->id) {
+        if ( $this->with_permission("staff_delete") ) {
             if(get_array_value($options, "status") != "deleted") {
-                $action_btn .= js_anchor("<i class='fa fa-times fa-fw'></i>", 
-                    array(
-                        'title' => lang('delete_team_member'), 
-                        "class" => "delete user-status-confirm", 
-                        "data-id" => $data->id, 
-                        "data-action-url" => get_uri("hrs/team_members/delete"), 
-                        "data-action" => "delete-confirmation"));
+                $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_team_member'), "class" => "delete user-status-confirm", "data-id" => $data->id, "data-action-url" => get_uri("hrs/team_members/delete"), "data-action" => "delete-confirmation")) . '</li>';
             } else {
-                $action_btn .= js_anchor("<i class='fa fa-refresh fa-fw'></i>", 
-                    array(
-                        'title' => lang('restore_team_member'), 
-                        "class" => "restore success user-status-confirm", 
-                        "data-reason" => "restore",
-                        "data-id" => $data->id, 
-                        "data-action-url" => get_uri("hrs/team_members/restore"), 
-                        "data-action" => "delete-confirmation"));
+                $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-check fa-fw'></i>" . lang('restore'), array('title' => lang('restore_team_member'), "class" => "restore success user-status-confirm", "data-id" => $data->id, "data-action-url" => get_uri("hrs/team_members/restore"), "data-action" => "delete-confirmation")) . '</li>';
             }
+        }
+
+        if ( $this->login_user->id != $data->id) {
+            $action_btn = '<span class="dropdown inline-block">
+                <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                    <i class="fa fa-cogs"></i>&nbsp;
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">' . $edit . $sched . $rfid . $delete . '</ul>
+            </span>';
         }
 
         if($this->login_user->is_admin || (!$this->login_user->is_admin && !$data->is_admin)) {
