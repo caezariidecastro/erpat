@@ -47,14 +47,14 @@
     <?php 
     $days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
     foreach($days as $day) { ?>
-        <div class="clearfix">
+        <div class="clearfix" style="padding: 0 10px 0 20px">
             <?php $hours = $day."_hours"; ?> 
             <label for="<?= $day ?>_enable" class="col-sm-12"><strong><?= lang(get_day_name($day)); ?> (<?= $model_info->$hours ?>)</strong></label>
 
             <?php 
             $trackings = ['', '_first', '_lunch', '_second'];
             foreach($trackings as $tracking) {?>
-                <div class="col-md-4 col-sm-4 form-group" style="transform: scale(1.2);">
+                <div class="col-md-3 col-sm-3 form-group" style="transform: scale(1.2);">
                     <div>
                         <?php
                         $enabled = $day."_enable".$tracking;
@@ -125,5 +125,7 @@
         setTimePicker("<?= $timepicks ?>");
 
         $("#name").focus();
+
+        $(".modal-dialog").addClass("modal-lg");
     });
 </script>
