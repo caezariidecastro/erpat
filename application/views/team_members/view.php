@@ -36,7 +36,7 @@
             <li><a  role="presentation" href="<?php echo_uri("hrs/team_members/deductions/" . $user_info->id); ?>" data-target="#tab-deductions-info"> <?php echo lang('deductions'); ?></a></li>
         <?php } ?>
 
-        <?php if ($payroll_enabled) { ?>
+        <?php if ($show_account_settings) { ?>
             <li><a  role="presentation" href="<?php echo_uri("hrs/team_members/job_info/" . $user_info->id); ?>" data-target="#tab-job-info"> <?php echo lang('job_info'); ?></a></li>
         <?php } ?>
 
