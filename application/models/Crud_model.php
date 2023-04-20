@@ -238,7 +238,7 @@ class Crud_model extends CI_Model {
         foreach ($list_data as $data) {
             $text = "";
             foreach ($option_fields as $option) {
-                $text .= $data->$option;
+                $text .= $data->$option." ";
                 if($add == "loan") {
                     $text = get_id_name($text, date("Y", strtotime($data->date_applied)).'-L', 4);
                 }

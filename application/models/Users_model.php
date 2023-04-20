@@ -367,9 +367,11 @@ class Users_model extends Crud_model {
     function user_group_names($user_ids = "") {
         $users_table = $this->db->dbprefix('users');
 
-        $sql = "SELECT GROUP_CONCAT(' ', $users_table.first_name, ' ', $users_table.last_name) AS user_group_name
-        FROM $users_table
-        WHERE FIND_IN_SET($users_table.id, '$user_ids')";
+        $fullname = $this->get_fullname_struct("user_group_name");
+
+        $sql = "SELECT $fullname
+            FROM $users_table
+            WHERE FIND_IN_SET($users_table.id, '$user_ids')";
         return $this->db->query($sql)->row();
     }
 
@@ -401,12 +403,9 @@ class Users_model extends Crud_model {
             $where .= " AND $users_table.id!=$exclude_user_id";
         }
 
-        $member_name = "CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name";
-        if(get_setting('name_format') == "lastfirst") {
-            $member_name = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS member_name";
-        }
+        $fullname = $this->get_fullname_struct("member_name");
 
-        $sql = "SELECT $member_name, $users_table.last_online, $users_table.id, $users_table.image, $users_table.job_title, $users_table.user_type, $clients_table.company_name
+        $sql = "SELECT $fullname, $users_table.last_online, $users_table.id, $users_table.image, $users_table.job_title, $users_table.user_type, $clients_table.company_name
         FROM $users_table
         LEFT JOIN $clients_table ON $clients_table.id = $users_table.client_id AND $clients_table.deleted=0
         WHERE $users_table.deleted=0 $where
@@ -424,14 +423,13 @@ class Users_model extends Crud_model {
 
     function get_team_members_for_select2(){
         $users_table = $this->db->dbprefix('users');
-        $user_name = "TRIM(CONCAT($users_table.first_name, ' ', $users_table.last_name)) AS user_name";
-        if(get_setting('name_format') == "lastfirst") {
-            $user_name = "TRIM(CONCAT($users_table.last_name, ', ', $users_table.first_name)) AS user_name";
-        }
-        $sql = "SELECT $users_table.id, $user_name
-        FROM $users_table
-        WHERE $users_table.deleted=0 AND $users_table.user_type='staff'
-        ORDER BY $users_table.first_name";
+        
+        $fullname = $this->get_fullname_struct();
+
+        $sql = "SELECT $users_table.id, $fullname
+            FROM $users_table
+            WHERE $users_table.deleted=0 AND $users_table.user_type='staff'
+                ORDER BY $users_table.first_name";
         return $this->db->query($sql);
     }
 
@@ -507,7 +505,9 @@ class Users_model extends Crud_model {
                 AND $users_meta.meta_val='regular' ";
         }
 
-        $sql = "SELECT {$users}.id, CONCAT($users.first_name, ' ',$users.last_name) AS user_name $fields
+        $fullname = $this->get_fullname_struct();
+
+        $sql = "SELECT {$users}.id, $fullname $fields
         FROM $users $from
         WHERE {$users}.deleted=0 
             AND {$users}.terminated=0 
@@ -515,5 +515,16 @@ class Users_model extends Crud_model {
             AND {$users}.status='active' 
             AND {$users}.user_type='staff' ";
         return $this->db->query($sql)->result();
+    }
+
+    protected function get_fullname_struct($field_name = "user_name") {
+        $users = $this->db->dbprefix('users');
+
+        $fullname = "CONCAT($users.first_name, ' ', $users.last_name) AS $field_name";
+        if(get_setting('name_format') == "lastfirst") {
+            $fullname = "CONCAT($users.last_name, ', ', $users.first_name) AS $field_name";
+        }
+
+        return $fullname;
     }
 }
