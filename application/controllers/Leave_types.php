@@ -34,8 +34,10 @@ class Leave_types extends MY_Controller {
         $id = $this->input->post('id');
         $data = array(
             "title" => $this->input->post('title'),
-            "status" => $this->input->post('status'),
             "description" => $this->input->post('description'),
+            "required_credits" => $this->input->post('required_credits'),
+            "paid" => $this->input->post('paid'),
+            "status" => $this->input->post('status'),
             "color" => $this->input->post('color')
         );
         $save_id = $this->Leave_types_model->save($data, $id);
@@ -90,6 +92,8 @@ class Leave_types extends MY_Controller {
         return array(
             "<span style='background-color:" . $data->color . "' class='color-tag pull-left'></span>" . $data->title,
             $data->description ? $data->description : "-",
+            $data->required_credits?"Yes":"No",
+            $data->paid?"Yes":"No",
             lang($data->status),
             modal_anchor(get_uri("leaves/modal_form_type"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_leave_type'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_leave_type'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("leave_types/delete"), "data-action" => "delete"))

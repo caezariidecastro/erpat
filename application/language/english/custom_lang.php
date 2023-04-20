@@ -1019,3 +1019,4 @@ $lang["assigned_to"] = "Assigned To";
 $lang["restore"] = "Restore";
 $lang["floating"] = "Floating";
 $lang["date_regularized"] = "Regularization Date";
+$lang["required_credits"] = "Require Credits";
