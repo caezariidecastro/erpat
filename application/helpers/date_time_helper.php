@@ -732,3 +732,26 @@ if (!function_exists('convert_date_format')) {
         return date($format, strtotime($date));
     }
 }
+
+
+if (!function_exists('get_time_overlap_seconds')) {
+    function get_time_overlap_seconds($start_one, $end_one, $start_two, $end_two) {
+
+        $start_one = new DateTime($start_one);
+        $end_one = new DateTime($end_one);
+        $start_two = new DateTime($start_two);
+        $end_two = new DateTime($end_two);
+
+        // Check if there is an overlap
+        if ($start_one < $end_two && $start_two < $end_one) {
+            // Calculate the overlapping time
+            $overlapStart = max($start_one, $start_two);
+            $overlapEnd = min($end_one, $end_two);
+            $overlap = $overlapEnd->diff($overlapStart);
+
+            return ($overlap->days * 24 * 60 * 60) + ($overlap->h * 60 * 60) + ($overlap->i * 60) + $overlap->s;
+        }
+     
+        return 0; //Return 0 if there is no overlap
+    }
+}

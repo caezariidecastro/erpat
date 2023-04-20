@@ -223,8 +223,9 @@ class BioMeet {
                     $this->hours_per_day = max(($schedule - $this->lunch_break), 8); //by default
 
                     $night_diff_secs = get_night_differential(
-                        convert_timestamp_to_date($sched_in), 
-                        convert_timestamp_to_date($sched_out));
+                        convert_date_utc_to_local($data->in_time), 
+                        convert_date_utc_to_local($data->out_time)
+                    );
 
                     //Get
                     $night = convert_seconds_to_hour_decimal( $night_diff_secs );

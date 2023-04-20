@@ -2192,58 +2192,22 @@ if (!function_exists('get_user_meta')) {
 }
 
 if (!function_exists('get_night_differential')) {
-    define('START_NIGHT_HOUR','22');
-    define('START_NIGHT_MINUTE','00');
-    define('START_NIGHT_SECOND','00');
-    define('END_NIGHT_HOUR','06');
-    define('END_NIGHT_MINUTE','00');
-    define('END_NIGHT_SECOND','00');
-
     function get_night_differential($start_date = "2023-03-27 20:00:00", $end_date = "2023-03-28 05:00:00") {
-        //$ci = get_instance();
-
-        $start_work = strtotime($start_date);
-        $end_work = strtotime($end_date);
-
-        // Night start and end
+        // Overtime start time trigger
         $night_start = get_setting('nightpay_start_trigger', '10:00 PM'); //10pm
-        $night_start = convert_time_to_24hours_format($night_start); //10pm
+        $night_start = convert_time_to_24hours_format($night_start); //22:00:00
 
+        // Overtime end time trigger
         $night_end = get_setting('nightpay_end_trigger', '06:00 AM'); //6am
-        $night_end = convert_time_to_24hours_format($night_end); //6am
+        $night_end = convert_time_to_24hours_format($night_end); //06:00:00
 
-        $mk_start = explode(':', $night_start);        
-        $start_night = mktime($mk_start[0], $mk_start[1], $mk_start[2], 
-            date('m', $start_work), 
-            date('d', $start_work), 
-            date('Y', $start_work
-        ));
+        // get the date base on the current start date.
+        $start_check = convert_date_format($start_date, "Y-m-d")." ".$night_start;
+        $end_check = add_day_to_datetime($start_date, 1, "Y-m-d")." ".$night_end;
 
-        $mk_end = explode(':', $night_end);
-        $end_night   = mktime($mk_end[0], $mk_end[1], $mk_end[2], 
-            date('m', $start_work), 
-            date('d', $start_work) + 1, 
-            date('Y', $start_work
-        ));
-
-        if($start_work >= $start_night && $start_work <= $end_night) {
-            if($end_work >= $end_night) {
-                return ($end_night - $start_work);
-            } else {
-                return ($end_work - $start_work);
-            }
-        } elseif($end_work >= $start_night && $end_work <= $end_night) {
-            if($start_work <= $start_night) {
-                return ($end_work - $start_night);
-            } else {
-                return ($end_work - $start_work);
-            }
-        } else {
-            if($start_work < $start_night && $end_work > $end_night) {
-                return ($end_night - $start_night);
-            }
-            return 0;
-        }
+        return get_time_overlap_seconds(
+            $start_date, $end_date, $start_check , $end_check 
+        );
     }
 }
 
