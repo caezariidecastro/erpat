@@ -302,7 +302,7 @@
                 if (typeof RELOAD_VIEW_AFTER_UPDATE !== "undefined" && RELOAD_VIEW_AFTER_UPDATE) {
                     location.reload();
                 } else {
-                    window.location = "<?php echo site_url('invoices/view'); ?>/" + result.id;
+                    window.location = "<?php echo site_url('sales/Invoices/view'); ?>/" + result.id;
                 }
             },
             onAjaxSuccess: function (result) {
