@@ -7,7 +7,9 @@ class BioMeet {
 
     protected $sched_hours = 40.00;
     protected $hours_per_day = 8.00;
+    protected $first_break = 0.25;
     protected $lunch_break = 1.00;
+    protected $second_break = 0.25;
     protected $attendance = [];
     protected $attd_data = [];
 
@@ -135,6 +137,39 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
+    protected function get_first_break($btime) {
+        $break_1st_start = isset($btime[0])?strtotime($btime[0]):null;
+        $break_1st_end = isset($btime[1])?strtotime($btime[1]):null;
+
+        if($break_1st_start && $break_1st_end) {
+            return convert_seconds_to_hour_decimal( max($break_1st_end-$break_1st_start, 0) );
+        }
+
+        return 0;
+    }
+
+    protected function get_lunch_break($btime) {
+        $break_lunch_start = isset($btime[2])?strtotime($btime[2]):null;
+        $break_lunch_end = isset($btime[3])?strtotime($btime[3]):null;
+
+        if($break_lunch_start && $break_lunch_end) {
+            return convert_seconds_to_hour_decimal( max($break_lunch_end-$break_lunch_start, 0) );
+        }
+
+        return 0;
+    }
+
+    protected function get_second_break($btime) {
+        $break_2nd_start = isset($btime[4])?strtotime($btime[4]):null;
+        $break_2nd_end = isset($btime[5])?strtotime($btime[5]):null;
+        
+        if($break_2nd_start && $break_2nd_end) {
+            return convert_seconds_to_hour_decimal( max($break_2nd_end-$break_2nd_start, 0) );
+        }
+
+        return 0;
+    }
+
     public function calculate() {
 
         if( get_setting('attendance_calc_mode') == "complex" ) {
@@ -222,16 +257,24 @@ class BioMeet {
                     $schedule = convert_seconds_to_hour_decimal( max($sched_out-$sched_in, 0) );
                     $this->hours_per_day = max(($schedule - $this->lunch_break), 8); //by default
 
-                    $night_diff_secs = get_night_differential(
-                        convert_date_utc_to_local($data->in_time), 
-                        convert_date_utc_to_local($data->out_time)
-                    );
-
-                    //Get
-                    $night = convert_seconds_to_hour_decimal( $night_diff_secs );
-
                     //Override schedule and hours per day according to schedule.
                     if($current_schedin && $current_schedout) {
+                        //Get the hours per day minus the lunch break.
+                        if(isset($current_schedin) && isset($current_schedin['enabled_first']) && isset($current_schedin['in_first']) && isset($current_schedin['out_first'])) {
+                            $first_start_time = convert_time_to_24hours_format( $current_schedin['in_first'] ); //local
+                            $first_start_date = strtotime($sched_day_in .' '. $first_start_time);
+
+                            $first_end_time = convert_time_to_24hours_format( $current_schedin['out_first'] ); //local
+                            $first_end_date = strtotime($sched_day_in .' '. $first_end_time);
+
+                            //if IN lunch is PM and out is AM then use the sched day out. else same
+                            if( contain_str($current_schedin['in_first'], 'PM') && contain_str($current_schedin['out_first'], 'AM') ) {
+                                $first_end_date = strtotime($sched_day_out .' '. $first_end_time);
+                            }
+                            
+                            $this->first_break = convert_seconds_to_hour_decimal( max($first_end_date-$first_start_date, 0) );
+                        }
+
                         //Get the hours per day minus the lunch break.
                         if(isset($current_schedin) && isset($current_schedin['enabled_lunch']) && isset($current_schedin['in_lunch']) && isset($current_schedin['out_lunch'])) {
                             $lunch_start_time = convert_time_to_24hours_format( $current_schedin['in_lunch'] ); //local
@@ -247,6 +290,22 @@ class BioMeet {
                             $this->lunch_break = convert_seconds_to_hour_decimal( max($lunch_end_date-$lunch_start_date, 0) );
                         }
 
+                        //Get the hours per day minus the lunch break.
+                        if(isset($current_schedin) && isset($current_schedin['enabled_second']) && isset($current_schedin['in_second']) && isset($current_schedin['out_second'])) {
+                            $second_start_time = convert_time_to_24hours_format( $current_schedin['in_second'] ); //local
+                            $second_start_date = strtotime($sched_day_in .' '. $second_start_time);
+
+                            $second_end_time = convert_time_to_24hours_format( $current_schedin['out_second'] ); //local
+                            $second_end_date = strtotime($sched_day_in .' '. $second_end_time);
+                            
+                            //if IN lunch is PM and out is AM then use the sched day out. else same
+                            if( contain_str($current_schedin['in_second'], 'PM') && contain_str($current_schedin['out_second'], 'AM') ) {
+                                $second_end_date = strtotime($sched_day_out .' '. $second_end_time);
+                            }
+                            
+                            $this->second_break = convert_seconds_to_hour_decimal( max($second_end_date-$second_start_date, 0) );
+                        }
+
                         //Default hours per day
                         $this->hours_per_day = max($schedule - $this->lunch_break, 0);
                     }
@@ -254,35 +313,27 @@ class BioMeet {
                     //BREAKTIME
                     $btime = isset($data->break_time)?unserialize($data->break_time):[];
 
-                    //1ST Overbreak 
-                    $break_1st_start = isset($btime[0])?strtotime($btime[0]):null;
-                    $break_1st_end = isset($btime[1])?strtotime($btime[1]):null;
-                    if($break_1st_start && $break_1st_end) {
-                        $break_1st = convert_seconds_to_hour_decimal( max($break_1st_end-$break_1st_start, 0) );
-                        if($break_1st > 0.25) {
-                            $over += ($break_1st-0.25);
-                        }
+                    //1ST Overbreak
+                    if($this->get_first_break($btime) > $this->second_break) { //Get from encode.
+                        $over += ($this->get_first_break($btime)-$this->second_break);
                     }
 
                     //LUNCH Overbreak 
-                    $break_lunch_start = isset($btime[2])?strtotime($btime[2]):null;
-                    $break_lunch_end = isset($btime[3])?strtotime($btime[3]):null;
-                    if($break_lunch_start && $break_lunch_end) {
-                        $break_lunch = convert_seconds_to_hour_decimal( max($break_lunch_end-$break_lunch_start, 0) );
-                        if($break_lunch > $this->lunch_break) {
-                            $over += max($break_lunch-$this->lunch_break, 0);
-                        }
+                    if($this->get_lunch_break($btime) > $this->lunch_break) {
+                        $over += max($this->get_lunch_break($btime)-$this->lunch_break, 0);
                     }
 
                     //2ND Overbreak 
-                    $break_2nd_start = isset($btime[4])?strtotime($btime[4]):null;
-                    $break_2nd_end = isset($btime[5])?strtotime($btime[5]):null;
-                    if($break_2nd_start && $break_2nd_end) {
-                        $break_2nd = convert_seconds_to_hour_decimal( max($break_2nd_end-$break_2nd_start, 0) );
-                        if($break_2nd > 0.25) {
-                            $over += ($break_2nd-0.25);
-                        }
+                    if($this->get_second_break($btime) > $this->second_break) {
+                        $over += ($this->get_second_break($btime)-$this->second_break);
                     }
+
+                    //Set the NightDiff
+                    $night_diff_secs = get_night_differential(
+                        convert_date_utc_to_local($data->in_time), 
+                        convert_date_utc_to_local($data->out_time)
+                    );
+                    $night = convert_seconds_to_hour_decimal( $night_diff_secs ) - $this->lunch_break; //deduct the lunch break.
 
                     //idle, Get non worked hours: a = x+y
                     $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
