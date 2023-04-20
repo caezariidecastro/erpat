@@ -1159,11 +1159,12 @@ class Team_members extends MY_Controller {
             "job_title" => $this->input->post('job_title')
         );
 
-        //Start saving user meta.
-        set_user_meta($user_id, "employment_stage", $this->input->post('employment_stage'));
-
         $this->Users_model->save($user_data, $user_id);
         if ($this->Users_model->save_job_info($job_data)) {
+            //Start saving user meta.
+            set_user_meta($user_id, "employment_stage", $this->input->post('employment_stage'));
+            set_user_meta($user_id, "date_regularized", $this->input->post('date_regularized'));
+
             echo json_encode(array("success" => true, 'message' => lang('record_updated')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));

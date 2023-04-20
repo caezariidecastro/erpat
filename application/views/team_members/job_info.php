@@ -102,13 +102,13 @@
             </div>
             <?php } ?>
             <div class="form-group">
-                <label for="sched_id" class=" col-md-2"><?php echo lang('current_schedule'); ?></label>
+                <label for="sched_id" class=" col-md-1"><?php echo lang('current_schedule'); ?></label>
                 <div class=" col-md-2">
                     <?php
                     echo form_dropdown("sched_id", $sched_dropdown, $job_info->sched_id, "class='select2 validate-hidden' id='sched_id' ". "'");
                     ?>
                 </div>
-                <label for="date_of_hire" class=" col-md-2"><?php echo lang('date_of_hire'); ?></label>
+                <label for="date_of_hire" class=" col-md-1"><?php echo lang('date_of_hire'); ?></label>
                 <div class="col-md-2">
                     <?php
                     echo form_input(array(
@@ -121,14 +121,28 @@
                     ));
                     ?>
                 </div>
-                <label for="sched_id" class=" col-md-2"><?php echo lang('employment'); ?></label>
+                <label for="sched_id" class=" col-md-1"><?php echo lang('employment'); ?></label>
                 <div class="col-md-2">
                     <?= form_dropdown(
                         "employment_stage", array(
                         "" => "- ".lang("select")." - ",
                         "probationary" => lang("probationary"),
+                        "floating" => lang("floating"),
                         "regular" => lang("regular"),
                     ), get_user_meta($user_id, "employment_stage"), "class='select2 mini'"); ?>
+                </div>
+                <label for="sched_id" class=" col-md-1"><?php echo lang('date_regularized'); ?></label>
+                <div class="col-md-2">
+                    <?php
+                    echo form_input(array(
+                        "id" => "date_regularized",
+                        "name" => "date_regularized",
+                        "value" => get_user_meta($user_id, "date_regularized"),
+                        "class" => "form-control",
+                        "placeholder" => lang('date_regularized'),
+                        "autocomplete" => "off"
+                    ));
+                    ?>
                 </div>
             </div>
             <div class="form-group">
@@ -324,7 +338,7 @@
         });
         $("#job-info-form .select2").select2();
 
-        setDatePicker("#date_of_hire");
+        setDatePicker("#date_of_hire, #date_regularized");
 
         function roundToDecimal(num) {
             return Math.round(num * 100) / 100

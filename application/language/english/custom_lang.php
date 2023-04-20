@@ -1017,3 +1017,5 @@ $lang["update_status"] = "Update Status";
 $lang["assigned_to"] = "Assigned To";
 
 $lang["restore"] = "Restore";
+$lang["floating"] = "Floating";
+$lang["date_regularized"] = "Regularization Date";
