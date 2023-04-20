@@ -18,12 +18,14 @@
                 {visible: false, searchable: false},
                 {title: "<?php echo lang("in_date"); ?>", "class": "text-center w10p", iDataSort: 2},
                 {title: "<?php echo lang("in_time"); ?>", "class": "text-center w10p"},
+                <?php if(get_setting('breaktime_tracking')) { ?>
                 {title: "<?php echo lang("break_1st_start"); ?>", "class": "text-center w10p"},
                 {title: "<?php echo lang("break_1st_end"); ?>", "class": "text-center w10p"},
                 {title: "<?php echo lang("break_lunch_start"); ?>", "class": "text-center w10p"},
                 {title: "<?php echo lang("break_lunch_end"); ?>", "class": "text-center w10p"},
                 {title: "<?php echo lang("break_2nd_start"); ?>", "class": "text-center w10p"},
                 {title: "<?php echo lang("break_2nd_end"); ?>", "class": "text-center w10p"},
+                <?php } ?>
                 {visible: false, searchable: false},
                 {title: "<?php echo lang("out_date"); ?>", "class": "text-center w10p", iDataSort: 5},
                 {title: "<?php echo lang("out_time"); ?>", "class": "text-center w10p"},
@@ -40,16 +42,29 @@
             ],
             printColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
             xlsColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
-            summation: [
-                {column: 14, dataType: 'time'},
-                {column: 15, dataType: 'number'},
-                {column: 16, dataType: 'number'},
-                {column: 17, dataType: 'number'},
-                {column: 18, dataType: 'number'},
-                {column: 19, dataType: 'number'},
-                {column: 20, dataType: 'number'},
-                {column: 21, dataType: 'number'}
-            ],
+            <?php if(get_setting('breaktime_tracking')) { ?>
+                summation: [
+                    {column: 14, dataType: 'time'},
+                    {column: 15, dataType: 'number'},
+                    {column: 16, dataType: 'number'},
+                    {column: 17, dataType: 'number'},
+                    {column: 18, dataType: 'number'},
+                    {column: 19, dataType: 'number'},
+                    {column: 20, dataType: 'number'},
+                    {column: 21, dataType: 'number'}
+                ],
+            <?php } else { ?>
+                summation: [
+                    {column: 8, dataType: 'time'},
+                    {column: 9, dataType: 'number'},
+                    {column: 10, dataType: 'number'},
+                    {column: 11, dataType: 'number'},
+                    {column: 12, dataType: 'number'},
+                    {column: 13, dataType: 'number'},
+                    {column: 14, dataType: 'number'},
+                    {column: 15, dataType: 'number'},
+                ],
+            <?php } ?>
             tableRefreshButton: true,
         });
     });

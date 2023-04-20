@@ -431,27 +431,46 @@ class Attendance extends MY_Controller {
         //Get the break time.
         $btime = serialized_breaktime($data->break_time, '-');
 
-        return array(
+        $response = array(
             get_team_member_profile_link($data->user_id, $user),
             $data->team_list,
             $data->in_time,
             format_to_date($data->in_time),
-            format_to_time($data->in_time),
-            $btime[0],$btime[1],$btime[2],$btime[3],$btime[4],$btime[5],
+            format_to_time($data->in_time)
+        );
+
+        $track_btime = get_setting('breaktime_tracking');
+        if($track_btime) {
+            $response = array_merge($response, array(
+                $btime[0],$btime[1],
+                $btime[2],$btime[3],
+                $btime[4],$btime[5],
+            ));
+        }
+        
+        $response = array_merge($response, array(
             $data->out_time ? $data->out_time : 0,
             $data->out_time ? format_to_date( $data->out_time ) : "-",
             $data->out_time ? format_to_time( $data->out_time ) : "-",
             $attd->getTotalDuration(),
+        ));
+
+        $response = array_merge($response, array(
             strval($attd->getTotalWork()), 
             strval($attd->getTotalOvertime()), 
             strval($attd->getTotalBonuspay()), 
             strval($attd->getTotalNightpay()), 
             strval($attd->getTotalLates()), 
             strval($attd->getTotalOverbreak()), 
-            strval($attd->getTotalUndertime()),
+            strval($attd->getTotalUndertime())
+        ));
+            
+        $response = array_merge($response, array(
             $info_link,
             $option_links
-        );
+        ));
+
+        return $response;
     }
 
     //load the custom date view of attendance list 
