@@ -2224,10 +2224,18 @@ if (!function_exists('get_night_differential')) {
         // get the date base on the current start date.
         $start_check = convert_date_format($start_date, "Y-m-d")." ".$night_start;
         $end_check = add_day_to_datetime($start_date, 1, "Y-m-d")." ".$night_end;
-
-        return get_time_overlap_seconds(
+        $latest_span = get_time_overlap_seconds(
             $start_date, $end_date, $start_check , $end_check 
         );
+
+        // get the date base on the current start date.
+        $start_check = sub_day_to_datetime($start_date, 1, "Y-m-d")." ".$night_start;
+        $end_check = convert_date_format($start_date, "Y-m-d")." ".$night_end;
+        $pre_span = get_time_overlap_seconds(
+            $start_date, $end_date, $start_check , $end_check 
+        );
+
+        return $latest_span + $pre_span;
     }
 }
 
