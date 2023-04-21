@@ -197,6 +197,19 @@ class Schedule extends MY_Controller
         return "";
     }
 
+    function modal_form_breaks() {
+        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $this->load->view('schedule/modal_form_breaks', $view_data);
+    }
+
+    function save_30m_break() {
+        $setting = "30min_break_employee";
+        $value = $this->input->post($setting);
+        $success = $this->Settings_model->save_setting($setting, $value, 'calendar');
+        
+        echo json_encode(array("success" => $success?true:false, 'message' => lang('record_saved')));
+    }
+
     //show add/edit attendance modal
     function modal_form($request = null) {
         validate_submitted_data(array(

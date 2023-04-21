@@ -1023,3 +1023,6 @@ $lang["required_credits"] = "Require Credits";
 
 $lang["overall_leave_credits"] = "Overall Leave Credits";
 $lang["leave_type_credits"] = "Leave Type Credits";
+
+$lang["30min_break_employee"] = "30m Break Employees";
+$lang["edit_breaks"] = "Edit Breaks";

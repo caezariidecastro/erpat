@@ -5,6 +5,8 @@
             <div class="title-button-group">
                 <?php echo modal_anchor(get_uri("hrs/schedule/modal_form"), "<i class='fa fa-plus-circle'></i> " 
                     . lang('add_sched'), array("class" => "btn btn-default", "title" => lang('add_sched'))); ?>
+                <?php echo modal_anchor(get_uri("hrs/schedule/modal_form_breaks"), "<i class='fa fa-pencil'></i> " 
+                    . lang('edit_breaks'), array("class" => "btn btn-default", "title" => lang('30min_break_employee'))); ?>
             </div>
         </div>
         <div class="table-responsive">

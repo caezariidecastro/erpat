@@ -331,6 +331,11 @@ class BioMeet {
 
                         //Default hours per day
                         $this->hours_per_day = max($schedule - $this->lunch_break, 0);
+
+                        $users = get_setting("30min_break_employee");
+                        if(in_array($data->user_id, explode(",", $users))) {
+                            $this->lunch_break = 0.5;
+                        }
                     }
 
                     //BREAKTIME
