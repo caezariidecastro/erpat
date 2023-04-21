@@ -159,6 +159,20 @@ class BioMeet {
         return 0;
     }
 
+    protected function get_lunch_nightdiff_overlap($btime) {
+        $break_lunch_start = isset($btime[2])?strtotime($btime[2]):null;
+        $break_lunch_end = isset($btime[3])?strtotime($btime[3]):null;
+
+        if( isset($break_lunch_start) && isset($break_lunch_end)) {
+            return get_night_differential(
+                convert_date_format($break_lunch_start), 
+                convert_date_format($break_lunch_end)
+            );
+        }
+
+        return 0;
+    }
+
     protected function get_second_break($btime) {
         $break_2nd_start = isset($btime[4])?strtotime($btime[4]):null;
         $break_2nd_end = isset($btime[5])?strtotime($btime[5]):null;
@@ -333,7 +347,8 @@ class BioMeet {
                         convert_date_utc_to_local($data->in_time), 
                         convert_date_utc_to_local($data->out_time)
                     );
-                    $night = convert_seconds_to_hour_decimal( $night_diff_secs ) - $this->lunch_break; //deduct the lunch break.
+                    $break_on_night = $this->get_lunch_nightdiff_overlap($btime);
+                    $night = convert_seconds_to_hour_decimal( $night_diff_secs ) - convert_seconds_to_hour_decimal($break_on_night); //deduct the lunch break.
 
                     //idle, Get non worked hours: a = x+y
                     $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
