@@ -32,7 +32,9 @@
                 {title: "<?php echo lang("duration"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("worked"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("overtime"); ?>", "class": "w5p text-right"},
+                <?php if(get_setting('bonuspay_trigger') && get_setting('bonuspay_trigger') != "0.00") { ?>
                 {title: "<?php echo lang("bonus"); ?>", "class": "w5p text-right"},
+                <?php } ?>
                 {title: "<?php echo lang("night"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("lates"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("overbreak"); ?>", "class": "w5p text-right"},
@@ -51,7 +53,9 @@
                     {column: 18, dataType: 'number'},
                     {column: 19, dataType: 'number'},
                     {column: 20, dataType: 'number'},
+                    <?php if(get_setting('bonuspay_trigger') && get_setting('bonuspay_trigger') != "0.00") { ?>
                     {column: 21, dataType: 'number'}
+                    <?php } ?>
                 ],
             <?php } else { ?>
                 summation: [
@@ -62,7 +66,9 @@
                     {column: 12, dataType: 'number'},
                     {column: 13, dataType: 'number'},
                     {column: 14, dataType: 'number'},
+                    <?php if(get_setting('bonuspay_trigger') && get_setting('bonuspay_trigger') != "0.00") { ?>
                     {column: 15, dataType: 'number'},
+                    <?php } ?>
                 ],
             <?php } ?>
             tableRefreshButton: true,

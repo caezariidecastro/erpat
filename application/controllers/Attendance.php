@@ -458,7 +458,16 @@ class Attendance extends MY_Controller {
         $response = array_merge($response, array(
             strval($attd->getTotalWork()), 
             strval($attd->getTotalOvertime()), 
-            strval($attd->getTotalBonuspay()), 
+        ));
+
+        $track_bonuspay = get_setting('bonuspay_trigger');
+        if($track_bonuspay && $track_bonuspay != "0.00") {
+            $response = array_merge($response, array(
+                strval($attd->getTotalBonuspay())
+            ));
+        }
+
+        $response = array_merge($response, array(
             strval($attd->getTotalNightpay()), 
             strval($attd->getTotalLates()), 
             strval($attd->getTotalOverbreak()), 
