@@ -417,7 +417,7 @@ class BioMeet {
                         )
                     );
 
-                    $worked += convert_seconds_to_hour_decimal( //current
+                    $worked += convert_seconds_to_hour_decimal( //previous
                         get_time_overlap_seconds(
                             convert_date_utc_to_local($data->in_time), 
                             convert_date_utc_to_local($data->out_time), 
@@ -426,11 +426,20 @@ class BioMeet {
                         )
                     );
 
+                    $worked += convert_seconds_to_hour_decimal( //future
+                        get_time_overlap_seconds(
+                            convert_date_utc_to_local($data->in_time), 
+                            convert_date_utc_to_local($data->out_time), 
+                            add_day_to_datetime($sched_in, 1), 
+                            add_day_to_datetime($sched_out, 1)
+                        )
+                    );
+
                     // Add pre and post bonus pay to worked!
                     $worked += $bonus;
 
                     //Deduct the actual overtime schedule or default of 1hour.
-                    $worked -= $this->lunch_break; //TODO: Get the lunch break to actual breaktime log.
+                    $worked -= $worked>=4.0?$this->lunch_break:0; //TODO: Get the lunch break to actual breaktime log.
 
                     /* #endregion */
                     
