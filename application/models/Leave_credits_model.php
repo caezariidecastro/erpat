@@ -29,6 +29,11 @@ class Leave_credits_model extends Crud_model {
         if ($end_date) {
             $where .= " AND DATE(ADDTIME($leave_credits_table.date_created,'$offset'))<='$end_date'";
         }
+        
+        $leave_type_id = get_array_value($options, "leave_type_id");
+        if ($leave_type_id) {
+            $where .= " AND $leave_credits_table.leave_type_id=$leave_type_id";
+        }
 
         $department_id = get_array_value($options, "department_id");
         if($department_id){
@@ -65,6 +70,11 @@ class Leave_credits_model extends Crud_model {
         $user_id = get_array_value($options, "user_id");
         if ($user_id) {
             $where .= " AND $leave_credits_table.user_id=$user_id";
+        }
+
+        $leave_type_id = get_array_value($options, "leave_type_id");
+        if ($leave_type_id) {
+            $where .= " AND $leave_credits_table.leave_type_id=$leave_type_id";
         }
 
         $sql = "SELECT 

@@ -2018,11 +2018,31 @@ if (!function_exists('get_current_material_inventory_count')) {
 
 if (!function_exists('get_total_leave_credit_balance')) {
 
-    function get_total_leave_credit_balance($user_id = 0) {
+    function get_total_leave_credit_balance($user_id = 0, $leave_type_id = 0) {
         $ci = get_instance();
         $ci->load->model("Leave_credits_model");
         $options = array("user_id" => $user_id ? $user_id : $ci->login_user->id);
+        if($leave_type_id) {
+            $options = array_merge($options,
+                array("leave_type_id"=>$leave_type_id)
+            );
+        }
         return $ci->Leave_credits_model->get_balance($options);
+    }
+}
+
+if (!function_exists('is_leave_credit_required')) {
+
+    function is_leave_credit_required($leave_type_id) {
+        $ci = get_instance();
+        $ci->load->model("Leave_types_model");
+        $options = array("id" => $leave_type_id);
+        $query = $ci->Leave_types_model->get_details($options);
+        if($query->num_rows()) {
+            return $query->row()->required_credits?true:false;
+        }
+
+        return false;
     }
 }
 

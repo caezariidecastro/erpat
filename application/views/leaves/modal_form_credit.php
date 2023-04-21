@@ -18,6 +18,14 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="leave_type" class=" col-md-3"><?php echo lang('leave_type'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_dropdown("leave_type_id", $leave_types_dropdown, "", "class='select2 validate-hidden' id='leave_type_id' data-rule-required='true', data-msg-required='" . lang('field_required') . "'");
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="title" class=" col-md-3"><?php echo lang('credits')." (".lang('days').")"; ?></label>
         <div class=" col-md-9">
             <?php
@@ -75,6 +83,6 @@
         }
         // setDatePicker("#in_date, #out_date");
         // setTimePicker("#in_time, #out_time");
-
+        $("#leave_type_id").select2();
     });
 </script>    

@@ -45,6 +45,19 @@ class Leaves extends MY_Controller {
         return $team_select2;
     }
 
+    protected function _get_leave_types_select2_data() {
+
+        $option = array("status" => "active");
+        $leave_types = $this->Leave_types_model->get_details($option)->result();
+        $leave_type_select2 = array(array('id' => '', 'text'  => '- Leave Type -'));
+
+        foreach($leave_types as $leave_type){
+            $leave_type_select2[] = array('id' => $leave_type->id, 'text'  => $leave_type->title);
+        }
+
+        return $leave_type_select2;
+    }
+
     function index() {
         $this->template->rander("leaves/index");
     }
@@ -201,12 +214,14 @@ class Leaves extends MY_Controller {
 
     // load pending approval tab
     function pending_approval() {
-        $this->load->view("leaves/pending_approval");
+        $view_data['leave_types_dropdown'] = $this->_get_leave_types_select2_data();
+        $this->load->view("leaves/pending_approval", $view_data);
     }
 
     // load all applications tab 
     function all_applications() {
-        $this->load->view("leaves/all_applications");
+        $view_data['leave_types_dropdown'] = $this->_get_leave_types_select2_data();
+        $this->load->view("leaves/all_applications", $view_data);
     }
 
     // load leave summary tab
@@ -218,7 +233,7 @@ class Leaves extends MY_Controller {
 
     // list of pending leave application. prepared for datatable
     function pending_approval_list_data() {
-        $options = array("status" => "pending", "access_type" => $this->access_type, "allowed_members" => $this->allowed_members);
+        $options = array("status" => "pending", "access_type" => $this->access_type, "allowed_members" => $this->allowed_members, "leave_type_id" => $this->input->post('leave_type_id'));
         $list_data = $this->Leave_applications_model->get_list($options)->result();
 
         $result = array();
@@ -240,7 +255,7 @@ class Leaves extends MY_Controller {
         $end_date = $this->input->post('end_date');
         $applicant_id = $this->input->post('applicant_id');
 
-        $options = array("start_date" => $start_date, "end_date" => $end_date, "applicant_id" => $applicant_id, "login_user_id" => $this->login_user->id, "access_type" => $this->access_type, "allowed_members" => $this->allowed_members);
+        $options = array("start_date" => $start_date, "end_date" => $end_date, "applicant_id" => $applicant_id, "login_user_id" => $this->login_user->id, "access_type" => $this->access_type, "allowed_members" => $this->allowed_members, "leave_type_id" => $this->input->post('leave_type_id'));
         $list_data = $this->Leave_applications_model->get_list($options)->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -356,7 +371,7 @@ class Leaves extends MY_Controller {
             $duration = $duration . " (" . $data->total_hours . " " . lang("hour") . ")";
         }
         $data->duration_meta = $duration;
-        $data->leave_type_meta = "<span style='background-color:" . $data->leave_type_color . "' class='color-tag pull-left'></span>" . $data->leave_type_title;
+        $data->leave_type_meta = "<span style='background-color:" . $data->leave_type_color . "' class='color-tag pull-left'></span>" . $data->leave_type_title . ", " . ($data->required_credits?"Deducted":"Not Deducted"). ", " . ($data->paid?"w/ Pay":"Not Paid");
         return $data;
     }
 
@@ -401,6 +416,7 @@ class Leaves extends MY_Controller {
 
         $applicaiton_id = $this->input->post('id');
         $status = $this->input->post('status');
+        $leave_type_id = $this->input->post('leave_type_id');
         $now = get_current_utc_time();
 
         $leave_data = array(
@@ -425,7 +441,7 @@ class Leaves extends MY_Controller {
             redirect("forbidden");
         }
 
-        if($status == "approved" && get_total_leave_credit_balance($applicatoin_info->applicant_id) < $applicatoin_info->total_days) {
+        if($status == "approved" && is_leave_credit_required($leave_type_id) && get_total_leave_credit_balance($applicatoin_info->applicant_id, $leave_type_id) < $applicatoin_info->total_days) {
             echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient_admin') ) );
             return;
         }
@@ -441,6 +457,7 @@ class Leaves extends MY_Controller {
                 $credit_data = array(
                     "user_id" => $applicatoin_info->applicant_id,
                     "leave_id" => $applicatoin_info->id,
+                    "leave_type_id" => $leave_type_id,
                     "counts" => $applicatoin_info->total_days,
                     "action" => 'credit',
                     "remarks" => $leave_type[0]->title." - Approval",
@@ -542,6 +559,7 @@ class Leaves extends MY_Controller {
         $where = array("user_type" => "staff");
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
         $view_data['department_select2'] = $this->_get_team_select2_data();
+        $view_data['leave_types_dropdown'] = $this->_get_leave_types_select2_data();
         $this->load->view("leaves/leave_credits", $view_data);
     }
 
@@ -581,6 +599,7 @@ class Leaves extends MY_Controller {
             }
             $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
         }
+        $view_data['leave_types_dropdown'] = array("" => "-") + $this->Leave_types_model->get_dropdown_list(array("title"), "id", array("status" => "active"));
         $view_data['model_info'] = $this->Leave_types_model->get_one($this->input->post('id'));
 
         if($form_type === "add") {

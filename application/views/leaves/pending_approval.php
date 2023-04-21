@@ -13,6 +13,9 @@
     $(document).ready(function() {
         $("#pending-approval-table").appTable({
             source: '<?php echo_uri("hrs/leaves/pending_approval_list_data") ?>',
+            filterDropdown: [
+                {name: "leave_type_id", class: "w200", options: <?= json_encode($leave_types_dropdown) ?> },
+            ],
             columns: [
                 {title: '<?php echo lang("applicant") ?>', "class": "w20p"},
                 {title: '<?php echo lang("leave_type") ?>'},

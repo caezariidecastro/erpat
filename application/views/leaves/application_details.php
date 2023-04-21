@@ -18,6 +18,14 @@
         <div class="table-responsive mb15">
             <table class="table dataTable display b-t">
                 <tr>
+                    <td class="w100"> <?php echo lang('overall_leave_credits'); ?></td>
+                    <td><?php echo get_total_leave_credit_balance($leave_info->applicant_id); ?></td>
+                </tr>
+                <tr>
+                    <td class="w100"> <?php echo lang('leave_type_credits'); ?></td>
+                    <td><?php echo get_total_leave_credit_balance($leave_info->applicant_id, $leave_info->leave_type_id); ?></td>
+                </tr>
+                <tr>
                     <td class="w100"> <?php echo lang('leave_type'); ?></td>
                     <td><?php echo $leave_info->leave_type_meta; ?></td>
                 </tr>
@@ -63,6 +71,7 @@
 </div>
 <?php echo form_open(get_uri("hrs/leaves/update_status"), array("id" => "leave-status-form", "class" => "general-form", "role" => "form")); ?>
 <input type="hidden" name="id" value="<?php echo $leave_info->id; ?>" />
+<input type="hidden" name="leave_type_id" value="<?php echo $leave_info->leave_type_id; ?>" />
 <input id="leave_status_input" type="hidden" name="status" value="" />
 <div class="modal-footer">
     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fa fa-close"></span> <?php echo lang('close'); ?></button>

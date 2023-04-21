@@ -18,9 +18,14 @@ class Leave_types_model extends Crud_model {
             $where = " AND $leave_types_table.id=$id";
         }
 
+        $status = get_array_value($options, "status");
+        if ($status) {
+            $where = " AND $leave_types_table.status='$status'";
+        }
+
         $sql = "SELECT $leave_types_table.*
-        FROM $leave_types_table
-        WHERE $leave_types_table.deleted=0 $where";
+            FROM $leave_types_table
+            WHERE $leave_types_table.deleted=0 $where";
         return $this->db->query($sql);
     }
 

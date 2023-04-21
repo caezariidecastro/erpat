@@ -1020,3 +1020,6 @@ $lang["restore"] = "Restore";
 $lang["floating"] = "Floating";
 $lang["date_regularized"] = "Regularization Date";
 $lang["required_credits"] = "Require Credits";
+
+$lang["overall_leave_credits"] = "Overall Leave Credits";
+$lang["leave_type_credits"] = "Leave Type Credits";

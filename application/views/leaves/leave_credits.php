@@ -24,6 +24,7 @@
                         array('id' => 'credit', 'text'  => '- Credit Only -')
                     )); ?> 
                 },
+                {name: "leave_type_id", class: "w200", options: <?= json_encode($leave_types_dropdown) ?> },
             ],
             columns: [
                 {title: '<?php echo lang("employee"); ?>'},

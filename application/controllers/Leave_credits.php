@@ -8,6 +8,7 @@ class Leave_credits extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model("Leave_credits_model");
+        $this->load->model("Leave_types_model");
     }
 
     //load leave type list view
@@ -26,12 +27,15 @@ class Leave_credits extends MY_Controller {
 
         validate_submitted_data(array(
             "counts" => "numeric",
-            "user_id" => "required"
+            "user_id" => "required",
+            "leave_type_id" => "required",
+            "counts" => "required",
         ));
 
         $id = $this->input->post('id');
         $data = array(
             "user_id" => $this->input->post('user_id'),
+            "leave_type_id" => $this->input->post('leave_type_id'),
             "counts" => $this->input->post('counts'),
             "action" => $this->input->post('action'),
             "remarks" => $this->input->post('remarks'),
@@ -88,8 +92,7 @@ class Leave_credits extends MY_Controller {
             "user_id" => $user_id,
             "action" => $action,
             "department_id" => $department_id,
-            //"access_type" => $this->access_type,
-            //"allowed_members" => $this->allowed_members
+            "leave_type_id" => $this->input->post('leave_type_id'),
         );
         $list_data = $this->Leave_credits_model->get_details($options)->result();
         $result = array();

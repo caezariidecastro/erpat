@@ -17,7 +17,7 @@ class Leave_applications_model extends Crud_model {
         $sql = "SELECT $leave_applications_table.*, 
                 CONCAT(applicant_table.first_name, ' ',applicant_table.last_name) AS applicant_name, applicant_table.image as applicant_avatar, applicant_table.job_title,
                 CONCAT(checker_table.first_name, ' ',checker_table.last_name) AS checker_name, checker_table.image as checker_avatar,
-                $leave_types_table.title as leave_type_title,   $leave_types_table.color as leave_type_color
+                $leave_types_table.title as leave_type_title, $leave_types_table.color as leave_type_color, $leave_types_table.required_credits as required_credits, $leave_types_table.paid as paid
             FROM $leave_applications_table
             LEFT JOIN $users_table AS applicant_table ON applicant_table.id= $leave_applications_table.applicant_id
             LEFT JOIN $users_table AS checker_table ON checker_table.id= $leave_applications_table.checked_by
@@ -50,6 +50,11 @@ class Leave_applications_model extends Crud_model {
         $applicant_id = get_array_value($options, "applicant_id");
         if ($applicant_id) {
             $where .= " AND $leave_applications_table.applicant_id=$applicant_id";
+        }
+
+        $leave_type_id = get_array_value($options, "leave_type_id");
+        if ($leave_type_id) {
+            $where .= " AND $leave_applications_table.leave_type_id=$leave_type_id";
         }
 
         $access_type = get_array_value($options, "access_type");
