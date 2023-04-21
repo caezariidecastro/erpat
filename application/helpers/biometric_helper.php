@@ -218,6 +218,8 @@ class BioMeet {
                 $current_schedin = null;
                 $current_schedout = null;
 
+                /* #region SCHEDULE PROCESSING */
+
                 //First! If no schedule make sure to have an actual in and out as official schedule.
                 $sched_day_in = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
                 $sched_in = convert_date_utc_to_local($data->in_time);
@@ -230,46 +232,53 @@ class BioMeet {
                     $current_schedin = $today_sched;
                 }
 
-                //Important variable for metrics.
-                $sched_in = strtotime($sched_in); //local
+                //First! If no schedule make sure to have an actual in and out as official schedule.
+                $sched_day_out = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
+                $sched_out = convert_date_utc_to_local($data->in_time);
 
-                //Get lates: x = diff_time(in_time, sched_in)
-                $lates = convert_seconds_to_hour_decimal( max($from_time-$sched_in, 0) );
+                //Second! Get the current day schedule instance based on in time.
+                if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
+                    $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
+                    if( strpos($today_sched['in'], "PM") !== false && strpos($today_sched['out'], "AM") !== false) {
+                        $sched_day_out = add_day_to_datetime(convert_date_utc_to_local($data->in_time), 1, "Y-m-d");
+                    }
+                    $sched_out = $sched_day_out .' '. $sched_time; //local
+                    $current_schedout = $today_sched;
+                }
 
-                // Pre Bonus Pay
-                $pre_bonus = convert_seconds_to_hour_decimal( max($sched_in-$from_time, 0) );
-                $pre_bonus = $pre_bonus>=$bonuspay_trigger?$bonuspay_trigger:0;
-                $bonus += number_with_decimal($pre_bonus);
+                /* #endregion */
+
+                /* #region LATES PROCESSING */
+
+                if($from_time > strtotime($sched_in) && strtotime($sched_out) > $from_time) {
+                    //Get lates: x = diff_time(in_time, sched_in)
+                    $lates = convert_seconds_to_hour_decimal( max($from_time-strtotime($sched_in), 0) );
+                }
+
+                /* #endregion */
+
+                 /* #region PRE BONUSPAY */
+
+                 if(strtotime($sched_in) > $from_time && $to_time > strtotime($sched_in)) {
+                    $pre_bonus = convert_seconds_to_hour_decimal( max(strtotime($sched_in)-$from_time, 0) );
+                    $pre_bonus = $pre_bonus>=$bonuspay_trigger?$bonuspay_trigger:0;
+                    $bonus += number_with_decimal($pre_bonus);
+                }
+
+                /* #endregion */
 
                 if( $data->out_time ) {
-                    //First! If no schedule make sure to have an actual in and out as official schedule.
-                    $sched_day_out = convert_date_utc_to_local($data->out_time, 'Y-m-d'); //local
-                    $sched_out = convert_date_utc_to_local($data->out_time);
-
-                    //Second! Get the current day schedule instance based on in time.
-                    if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
-                        $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
-                        $sched_out = $sched_day_out .' '. $sched_time; //local
-                        $current_schedout = $today_sched;
-                    }
-
-                    //Important variable for metrics.
-                    $sched_out = strtotime($sched_out);
+                    /* #region DURATION & SCHEDULE */
 
                     //duration, Actual time in hours decimal.
                     $duration = max($to_time-$from_time, 0);
-
-                    //undertime, Get undertime: y = diff_time(sched_end, out_time)
-                    $under = convert_seconds_to_hour_decimal( max($sched_out-$to_time, 0) );
-
-                    // Post Bonus Pay
-                    $post_bonus = convert_seconds_to_hour_decimal( max($to_time-$sched_out, 0) );
-                    $post_bonus = $post_bonus>=$bonuspay_trigger?$bonuspay_trigger:0;
-                    $bonus += number_with_decimal($post_bonus);
-                    
+                                        
                     //Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
-                    $schedule = convert_seconds_to_hour_decimal( max($sched_out-$sched_in, 0) );
-                    $this->hours_per_day = max(($schedule - $this->lunch_break), 8); //by default
+                    $schedule = convert_seconds_to_hour_decimal( max(strtotime($sched_out)-strtotime($sched_in), 0) );
+
+                    /* #endregion */
+
+                    /* #region OVERBREAK PROCESSING */
 
                     //Override schedule and hours per day according to schedule.
                     if($current_schedin && $current_schedout) {
@@ -342,6 +351,10 @@ class BioMeet {
                         $over += ($this->get_second_break($btime)-$this->second_break);
                     }
 
+                    /* #endregion */
+                    
+                    /* #region NIGHTDIFF PROCESSING */
+
                     //Set the NightDiff
                     $night_diff_secs = get_night_differential(
                         convert_date_utc_to_local($data->in_time), 
@@ -350,27 +363,89 @@ class BioMeet {
                     $break_on_night = $this->get_lunch_nightdiff_overlap($btime);
                     $night = convert_seconds_to_hour_decimal( $night_diff_secs ) - convert_seconds_to_hour_decimal($break_on_night); //deduct the lunch break.
 
-                    //idle, Get non worked hours: a = x+y
-                    $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
+                    /* #endregion */
 
-                    //Add pre and post OT as regular pay. TODO: Make this configurable.
-                    $pre_ot = convert_seconds_to_hour_decimal( max($sched_in-$from_time, 0) );
-                    $overtime += $pre_ot>=$overtime_trigger ? $pre_ot:0; //60min greater
-                    $post_ot = convert_seconds_to_hour_decimal( max($to_time-$sched_out, 0) );
-                    $overtime += $post_ot>=$overtime_trigger ? $post_ot:0; //60min greater
+                    /* #region OVERTIME PROCESSING */
+
+                    if(strtotime($sched_in) > $from_time && 
+                        ($to_time > strtotime($sched_in) || $to_time > strtotime($sched_out))) { //pre-ot
+                        $pre_ot += convert_seconds_to_hour_decimal( max(strtotime($sched_in)-$from_time, 0) );
+                        $overtime += $pre_ot>=$overtime_trigger ? $pre_ot:0; //60min greater
+                    }
+
+                    if(strtotime($sched_out) > $to_time && 
+                        (strtotime($sched_in) > $from_time || strtotime($sched_out) > $from_time)) { //post-ot
+                        $post_ot += convert_seconds_to_hour_decimal( max($to_time-strtotime($sched_out), 0) );
+                        $overtime += $post_ot>=$overtime_trigger ? $post_ot:0; //60min greater
+                    }
+
+                    //Handle the next the schedule.
+                    $sched_in_prev = sub_day_to_datetime($sched_in, 1);
+                    $sched_out_prev = sub_day_to_datetime($sched_out, 1);
+                    if(strtotime($sched_out_prev) > $from_time && 
+                        (strtotime($sched_in_prev) > $from_time || strtotime($sched_out_prev) > $from_time)) { //post-ot
+                        $post_ot += convert_seconds_to_hour_decimal( max($to_time-strtotime($sched_out_prev), 0) );
+                        $overtime += $post_ot>=$overtime_trigger ? $post_ot:0; //60min greater
+                    }
+
+                    /* #endregion */
                     
-                    //Make sure that if nonworked is non zero deduct.
-                    $worked = convert_number_to_decimal( max(($this->hours_per_day-$nonworked), 0) );
+                    /* #region POST BONUSPAY */
+
+                    if(strtotime($sched_out) > $from_time && $to_time > strtotime($sched_out)) {
+                        $post_bonus = convert_seconds_to_hour_decimal( max($to_time-strtotime($sched_out), 0) );
+                        $post_bonus = $post_bonus>=$bonuspay_trigger?$bonuspay_trigger:0;
+                        $bonus += number_with_decimal($post_bonus);
+                    }
+
+                    /* #endregion */
+
+                    /* #region WORKED HOUR */
+
+                    //Make sure that if nonworked is non zero deduct. get from overlap.
+                    $worked = convert_seconds_to_hour_decimal( //current
+                        get_time_overlap_seconds(
+                            convert_date_utc_to_local($data->in_time), 
+                            convert_date_utc_to_local($data->out_time), 
+                            $sched_in, 
+                            $sched_out
+                        )
+                    );
+
+                    $worked += convert_seconds_to_hour_decimal( //current
+                        get_time_overlap_seconds(
+                            convert_date_utc_to_local($data->in_time), 
+                            convert_date_utc_to_local($data->out_time), 
+                            sub_day_to_datetime($sched_in, 1), 
+                            sub_day_to_datetime($sched_out, 1)
+                        )
+                    );
 
                     // Add pre and post bonus pay to worked!
                     $worked += $bonus;
 
-                    //Make sure that worked is zero if zero.
-                    $worked = convert_number_to_decimal($worked>0?$worked:0);
+                    //Deduct the actual overtime schedule or default of 1hour.
+                    $worked -= $this->lunch_break; //TODO: Get the lunch break to actual breaktime log.
 
-                    if($worked <= 0) {
-                        $nonworked = convert_number_to_decimal( max($this->hours_per_day, 0) );
+                    /* #endregion */
+                    
+                    /* #region UNDERTIME PROCESSING */
+
+                    // (schedule - lunch break) - worked
+                    //$sched_worked = $schedule-$this->lunch_break;
+                    //$under = max($sched_worked-$worked, 0);
+
+                    if($to_time > strtotime($sched_in) && strtotime($sched_out) > $to_time) {
+                        //Get lates: x = diff_time(in_time, sched_in)
+                        $under = convert_seconds_to_hour_decimal( max(strtotime($sched_out)-$to_time, 0) );
                     }
+
+                    /* #endregion */
+
+                    //idle, Get non worked hours: a = x+y
+                    $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
+
+                    //TODO: Remove this: $this->hours_per_day
 
                     if($this->on_debug && $duration == 0) {
                         $duration = 'Invalid';
