@@ -16,6 +16,7 @@
             dateRangeType: "monthly",
             filterDropdown: [
                 {name: "leave_type_id", class: "w200", options: <?= json_encode($leave_types_dropdown) ?> },
+                {name: "status", class: "w200", options: <?= json_encode($status_dropdown) ?> },
             ],
             columns: [
                 {title: '<?php echo lang("applicant") ?>', "class": "w20p"},

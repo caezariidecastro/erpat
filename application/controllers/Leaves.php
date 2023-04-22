@@ -221,6 +221,12 @@ class Leaves extends MY_Controller {
     // load all applications tab 
     function all_applications() {
         $view_data['leave_types_dropdown'] = $this->_get_leave_types_select2_data();
+        $view_data['status_dropdown'] = array(
+            array('id' => '', 'text'  => '- Leave Status -'),
+            array('id' => 'pending', 'text'  => '- Pending -'),
+            array('id' => 'rejected', 'text'  => '- Approved -'),
+            array('id' => 'approved', 'text'  => '- Rejected -')
+        );
         $this->load->view("leaves/all_applications", $view_data);
     }
 
@@ -254,8 +260,18 @@ class Leaves extends MY_Controller {
         $start_date = $this->input->post('start_date');
         $end_date = $this->input->post('end_date');
         $applicant_id = $this->input->post('applicant_id');
+        $status = $this->input->post('status');
 
-        $options = array("start_date" => $start_date, "end_date" => $end_date, "applicant_id" => $applicant_id, "login_user_id" => $this->login_user->id, "access_type" => $this->access_type, "allowed_members" => $this->allowed_members, "leave_type_id" => $this->input->post('leave_type_id'));
+        $options = array(
+            "start_date" => $start_date, 
+            "end_date" => $end_date, 
+            "status" => $status, 
+            "applicant_id" => $applicant_id, 
+            "login_user_id" => $this->login_user->id, 
+            "access_type" => $this->access_type, 
+            "allowed_members" => $this->allowed_members, 
+            "leave_type_id" => $this->input->post('leave_type_id')
+        );
         $list_data = $this->Leave_applications_model->get_list($options)->result();
         $result = array();
         foreach ($list_data as $data) {
