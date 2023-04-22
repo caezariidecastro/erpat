@@ -35,20 +35,12 @@ class Tickets extends MY_Controller {
             //prepare ticket label filter list
             $view_data['ticket_labels_dropdown'] = json_encode($this->make_labels_dropdown("ticket", "", true));
 
-            //prepare assign to filter list
-            $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang("assigned_to") . " -"));
-
-            $assigned_to_list = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
-            foreach ($assigned_to_list as $key => $value) {
-                $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
-            }
-
             $view_data['show_options_column'] = true; //team members can view the options column
 
-            $view_data['assigned_to_dropdown'] = json_encode($assigned_to_dropdown);
-
-            $view_data['ticket_types_dropdown'] = json_encode($this->_get_ticket_types_dropdown_list_for_filter());
-
+            $view_data['assigned_to_dropdown'] = json_encode($this->get_users_select2_dropdown("assigned_to"));
+            
+            $view_data['ticket_types_dropdown'] = json_encode($this->_get_ticket_types_select2_filter());
+            
             $this->template->rander("tickets/index", $view_data);
         } else {
             $view_data['client_id'] = $this->login_user->client_id;
@@ -65,19 +57,12 @@ class Tickets extends MY_Controller {
         //prepare ticket label filter list
         $view_data['ticket_labels_dropdown'] = json_encode($this->make_labels_dropdown("ticket", "", true));
 
-        //prepare assign to filter list
-        $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang("assigned_to") . " -"));
-
-        $assigned_to_list = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
-        foreach ($assigned_to_list as $key => $value) {
-            $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
-        }
-
         $view_data['show_options_column'] = true; //team members can view the options column
 
-        $view_data['assigned_to_dropdown'] = json_encode($assigned_to_dropdown);
+        $allowed_users = $this->get_allowed_users_only("ticket_staff");
+        $view_data['assigned_to_dropdown'] = json_encode($this->get_users_select2_dropdown("assigned_to", $allowed_users));
 
-        $view_data['ticket_types_dropdown'] = json_encode($this->_get_ticket_types_dropdown_list_for_filter());
+        $view_data['ticket_types_dropdown'] = json_encode($this->_get_ticket_types_select2_filter());
         
         $this->load->view("tickets/browse/index", $view_data);
     }
@@ -150,9 +135,8 @@ class Tickets extends MY_Controller {
         $requested_by_suggestion = array(array("id" => "", "text" => "-"));
         $view_data['requested_by_dropdown'] = $requested_by_suggestion;
 
-        //prepare assign to list
-        $assigned_to_dropdown = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
-        $view_data['assigned_to_dropdown'] = $assigned_to_dropdown;
+        $allowed_users = $this->get_allowed_users_only("ticket_staff");
+        $view_data['assigned_to_dropdown'] = $this->get_users_select2_filter("assigned_to", $allowed_users);
 
         //prepare label suggestions
         $view_data['label_suggestions'] = $this->make_labels_dropdown("ticket", $view_data['model_info']->labels);
@@ -892,22 +876,6 @@ class Tickets extends MY_Controller {
             $suggestion[] = array("id" => $key, "text" => $value);
         }
         echo json_encode($suggestion);
-    }
-
-    private function _get_ticket_types_dropdown_list_for_filter() {
-
-        $where = array();
-        if ($this->login_user->user_type === "staff" && $this->access_type !== "all" && !empty($this->allowed_ticket_types)) {
-            $where = array("where_in" => array("id" => $this->allowed_ticket_types));
-        }
-
-        $ticket_type = $this->Ticket_types_model->get_dropdown_list(array("title"), "id", $where);
-
-        $ticket_type_dropdown = array(array("id" => "", "text" => "- " . lang("ticket_type") . " -"));
-        foreach ($ticket_type as $id => $name) {
-            $ticket_type_dropdown[] = array("id" => $id, "text" => $name);
-        }
-        return $ticket_type_dropdown;
     }
 
 }

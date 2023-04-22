@@ -4,7 +4,9 @@
         <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang("manage"); ?></h4></li>
         <div class="tab-title clearfix no-border">
             <div class="title-button-group">
+                <?php if($this->login_user->is_admin) { ?>
                 <?php echo modal_anchor(get_uri("labels/modal_form"), "<i class='fa fa-tags'></i> " . lang('labels'), array("class" => "btn btn-default", "title" => lang('manage_labels'), "data-post-type" => "ticket")); ?>
+                <?php } ?>
                 <?php echo modal_anchor(get_uri("tickets/settings_modal_form"), "<i class='fa fa fa-cog'></i> " . lang('signature'), array("class" => "btn btn-default", "title" => lang('signature'))); ?>
                 <?php echo modal_anchor(get_uri("tickets/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_ticket'), array("class" => "btn btn-default", "title" => lang('add_ticket'))); ?>
             </div>

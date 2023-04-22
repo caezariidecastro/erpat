@@ -122,7 +122,8 @@ class Roles extends MY_Controller {
             array("can_delete_files", "Coming Soon", "Planning", "Delete Files", null),
 
             //HELP CENTER
-            array("ticket", "Coming Soon", "Default: Ticket", "Access", "dropdown"), 
+            array("ticket", "Coming Soon", "Default: Ticket Type", "Access", "dropdown"),
+            array("ticket_staff", "Coming Soon", "Default: Ticket Staff", "Access", "dropdown"),  
             array("page", "Coming Soon", "Web Pages", "Enabled", null, true),
             array("help", "Coming Soon", "Help Center", "Enabled", null, true, true),
             array("knowledge_base", "Coming Soon", "Knowledge Base", "Enabled", null, true, true),
