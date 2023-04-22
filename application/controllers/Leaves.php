@@ -99,7 +99,7 @@ class Leaves extends MY_Controller {
         $leave_data['applicant_id'] = $applicant_id;
         $leave_data['created_by'] = $this->login_user->id;
         $leave_data['checked_by'] = $this->login_user->id;
-        $leave_data['checked_at'] = $leave_data['created_at'];
+        $leave_data['checked_at'] = "0000:00:00";
         $leave_data['status'] = "pending";
 
         //hasn't full access? allow to update only specific member's record, excluding loged in user's own record
@@ -372,6 +372,8 @@ class Leaves extends MY_Controller {
         }
         $data->duration_meta = $duration;
         $data->leave_type_meta = "<span style='background-color:" . $data->leave_type_color . "' class='color-tag pull-left'></span>" . $data->leave_type_title . ", " . ($data->required_credits?"Deducted":"Not Deducted"). ", " . ($data->paid?"w/ Pay":"Not Paid");
+        
+        $data->checked_date = convert_date_utc_to_local($data->checked_at, "d/m/Y");
         return $data;
     }
 

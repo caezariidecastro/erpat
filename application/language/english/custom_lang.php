@@ -1026,3 +1026,6 @@ $lang["leave_type_credits"] = "Leave Type Credits";
 
 $lang["30min_break_employee"] = "30m Break Employees";
 $lang["edit_breaks"] = "Edit Breaks";
+
+$lang["approved_date"] = "Approved date";
+$lang["rejected_date"] = "Rejected date";

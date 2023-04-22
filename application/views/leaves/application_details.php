@@ -19,11 +19,11 @@
             <table class="table dataTable display b-t">
                 <tr>
                     <td class="w100"> <?php echo lang('overall_leave_credits'); ?></td>
-                    <td><?php echo get_total_leave_credit_balance($leave_info->applicant_id); ?></td>
+                    <td><?php echo get_total_leave_credit_balance($leave_info->applicant_id)." ".lang("days"); ?></td>
                 </tr>
                 <tr>
                     <td class="w100"> <?php echo lang('leave_type_credits'); ?></td>
-                    <td><?php echo get_total_leave_credit_balance($leave_info->applicant_id, $leave_info->leave_type_id); ?></td>
+                    <td><?php echo get_total_leave_credit_balance($leave_info->applicant_id, $leave_info->leave_type_id)." ".lang("days"); ?></td>
                 </tr>
                 <tr>
                     <td class="w100"> <?php echo lang('leave_type'); ?></td>
@@ -54,6 +54,13 @@
                             ?>
                         </td>
                     </tr>
+                    <tr>
+                        <td> <?php echo lang('rejected_date'); ?></td>
+                        <td><?php
+                            echo "<span>" . $leave_info->checked_date . "</span>";
+                            ?>
+                        </td>
+                    </tr>
                 <?php } ?>
                 <?php if ($leave_info->status === "approved") { ?>
                     <tr>
@@ -61,6 +68,13 @@
                         <td><?php
                             $image_url = get_avatar($leave_info->checker_avatar);
                             echo "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span><span>" . $leave_info->checker_name . "</span>";
+                            ?>
+                    </td>
+                    <tr>
+                        <tr>
+                        <td> <?php echo lang('approved_date'); ?></td>
+                        <td><?php
+                            echo "<span>" . $leave_info->checked_date . "</span>";
                             ?>
                         </td>
                     </tr>
