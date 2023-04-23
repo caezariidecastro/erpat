@@ -7,7 +7,7 @@ class Attendance extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_attendance", true);
+        $this->with_module("attendance", true);
         $this->with_permission("attendance", true);
         $this->access_only_team_members();
         

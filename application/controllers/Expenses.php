@@ -22,7 +22,7 @@ class Expenses extends MY_Controller {
 
     //load the expenses list view
     function index() {
-        $this->with_module("module_expense");
+        $this->with_module("expense");
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("expenses", $this->login_user->is_admin, $this->login_user->user_type);
 

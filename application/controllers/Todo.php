@@ -7,7 +7,7 @@ class Todo extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_todo", true);
+        $this->with_module("todo", true);
 
         $this->load->model("Todo_model");
     }

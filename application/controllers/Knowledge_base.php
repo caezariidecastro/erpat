@@ -11,7 +11,7 @@ class Knowledge_base extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_knowledge_base", true);
+        $this->with_module("knowledge_base", true);
         $this->with_permission("knowledge_base", true);
 
         $this->load->model("Help_categories_model");

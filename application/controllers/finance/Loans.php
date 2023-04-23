@@ -7,7 +7,7 @@ class Loans extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_loan", true);
+        $this->with_module("loan", true);
         $this->with_permission("loan", true);
 
         $this->load->model("Loans_model");

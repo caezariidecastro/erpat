@@ -10,7 +10,7 @@ class MY_Controller extends CI_Controller {
     protected $is_user_a_project_member = false;
     protected $is_clients_project = false; //check if loged in user's client's project
 
-    protected $specifics = array("leave", "attendance", "team_member_update_permission", "timesheet_manage_permission", "message_permission", "ticket_staff", "staff");
+    protected $specifics = array("leave", "attendance", "timesheet_manage_permission", "message_permission", "ticket_staff", "staff");
 
     function __construct($initialize = true) {
         parent::__construct();
@@ -114,7 +114,7 @@ class MY_Controller extends CI_Controller {
      * Check if the module is enabled or not.
      */
     protected function with_module($module_name, $redirect = false) {
-        if ( $this->Settings_model->get_setting($module_name) === "1" ) {
+        if ( $this->Settings_model->get_setting("module_".$module_name) === "1" ) {
             return true;
         }
 
@@ -123,6 +123,19 @@ class MY_Controller extends CI_Controller {
         }
 
         return false;
+    }
+
+    protected function can_manage_user($user_id, $access = "staff", $allow_self = false) {
+        if($this->login_user->is_admin) {
+            return true;
+        }
+        
+        $user_list = $this->get_allowed_users_only($access);
+        if(!$allow_self && $this->login_user->id == $user_id) {
+            return false;
+        }
+        
+        return in_array($user_id, $user_list);
     }
 
     /**

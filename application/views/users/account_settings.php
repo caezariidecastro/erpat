@@ -1,164 +1,171 @@
-<div class="tab-content">
-    <?php
-    $url = "hrs/team_members";
-    if ($user_info->user_type === "client") {
-        $url = "clients";
-    }
-    echo form_open(get_uri($url . "/save_account_settings/" . $user_info->id), array("id" => "account-info-form", "class" => "general-form dashed-row white", "role" => "form"));
-    ?>
-    <div class="panel">
-        <div class="panel-default panel-heading">
-            <h4><?php echo lang('account_settings'); ?></h4>
-        </div>
-        <div class="panel-body">
-            <input type="hidden" name="first_name" value="<?php echo $user_info->first_name; ?>" />
-            <input type="hidden" name="last_name" value="<?php echo $user_info->last_name; ?>" />
-            <div class="form-group">
-                <label for="email" class=" col-md-2"><?php echo lang('email'); ?></label>
-                <div class=" col-md-10">
-                    <?php
-                    echo form_input(array(
-                        "id" => "email",
-                        "name" => "email",
-                        "value" => $user_info->email,
-                        "class" => "form-control",
-                        "placeholder" => lang('email'),
-                        "autocomplete" => "off",
-                        "data-rule-email" => true,
-                        "data-msg-email" => lang("enter_valid_email"),
-                        "data-rule-required" => true,
-                        "data-msg-required" => lang("field_required"),
-                    ));
-                    ?>
-                </div>
+<div class="container">
+    <div class="tab-content">
+        <?php
+        $url = "hrs/team_members";
+        if ($user_info->user_type === "client") {
+            $url = "clients";
+        }
+        echo form_open(get_uri($url . "/save_account_settings/" . $user_info->id), array("id" => "account-info-form", "class" => "general-form dashed-row white", "role" => "form"));
+        ?>
+        <div class="panel">
+            <div class="panel-default panel-heading">
+                <h4><?php echo lang('account_settings'); ?></h4>
             </div>
-            <div class="form-group">
-                <label for="password" class=" col-md-2"><?php echo lang('password'); ?></label>
-                <div class=" col-md-10">
-                    <?php
-                    echo form_password(array(
-                        "id" => "password",
-                        "name" => "password",
-                        "class" => "form-control",
-                        "placeholder" => lang('password'),
-                        "autocomplete" => "off",
-                        "data-rule-minlength" => 6,
-                        "data-msg-minlength" => lang("enter_minimum_6_characters"),
-                    ));
-                    ?>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="retype_password" class=" col-md-2"><?php echo lang('retype_password'); ?></label>
-                <div class=" col-md-10">
-                    <?php
-                    echo form_password(array(
-                        "id" => "retype_password",
-                        "name" => "retype_password",
-                        "class" => "form-control",
-                        "placeholder" => lang('retype_password'),
-                        "autocomplete" => "off",
-                        "data-rule-equalTo" => "#password",
-                        "data-msg-equalTo" => lang("enter_same_value")
-                    ));
-                    ?>
-                </div>
-            </div>
-
-            <?php if ($user_info->id !== $this->login_user->id && $user_info->user_type === "staff" && $show_account_access ) { ?>
+            <div class="panel-body">
+                <input type="hidden" name="first_name" value="<?php echo $user_info->first_name; ?>" />
+                <input type="hidden" name="last_name" value="<?php echo $user_info->last_name; ?>" />
                 <div class="form-group">
-                    <label for="role" class=" col-md-2"><?php echo lang('role'); ?></label>
+                    <label for="email" class=" col-md-2"><?php echo lang('email'); ?></label>
                     <div class=" col-md-10">
                         <?php
-                        if ($this->login_user->id == $user_info->id) {
-                            echo "<div class='ml15'>" . lang("admin") . "</div>";
-                        } else {
-                            echo form_dropdown("role", $role_dropdown, array($user_info->role_id), "class='select2' id='user-role'");
-                            ?>
-                            <div id="user-role-help-block" class="help-block ml10 <?php echo $user_info->role_id === "admin" ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("admin_user_has_all_power"); ?></div>
+                        echo form_input(array(
+                            "id" => "email",
+                            "name" => "email",
+                            "value" => $user_info->email,
+                            "class" => "form-control",
+                            $can_update?"writable":"disabled" => true,
+                            "placeholder" => lang('email'),
+                            "autocomplete" => "off",
+                            "data-rule-email" => true,
+                            "data-msg-email" => lang("enter_valid_email"),
+                            "data-rule-required" => true,
+                            "data-msg-required" => lang("field_required"),
+                        ));
+                        ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class=" col-md-2"><?php echo lang('password'); ?></label>
+                    <div class=" col-md-10">
+                        <?php
+                        echo form_password(array(
+                            "id" => "password",
+                            "name" => "password",
+                            "class" => "form-control",
+                            $can_update?"writable":"disabled" => true,
+                            "placeholder" => lang('password'),
+                            "autocomplete" => "off",
+                            "data-rule-minlength" => 6,
+                            "data-msg-minlength" => lang("enter_minimum_6_characters"),
+                        ));
+                        ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="retype_password" class=" col-md-2"><?php echo lang('retype_password'); ?></label>
+                    <div class=" col-md-10">
+                        <?php
+                        echo form_password(array(
+                            "id" => "retype_password",
+                            "name" => "retype_password",
+                            "class" => "form-control",
+                            $can_update?"writable":"disabled" => true,
+                            "placeholder" => lang('retype_password'),
+                            "autocomplete" => "off",
+                            "data-rule-equalTo" => "#password",
+                            "data-msg-equalTo" => lang("enter_same_value")
+                        ));
+                        ?>
+                    </div>
+                </div>
+
+                <?php if ($user_info->id !== $this->login_user->id && $user_info->user_type === "staff" && $show_account_access ) { ?>
+                    <div class="form-group">
+                        <label for="role" class=" col-md-2"><?php echo lang('role'); ?></label>
+                        <div class=" col-md-10">
                             <?php
-                        }
-                        ?>
+                            if ($this->login_user->id == $user_info->id) {
+                                echo "<div class='ml15'>" . lang("admin") . "</div>";
+                            } else {
+                                echo form_dropdown("role", $role_dropdown, array($user_info->role_id), "class='select2' id='user-role'");
+                                ?>
+                                <div id="user-role-help-block" class="help-block ml10 <?php echo $user_info->role_id === "admin" ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("admin_user_has_all_power"); ?></div>
+                                <?php
+                            }
+                            ?>
+                        </div>
                     </div>
-                </div>
-            
-                <div class="form-group">
-                    <label for="access_erpat" class="col-md-2"><?php echo lang('access_erpat'); ?></label>
-                    <div class="col-md-10">
-                        <?php
-                        echo form_checkbox("access_erpat", "1", $user_info->access_erpat ? true : false, "id='access_erpat' class='ml15'");
-                        ?>
-                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_erpat ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                
+                    <div class="form-group">
+                        <label for="access_erpat" class="col-md-2"><?php echo lang('access_erpat'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_checkbox("access_erpat", "1", $user_info->access_erpat ? true : false, "id='access_erpat' class='ml15'");
+                            ?>
+                            <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_erpat ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="access_syntry" class="col-md-2"><?php echo lang('access_syntry'); ?></label>
-                    <div class="col-md-10">
-                        <?php
-                        echo form_checkbox("access_syntry", "1", $user_info->access_syntry ? true : false, "id='access_syntry' class='ml15'");
-                        ?>
-                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_syntry ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                    <div class="form-group">
+                        <label for="access_syntry" class="col-md-2"><?php echo lang('access_syntry'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_checkbox("access_syntry", "1", $user_info->access_syntry ? true : false, "id='access_syntry' class='ml15'");
+                            ?>
+                            <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_syntry ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="access_galyon" class="col-md-2"><?php echo lang('access_galyon'); ?></label>
-                    <div class="col-md-10">
-                        <?php
-                        echo form_checkbox("access_galyon", "1", $user_info->access_galyon ? true : false, "id='access_galyon' class='ml15'");
-                        ?>
-                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_galyon ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                    <div class="form-group">
+                        <label for="access_galyon" class="col-md-2"><?php echo lang('access_galyon'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_checkbox("access_galyon", "1", $user_info->access_galyon ? true : false, "id='access_galyon' class='ml15'");
+                            ?>
+                            <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_galyon ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="access_madage" class="col-md-2"><?php echo lang('access_madage'); ?></label>
-                    <div class="col-md-10">
-                        <?php
-                        echo form_checkbox("access_madage", "1", $user_info->access_madage ? true : false, "id='access_madage' class='ml15'");
-                        ?>
-                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_madage ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                    <div class="form-group">
+                        <label for="access_madage" class="col-md-2"><?php echo lang('access_madage'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_checkbox("access_madage", "1", $user_info->access_madage ? true : false, "id='access_madage' class='ml15'");
+                            ?>
+                            <span id="disable-login-help-block" class="ml10 <?php echo $user_info->access_madage ? "hide" : "" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_access_help_message"); ?></span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="disable_login" class="col-md-2"><?php echo lang('disable_login'); ?></label>
-                    <div class="col-md-10">
-                        <?php
-                        echo form_checkbox("disable_login", "1", $user_info->disable_login ? true : false, "id='disable_login' class='ml15'");
-                        ?>
-                        <span id="disable-login-help-block" class="ml10 <?php echo $user_info->disable_login ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_login_help_message"); ?></span>
+                    <div class="form-group">
+                        <label for="disable_login" class="col-md-2"><?php echo lang('disable_login'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_checkbox("disable_login", "1", $user_info->disable_login ? true : false, "id='disable_login' class='ml15'");
+                            ?>
+                            <span id="disable-login-help-block" class="ml10 <?php echo $user_info->disable_login ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("disable_login_help_message"); ?></span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="user_status" class="col-md-2"><?php echo lang('mark_as_inactive'); ?></label>
-                    <div class="col-md-10">
-                        <?php
-                        echo form_checkbox("status", "inactive", $user_info->status === "inactive" ? true : false, "id='user_status' class='ml15'");
-                        ?>
-                        <span id="user-status-help-block" class="ml10 <?php echo $user_info->status === "inactive" ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("mark_as_inactive_help_message"); ?></span>
+                    <div class="form-group">
+                        <label for="user_status" class="col-md-2"><?php echo lang('mark_as_inactive'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_checkbox("status", "inactive", $user_info->status === "inactive" ? true : false, "id='user_status' class='ml15'");
+                            ?>
+                            <span id="user-status-help-block" class="ml10 <?php echo $user_info->status === "inactive" ? "" : "hide" ?>"><i class="fa fa-warning text-warning"></i> <?php echo lang("mark_as_inactive_help_message"); ?></span>
+                        </div>
                     </div>
-                </div>
-            <?php } ?>
+                <?php } ?>
 
-            <?php if ($user_info->user_type === "client" && $this->login_user->is_admin) { ?>
-                <div class="form-group hide" id="resend_login_details_section">
-                    <label for="email_login_details" class="col-md-2"><?php echo lang('email_login_details'); ?></label>
-                    <div class="col-md-10">
-                        <?php
-                        echo form_checkbox("email_login_details", "1", false, "id='email_login_details' class='ml15'");
-                        ?>
+                <?php if ($user_info->user_type === "client" && $this->login_user->is_admin) { ?>
+                    <div class="form-group hide" id="resend_login_details_section">
+                        <label for="email_login_details" class="col-md-2"><?php echo lang('email_login_details'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_checkbox("email_login_details", "1", false, "id='email_login_details' class='ml15'");
+                            ?>
+                        </div>
                     </div>
-                </div>
-            <?php } ?>
+                <?php } ?>
+            </div>
+            <div class="panel-footer">
+                <?php if($can_update) { ?>
+                <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
+                <?php } ?>
+            </div>
         </div>
-        <div class="panel-footer">
-            <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
-        </div>
+        <?php echo form_close(); ?>
     </div>
-    <?php echo form_close(); ?>
 </div>
 
 <script type="text/javascript">

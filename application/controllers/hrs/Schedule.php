@@ -52,7 +52,7 @@ class Schedule extends MY_Controller
     }
 
     function index() {
-        $this->with_module("module_attendance");
+        $this->with_module("attendance");
 
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
         $this->template->rander("schedule/index", $view_data);

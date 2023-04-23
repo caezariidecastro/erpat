@@ -7,7 +7,7 @@ class Sales_matrix extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_sales_summary", true);
+        $this->with_module("sales_summary", true);
         $this->with_permission("sales_summary", true);
 
         $this->load->model("Sales_matrix_model");

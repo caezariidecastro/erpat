@@ -214,13 +214,13 @@ if (!function_exists('get_user_deductions')) {
             $results = unserialize($result);
         } else {
             $results = [
-                array("sss_contri", 0.00, 0.00, 0.00, 0.00),
-                array("pagibig_contri", 0.00, 0.00, 0.00, 0.00),
-                array("philhealth_contri", 0.00, 0.00, 0.00, 0.00),
-                array("hmo_contri", 0.00, 0.00, 0.00, 0.00),
-                array("company_loan", 0.00, 0.00, 0.00, 0.00),
-                array("sss_loan", 0.00, 0.00, 0.00, 0.00),
-                array("hdmf_loan", 0.00, 0.00, 0.00, 0.00),
+                array(lang("sss_contri"), 0.00, 0.00, 0.00, 0.00),
+                array(lang("pagibig_contri"), 0.00, 0.00, 0.00, 0.00),
+                array(lang("philhealth_contri"), 0.00, 0.00, 0.00, 0.00),
+                array(lang("hmo_contri"), 0.00, 0.00, 0.00, 0.00),
+                array(lang("company_loan"), 0.00, 0.00, 0.00, 0.00),
+                array(lang("sss_loan"), 0.00, 0.00, 0.00, 0.00),
+                array(lang("hdmf_loan"), 0.00, 0.00, 0.00, 0.00),
             ];
         }
 
@@ -228,7 +228,7 @@ if (!function_exists('get_user_deductions')) {
         foreach($results as $item) {
             if( $is_raw ) {
                 $data[] = array(
-                    $item[0],
+                    lang($item[0]),
                     $item[1],
                     $item[2],
                     $item[3],
@@ -236,7 +236,7 @@ if (!function_exists('get_user_deductions')) {
                 );
             } else {
                 $data[] = array(
-                    $item[0],
+                    lang($item[0]),
                     cell_input("daily_".$item[0], $item[1], "number"),
                     cell_input("weekly_".$item[0], $item[2], "number"),
                     cell_input("biweekly_".$item[0], $item[3], "number"),

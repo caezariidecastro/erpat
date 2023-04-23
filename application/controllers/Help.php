@@ -7,7 +7,7 @@ class Help extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_help", true);
+        $this->with_module("help", true);
         $this->with_permission("help", true);
 
         $this->load->model("Help_categories_model");

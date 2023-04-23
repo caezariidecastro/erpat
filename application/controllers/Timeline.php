@@ -14,7 +14,7 @@ class Timeline extends MY_Controller {
     /* load timeline view */
 
     function index() {
-        $this->with_module("module_timeline");
+        $this->with_module("timeline");
 
         $view_data['team_members'] = "";
         $this->init_permission_checker("message_permission");

@@ -25,19 +25,19 @@ class Roles extends MY_Controller {
             //STAFFING
             array("staff", "Coming Soon", "Staffing: Module", "Access", "dropdown", true),
             array("staff_invite", "Coming Soon", "Staffing: Email Invite", "Email", null),
+            array("staff_account", "Coming Soon", "Staffing: Account", "Account", null),
             array("staff_view_personal_background", "Coming Soon", "Staffing: Personal Background", "View", null),
             array("staff_view_job_description", "Coming Soon", "Staffing: Job Description", "View", null),
             array("staff_view_bank_info", "Coming Soon", "Staffing: Bank Info", "View", null),
             array("staff_view_contribution_details", "Coming Soon", "Staffing: Contributions Details", "View", null),
 
-            array("team_member_update_permission", "Coming Soon", "Default: User", "Access", "dropdown"),
             array("can_view_team_members_contact_info", "Coming Soon", "HR Employee", "View Contacts", null),
             array("can_view_team_members_social_links", "Coming Soon", "HR Employee", "View Social Links", null),
             array("can_delete_leave_application", "Coming Soon", "HR Employee", "Delete Leave Application", null),
 
             array("department", "Coming Soon", "Staffing: Departments", "Enabled", null, true),
             array("attendance", "Coming Soon", "Attendance: Module", "Access", "dropdown", true),
-            array("leave", "Coming Soon", "Staffing: Leave", "Access", "dropdown"),
+            array("leave", "Coming Soon", "Leave: Module", "Access", "dropdown", true),
             array("holiday", "Coming Soon", "Staffing: Holiday", "Enabled", null, true),
             array("deciplinary", "Coming Soon", "Staffing: Deciplinary", "Enabled", null, true),
 

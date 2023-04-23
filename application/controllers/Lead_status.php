@@ -7,7 +7,7 @@ class Lead_status extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_lead", true);
+        $this->with_module("lead", true);
         $this->with_permission("lead", true);
         
         $this->load->model("Lead_status_model");

@@ -1033,3 +1033,11 @@ $lang["rejected_date"] = "Rejected date";
 $lang["ip_tracking_whitelisting"] = "IP Tracking Whitelisting";
 
 $lang["select_user"] = "Select User";
+
+$lang["sss_contri"] = "SSS CONTRIBUTION";
+$lang["pagibig_contri"] = "PAGIBIG CONTRIBUTION";
+$lang["philhealth_contri"] = "PHILHEALTH CONTRIBUTION";
+$lang["hmo_contri"] = "HMO PAYMENT";
+$lang["company_loan"] = "COMPANY LOAN";
+$lang["sss_loan"] = "SSS LOAN";
+$lang["hdmf_loan"] = "HDMF LOAN";

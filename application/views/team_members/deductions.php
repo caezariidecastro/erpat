@@ -16,7 +16,9 @@
         <div class="page-title clearfix">
             <h4> <?php echo lang('deductions'); ?></h4>
             <div class="title-button-group">
+                <?php if($can_update) { ?>
                 <button type="submit" class="btn btn-default"><span class="fa fa-check-circle"></span> <?php echo lang('save_changes'); ?></button>
+                <?php } ?>
             </div>
         </div>
         <div class="table-responsive">

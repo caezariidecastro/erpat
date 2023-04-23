@@ -7,7 +7,7 @@ class Pages extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_page", true);
+        $this->with_module("page", true);
         $this->with_permission("page", true);
 
         $this->load->model("Pages_model");

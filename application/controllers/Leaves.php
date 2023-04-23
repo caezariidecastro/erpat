@@ -7,7 +7,7 @@ class Leaves extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_leave", true);   
+        $this->with_module("leave", true);   
 
         $this->access_only_team_members();
         $this->load->model("Leave_credits_model");

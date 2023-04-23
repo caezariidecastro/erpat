@@ -7,7 +7,7 @@ class Estimates extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_estimate", true);
+        $this->with_module("estimate", true);
         $this->with_permission("estimate", true);
 
         //$this->init_permission_checker("estimate");

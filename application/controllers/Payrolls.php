@@ -362,9 +362,7 @@ class Payrolls extends MY_Controller {
     }
 
     function save_contribution() {
-        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
-			redirect("forbidden");
-		}
+        $this->with_permission("staff_update", true);
 
         $user_id = $this->input->post('user_id');
         $deductions = get_user_deductions($user_id, true);

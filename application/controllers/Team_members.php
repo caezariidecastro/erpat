@@ -7,7 +7,7 @@ class Team_members extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("module_employee", true);
+        $this->with_module("employee", true);
         $this->with_permission("staff", true);
 
         $this->access_only_team_members();
@@ -38,52 +38,6 @@ class Team_members extends MY_Controller {
             } else if (get_array_value($this->login_user->permissions, "can_view_team_members_contact_info") == "1") {
                 return true;
             }
-        }
-    }
-
-    private function can_view_team_members_social_links() {
-        if ($this->login_user->user_type == "staff") {
-            if ($this->login_user->is_admin) {
-                return true;
-            } else if (get_array_value($this->login_user->permissions, "can_view_team_members_social_links") == "1") {
-                return true;
-            }
-        }
-    }
-
-    private function update_only_allowed_members($user_id) {
-        if ($this->can_update_team_members_info($user_id)) {
-            return true; //own profile
-        } else {
-            redirect("forbidden");
-        }
-    }
-
-    //only admin can change other user's info
-    //none admin users can only change his/her own info
-    //allowed members can update other members info    
-    private function can_update_team_members_info($user_id) {
-        $access_info = $this->get_access_info("team_member_update_permission");
-
-        if ($this->login_user->id === $user_id) {
-            return true; //own profile
-        } else if ($access_info->access_type == "all") {
-            return true; //has access to change all user's profile
-        } else if ($user_id && in_array($user_id, $access_info->allowed_members)) {
-            return true; //has permission to update this user's profile
-        } else {
-
-            return false;
-        }
-    }
-
-    //only admin can change other user's info
-    //none admin users can only change his/her own info
-    private function only_admin_or_own_or_permission($user_id) {
-        if ($user_id && ($this->login_user->id === $user_id || $this->with_permission('team_member_update_permission_all'))) {
-            return true;
-        } else {
-            redirect("forbidden");
         }
     }
 
@@ -206,6 +160,7 @@ class Team_members extends MY_Controller {
             'department_id' => $this->input->post('department_select2_filter'),
             'sched_id' => $this->input->post('schedule_select2_filter'),
             "user_type" => "staff",
+            "where_in" => $this->get_allowed_users_only("staff")
         );
 
         $list_data = $this->Users_model->get_details($options)->result();
@@ -261,6 +216,7 @@ class Team_members extends MY_Controller {
             'department_id' => $this->input->post('department_select2_filter'),
             'sched_id' => $this->input->post('schedule_select2_filter'),
             "user_type" => "staff",
+            "where_in" => $this->get_allowed_users_only("staff")
         );
 
         $list_data = $this->Users_model->get_details($options)->result();
@@ -311,6 +267,7 @@ class Team_members extends MY_Controller {
             'department_id' => $this->input->post('department_select2_filter'),
             'sched_id' => $this->input->post('schedule_select2_filter'),
             "user_type" => "staff",
+            "where_in" => $this->get_allowed_users_only("staff")
         );
 
         $list_data = $this->Users_model->get_details($options)->result();
@@ -359,6 +316,7 @@ class Team_members extends MY_Controller {
             'department_id' => $this->input->post('department_select2_filter'),
             'sched_id' => $this->input->post('schedule_select2_filter'),
             "user_type" => "staff",
+            "where_in" => $this->get_allowed_users_only("staff")
         );
 
         $list_data = $this->Users_model->get_details($options)->result();
@@ -389,6 +347,7 @@ class Team_members extends MY_Controller {
         $id = $this->input->post('id');
         $options = array(
             "id" => $id,
+            "where_in" => $this->get_allowed_users_only("staff")
         );
 
         if($id) {
@@ -410,10 +369,10 @@ class Team_members extends MY_Controller {
     /* save new member */
 
     function add_team_member() {
-        if(!$this->login_user->is_admin && !$this->access_only_specific("team_member_update_permission") ) {
-			redirect("forbidden");
-		}
-        $this->with_permission("staff_create", true);
+        if(!$this->with_permission("staff_create")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
 
         //check duplicate email address, if found then show an error message
         if ($this->Users_model->is_email_exists($this->input->post('email'))) {
@@ -529,6 +488,7 @@ class Team_members extends MY_Controller {
         $id = $this->input->post('id');
         $options = array(
             "id" => $id,
+            "where_in" => $this->get_allowed_users_only("staff")
         );
 
         $view_data['model_info'] = $this->Users_model->get_details($options)->row();
@@ -562,6 +522,7 @@ class Team_members extends MY_Controller {
         $id = $this->input->post('id');
         $options = array(
             "id" => $id,
+            "where_in" => $this->get_allowed_users_only("staff")
         );
         $view_data['model_info'] = $this->Users_model->get_details($options)->row();
 
@@ -569,16 +530,16 @@ class Team_members extends MY_Controller {
     }
 
     function update_schedule() {
-        if( !$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
-			redirect("forbidden");
-		}
-        $this->with_permission("staff_update", true);
-
         validate_submitted_data(array(
             "user_id" => "required|numeric"
         ));
-
         $user_id = $this->input->post('user_id');
+
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
+
         $job_data = array(
             "user_id" => $user_id,
             "sched_id" => $this->input->post('schedule_id'),
@@ -613,17 +574,18 @@ class Team_members extends MY_Controller {
     }
 
     function update_rfid_num() {
-        if( !$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
-			redirect("forbidden");
-		}
-        $this->with_permission("staff_update", true);
-
         validate_submitted_data(array(
             "user_id" => "required|numeric"
         ));
+        $user_id = $this->input->post('user_id');
+
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
 
         $job_data = array(
-            "user_id" => $this->input->post('user_id'),
+            "user_id" => $user_id,
             "rfid_num" => $this->input->post('rfid_num'),
         );
 
@@ -786,7 +748,8 @@ class Team_members extends MY_Controller {
             'department_id' => $this->input->post('department_select2_filter'),
             'sched_id' => $this->input->post('schedule_select2_filter'),
             "user_type" => $type_of_user,
-            "custom_fields" => $custom_fields
+            "custom_fields" => $custom_fields, 
+            "where_in" => $this->get_allowed_users_only("staff")
         );
 
         $list_data = $this->Users_model->get_details($options)->result();
@@ -803,7 +766,8 @@ class Team_members extends MY_Controller {
         $options = array(
             "id" => $id,
             "custom_fields" => $custom_fields,
-            "include_teams" => "yes"
+            "include_teams" => "yes",
+            "where_in" => $this->get_allowed_users_only("staff")
         );
 
         $data = $this->Users_model->get_details($options)->row();
@@ -876,11 +840,7 @@ class Team_members extends MY_Controller {
             </span>';
         }
 
-        if($this->login_user->is_admin || (!$this->login_user->is_admin && !$data->is_admin)) {
-            $row_data[] = $action_btn;
-        } else {
-            $row_data[] = "";
-        }
+        $row_data[] = $action_btn;
 
         return $row_data;
     }
@@ -923,66 +883,20 @@ class Team_members extends MY_Controller {
         if ($id) {
 
             //we have an id. view the team_member's profie
-            $options = array("id" => $id);
+            $options = array("id" => $id, "where_in" => $this->get_allowed_users_only("staff"));
             $user_info = $this->Users_model->get_details($options)->row();
             if ($user_info) {
 
-                //check which tabs are viewable for current logged in user
-                $view_data['show_timeline'] = get_setting("module_timeline") ? true : false;
-
-                $can_update_team_members_info = $this->can_update_team_members_info($id);
-
-                $view_data['show_general_info'] = $can_update_team_members_info;
-                $view_data['show_job_info'] = false;
-
-                $view_data['show_account_settings'] = $this->can_update_team_members_info($id);
-
-                $show_attendance = false;
-                $show_leave = false;
-
-                $view_data["show_expense_info"] = (get_setting("module_expense") == "1" && $this->with_permission('expense'));
-
-                //admin can access all members attendance and leave
-                //none admin users can only access to his/her own information 
-
-                if ($user_info->id === $this->login_user->id || $can_update_team_members_info) {
-                    $show_attendance = true;
-                    $show_leave = true;
-                    $view_data['show_job_info'] = true;
-                } else {
-                    $view_data['show_job_info'] = true;
-
-                    //none admin users but who has access to this team member's attendance and leave can access this info
-                    $access_timecard = $this->get_access_info("attendance");
-                    if ($access_timecard->access_type === "all" || in_array($user_info->id, $access_timecard->allowed_members)) {
-                        $show_attendance = true;
-                    }
-
-                    $access_leave = $this->get_access_info("leave");
-                    if ($access_leave->access_type === "all" || in_array($user_info->id, $access_leave->allowed_members)) {
-                        $show_leave = true;
-                    }
-                }
-
-
-                //check module availability
-                $view_data['show_attendance'] = $show_attendance && get_setting("module_attendance") ? true : false;
-                $view_data['show_leave'] = $show_leave && get_setting("module_leave") ? true : false;
-
-
-                //check contact info view permissions
-                $show_cotact_info = $this->can_view_team_members_contact_info();
-                $show_social_links = $this->can_view_team_members_social_links();
-
-                //own info is always visible
-                if ($id == $this->login_user->id) {
-                    $show_cotact_info = true;
-                    $show_social_links = true;
-                }
-
-                $view_data['show_cotact_info'] = $show_cotact_info;
-                $view_data['show_social_links'] = $show_social_links;
-
+                $can_update_team_members = $this->can_manage_user($id, "staff", true);
+                $view_data['show_timeline'] = ($this->with_module("timeline") && $can_update_team_members);
+                $view_data['show_general_info'] = $can_update_team_members;
+                $view_data['show_job_info'] = $can_update_team_members;
+                $view_data['show_account_settings'] = $can_update_team_members;
+                $view_data['show_cotact_info'] = $this->can_view_team_members_contact_info();
+                $view_data['show_social_links'] = $can_update_team_members;
+                $view_data['show_attendance'] = ($this->with_module("attendance") && $this->with_permission('attendance') && $this->can_manage_user($id, "attendance"));
+                $view_data['show_leave'] = ($this->with_module("leave") && $this->with_permission('leave') && $this->can_manage_user($id, "leave"));
+                $view_data["show_expense_info"] = ($this->with_module("expense") && $this->with_permission('expense'));
 
                 //show projects tab to admin
                 $view_data['show_projects'] = false;
@@ -1013,7 +927,7 @@ class Team_members extends MY_Controller {
             }
         } else {
             //we don't have any specific id to view. show the list of team_member
-            $view_data['team_members'] = $this->Users_model->get_details(array("user_type" => "staff", "status" => "active"))->result();
+            $view_data['team_members'] = $this->Users_model->get_details(array("user_type" => "staff", "status" => "active", "where_in" => $this->get_allowed_users_only("staff")))->result();
             $this->template->rander("team_members/profile_card", $view_data);
         }
     }
@@ -1021,7 +935,7 @@ class Team_members extends MY_Controller {
     function qrcode($id) {
         $this->with_permission("attendance");       
 
-        $user_info = $this->Users_model->get_details(array("id" => $id))->row();
+        $user_info = $this->Users_model->get_details(array("id" => $id, "where_in" => $this->get_allowed_users_only("staff") ))->row();
         if($user_info == null) {
             redirect("forbidden");
         }
@@ -1033,23 +947,25 @@ class Team_members extends MY_Controller {
     }
 
     function deductions($user_id) {
-        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
-			redirect("forbidden");
-		}
-        $view_data['user_id'] = $user_id;
+        if(!$this->can_manage_user($user_id, "staff", true)) {
+            redirect('forbidden');
+        }
 
+        $view_data['can_update'] = $this->with_permission('staff_update');
+        $view_data['user_id'] = $user_id;
         $this->load->view("team_members/deductions", $view_data);
     }
 
     function list_deductions($user_id) {
-        $data = get_user_deductions($user_id);
+        $data = get_user_deductions($user_id, $this->with_permission('staff_update')?false:true);
         echo json_encode(array("data" => $data));
     }
 
     function save_deductions_info() {
-        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
-			redirect("forbidden");
-		}
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
 
         $user_id = $this->input->post("user_id");
         $prefix = "user_".$user_id."_";
@@ -1073,20 +989,22 @@ class Team_members extends MY_Controller {
 
     //show the job information of a team member
     function job_info($user_id) {
-        if(!$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
-			redirect("forbidden");
-		}
+        if(!$this->can_manage_user($user_id, "staff", true)) {
+            redirect('forbidden');
+        }
 
         $options = array("id" => $user_id);
-        $user_info = $this->Users_model->get_details($options)->row();
-        $view_data['sched_dropdown'] = $this->_get_schedule_dropdown();
-
         $view_data['user_id'] = $user_id;
-        $view_data['payroll_enabled'] = $this->with_permission("payroll");
+
+        $user_info = $this->Users_model->get_details($options)->row();
         $job_info = $this->Users_model->get_job_info($user_id);
+
+        $view_data['sched_dropdown'] = $this->_get_schedule_dropdown();
+        $view_data['payroll_enabled'] = $this->with_permission("payroll");
         $view_data['job_info'] = $job_info;
         $view_data['job_info']->job_title = $user_info->job_title;
         $view_data['job_info']->daily_rate = convert_number_to_decimal(floatval($job_info->rate_per_hour) * 8);
+        
         $this->load->view("team_members/job_info", $view_data);
     }
 
@@ -1116,9 +1034,10 @@ class Team_members extends MY_Controller {
 
     //save job information of a team member
     function save_job_info() {
-        if( !$this->login_user->is_admin && !get_array_value($this->login_user->permissions, "team_member_update_permission") ) {
-			redirect("forbidden");
-		}
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
 
         validate_submitted_data(array(
             "user_id" => "required|numeric"
@@ -1173,20 +1092,26 @@ class Team_members extends MY_Controller {
 
     //show general information of a team member
     function general_info($user_id) {
-        $this->update_only_allowed_members($user_id);
+        if(!$this->can_manage_user($user_id, "staff", true)) {
+            redirect('forbidden');
+        }
 
         $user_info = $this->Users_model->get_one($user_id);
         $user_info->middle_name = get_user_meta($user_id, "middle_name");
         $user_info->suffix_name = get_user_meta($user_id, "suffix_name");
         $view_data['user_info'] = $user_info;
         $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("team_members", $user_id, $this->login_user->is_admin, $this->login_user->user_type)->result();
+        $view_data['can_update'] = $this->with_permission('staff_update');
 
         $this->load->view("team_members/general_info", $view_data);
     }
 
     //save general information of a team member
     function save_general_info($user_id) {
-        $this->update_only_allowed_members($user_id);
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
 
         validate_submitted_data(array(
             "first_name" => "required",
@@ -1235,9 +1160,11 @@ class Team_members extends MY_Controller {
 
     //show social links of a team member
     function social_links($user_id) {
-        //important! here id=user_id
-        $this->update_only_allowed_members($user_id);
+        if(!$this->can_manage_user($user_id, "staff", true)) {
+            redirect('forbidden');
+        }
 
+        $view_data['can_update'] = $this->with_permission('staff_update');
         $view_data['user_id'] = $user_id;
         $view_data['model_info'] = $this->Social_links_model->get_one($user_id);
         $this->load->view("users/social_links", $view_data);
@@ -1245,7 +1172,10 @@ class Team_members extends MY_Controller {
 
     //save social links of a team member
     function save_social_links($user_id) {
-        $this->update_only_allowed_members($user_id);
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
 
         $id = 0;
         $has_social_links = $this->Social_links_model->get_one($user_id);
@@ -1277,7 +1207,9 @@ class Team_members extends MY_Controller {
 
     //show account settings of a team member
     function account_settings($user_id) {
-        $this->with_permission('staff_update', true);
+        if(!$this->can_manage_user($user_id, "staff", true)) {
+            redirect('forbidden');
+        }
 
         $view_data['user_info'] = $this->Users_model->get_one($user_id);
         if ($view_data['user_info']->is_admin) {
@@ -1285,7 +1217,8 @@ class Team_members extends MY_Controller {
         }
         $view_data['role_dropdown'] = $this->_get_roles_dropdown();
 
-        $view_data['show_account_access'] = $this->access_only_specific('team_member_update_permission', $user_id);
+        $view_data['show_account_access'] = $this->with_permission("staff_account");
+        $view_data['can_update'] = $this->with_permission('staff_account');
         $this->load->view("users/account_settings", $view_data);
     }
 
@@ -1364,9 +1297,9 @@ class Team_members extends MY_Controller {
 
     //save account settings of a team member
     function save_account_settings($user_id) {
-        if( !$this->with_permission('staff_update') ) {
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
             echo json_encode(array("success" => false, 'message' => lang('no_permission')));
-            exit();
+            exit;
         }
 
         if ($this->Users_model->is_email_exists($this->input->post('email'), $user_id)) {
@@ -1376,28 +1309,26 @@ class Team_members extends MY_Controller {
         $account_data = array(
             "email" => $this->input->post('email')
         );
+        
+        //only admin user has permission to update team member's role
+        //but admin user can't update his/her own role 
+        $role = $this->input->post('role');
+        $role_id = $role;
 
-        if ($this->login_user->id != $user_id && $this->access_only_specific('team_member_update_permission', $user_id) ) {
-            //only admin user has permission to update team member's role
-            //but admin user can't update his/her own role 
-            $role = $this->input->post('role');
-            $role_id = $role;
-
-            if ($role === "admin") {
-                $account_data["is_admin"] = 1;
-                $account_data["role_id"] = 0;
-            } else {
-                $account_data["is_admin"] = 0;
-                $account_data["role_id"] = $role_id;
-            }
-
-            $account_data['disable_login'] = $this->input->post('disable_login');
-            $account_data['access_erpat'] = $this->input->post('access_erpat');
-            $account_data['access_syntry'] = $this->input->post('access_syntry');
-            $account_data['access_madage'] = $this->input->post('access_madage');
-            $account_data['access_galyon'] = $this->input->post('access_galyon');
-            $account_data['status'] = $this->input->post('status') === "inactive" ? "inactive" : "active";
+        if ($role === "admin") {
+            $account_data["is_admin"] = 1;
+            $account_data["role_id"] = 0;
+        } else {
+            $account_data["is_admin"] = 0;
+            $account_data["role_id"] = $role_id;
         }
+
+        $account_data['disable_login'] = $this->input->post('disable_login');
+        $account_data['access_erpat'] = $this->input->post('access_erpat');
+        $account_data['access_syntry'] = $this->input->post('access_syntry');
+        $account_data['access_madage'] = $this->input->post('access_madage');
+        $account_data['access_galyon'] = $this->input->post('access_galyon');
+        $account_data['status'] = $this->input->post('status') === "inactive" ? "inactive" : "active";
 
         //don't reset password if user doesn't entered any password
         if ($this->input->post('password')) {
@@ -1413,7 +1344,11 @@ class Team_members extends MY_Controller {
 
     //save profile image of a team member
     function save_profile_image($user_id = 0) {
-        $this->update_only_allowed_members($user_id);
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
+
         $user_info = $this->Users_model->get_one($user_id);
 
         //process the the file which has uploaded by dropzone
@@ -1509,8 +1444,9 @@ class Team_members extends MY_Controller {
     /* load files tab */
 
     function files($user_id) {
-
-        $this->update_only_allowed_members($user_id);
+        if(!$this->can_manage_user($user_id, "staff", true)) {
+            redirect('forbidden');
+        }
 
         $options = array("user_id" => $user_id);
         $view_data['files'] = $this->General_files_model->get_details($options)->result();
@@ -1523,8 +1459,10 @@ class Team_members extends MY_Controller {
     function file_modal_form() {
         $view_data['model_info'] = $this->General_files_model->get_one($this->input->post('id'));
         $user_id = $this->input->post('user_id') ? $this->input->post('user_id') : $view_data['model_info']->user_id;
-
-        $this->update_only_allowed_members($user_id);
+        
+        if(!$this->can_manage_user($user_id)) {
+            redirect('forbidden');
+        }
 
         $view_data['user_id'] = $user_id;
         $this->load->view('team_members/files/modal_form', $view_data);
@@ -1533,16 +1471,16 @@ class Team_members extends MY_Controller {
     /* save file data and move temp file to parmanent file directory */
 
     function save_file() {
-
-
         validate_submitted_data(array(
             "id" => "numeric",
             "user_id" => "required|numeric"
         ));
 
         $user_id = $this->input->post('user_id');
-        $this->update_only_allowed_members($user_id);
-
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
 
         $files = $this->input->post("files");
         $success = false;
@@ -1586,7 +1524,10 @@ class Team_members extends MY_Controller {
     function files_list_data($user_id = 0) {
         $options = array("user_id" => $user_id);
 
-        $this->update_only_allowed_members($user_id);
+        if(!$this->can_manage_user($user_id)) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
 
         $list_data = $this->General_files_model->get_details($options)->result();
         $result = array();
@@ -1636,7 +1577,9 @@ class Team_members extends MY_Controller {
                 redirect("forbidden");
             }
 
-            $this->update_only_allowed_members($file_info->user_id);
+            if(!$this->can_manage_user($file_info->user_id) && !$this->with_permission("staff_update")) {
+                redirect("forbidden");
+            }    
 
             $view_data['can_comment_on_files'] = false;
 
@@ -1663,7 +1606,7 @@ class Team_members extends MY_Controller {
         if (!$file_info->user_id) {
             redirect("forbidden");
         }
-        $this->update_only_allowed_members($file_info->user_id);
+        $this->can_manage_user($file_info->user_id);
 
         //serilize the path
         $file_data = serialize(array(make_array_of_file($file_info)));
@@ -1694,7 +1637,7 @@ class Team_members extends MY_Controller {
             redirect("forbidden");
         }
 
-        $this->update_only_allowed_members($info->user_id);
+        $this->can_manage_user($info->user_id);
 
         if ($this->General_files_model->delete($id)) {
 

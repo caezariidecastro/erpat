@@ -207,6 +207,13 @@ class Users_model extends Crud_model {
         if ($sched_id) {
             $where .= " AND $schedule_table.id=$sched_id ";
         }
+
+        $where_in = get_array_value($options, "where_in");
+        if ($where_in) {
+            $list_user = implode(",", $where_in);
+            log_message("error", $where_in);
+            $where .= " AND FIND_IN_SET($users_table.id, '$list_user')";
+        }
         
         $custom_field_type = "team_members";
         if ($user_type === "client") {
