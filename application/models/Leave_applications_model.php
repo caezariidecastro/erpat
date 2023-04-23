@@ -78,7 +78,7 @@ class Leave_applications_model extends Crud_model {
         $sql = "SELECT $leave_applications_table.id, $leave_applications_table.start_date, $leave_applications_table.end_date, $leave_applications_table.total_hours,
                 $leave_applications_table.total_days, $leave_applications_table.applicant_id, $leave_applications_table.status,
                 CONCAT($users_table.first_name, ' ',$users_table.last_name) AS applicant_name, $users_table.image as applicant_avatar,
-                $leave_types_table.title as leave_type_title,   $leave_types_table.color as leave_type_color, $leave_applications_table.created_at, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, $leave_applications_table.created_by
+                $leave_types_table.title as leave_type_title,   $leave_types_table.color as leave_type_color, $leave_applications_table.created_at, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, $leave_applications_table.created_by, $leave_types_table.required_credits as required_credits, $leave_types_table.paid as paid
             FROM $leave_applications_table
             LEFT JOIN $users_table ON $users_table.id= $leave_applications_table.applicant_id
             LEFT JOIN $leave_types_table ON $leave_types_table.id= $leave_applications_table.leave_type_id        
