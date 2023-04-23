@@ -1004,7 +1004,8 @@ class Team_members extends MY_Controller {
         $view_data['job_info'] = $job_info;
         $view_data['job_info']->job_title = $user_info->job_title;
         $view_data['job_info']->daily_rate = convert_number_to_decimal(floatval($job_info->rate_per_hour) * 8);
-        
+        $view_data['can_update'] = $this->with_permission('staff_update');
+
         $this->load->view("team_members/job_info", $view_data);
     }
 
@@ -1218,7 +1219,7 @@ class Team_members extends MY_Controller {
         $view_data['role_dropdown'] = $this->_get_roles_dropdown();
 
         $view_data['show_account_access'] = $this->with_permission("staff_account");
-        $view_data['can_update'] = $this->with_permission('staff_account');
+        $view_data['can_update'] = $this->with_permission('staff_update');
         $this->load->view("users/account_settings", $view_data);
     }
 
