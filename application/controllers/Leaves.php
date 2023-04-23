@@ -513,8 +513,10 @@ class Leaves extends MY_Controller {
         $applicatoin_info = $this->Leave_applications_model->get_one($id);
         $this->access_only_allowed_members($applicatoin_info->applicant_id);
 
-
         if ($this->Leave_applications_model->delete($id)) {
+            $option = array("leave_id"=>$id);
+            $this->Leave_credits_model->delete_where($option);
+
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));

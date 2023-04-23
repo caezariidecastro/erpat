@@ -231,6 +231,11 @@ class Crud_model extends CI_Model {
         return $success;
     }
 
+    function delete_where($where = array()) {
+        $data = array('deleted' => 1);
+        return $this->db->update($this->table, $data, $where);
+    }
+
     function get_dropdown_list($option_fields = array(), $key = "id", $where = array(), $add = false) {
         $where["deleted"] = 0;
         $list_data = $this->get_all_where($where, 0, 0, $option_fields[0])->result();
