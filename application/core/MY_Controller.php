@@ -40,6 +40,26 @@ class MY_Controller extends CI_Controller {
                 $this->login_user->permissions = array();
             }
         }
+
+        //we can set ip restiction to access this module. validate user access
+        $this->check_allowed_ip();
+    }
+
+    /**
+     * Check ip restriction for none admin users
+     */
+    private function check_allowed_ip() {
+        if (!$this->login_user->is_admin) {
+            $ip = get_real_ip();
+            $allowed_ips = $this->Settings_model->get_setting("allowed_ip_addresses");
+            if ($allowed_ips) {
+                $user_whitelisted = $this->Settings_model->get_setting("whitelisted_user_ip_tracking");
+                $allowed_ip_array = array_map('trim', preg_split('/\R/', $allowed_ips));
+                if (!in_array($this->login_user->id, explode(",", $user_whitelisted)) && !in_array($ip, $allowed_ip_array)) {
+                    redirect("forbidden");
+                }
+            }
+        }
     }
 
     /**

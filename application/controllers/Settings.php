@@ -234,11 +234,28 @@ class Settings extends MY_Controller {
     }
 
     function ip_restriction() {
-        $this->template->rander("settings/ip_restriction");
+        $team_members = $this->Users_model->get_all_where(array(
+            "deleted" => 0, 
+            "status" => "active",
+            "user_type" => "staff"
+        ))->result();
+        
+        $members_dropdown = array();
+        foreach ($team_members as $team_member) {
+            $fullname = $team_member->first_name . " " . $team_member->last_name;
+            if(get_setting('name_format') == "lastfirst") {
+                $fullname = $team_member->last_name.", ".$team_member->first_name;
+            }
+            $members_dropdown[] = array("id" => $team_member->id, "text" => $fullname);
+        }
+        $view_data['members_dropdown'] = json_encode($members_dropdown);
+
+        $this->template->rander("settings/ip_restriction", $view_data);
     }
 
     function save_ip_settings() {
         $this->Settings_model->save_setting("allowed_ip_addresses", $this->input->post("allowed_ip_addresses"));
+        $this->Settings_model->save_setting("whitelisted_user_ip_tracking", $this->input->post("whitelisted_user_ip_tracking"));
 
         echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
     }

@@ -13,26 +13,9 @@ class Schedule extends MY_Controller
 
         //this module is accessible only to team members 
         $this->access_only_team_members();
-
-        //we can set ip restiction to access this module. validate user access
-        $this->check_allowed_ip();
-
+        
         //initialize managerial permission
         $this->init_permission_checker("attendance"); //TODO: Change to schdule permission.
-    }
-
-    //check ip restriction for none admin users
-    private function check_allowed_ip() {
-        if (!$this->login_user->is_admin) {
-            $ip = get_real_ip();
-            $allowed_ips = $this->Settings_model->get_setting("allowed_ip_addresses");
-            if ($allowed_ips) {
-                $allowed_ip_array = array_map('trim', preg_split('/\R/', $allowed_ips));
-                if (!in_array($ip, $allowed_ip_array)) {
-                    redirect("forbidden");
-                }
-            }
-        }
     }
 
     private function _get_members_query_options($type = "") {
