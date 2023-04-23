@@ -23,7 +23,7 @@ class Roles extends MY_Controller {
             array("access_logs", "Coming Soon", "Security: Access Logs", "Enabled", null, true),
 
             //STAFFING
-            array("staff", "Coming Soon", "Staffing: Enabled", "List & View", null, true),
+            array("staff", "Coming Soon", "Staffing: Module", "Access", "dropdown", true),
             array("staff_invite", "Coming Soon", "Staffing: Email Invite", "Email", null),
             array("staff_view_personal_background", "Coming Soon", "Staffing: Personal Background", "View", null),
             array("staff_view_job_description", "Coming Soon", "Staffing: Job Description", "View", null),
@@ -36,7 +36,7 @@ class Roles extends MY_Controller {
             array("can_delete_leave_application", "Coming Soon", "HR Employee", "Delete Leave Application", null),
 
             array("department", "Coming Soon", "Staffing: Departments", "Enabled", null, true),
-            array("attendance", "Coming Soon", "Staffing: Attendances", "Enabled", "dropdown", true),
+            array("attendance", "Coming Soon", "Attendance: Module", "Access", "dropdown", true),
             array("leave", "Coming Soon", "Staffing: Leave", "Access", "dropdown"),
             array("holiday", "Coming Soon", "Staffing: Holiday", "Enabled", null, true),
             array("deciplinary", "Coming Soon", "Staffing: Deciplinary", "Enabled", null, true),

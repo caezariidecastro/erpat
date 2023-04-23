@@ -44,6 +44,7 @@ class Attendance extends MY_Controller {
     function index() {
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
         $view_data['department_select2'] = $this->_get_team_select2_data();
+        $view_data['allowed_create'] = $this->with_permission("attendance_create");
         $this->template->rander("attendance/index", $view_data);
     }
 
@@ -72,16 +73,8 @@ class Attendance extends MY_Controller {
         } else {
             //new add mode. show users dropdown
             //don't show none allowed members in dropdown
-            if ($this->access_type === "all") {
-                $where = array("user_type" => "staff");
-            } else {
-                if (!count($this->allowed_members)) {
-                    redirect("forbidden");
-                }
-                $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
-            }
-
-            $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
+            $allowed_users = $this->get_allowed_users_only("attendance");
+            $view_data['team_members_dropdown'] = $this->get_users_select2_filter("select_user", $allowed_users);
         }
         $view_data['sched_dropdown'] = $this->_get_schedule_dropdown();
 
@@ -128,6 +121,12 @@ class Attendance extends MY_Controller {
             "in_time" => "required",
             //"out_time" => "required"
         ));
+
+        if( $id ) {
+            $this->with_permission("attendance_update", true);
+        } else {
+            $this->with_permission("attendance_create", true);
+        }
 
         //convert to 24hrs time format
         $in_time = $this->input->post('in_time');
@@ -305,8 +304,9 @@ class Attendance extends MY_Controller {
         validate_submitted_data(array(
             "id" => "required|numeric"
         ));
-
         $id = $this->input->post('id');
+
+        $this->with_permission("attendance_delete", true);
 
         if ($this->access_type !== "all") {
             $info = $this->Attendance_model->get_one($id);
@@ -379,8 +379,14 @@ class Attendance extends MY_Controller {
     private function _make_row($data) {
         $image_url = get_avatar($data->created_by_avatar);
         $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
-        $option_links = modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_attendance'), "data-post-id" => $data->id))
-                . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_attendance'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/attendance/delete"), "data-action" => "delete"));
+
+        if( $this->with_permission("attendance_update") ) {
+            $option_links .= modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_attendance'), "data-post-id" => $data->id));
+        }
+
+        if( $this->with_permission("attendance_delete") ) {
+            $option_links .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_attendance'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/attendance/delete"), "data-action" => "delete"));
+        }
 
         if ($this->access_type != "all") {
             //don't show options links for none admin user's own records
@@ -480,35 +486,8 @@ class Attendance extends MY_Controller {
     private function _get_members_dropdown_list_for_filter() {
         //prepare the dropdown list of members
         //don't show none allowed members in dropdown
-        $where = $this->_get_members_query_options();
-
-        $members = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
-
-        $members_dropdown = array(array("id" => "", "text" => "- " . lang("user") . " -"));
-        foreach ($members as $id => $name) {
-            $members_dropdown[] = array("id" => $id, "text" => $name);
-        }
-
-        return $members_dropdown;
-    }
-
-    //get members query options
-    private function _get_members_query_options($type = "") {
-        if ($this->access_type === "all") {
-            $where = array("status" => "active", "user_type" => "staff");
-        } else {
-            if (!count($this->allowed_members) && $type != "data") {
-                $where = array("status" => "active", "user_type" => "nothing"); //don't show any users in dropdown
-            } else {
-                //add login user in dropdown list
-                $allowed_members = $this->allowed_members;
-                $allowed_members[] = $this->login_user->id;
-
-                $where = array("status" => "active", "user_type" => "staff", "where_in" => ($type == "data") ? $allowed_members : array("id" => $allowed_members));
-            }
-        }
-
-        return $where;
+        $allowed_users = $this->get_allowed_users_only("attendance");
+        return $this->get_users_select2_dropdown("select_user", $allowed_users);
     }
 
     //load the custom date view of attendance list 
@@ -674,8 +653,11 @@ class Attendance extends MY_Controller {
     /* get data the attendance clock In / Out tab */
 
     function clock_in_out_list_data() {
-        $options = $this->_get_members_query_options("data");
-        $list_data = $this->Attendance_model->get_clock_in_out_details_of_all_users($options)->result();
+        $allowed_members = $this->get_allowed_users_only("attendance");
+        $allowed_members[] = $this->login_user->id;
+        $where = array("status" => "active", "user_type" => "staff", "where_in" => $allowed_members);
+        
+        $list_data = $this->Attendance_model->get_clock_in_out_details_of_all_users($where)->result();
 
         $result = array();
         foreach ($list_data as $data) {
@@ -696,10 +678,16 @@ class Attendance extends MY_Controller {
             $in_time = format_to_time($data->in_time);
             $in_datetime = format_to_datetime($data->in_time);
             $status = "<div class='mb15' title='$in_datetime'>" . lang('clock_started_at') . " : $in_time</div>";
-            $view_data = modal_anchor(get_uri("hrs/attendance/note_modal_form/$data->id"), "<i class='fa fa-sign-out'></i> " . lang('clock_out'), array("class" => "btn btn-default", "title" => lang('clock_out'), "id" => "timecard-clock-out", "data-post-id" => $data->attendance_id, "data-post-clock_out" => 1, "data-post-id" => $data->id));
+            
+            if( $this->with_permission("attendance_update") ) {
+                $view_data = modal_anchor(get_uri("hrs/attendance/note_modal_form/$data->id"), "<i class='fa fa-sign-out'></i> " . lang('clock_out'), array("class" => "btn btn-default", "title" => lang('clock_out'), "id" => "timecard-clock-out", "data-post-id" => $data->attendance_id, "data-post-clock_out" => 1, "data-post-id" => $data->id));
+            }
         } else {
             $status = "<div class='mb15'>" . lang('not_clocked_id_yet') . "</div>";
-            $view_data = js_anchor("<i class='fa fa-sign-in'></i> " . lang('clock_in'), array('title' => lang('clock_in'), "class" => "btn btn-default", "data-action-url" => get_uri("hrs/attendance/log_time/$data->id"), "data-action" => "update", "data-inline-loader" => "1", "data-post-id" => $data->id));
+            
+            if( $this->with_permission("attendance_create") ) {
+                $view_data = js_anchor("<i class='fa fa-sign-in'></i> " . lang('clock_in'), array('title' => lang('clock_in'), "class" => "btn btn-default", "data-action-url" => get_uri("hrs/attendance/log_time/$data->id"), "data-action" => "update", "data-inline-loader" => "1", "data-post-id" => $data->id));
+            }
         }
 
         $image_url = get_avatar($data->image);

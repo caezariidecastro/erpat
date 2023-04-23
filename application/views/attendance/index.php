@@ -13,7 +13,9 @@
 
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
+                    <?php if( $allowed_create ) { ?>
                     <?php echo modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_attendance'), array("class" => "btn btn-default", "title" => lang('add_attendance'))); ?>
+                    <?php } ?>
                 </div>
             </div>
         </ul>

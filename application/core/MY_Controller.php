@@ -10,7 +10,7 @@ class MY_Controller extends CI_Controller {
     protected $is_user_a_project_member = false;
     protected $is_clients_project = false; //check if loged in user's client's project
 
-    protected $specifics = array("leave", "attendance", "team_member_update_permission", "timesheet_manage_permission", "message_permission", "ticket_staff");
+    protected $specifics = array("leave", "attendance", "team_member_update_permission", "timesheet_manage_permission", "message_permission", "ticket_staff", "staff");
 
     function __construct($initialize = true) {
         parent::__construct();
@@ -141,20 +141,17 @@ class MY_Controller extends CI_Controller {
 
         $module_permission = get_array_value($this->login_user->permissions, $access);
         if ($module_permission === "all") {
-            $members = "";
-            $list_users = $this->Users_model->get_team_members_for_select2();
+            $list_users = $this->Users_model->get_all_active();
             foreach($list_users as $user) {
-                $members .= ",".$user->id; 
+                $allowed_members[] = $user->id; 
             }
-            $members_array = explode(",", $members);
-            $allowed_members = array_merge($allowed_members, $members_array);
         } else if ($module_permission === "specific") {
             $module_permission = get_array_value($this->login_user->permissions, $access . "_specific");
             $permissions = explode(",", $module_permission);
 
             //check the accessable users list
             if ( in_array($access, $this->specifics) ) {
-                $allowed_members = $this->prepare_allowed_members_array($permissions, $this->login_user->id);
+                $allowed_members = $this->prepare_allowed_members_array($permissions);
             }
         }
 
@@ -189,7 +186,7 @@ class MY_Controller extends CI_Controller {
 
                 //check the accessable users list
                 if ( in_array($group, $this->specifics) ) {
-                    $info->allowed_members = $this->prepare_allowed_members_array($permissions, $this->login_user->id);
+                    $info->allowed_members = $this->prepare_allowed_members_array($permissions);
                 } else if ($group === "ticket") {
                     //check the accessable ticket types
                     $info->allowed_ticket_types = $permissions;
@@ -199,8 +196,8 @@ class MY_Controller extends CI_Controller {
         return $info;
     }
 
-    protected function prepare_allowed_members_array($permissions, $user_id) {
-        $allowed_members = array($user_id);
+    protected function prepare_allowed_members_array($permissions) {
+        $allowed_members = array();
         $allowed_teams = array();
         foreach ($permissions as $vlaue) {
             $permission_on = explode(":", $vlaue);
@@ -705,7 +702,7 @@ class MY_Controller extends CI_Controller {
                 //user has access on specific members
                 $module_permission = get_array_value($permissions, "message_permission_specific");
                 $permissions = explode(",", $module_permission);
-                $allowed_members = $this->prepare_allowed_members_array($permissions, $to_user_id);
+                $allowed_members = $this->prepare_allowed_members_array($permissions);
                 if (!in_array($this->login_user->id, $allowed_members)) {
                     return false;
                 }
@@ -715,10 +712,13 @@ class MY_Controller extends CI_Controller {
         return true;
     }
 
-    protected function get_users_select2_dropdown($default_text = "users", $allowed_users = []) {
+    protected function get_users_select2_dropdown($default_text = "users", $allowed_users = [], $where = array()) {
         $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang($default_text) . " -"));
 
-        $assigned_to_list = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        $assigned_to_list = $this->Users_model->get_dropdown_list(
+            array("first_name", "last_name"), "id", array_merge($where, array( "deleted" => 0, "user_type" => "staff")),
+            //"where_in" => array("id" => $allowed_users TODO: Optimized by using this.
+        );
 
         foreach ($assigned_to_list as $key => $value) {
             if( $this->login_user->is_admin ) {
@@ -735,11 +735,12 @@ class MY_Controller extends CI_Controller {
         return $assigned_to_dropdown;
     }
 
-    protected function get_users_select2_filter($default_text = "users", $allowed_users = []) {
+    protected function get_users_select2_filter($default_text = "users", $allowed_users = [], $where = array()) {
 
         $assigned_to_filter = array("" => "- ".lang($default_text)." -");
         $assigned_to_list = $this->Users_model->get_dropdown_list(
-            array("first_name", "last_name"), "id", array( "deleted" => 0, "user_type" => "staff")
+            array("first_name", "last_name"), "id", array_merge($where, array( "deleted" => 0, "user_type" => "staff")),
+            //"where_in" => array("id" => $allowed_users TODO: Optimized by using this.
         );
 
         if( $this->login_user->is_admin ) {

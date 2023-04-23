@@ -1031,3 +1031,5 @@ $lang["approved_date"] = "Approved date";
 $lang["rejected_date"] = "Rejected date";
 
 $lang["ip_tracking_whitelisting"] = "IP Tracking Whitelisting";
+
+$lang["select_user"] = "Select User";
