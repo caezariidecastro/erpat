@@ -42,6 +42,31 @@ class Schedule_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function get_user_without_schedule() {
+        $users = $this->db->dbprefix('users');
+        $job_info = $this->db->dbprefix('team_member_job_info');
+        $schedule = $this->db->dbprefix('schedule');
+
+        $sql = "SELECT GROUP_CONCAT($users.id) as user_ids
+            FROM $users 
+                INNER JOIN $job_info as job ON job.user_id = $users.id
+                LEFT JOIN $schedule sched ON sched.id = job.sched_id AND sched.deleted=0
+            WHERE $users.deleted=0 AND 
+                $users.status='active' AND 
+                $users.disable_login=0 AND 
+                $users.resigned=0 AND 
+                $users.terminated=0 AND 
+                sched.id IS NULL ";
+
+        $query = $this->db->query($sql);
+
+        if($query->num_rows()) {
+            return $query->row()->user_ids;
+        }
+
+        return "";
+    }
+
     function getUserSchedId($user_id) {
         $job_info = $this->db->dbprefix('team_member_job_info');
         $sql = "SELECT sched_id FROM $job_info 

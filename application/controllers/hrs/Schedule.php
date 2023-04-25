@@ -53,7 +53,6 @@ class Schedule extends MY_Controller
 
     function index() {
         $this->with_module("attendance");
-
         $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
         $this->template->rander("schedule/index", $view_data);
     }
@@ -178,6 +177,12 @@ class Schedule extends MY_Controller
             return $data_modal;
         }
         return "";
+    }
+
+    function modal_form_noscheds() {
+        $view_data['members_no_scheds'] = $this->Schedule_model->get_user_without_schedule();
+        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $this->load->view('schedule/modal_form_noscheds', $view_data);
     }
 
     function modal_form_breaks() {

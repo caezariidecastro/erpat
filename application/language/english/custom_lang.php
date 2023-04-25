@@ -1041,3 +1041,5 @@ $lang["hmo_contri"] = "HMO PAYMENT";
 $lang["company_loan"] = "COMPANY LOAN";
 $lang["sss_loan"] = "SSS LOAN";
 $lang["hdmf_loan"] = "HDMF LOAN";
+
+$lang["no_schedules"] = "No Schedules";
