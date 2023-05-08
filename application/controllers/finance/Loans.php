@@ -60,6 +60,14 @@ class Loans extends MY_Controller {
         $this->load->view('loans/modal_form_payment', $view_data);
     }
 
+    function modal_form_minimumpay() {
+        $id = $this->input->post('id');
+        $view_data['loan_dropdowns'] = array("" => "- Select -") + $this->Loans_model->get_dropdown_list(array("id"), "id", array("deleted" => 0), "loan");
+        $view_data['team_members_dropdown'] = array("" => "- Select -") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        $view_data['model_info'] = $this->Loans_model->get_one($id);
+        $this->load->view('loans/modal_form_minimumpay', $view_data);
+    }
+
     function save_category() {
         validate_submitted_data(array(
             "id" => "numeric"
@@ -169,6 +177,38 @@ class Loans extends MY_Controller {
         $save_id = $this->Loan_payments_model->save($data);
         if ($save_id) {
             echo json_encode(array("success" => true, "id" => $loan_id, "data" => $this->_row_data($loan_id), 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function save_minimumpay() {
+        validate_submitted_data(array(
+            "id" => "numeric|required",
+            "minimum_payment" => "numeric|required"
+        ));
+        $id = $this->input->post('id');
+
+        $data = array(
+            "min_payment" => $this->input->post('minimum_payment'),
+        );
+
+        $old_minpay = $this->input->post('old_minpay');
+        $new_minpay = $this->input->post('minimum_payment');
+
+        $save_id = $this->Loans_model->save($data, $id);
+        if ($save_id) {
+            $data = array(
+                "loan_id" => $id,
+                "stage_name" => "Change of monthly minimum payment from ".$old_minpay." to ".$new_minpay,
+                "remarks" => $this->input->post('remarks'),
+                "timestamp" => get_current_utc_time(),
+                "executed_by" => $this->login_user->id,
+                "serial_data" => null
+            );
+            $save_id = $this->Loan_transactions_model->save($data);
+
+            echo json_encode(array("success" => true, "id" => $id, "data" => $this->_row_data($id), 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
@@ -328,7 +368,9 @@ class Loans extends MY_Controller {
             format_to_date($data->start_payment, true),
             $data->remarks ? $data->remarks : "-",
             get_team_member_profile_link($data->cosigner_id, $data->cosigner_name, array("target" => "_blank")),
-            modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i>", array("class" => "edit", "title" => lang('update_status'), "data-post-id" => $data->id)).modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money fa-fw'></i>", array("class" => "edit", "title" => lang('add_payment'))).
+            modal_anchor(get_uri("finance/Loans/modal_form_minimumpay"), "<i class='fa fa-pencil fa-fw'></i>", array("class" => "edit", "title" => lang('update_status'), "data-post-id" => $data->id)).
+            modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i>", array("class" => "edit", "title" => lang('update_status'), "data-post-id" => $data->id)).
+            modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money fa-fw'></i>", array("class" => "edit", "title" => lang('add_payment'))).
             modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-tag fa-fw'></i>", array("class" => "edit", "title" => lang('add_fee')))
             .js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete"), "data-action" => "delete"))
         );
