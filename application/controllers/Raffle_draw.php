@@ -53,7 +53,10 @@ class Raffle_draw extends MY_Controller {
     }
 
     function list_data(){
-        $list_data = $this->Raffle_draw_model->get_details()->result();
+        $list_data = $this->Raffle_draw_model->get_details(array(
+            'start' => $this->input->post('start_date'),
+            'end' => $this->input->post('end_date')
+        ))->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);

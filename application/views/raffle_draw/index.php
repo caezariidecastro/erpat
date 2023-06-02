@@ -18,6 +18,7 @@
         $("#raffle_draw-table").appTable({
             source: '<?php echo_uri("Raffle_draw/list_data") ?>',
             order: [[1, 'desc']],
+            dateRangeType: "monthly",
             columns: [
                 {visible: false, searchable: false},
                 {title: '<?php echo lang("uuid"); ?>'},

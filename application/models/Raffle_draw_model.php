@@ -11,11 +11,17 @@ class Raffle_draw_model extends Crud_model {
 
     function get_details($options = array()) {
         $event_raffle_table = $this->db->dbprefix('event_raffle');
+        $start = get_array_value($options, "start");
+        $end = get_array_value($options, "end");
         $where = "";
 
         $id = get_array_value($options, "id");
         if ($id) {
             $where .= " AND $event_raffle_table.id=$id";
+        }
+
+        if($start){
+            $where .= " AND {$this->table}.draw_date BETWEEN '$start' AND '$end'";
         }
 
         $event_id = get_array_value($options, "event_id");
