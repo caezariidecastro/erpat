@@ -702,7 +702,7 @@ class MY_Controller extends CI_Controller {
         //so the sender could send message to the receiver
         //check if the receiver could also send message to the sender
         $to_user_info = $this->Users_model->get_one($to_user_id);
-        if ($to_user_info->user_type == "staff") {
+        if (!$to_user_info->is_admin && $to_user_info->user_type == "staff") {
             //receiver is a team member
             $permissions = array();
             $user_permissions = $this->Users_model->get_access_info($to_user_id)->permissions;

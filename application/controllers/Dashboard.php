@@ -811,13 +811,13 @@ class Dashboard extends MY_Controller {
 
         if (get_array_value($widgets_array, $widget)) {
             if ($widget == "total_projects") {
-                return $this->load->view("sales/Clients/info_widgets/tab", array("tab" => "projects", "client_info" => $client_info), true);
+                return $this->load->view("clients/info_widgets/tab", array("tab" => "projects", "client_info" => $client_info), true);
             } else if ($widget == "total_invoices") {
-                return $this->load->view("sales/Clients/info_widgets/tab", array("tab" => "invoice_value", "client_info" => $client_info), true);
+                return $this->load->view("clients/info_widgets/tab", array("tab" => "invoice_value", "client_info" => $client_info), true);
             } else if ($widget == "total_payments") {
-                return $this->load->view("sales/Clients/info_widgets/tab", array("tab" => "payments", "client_info" => $client_info), true);
+                return $this->load->view("clients/info_widgets/tab", array("tab" => "payments", "client_info" => $client_info), true);
             } else if ($widget == "total_due") {
-                return $this->load->view("sales/Clients/info_widgets/tab", array("tab" => "due", "client_info" => $client_info), true);
+                return $this->load->view("clients/info_widgets/tab", array("tab" => "due", "client_info" => $client_info), true);
             } else if ($widget == "open_projects_list") {
                 return my_open_projects_widget($client_id, true);
             } else if ($widget == "events") {
