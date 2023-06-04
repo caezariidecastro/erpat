@@ -15,7 +15,7 @@
 </div>
 
 <div class="modal-footer">
-    <?php echo anchor("clients/download_sample_excel_file", "<i class='fa fa-cloud-download'></i> " . lang("download_sample_file"), array("title" => lang("download_sample_file"), "class" => "btn btn-default pull-left")); ?>
+    <?php echo anchor("sales/Clients/download_sample_excel_file", "<i class='fa fa-cloud-download'></i> " . lang("download_sample_file"), array("title" => lang("download_sample_file"), "class" => "btn btn-default pull-left")); ?>
     <button type="button" class="btn btn-default cancel-upload" data-dismiss="modal"><span class="fa fa-close"></span> <?php echo lang('close'); ?></button>
     <button id="form-previous" type="button" class="btn btn-default hide"><span class="fa fa-arrow-circle-left"></span> <?php echo lang('back'); ?></button>
     <button id="form-next" type="button" disabled="true" class="btn btn-info"><span class="fa  fa-arrow-circle-right"></span> <?php echo lang('next'); ?></button>

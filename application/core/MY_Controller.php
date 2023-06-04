@@ -49,7 +49,7 @@ class MY_Controller extends CI_Controller {
      * Check ip restriction for none admin users
      */
     private function check_allowed_ip() {
-        if (!$this->login_user->is_admin) {
+        if (!$this->login_user->is_admin && $this->login_user->user_type === "staff") {
             $ip = get_real_ip();
             $allowed_ips = $this->Settings_model->get_setting("allowed_ip_addresses");
             if ($allowed_ips) {
@@ -81,7 +81,7 @@ class MY_Controller extends CI_Controller {
     protected function with_permission($permission, $redirect = false, $allAccess = false) {
         $permission_lists = $this->login_user->permissions;
         
-        if( $this->login_user->is_admin){
+        if( $this->login_user->is_admin || $this->login_user->user_type === "client"){
             return true;
         }
 
@@ -283,6 +283,9 @@ class MY_Controller extends CI_Controller {
 
     //access only allowed team members or client contacts 
     protected function access_only_allowed_members_or_client_contact($client_id) {
+        if ($this->login_user->is_admin) { //TODO: Fixed this permission issue.
+            return true;
+        }
 
         if ($this->access_type === "all") {
             return true; //can access if user has permission

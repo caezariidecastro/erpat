@@ -64,7 +64,7 @@ class Users_model extends Crud_model {
 
         $user_info = $result->row();
 
-        if(!$user_info->is_admin && !$user_info->access_erpat) {
+        if(!$user_info->is_admin && $user_info->user_type === "staff" && !$user_info->access_erpat) {
             return false;
         }
 

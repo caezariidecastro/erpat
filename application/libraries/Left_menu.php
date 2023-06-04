@@ -525,13 +525,13 @@ class Left_menu {
                 $sidebar_menu[] = array("name" => "announcements", "url" => "announcements", "class" => "fa-bullhorn");
             }
 
-            $sidebar_menu[] = array("name" => "users", "url" => "clients/users", "class" => "fa-user");
+            $sidebar_menu[] = array("name" => "users", "url" => "sales/Clients/users", "class" => "fa-user");
 
             if (get_setting("client_can_view_files")) {
-                $sidebar_menu[] = array("name" => "files", "url" => "clients/files/" . $this->ci->login_user->id . "/page_view", "class" => "fa-file-image-o");
+                $sidebar_menu[] = array("name" => "files", "url" => "sales/Clients/files/" . $this->ci->login_user->id . "/page_view", "class" => "fa-file-image-o");
             }
 
-            $sidebar_menu[] = array("name" => "my_profile", "url" => "clients/contact_profile/" . $this->ci->login_user->id, "class" => "fa-cog");
+            $sidebar_menu[] = array("name" => "my_profile", "url" => "sales/Clients/contact_profile/" . $this->ci->login_user->id, "class" => "fa-cog");
 
             if (module_enabled("module_knowledge_base") == "1" && !in_array("knowledge_base", $hidden_menu)) {
                 $sidebar_menu[] = array("name" => "knowledge_base", "url" => "knowledge_base", "class" => "fa-question-circle");

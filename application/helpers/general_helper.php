@@ -781,7 +781,7 @@ if (!function_exists('get_vendor_contact_link')) {
 if (!function_exists('get_client_contact_profile_link')) {
 
     function get_client_contact_profile_link($id = 0, $name = "", $attributes = array()) {
-        return anchor("clients/contact_profile/" . $id, $name, $attributes);
+        return anchor("sales/Clients/contact_profile/" . $id, $name, $attributes);
     }
 
 }
