@@ -3,7 +3,7 @@
         <?php
         $url = "hrs/team_members";
         if ($user_info->user_type === "client") {
-            $url = "clients";
+            $url = "sales/Clients";
         }
         echo form_open(get_uri($url . "/save_account_settings/" . $user_info->id), array("id" => "account-info-form", "class" => "general-form dashed-row white", "role" => "form"));
         ?>

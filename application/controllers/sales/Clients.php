@@ -656,6 +656,7 @@ class Clients extends MY_Controller {
     function account_settings($contact_id) {
         $this->access_only_allowed_members_or_contact_personally($contact_id);
         $view_data['user_info'] = $this->Users_model->get_one($contact_id);
+        $view_data['can_update'] = $view_data['can_update'] = $this->login_user->is_admin ? true:($this->login_user->id === $contact_id? true:false);
         $this->load->view("users/account_settings", $view_data);
     }
 
@@ -789,6 +790,7 @@ class Clients extends MY_Controller {
 
             $view_data['user_id'] = $contact_id;
             $view_data['user_type'] = "client";
+            $view_data['can_update'] = $this->login_user->is_admin ? true:($this->login_user->id === $contact_id? true:false);
             $view_data['model_info'] = $this->Social_links_model->get_one($contact_id);
             $this->load->view('users/social_links', $view_data);
         }
