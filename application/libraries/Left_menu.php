@@ -505,12 +505,12 @@ class Left_menu {
 
 
             if (module_enabled("module_estimate") && !in_array("estimates", $hidden_menu)) {
-                $sidebar_menu[] = array("name" => "estimates", "url" => "estimates", "class" => "fa-file");
+                $sidebar_menu[] = array("name" => "estimates", "url" => "sales/Estimates", "class" => "fa-file");
             }
 
             if (module_enabled("module_invoice") == "1") {
                 if (!in_array("invoices", $hidden_menu)) {
-                    $sidebar_menu[] = array("name" => "invoices", "url" => "invoices", "class" => "fa-file-text");
+                    $sidebar_menu[] = array("name" => "invoices", "url" => "sales/Invoices", "class" => "fa-file-text");
                 }
                 if (!in_array("payments", $hidden_menu)) {
                     $sidebar_menu[] = array("name" => "invoice_payments", "url" => "invoice_payments", "class" => "fa-money");

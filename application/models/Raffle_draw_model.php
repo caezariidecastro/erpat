@@ -54,17 +54,22 @@ class Raffle_draw_model extends Crud_model {
     function join_raffle($data = array()) {
         $event_raffle_participants_table = $this->db->dbprefix('event_raffle_participants');
 
-        $current = $this->get_participants(array(
-            "raffle_id" => $data['raffle_id'],
-            "user_id" => $data['user_id']
-        ));
-
-        //Check if user id is not on the participant list.
-        if(count($current->result()) == 0) {
+        if( isset($data['user_id']) ) {
+            $current = $this->get_participants(array(
+                "raffle_id" => $data['raffle_id'],
+                "user_id" => $data['user_id']
+            ));
+    
+            //Check if user id is not on the participant list.
+            if(count($current->result()) == 0) {
+                $insert_id = $this->db->insert($event_raffle_participants_table, $data);
+                return $insert_id;
+            } 
+        } else {
             $insert_id = $this->db->insert($event_raffle_participants_table, $data);
             return $insert_id;
-        } 
-
+        }
+        
         return false;
     }
 
@@ -100,6 +105,9 @@ class Raffle_draw_model extends Crud_model {
     function get_winners($options = array()) {
         $event_raffle_winner_table = $this->db->dbprefix('event_raffle_winners');
         $event_raffle_table = $this->db->dbprefix('event_raffle');
+        $event_raffle_participants = $this->db->dbprefix('event_raffle_participants');
+        $users_table = $this->db->dbprefix('users');
+
         $where = "";
 
         $id = get_array_value($options, "id");
@@ -117,11 +125,15 @@ class Raffle_draw_model extends Crud_model {
             $where .= " AND $event_raffle_winner_table.user_id=$user_id";
         }
 
-        $sql = "SELECT $event_raffle_winner_table.*, $event_raffle_table.title as raffle_name,
-        users.id as users, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS user_name, users.id as user_id
+        $sql = "SELECT $event_raffle_winner_table.*, 
+            $event_raffle_table.title as raffle_name,
+            $event_raffle_participants.uuid as participants_uuid, 
+            TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS user_name, 
+            $users_table.id as user_id
         FROM $event_raffle_winner_table
-            LEFT JOIN users ON users.id = $event_raffle_winner_table.user_id
-            LEFT JOIN $event_raffle_table ON $event_raffle_table.id = $event_raffle_winner_table.raffle_id 
+            INNER JOIN $event_raffle_table ON $event_raffle_table.id = $event_raffle_winner_table.raffle_id
+            INNER JOIN $event_raffle_participants ON $event_raffle_participants.id = $event_raffle_winner_table.participant_id
+            LEFT JOIN $users_table ON $users_table.id = $event_raffle_participants.user_id
         WHERE $event_raffle_winner_table.deleted=0 $where";
         return $this->db->query($sql);
     }
@@ -133,11 +145,18 @@ class Raffle_draw_model extends Crud_model {
         $raffle_id = get_array_value($options, "raffle_id");
         $winners = (int)(get_array_value($options, "winners")?get_array_value($options, "winners"):1);
 
-        $sql = "SELECT $event_raffle_participants_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS user_name 
+        $sql = "SELECT $event_raffle_participants_table.*, 
+            TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS user_name 
             FROM $event_raffle_participants_table
                 LEFT JOIN users ON users.id = $event_raffle_participants_table.user_id
-            WHERE $event_raffle_participants_table.deleted = '0' AND $event_raffle_participants_table.raffle_id = $raffle_id AND 
-                user_id NOT IN (SELECT $event_raffle_winner_table.user_id FROM $event_raffle_winner_table WHERE $event_raffle_winner_table.raffle_id = $event_raffle_participants_table.raffle_id AND $event_raffle_winner_table.deleted = 0)
+            WHERE $event_raffle_participants_table.deleted = '0' AND 
+                $event_raffle_participants_table.raffle_id = $raffle_id AND 
+                $event_raffle_participants_table.id NOT IN (
+                    SELECT $event_raffle_winner_table.participant_id 
+                    FROM $event_raffle_winner_table 
+                    WHERE $event_raffle_winner_table.raffle_id = $event_raffle_participants_table.raffle_id AND 
+                    $event_raffle_winner_table.deleted = 0
+                )
             ORDER BY RAND()
             LIMIT $winners";
         return $this->db->query($sql);

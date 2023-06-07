@@ -113,7 +113,6 @@ class Raffle_draw extends MY_Controller {
 
     function save() {
         validate_submitted_data(array(
-            "event_id" => "required",
             "title" => "required"
         ));
 
@@ -239,7 +238,7 @@ class Raffle_draw extends MY_Controller {
             foreach ($list_data as $data) {
                 $result[] = array(
                     $data->id,
-                    $data->uuid,
+                    $data->participants_uuid,
                     get_team_member_profile_link($data->user_id, $data->user_name, array("target" => "_blank")),
                     $data->remarks,
                     $data->updated_at,
@@ -388,7 +387,7 @@ class Raffle_draw extends MY_Controller {
                 $winner = array(
                     "uuid" => $this->uuid->v4(),
                     "raffle_id" => $raffle_id,
-                    "user_id" => $data->user_id,
+                    "participant_id" => $data->id,
                     "remarks" => "Backend Draw"
                 );
                 $this->Raffle_draw_model->save_winner($winner);
@@ -405,6 +404,23 @@ class Raffle_draw extends MY_Controller {
         if($raffle_id) {
             //Check if winners number is not equal.
             $cleared = $this->Raffle_draw_model->clear_winners($raffle_id);
+            
+            echo json_encode(array("success" => $cleared?true:false, "message" => lang('record_saved') ));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function anonymous_participants($raffle_id = 0, $total_joined = 1) {
+        if($raffle_id) {
+            for($i=0; $i < $total_joined; $i++) {
+                $data = array(
+                    "uuid" => $this->uuid->v4(),
+                    "raffle_id" => $raffle_id,
+                    "remarks" => "Bulk Join Anonymous"
+                );
+                $cleared = $this->Raffle_draw_model->join_raffle($data);
+            }
             
             echo json_encode(array("success" => $cleared?true:false, "message" => lang('record_saved') ));
         } else {

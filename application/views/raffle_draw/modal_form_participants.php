@@ -10,6 +10,9 @@
     </div>
     <div class="page-title clearfix">
         <div class="title-button-group" style="display: flex; margin-bottom: 10px;">
+        <?php echo form_open(get_uri("Raffle_draw/anonymous_participants/".$model_info->id), array("id" => "join_subscribers-form", "class" => "general-form", "role" => "form")); ?>
+                <button type="submit" class="btn btn-info"><span class="fa fa-recycle "></span>  <?php echo lang('ananymous_subscribers'); ?></button>
+            <?php echo form_close(); ?>
             <?php echo form_open(get_uri("Raffle_draw/join_subscribers/".$model_info->id), array("id" => "join_subscribers-form", "class" => "general-form", "role" => "form")); ?>
                 <button type="submit" class="btn btn-warning"><span class="fa fa-plus "></span>  <?php echo lang('join_subscribers'); ?></button>
             <?php echo form_close(); ?>

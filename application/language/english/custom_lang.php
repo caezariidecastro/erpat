@@ -1043,3 +1043,4 @@ $lang["sss_loan"] = "SSS LOAN";
 $lang["hdmf_loan"] = "HDMF LOAN";
 
 $lang["no_schedules"] = "No Schedules";
+$lang["ananymous_subscribers"] = "Generate QRCodes";

@@ -28,7 +28,7 @@
             columns: [
                 {visible: false, searchable: false},
                 {title: '<?php echo lang("uuid"); ?>'},
-                {title: '<?php echo lang("winners"); ?>'},
+                {title: '<?php echo lang("participants"); ?>'},
                 {title: '<?php echo lang("remarks"); ?>'},
                 {title: '<?php echo lang("updated_at"); ?>'},
                 //{title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
