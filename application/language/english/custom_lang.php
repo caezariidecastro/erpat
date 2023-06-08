@@ -907,8 +907,8 @@ $lang["no_participants"] = "There are no participants left.";
 
 $lang["vacant_seats"] = "Vacant Seats";
 $lang["clear_winners"] = "Clear Winners";
-$lang["join_subscribers"] = "Join Subscribers";
-$lang["clear_participants"] = "Clear Participants";
+$lang["join_subscribers"] = "Join All";
+$lang["clear_participants"] = "Clear All";
 
 $lang["personal_info"] = "Personal Info";
 $lang["alt_Addresss"] = "Alt. Address";
@@ -1043,4 +1043,4 @@ $lang["sss_loan"] = "SSS LOAN";
 $lang["hdmf_loan"] = "HDMF LOAN";
 
 $lang["no_schedules"] = "No Schedules";
-$lang["ananymous_subscribers"] = "Generate QRCodes";
+$lang["ananymous_subscribers"] = "Generate";

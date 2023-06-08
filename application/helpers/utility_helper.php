@@ -17,7 +17,9 @@
         function get_qrcode_image($string, $module, $action, $is_html = false, $size = 75) {
             
             require_once APPPATH."third_party/tcpdf/tcpdf_barcodes_2d.php";
-            $string = json_encode([$module, $action, $string]);
+            if( $module || $action) {
+                $string = json_encode([$module, $action, $string]);
+            }
             $qrcodeobj = new TCPDF2DBarcode($string, 'QRCODE,H');
             $qr_png_data = $qrcodeobj->getBarcodePngData();
             $qrcode = base64_encode($qr_png_data);

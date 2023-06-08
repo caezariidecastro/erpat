@@ -98,4 +98,87 @@ class EventRaffle extends CI_Controller {
         
         echo json_encode(array("success" => true, "winner"=>$winner ));
     }
+
+    public function validate_entry() {
+        $entry_id = $this->input->post('entry_id');
+
+        $entry_object = $this->Raffle_draw_model->get_participants(array(
+            "uuid" => $entry_id,
+        ))->row();
+
+        if(!$entry_object) {
+            echo json_encode(array("success" => false, 'message' => "QR Code not valid!"));
+            exit;
+        }
+
+        if($entry_object->user_id) {
+            echo json_encode(array("success" => false, 'message' => "QR Code already used!"));
+            exit;
+        }
+
+        echo json_encode(array("success" => true, "id" => $entry_object->id, "uuid" => $entry_object->uuid ));
+    }
+
+    public function submit_entry() {
+        $id = $this->input->post('id');
+        $entry_id = $this->input->post('entry_id');
+        $first_name = $this->input->post('first_name');
+        $last_name = $this->input->post('last_name');
+        $email_address = $this->input->post('email_address');
+        if (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(array("success"=>false, "message"=>"Email address is invalid."));
+            exit;
+        }
+
+        $phone_number = $this->input->post('phone_number'); //optional
+        $remarks = $this->input->post('remarks'); //optional
+
+        if(empty($id) || empty($entry_id) || empty($first_name) || empty($last_name) || empty($email_address) ) {
+            echo json_encode(array("success"=>false, "message"=>"Please complete all required fields."));
+            exit;
+        }
+
+        //Check if qrcode is valid or already assigned.
+        $entry_object = $this->Raffle_draw_model->get_participants(array(
+            "id" => $id,
+            "uuid" => $entry_id,
+        ))->row();
+
+        if(!$entry_object) {
+            echo json_encode(array("success" => false, 'message' => "QR Code not valid!"));
+            exit;
+        }
+
+        if($entry_object->user_id) {
+            echo json_encode(array("success" => false, 'message' => "QR Code already used!"));
+            exit;
+        }
+
+        //Check if the user exist else create and get the id. use email to get id.
+        $cur_user = $this->Users_model->is_email_exists($email_address);
+        if (!$cur_user) {
+            $user_data = array(
+                "uuid" => $this->uuid->v4(),
+                "first_name" => $first_name,
+                "last_name" => $last_name,
+                "email" => $email_address,
+                "phone" => $phone_number,
+                "user_type" => 'customer',
+                "disable_login" => 1,
+                "password" => password_hash($this->uuid->v4(), PASSWORD_DEFAULT),
+                "created_at" => get_current_utc_time(),
+            );
+            $user_id = $this->Users_model->save($user_data);
+            $cur_user = $this->Users_model->get_one($user_id);
+        }
+
+        // Set the user for this participant
+        $success = $this->Raffle_draw_model->set_participant($id, $cur_user->id, $remarks);
+        if(!$success) {
+            echo json_encode(array("success" => false, 'message' => "User unable to claim the QR Code."));
+            exit;
+        }
+
+        echo json_encode(array("success" => true, 'message' => "Congratulation! see your prize."));
+    }
 }

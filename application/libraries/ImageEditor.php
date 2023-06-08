@@ -101,4 +101,47 @@ class ImageEditor {
         );
     }
 
+    public function qrcode($data) {
+
+        // create an image manager instance with favored driver
+        $manager = new ImageManager(['driver' => 'gd']);
+
+        // to finally create image instances
+        $img = $manager->canvas(600, 337, '#ffffff');
+
+        //Background
+        $background = $manager->make( get_setting("system_default_path")."qrcode.jpg" )->resize(600, 337);
+        $img->insert($background, 'top', 0, 0); 
+
+        // QRCode
+        $qrgen = "data:image/png;base64,".get_qrcode_image($data['code'], '', '', false, 220);
+        $qrcode = $manager->make( $qrgen )->resize(220, 220);
+        $img->insert($qrcode, 'top-left', 70, 32); 
+
+        // UUID
+        $img->text($data['uuid'], 460, 312, function($font) {
+            $font->file( getcwd()."/".get_setting("system_default_path")."/Myriad_Pro_Regular.ttf" );
+            $font->size(12);
+            $font->color('#3d3d3d');
+            $font->align('center');
+            $font->valign('top');
+        });  
+        
+        // Saving
+        $dir_path = get_setting("raffle_entry_path");
+        $file_name = $data['uuid'];
+        $file_mime = "jpg";
+        $file_url = get_uri($url_path."/".$dir_path.$file_name.".".$file_mime);
+        $file_path = getcwd()."/".$dir_path . $file_name . "." . $file_mime;
+        
+        $filedata = $img->save($file_path, 50, $file_mime)
+            ->encode('data-url');
+
+        return array(
+            "path" => $dir_path.$filedata->basename, 
+            "url" => $file_url,
+            "base64" => $filedata->encoded
+        );
+    }
+
 }

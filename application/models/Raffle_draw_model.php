@@ -83,6 +83,11 @@ class Raffle_draw_model extends Crud_model {
             $where .= " AND $event_raffle_participants_table.id=$id";
         }
 
+        $uuid = get_array_value($options, "uuid");
+        if ($uuid) {
+            $where .= " AND $event_raffle_participants_table.uuid='$uuid'";
+        }
+
         $raffle_id = get_array_value($options, "raffle_id");
         if ($raffle_id) {
             $where .= " AND $event_raffle_table.id=$raffle_id";
@@ -102,6 +107,15 @@ class Raffle_draw_model extends Crud_model {
         return $this->db->query($sql);
     }
 
+    function set_participant($id, $user_id, $remarks) {
+        $event_raffle_participants_table = $this->db->dbprefix('event_raffle_participants');
+
+        $sql = "Update $event_raffle_participants_table 
+            SET user_id = '$user_id', remarks = '$remarks'
+            WHERE id = $id";
+        return $this->db->query($sql);
+    }
+
     function get_winners($options = array()) {
         $event_raffle_winner_table = $this->db->dbprefix('event_raffle_winners');
         $event_raffle_table = $this->db->dbprefix('event_raffle');
@@ -112,12 +126,12 @@ class Raffle_draw_model extends Crud_model {
 
         $id = get_array_value($options, "id");
         if ($id) {
-            $where .= " AND $event_raffle_winner_table.id=$id";
+            $where .= " AND $event_raffle_winner_table.id='$id'";
         }
 
         $raffle_id = get_array_value($options, "raffle_id");
         if ($raffle_id) {
-            $where .= " AND $event_raffle_table.id=$raffle_id";
+            $where .= " AND $event_raffle_table.id='$raffle_id'";
         }
 
         $user_id = get_array_value($options, "user_id");
@@ -128,11 +142,11 @@ class Raffle_draw_model extends Crud_model {
         $sql = "SELECT $event_raffle_winner_table.*, 
             $event_raffle_table.title as raffle_name,
             $event_raffle_participants.uuid as participants_uuid, 
-            TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS user_name, 
-            $users_table.id as user_id
+            $users_table.id as user_id,
+            TRIM(CONCAT($users_table.first_name, ' ', $users_table.last_name)) AS user_name
         FROM $event_raffle_winner_table
-            INNER JOIN $event_raffle_table ON $event_raffle_table.id = $event_raffle_winner_table.raffle_id
             INNER JOIN $event_raffle_participants ON $event_raffle_participants.id = $event_raffle_winner_table.participant_id
+            INNER JOIN $event_raffle_table ON $event_raffle_table.id = $event_raffle_participants.raffle_id
             LEFT JOIN $users_table ON $users_table.id = $event_raffle_participants.user_id
         WHERE $event_raffle_winner_table.deleted=0 $where";
         return $this->db->query($sql);

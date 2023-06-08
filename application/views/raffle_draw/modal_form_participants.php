@@ -10,8 +10,11 @@
     </div>
     <div class="page-title clearfix">
         <div class="title-button-group" style="display: flex; margin-bottom: 10px;">
-        <?php echo form_open(get_uri("Raffle_draw/anonymous_participants/".$model_info->id), array("id" => "join_subscribers-form", "class" => "general-form", "role" => "form")); ?>
+            <?php echo form_open(get_uri("Raffle_draw/anonymous_participants/".$model_info->id), array("id" => "anonymous_participants-form", "class" => "general-form", "role" => "form")); ?>
                 <button type="submit" class="btn btn-info"><span class="fa fa-recycle "></span>  <?php echo lang('ananymous_subscribers'); ?></button>
+            <?php echo form_close(); ?>
+            <?php echo form_open(get_uri("Raffle_draw/export_qrcode/".$model_info->id), array("id" => "export_qrcode-form", "class" => "general-form", "role" => "form")); ?>
+                <button type="submit" class="btn btn-success"><span class="fa fa-print "></span>  <?php echo lang('export_qrcode'); ?></button>
             <?php echo form_close(); ?>
             <?php echo form_open(get_uri("Raffle_draw/join_subscribers/".$model_info->id), array("id" => "join_subscribers-form", "class" => "general-form", "role" => "form")); ?>
                 <button type="submit" class="btn btn-warning"><span class="fa fa-plus "></span>  <?php echo lang('join_subscribers'); ?></button>
@@ -39,6 +42,24 @@
             tableRefreshButton: true,
             printColumns: [1,2,3,4],
             xlsColumns: [1,2,3,4],
+        });
+
+        $("#anonymous_participants-form").appForm({
+            closeModalOnSuccess: false,
+            onSuccess: function (result) {
+                if(result.success) {
+                    $('#participants_list-table').DataTable().ajax.reload();
+                }
+            },
+            beforeAjaxSubmit: function(data, self, options) {
+                appLoader.show({container: ".participants-modal", css: "left:0; top: 50%;"});
+            },
+            onAjaxSuccess: function (result) {
+                if(!result.success) {
+                    alert(result.message);
+                }
+                appLoader.hide();
+            }
         });
 
         $("#join_subscribers-form").appForm({

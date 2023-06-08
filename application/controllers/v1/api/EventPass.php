@@ -132,7 +132,7 @@ class EventPass extends CI_Controller {
         if (!$cur_user) {
             $user_data["uuid"] = $this->uuid->v4();
             $user_data["disable_login"] = 1;
-            $user_data["password"] = password_hash($password, PASSWORD_DEFAULT);
+            $user_data["password"] = password_hash($this->uuid->v4(), PASSWORD_DEFAULT);
             $user_data["created_at"] = get_current_utc_time();
 
             $user_id = $this->Users_model->save($user_data);

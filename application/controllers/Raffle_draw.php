@@ -460,4 +460,54 @@ class Raffle_draw extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
     }
+
+    function export_qrcode( $raffle_id = 1) {
+
+        $this->load->library('pdf');
+        $this->pdf->setPrintHeader(false);
+        $this->pdf->setPrintFooter(false);
+        $this->pdf->setImageScale(1.0);
+        $this->pdf->AddPage();
+        $this->pdf->SetAutoPageBreak(true, 0);
+
+        $participant_lists = [];
+        $list_data = $this->Raffle_draw_model->get_participants(array(
+            "raffle_id" => $raffle_id
+        ))->result();
+        foreach($list_data as $item) {
+            $participant_lists[] = $item;
+        }
+        
+        $total = 0;
+        $current = [];
+        for( $i=0; $i<count($participant_lists); $i++ ) {
+            $total += 1;
+            $current[] = $participant_lists[$i];
+
+            if(count($current) == 6 || $total == count($participant_lists)) {
+                $html = $this->load->view("raffle_draw/single_qrcode", array(
+                    'lists' => $current,
+                ), true);
+                $this->pdf->writeHTML($html, true, false, true, false, '');
+                $current = [];
+            }
+
+            if(count($current) == 6 && $total !== count($participant_lists)) {
+                $this->pdf->AddPage();
+            }
+            
+        }
+
+        // // QRCODE,M : QR-CODE Medium error correction
+        // $this->pdf->write2DBarcode('www.tcpdf.org', 'QRCODE,M', 20, 40, 50, 50, $style, 'N');
+
+        // // QRCODE,Q : QR-CODE Better error correction
+        // $this->pdf->write2DBarcode('www.tcpdf.org', 'QRCODE,Q', 20, 100, 50, 50, $style, 'N');
+
+        // // QRCODE,H : QR-CODE Best error correction
+        // $this->pdf->write2DBarcode('www.tcpdf.org', 'QRCODE,H', 20, 160, 50, 50, $style, 'N');
+
+        $pdf_file_name =  "ExportParticipantCode.pdf";
+        $this->pdf->Output($pdf_file_name, "I");
+    }
 }
