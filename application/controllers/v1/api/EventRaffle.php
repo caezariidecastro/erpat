@@ -24,12 +24,23 @@ class EventRaffle extends CI_Controller {
     }
 
     public function list_raffle() {
-        $eventid = $this->input->post('eventid');
-
+        
         $filter = array(
-            "event_id" => $eventid,
             "status" => "active"
         );
+
+        $eventid = $this->input->post('eventid');
+        if( $eventid ) {
+            $filter["event_id"] = $eventid;
+        }
+
+        $start_date = $this->input->post('start_date');
+        $end_date = $this->input->post('end_date');
+        if( $start_date && $end_date ) {
+            $filter["start"] = $start_date;
+            $filter["end"] = $end_date;
+        }
+
         $raffles = $this->Raffle_draw_model->get_details($filter)->result();
         echo json_encode( array("data"=>$raffles) );
     }

@@ -58,7 +58,7 @@
                 echo form_textarea(array(
                     "id" => "description",
                     "name" => "description",
-                    "value" => $model_info->remarks,
+                    "value" => $model_info->description,
                     "class" => "form-control",
                     "placeholder" => lang('description') . "...",
                     "data-rich-text-editor" => true,

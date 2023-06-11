@@ -20,7 +20,7 @@ class Raffle_draw_model extends Crud_model {
             $where .= " AND $event_raffle_table.id=$id";
         }
 
-        if($start){
+        if($start && $end){
             $where .= " AND {$this->table}.draw_date BETWEEN '$start' AND '$end'";
         }
 
