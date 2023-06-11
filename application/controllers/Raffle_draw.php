@@ -84,8 +84,8 @@ class Raffle_draw extends MY_Controller {
             modal_anchor(get_uri("Raffle_draw/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('create_new_draw'), "data-post-id" => $data->id))
             .anchor(get_uri("Raffle_draw/export_qrcode/".$data->id), "<i class='fa fa-print'></i>", array("class" => "edit", "title" => lang('export_qrcode'), "target" => "_blank"))
             .modal_anchor(get_uri("Raffle_draw/modal_form_participants/"), "<i class='fa fa-users'></i>", array("class" => "edit", "title" => lang('view_participants'), "data-post-id" => $data->id))
-            .modal_anchor(get_uri("Raffle_draw/modal_form_winners/"), "<i class='fa fa-eye'></i>", array("class" => "edit", "title" => lang('view_winners'), "data-post-id" => $data->id))
-            .modal_anchor(get_uri("Raffle_draw/modal_form_status"), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('update_Status'), "data-post-id" => $data->id))
+            .modal_anchor(get_uri("Raffle_draw/modal_form_winners/"), "<i class='fa fa-star'></i>", array("class" => "edit", "title" => lang('view_winners'), "data-post-id" => $data->id))
+            .modal_anchor(get_uri("Raffle_draw/modal_form_status"), "<i class='fa fa-power-off'></i>", array("class" => "edit", "title" => lang('update_Status'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("Raffle_draw/delete"), "data-action" => "delete-confirmation"))
         );
     }
