@@ -139,14 +139,22 @@ class Raffle_draw_model extends Crud_model {
             $where .= " AND $event_raffle_winner_table.user_id=$user_id";
         }
 
+        $order_by = get_array_value($options, "order_by");
+        if ($order_by) {
+            $where .= " AND $users_table.id IS NOT NULL ORDER BY updated_at DESC LIMIT 20";
+        }
+
         $sql = "SELECT $event_raffle_winner_table.*, 
             $event_raffle_table.title as raffle_name,
             $event_raffle_participants.uuid as participants_uuid, 
             $users_table.id as user_id,
+            TRIM(CONCAT($users_table.street, ' ', $users_table.state, ' ', $users_table.country, ' ', $users_table.zip)) AS address_detail,
+            events.title as event_name, 
             TRIM(CONCAT($users_table.first_name, ' ', $users_table.last_name)) AS user_name
         FROM $event_raffle_winner_table
             INNER JOIN $event_raffle_participants ON $event_raffle_participants.id = $event_raffle_winner_table.participant_id
-            INNER JOIN $event_raffle_table ON $event_raffle_table.id = $event_raffle_participants.raffle_id
+            INNER JOIN $event_raffle_table ON $event_raffle_table.id = $event_raffle_participants.raffle_id AND $event_raffle_table.status = 'active'
+            LEFT JOIN events ON events.id = $event_raffle_table.event_id 
             LEFT JOIN $users_table ON $users_table.id = $event_raffle_participants.user_id
         WHERE $event_raffle_winner_table.deleted=0 $where";
         return $this->db->query($sql);

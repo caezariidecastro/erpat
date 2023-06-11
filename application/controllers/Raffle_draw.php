@@ -495,21 +495,8 @@ class Raffle_draw extends MY_Controller {
                 $this->pdf->writeHTML($html, true, false, true, false, 'center');
                 $current = [];
             }
-
-            // if(count($current) == 12 && $total !== count($participant_lists)) {
-            //     $this->pdf->AddPage();
-            // }
             
         }
-
-        // // QRCODE,M : QR-CODE Medium error correction
-        // $this->pdf->write2DBarcode('www.tcpdf.org', 'QRCODE,M', 20, 40, 50, 50, $style, 'N');
-
-        // // QRCODE,Q : QR-CODE Better error correction
-        // $this->pdf->write2DBarcode('www.tcpdf.org', 'QRCODE,Q', 20, 100, 50, 50, $style, 'N');
-
-        // // QRCODE,H : QR-CODE Best error correction
-        // $this->pdf->write2DBarcode('www.tcpdf.org', 'QRCODE,H', 20, 160, 50, 50, $style, 'N');
 
         $pdf_file_name =  "ExportParticipantCode.pdf";
         $this->pdf->Output($pdf_file_name, "I");

@@ -192,4 +192,18 @@ class EventRaffle extends CI_Controller {
 
         echo json_encode(array("success" => true, 'message' => "Congratulation! see your prize."));
     }
+
+    public function list_winners() {
+        $filter_winner = array(
+            "order_by" => true
+        );
+
+        $winners = $this->Raffle_draw_model
+            ->get_winners($filter_winner)
+            ->result();
+
+        echo json_encode( array(
+            "data" => $winners
+        ) );
+    } 
 }
