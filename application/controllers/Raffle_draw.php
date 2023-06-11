@@ -82,6 +82,7 @@ class Raffle_draw extends MY_Controller {
             get_team_member_profile_link($data->user_id, $data->user_name, array("target" => "_blank")),
             $data->timestamp,
             modal_anchor(get_uri("Raffle_draw/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('create_new_draw'), "data-post-id" => $data->id))
+            .anchor(get_uri("Raffle_draw/export_qrcode/".$data->id), "<i class='fa fa-print'></i>", array("class" => "edit", "title" => lang('export_qrcode'), "target" => "_blank"))
             .modal_anchor(get_uri("Raffle_draw/modal_form_participants/"), "<i class='fa fa-users'></i>", array("class" => "edit", "title" => lang('view_participants'), "data-post-id" => $data->id))
             .modal_anchor(get_uri("Raffle_draw/modal_form_winners/"), "<i class='fa fa-eye'></i>", array("class" => "edit", "title" => lang('view_winners'), "data-post-id" => $data->id))
             .modal_anchor(get_uri("Raffle_draw/modal_form_status"), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('update_Status'), "data-post-id" => $data->id))
@@ -428,20 +429,19 @@ class Raffle_draw extends MY_Controller {
         }
     }
 
-    function join_subscribers($raffle_id = 0) {
+    function random_join($raffle_id = 0) {
 
         if($raffle_id) {
-            $data = array("user_type"=>"customer");
-            $subcribers = $this->Users_model->get_details($data)->result();
-            foreach($subcribers as $user) {
-                $data = array(
-                    "uuid" => $this->uuid->v4(),
-                    "raffle_id" => $raffle_id,
-                    "user_id" => $user->id,
-                    "remarks" => "Bulk Join"
-                );
-                $cleared = $this->Raffle_draw_model->join_raffle($data);
-            }
+            $data = array("user_type"=>"customer", "randomize" => true);
+            $subcribers = $this->Users_model->get_details($data)->row();
+
+            $data = array(
+                "uuid" => $this->uuid->v4(),
+                "raffle_id" => $raffle_id,
+                "user_id" => $subcribers->id,
+                "remarks" => "Random Join"
+            );
+            $cleared = $this->Raffle_draw_model->join_raffle($data);
             
             echo json_encode(array("success" => $cleared?true:false, "message" => lang('record_saved') ));
         } else {

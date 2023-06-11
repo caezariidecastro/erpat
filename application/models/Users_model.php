@@ -230,6 +230,11 @@ class Users_model extends Crud_model {
         $select_custom_fieds = get_array_value($custom_field_query_info, "select_string");
         $join_custom_fieds = get_array_value($custom_field_query_info, "join_string");
 
+        $order_by = "ORDER BY $users_table.first_name";
+        $randomize = get_array_value($options, "randomize");
+        if ($randomize) {
+            $order_by = "ORDER BY RAND() LIMIT 1";
+        }
 
         //prepare full query string
         $sql = "SELECT $users_table.*, $schedule_table.id as sched_id, $schedule_table.title as sched_name, $select_labels_data_query, $team_member_job_info_table.rfid_num, $team_member_job_info_table.job_idnum, $team_member_job_info_table.date_of_hire, $team_member_job_info_table.salary, $team_member_job_info_table.salary_term, $team_member_job_info_table.bank_name, $team_member_job_info_table.bank_account, $team_member_job_info_table.bank_number, $team_member_job_info_table.sss, $team_member_job_info_table.tin, $team_member_job_info_table.pag_ibig, $team_member_job_info_table.phil_health, $team_member_job_info_table.signiture_url $teams_lists  $select_custom_fieds
@@ -239,7 +244,7 @@ class Users_model extends Crud_model {
         LEFT JOIN $clients_table ON $clients_table.id=$users_table.client_id
         $join_custom_fieds    
         WHERE $where
-        ORDER BY $users_table.first_name";
+        $order_by";
         return $this->db->query($sql);
     }
 

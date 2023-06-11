@@ -907,7 +907,7 @@ $lang["no_participants"] = "There are no participants left.";
 
 $lang["vacant_seats"] = "Vacant Seats";
 $lang["clear_winners"] = "Clear Winners";
-$lang["join_subscribers"] = "Join All";
+$lang["random_join"] = "Random Join";
 $lang["clear_participants"] = "Clear All";
 
 $lang["personal_info"] = "Personal Info";
