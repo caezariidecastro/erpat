@@ -198,7 +198,7 @@ class Raffle_draw extends MY_Controller {
             foreach ($list_data as $data) {
                 $result[] = array(
                     $data->id,
-                    $data->uuid,
+                    get_custom_link(get_setting("raffle_entry_path"), strtoupper($data->uuid).".jpg", array("target" => "_blank")),
                     get_team_member_profile_link($data->user_id, $data->user_name, array("target" => "_blank")),
                     $data->remarks,
                     $data->updated_at,

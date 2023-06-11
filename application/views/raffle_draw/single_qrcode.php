@@ -31,8 +31,8 @@
                 <?php
                     $this->load->library('ImageEditor');
                     $qrcode = array(
-                        "code" => "http://go.erpat.app/bse/".$item->id,
-                        "uuid" => "45B71A44-AB7E-4650-9511-F90C2E1A6B0F"
+                        "code" => "http://go.erpat.app/bse/".$item->uuid,
+                        "uuid" => strtoupper($item->uuid)
                     );
                     $image_data = (new ImageEditor())->qrcode($qrcode);
                 ?>

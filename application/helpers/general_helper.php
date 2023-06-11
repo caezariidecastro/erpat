@@ -2263,3 +2263,13 @@ if (!function_exists('adjustBrightness')) {
         return $return;
     }
 }
+
+if (!function_exists('get_custom_link')) {
+
+    function get_custom_link($path = "", $name = "", $attributes = array()) {
+        $ci = get_instance();
+
+        return anchor($path . $name, $name, $attributes);
+    }
+
+}
