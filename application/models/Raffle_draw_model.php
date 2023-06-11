@@ -21,7 +21,7 @@ class Raffle_draw_model extends Crud_model {
         }
 
         if($start && $end){
-            $where .= " AND {$this->table}.draw_date BETWEEN '$start' AND '$end'";
+            $where .= " AND DATE({$this->table}.draw_date) BETWEEN '$start' AND '$end'";
         }
 
         $event_id = get_array_value($options, "event_id");
@@ -148,7 +148,6 @@ class Raffle_draw_model extends Crud_model {
             $event_raffle_table.title as raffle_name,
             $event_raffle_participants.uuid as participants_uuid, 
             $users_table.id as user_id,
-            TRIM(CONCAT($users_table.street, ' ', $users_table.state, ' ', $users_table.country, ' ', $users_table.zip)) AS address_detail,
             events.title as event_name, 
             TRIM(CONCAT($users_table.first_name, ' ', $users_table.last_name)) AS user_name
         FROM $event_raffle_winner_table

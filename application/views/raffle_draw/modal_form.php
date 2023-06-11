@@ -71,7 +71,7 @@
         <div class="col-md-4">
             <?php
             echo form_dropdown(
-                "raffle_type", array("countdown"=>"Countdown","spinner"=>"Spinner","wheel"=>"Wheel","mosaic"=>"Mosaic"), 
+                "raffle_type", array("standard"=>"QRCode Scan","countdown"=>"Countdown","spinner"=>"Spinner","wheel"=>"Wheel","mosaic"=>"Mosaic"), 
                 $model_info->raffle_type, 
                 "class='select2 validate-hidden' id='raffle_type' data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
