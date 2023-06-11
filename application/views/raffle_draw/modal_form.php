@@ -36,19 +36,20 @@
                 "value" => strtoupper($model_info->winners),
                 "class" => "form-control",
                 "placeholder" => lang('number_of_winners'),
-                "required" => true
+                "required" => true,
+                ($model_info->id && $model_info->status!=='draft')?"disabled":"" => $model_info->id && $model_info->status!=='draft'?"disabled":"",
             )); ?>
         </div>
         <div class="col-md-4">
             <?php
             echo form_dropdown(
-                "ranking", array("asc"=>"ASC","desc"=>"DESC"), 
+                "ranking", array("asc"=>"ASCENDING","desc"=>"DESCENDING"), 
                 $model_info->ranking, 
-                "class='select2 validate-hidden' id='ranking' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+                "class='select2 validate-hidden' id='ranking' ".(($model_info->id && $model_info->status!=='draft')?"disabled":"")." data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
         </div>
         <div class="col-md-4">
-        <input type="text" value="<?php echo $model_info->crowd_type; ?>" name="crowd_type" id="crowd_type" class="w100p validate-hidden"  placeholder="<?php echo lang('crowd_type'); ?>"  />
+        <input type="text" value="<?php echo $model_info->crowd_type; ?>" name="crowd_type" id="crowd_type" class="w100p validate-hidden"  placeholder="<?php echo lang('crowd_type'); ?>" <?= ($model_info->id && $model_info->status!=='draft')?"disabled":"" ?>  />
         </div>
     </div>
     <div class="form-group">
@@ -73,7 +74,7 @@
             echo form_dropdown(
                 "raffle_type", array("standard"=>"QRCode Scan","countdown"=>"Countdown","spinner"=>"Spinner","wheel"=>"Wheel","mosaic"=>"Mosaic"), 
                 $model_info->raffle_type, 
-                "class='select2 validate-hidden' id='raffle_type' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+                "class='select2 validate-hidden' id='raffle_type' ".($model_info->id?"disabled":"")." data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
         </div>
         <div class="col-md-4">

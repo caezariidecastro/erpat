@@ -114,7 +114,12 @@ class Raffle_draw extends MY_Controller {
 
     function save() {
         validate_submitted_data(array(
-            "title" => "required"
+            "title" => "required",
+            "number_of_winners" => "required",
+            "crowd_type" => "required",
+            "raffle_type" => "required",
+            "draw_date" => "required",
+            "draw_time" => "required",
         ));
 
         $id = $this->input->post('id');
