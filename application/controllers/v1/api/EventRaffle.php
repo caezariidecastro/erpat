@@ -206,4 +206,47 @@ class EventRaffle extends CI_Controller {
             "data" => $winners
         ) );
     } 
+
+    public function subscribe_now() {
+        $first_name = $this->input->post('first_name');
+        $last_name = $this->input->post('last_name');
+        $email_address = $this->input->post('email_address');
+        if (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(array("success"=>false, "message"=>"Email address is invalid."));
+            exit;
+        }
+        $phone_number = $this->input->post('phone_number'); //optional
+
+        if( empty($first_name) || empty($last_name) || empty($email_address) || empty($phone_number) ) {
+            echo json_encode(array("success"=>false, "message"=>"Please complete all required fields."));
+            exit;
+        }
+
+        //Check if the user exist else create and get the id. use email to get id.
+        $cur_user = $this->Users_model->is_email_exists($email_address);
+        if ($cur_user) {
+            echo json_encode(array("success"=>true, "message"=>"The email address is already regaistered, you're all set!"));
+            exit;
+        }
+
+        $user_data = array(
+            "uuid" => $this->uuid->v4(),
+            "first_name" => $first_name,
+            "last_name" => $last_name,
+            "email" => $email_address,
+            "phone" => $phone_number,
+            "user_type" => 'customer',
+            "disable_login" => 1,
+            "password" => password_hash($this->uuid->v4(), PASSWORD_DEFAULT),
+            "created_at" => get_current_utc_time(),
+        );
+        $user_id = $this->Users_model->save($user_data);
+
+        if(!$user_id) {
+            echo json_encode(array("success"=>true, "message"=>"Something went wrong during the subcription creation."));
+            exit;
+        }
+
+        echo json_encode(array("success" => true, 'message' => "Visit our website for daily updates on the winners of our raffle and stay informed."));
+    }
 }
