@@ -467,13 +467,17 @@ class Raffle_draw extends MY_Controller {
         $this->pdf->setPrintHeader(false);
         $this->pdf->setPrintFooter(false);
         $this->pdf->setImageScale(1.0);
+        $this->pdf->setEqualColumns(3, 69);
+        $this->pdf->SetAutoPageBreak(true, -50);
+        $this->pdf->setCellMargins('', 0, '', 0);
+        $this->pdf->setCellPaddings('', 0, '', 0);
         $this->pdf->AddPage();
-        $this->pdf->SetAutoPageBreak(true, 0);
 
         $participant_lists = [];
         $list_data = $this->Raffle_draw_model->get_participants(array(
             "raffle_id" => $raffle_id
         ))->result();
+
         foreach($list_data as $item) {
             $participant_lists[] = $item;
         }
@@ -484,17 +488,17 @@ class Raffle_draw extends MY_Controller {
             $total += 1;
             $current[] = $participant_lists[$i];
 
-            if(count($current) == 6 || $total == count($participant_lists)) {
+            if(count($current) == 12 || $total == count($participant_lists)) {
                 $html = $this->load->view("raffle_draw/single_qrcode", array(
                     'lists' => $current,
                 ), true);
-                $this->pdf->writeHTML($html, true, false, true, false, '');
+                $this->pdf->writeHTML($html, true, false, true, false, 'center');
                 $current = [];
             }
 
-            if(count($current) == 6 && $total !== count($participant_lists)) {
-                $this->pdf->AddPage();
-            }
+            // if(count($current) == 12 && $total !== count($participant_lists)) {
+            //     $this->pdf->AddPage();
+            // }
             
         }
 
