@@ -117,7 +117,6 @@ class Raffle_draw extends MY_Controller {
             "title" => "required",
             "number_of_winners" => "required",
             "crowd_type" => "required",
-            "raffle_type" => "required",
             "draw_date" => "required",
             "draw_time" => "required",
         ));
@@ -204,7 +203,8 @@ class Raffle_draw extends MY_Controller {
             foreach ($list_data as $data) {
                 $result[] = array(
                     $data->id,
-                    get_custom_link(get_setting("raffle_entry_path"), strtoupper($data->uuid).".jpg", array("target" => "_blank")),
+                    get_custom_link("http://go.erpat.app/bse/", $data->uuid, array("target" => "_blank"), "LINK"),
+                    get_custom_link(get_setting("raffle_entry_path"), strtoupper($data->uuid).".jpg", array("target" => "_blank"), strtoupper($data->uuid)),
                     get_team_member_profile_link($data->user_id, $data->user_name, array("target" => "_blank")),
                     $data->remarks,
                     $data->updated_at,

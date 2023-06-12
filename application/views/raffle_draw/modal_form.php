@@ -25,6 +25,14 @@
                 "placeholder" => lang('title'),
                 "required" => true
             )); ?>
+            <?php 
+                if($model_info->id && $model_info->status === "active") { 
+                    $short_link = "http://go.erpat.app/bsei/".$model_info->uuid;
+            ?>
+                <div style="margin: 10px 0 15px;">                
+                    <a href="<?= $short_link ?>" target="_blank" class="text-primary">URL: <?= $short_link ?></a>
+                </div>
+            <?php }  ?>
         </div>
     </div>
     <div class="form-group">

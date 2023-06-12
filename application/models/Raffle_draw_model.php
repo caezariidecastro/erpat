@@ -20,6 +20,11 @@ class Raffle_draw_model extends Crud_model {
             $where .= " AND $event_raffle_table.id=$id";
         }
 
+        $uuid = get_array_value($options, "uuid");
+        if ($uuid) {
+            $where .= " AND $event_raffle_table.uuid='$uuid'";
+        }
+
         if($start && $end){
             $where .= " AND DATE({$this->table}.draw_date) BETWEEN '$start' AND '$end'";
         }

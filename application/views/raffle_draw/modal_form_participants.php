@@ -30,6 +30,7 @@
             order: [[1, 'desc']],
             columns: [
                 {visible: false, searchable: false},
+                {title: '<?php echo lang("url"); ?>'},
                 {title: '<?php echo lang("uuid"); ?>'},
                 {title: '<?php echo lang("participants"); ?>'},
                 {title: '<?php echo lang("remarks"); ?>'},

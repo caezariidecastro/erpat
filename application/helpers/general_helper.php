@@ -2266,10 +2266,15 @@ if (!function_exists('adjustBrightness')) {
 
 if (!function_exists('get_custom_link')) {
 
-    function get_custom_link($path = "", $name = "", $attributes = array()) {
+    function get_custom_link($path = "", $name = "", $attributes = array(), $new_name) {
         $ci = get_instance();
 
-        return anchor($path . $name, $name, $attributes);
+        $cur_name = $name;
+        if( isset($new_name) ) {
+            $cur_name = $new_name;
+        }
+
+        return anchor($path . $name, $cur_name, $attributes);
     }
 
 }

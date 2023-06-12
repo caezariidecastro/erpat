@@ -249,4 +249,97 @@ class EventRaffle extends CI_Controller {
 
         echo json_encode(array("success" => true, 'message' => "Visit our website for daily updates on the winners of our raffle and stay informed."));
     }
+
+    public function validate_raffle() {
+        $raffle_id = $this->input->post('raffle_id');
+
+        $raffle_object = $this->Raffle_draw_model->get_details(array(
+            "status" => "active",
+            "uuid" => strtolower($raffle_id),
+        ))->row();
+
+        if(!$raffle_object) {
+            echo json_encode(array("success" => false, 'message' => "Raffle code not valid!"));
+            exit;
+        }
+
+        echo json_encode(array("success" => true, "data" => $raffle_object ));
+    }
+
+    public function join_raffle() {
+        $id = $this->input->post('id');
+        $raffle_id = $this->input->post('raffle_id');
+
+        $first_name = $this->input->post('first_name');
+        $last_name = $this->input->post('last_name');
+        $email_address = $this->input->post('email_address');
+        if (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(array("success"=>false, "message"=>"Email address is invalid."));
+            exit;
+        }
+
+        $phone_number = $this->input->post('phone_number'); //optional
+        $remarks = $this->input->post('remarks'); //optional
+
+        if(empty($id) || empty($raffle_id) || empty($first_name) || empty($last_name) || empty($email_address) ) {
+            echo json_encode(array("success"=>false, "message"=>"Please complete all required fields."));
+            exit;
+        }
+    
+        //Check if the raffle id and uid is existing else error.
+        $raffle_object = $this->Raffle_draw_model->get_details(array(
+            "status" => "active",
+            "id" => $id,
+            "uuid" => $raffle_id,
+        ))->row();
+
+        if(!$raffle_object) {
+            echo json_encode(array("success" => false, 'message' => "Raffle code not valid!"));
+            exit;
+        }
+
+        //Check if the user exist else create and get the id. use email to get id.
+        $cur_user = $this->Users_model->is_email_exists($email_address);
+        if (!$cur_user) {
+            $user_data = array(
+                "uuid" => $this->uuid->v4(),
+                "first_name" => $first_name,
+                "last_name" => $last_name,
+                "email" => $email_address,
+                "phone" => $phone_number,
+                "user_type" => 'customer',
+                "disable_login" => 1,
+                "password" => password_hash($this->uuid->v4(), PASSWORD_DEFAULT),
+                "created_at" => get_current_utc_time(),
+            );
+            $user_id = $this->Users_model->save($user_data);
+            $cur_user = $this->Users_model->get_one($user_id);
+        }
+
+        //Check if this user has a participant else error.
+        $entry_object = $this->Raffle_draw_model->get_participants(array(
+            "raffle_id" => $raffle_object->id,
+            "user_id" => $cur_user->id,
+        ))->row();
+
+        if($entry_object) {
+            echo json_encode(array("success" => true, 'message' => "The user is already a participant of this raffle."));
+            exit;
+        }
+
+        // Join this user as participants.
+        $participant_data = array(
+            "uuid" => $this->uuid->v4(),
+            "raffle_id" => $raffle_object->id,
+            "user_id" => $cur_user->id,
+            "remarks" => $remarks
+        );
+        $success = $this->Raffle_draw_model->join_raffle($participant_data);
+        if(!$success) {
+            echo json_encode(array("success" => false, 'data' => $participant_data, 'message' => "Something went wrong while joining the raffle."));
+            exit;
+        }
+
+        echo json_encode(array("success" => true, 'message' => "Congratulation! you are now a participant of this raffle."));
+    }
 }
