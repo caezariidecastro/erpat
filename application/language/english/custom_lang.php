@@ -1044,3 +1044,7 @@ $lang["hdmf_loan"] = "HDMF LOAN";
 
 $lang["no_schedules"] = "No Schedules";
 $lang["ananymous_subscribers"] = "Generate";
+
+$lang["raffle_entry"] = "Submit Entry";
+$lang["raffle_subscription"] = "Subscription";
+$lang["raffle_join"] = "Join Raffle";

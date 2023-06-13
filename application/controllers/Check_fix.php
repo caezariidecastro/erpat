@@ -12,6 +12,7 @@ class Check_fix extends MY_Controller
         $this->load->model("Users_model");
         $this->load->model("Expense_categories_model");
         $this->load->model("EventPass_model");
+        $this->load->model("Raffle_draw_model");
     }
 
     public function index()
@@ -69,6 +70,15 @@ class Check_fix extends MY_Controller
             $total += 1;
         }
         if($this->EventPass_model->event_confirm()) {
+            $total += 1;
+        }
+        if($this->Raffle_draw_model->template_raffle_entry()) {
+            $total += 1;
+        }
+        if($this->Raffle_draw_model->template_subscription()) {
+            $total += 1;
+        }
+        if($this->Raffle_draw_model->template_join_raffle()) {
             $total += 1;
         }
         return $total;

@@ -190,6 +190,13 @@ class EventRaffle extends CI_Controller {
             exit;
         }
 
+        $raffle_object = $this->Raffle_draw_model->get_details(array(
+            "status" => "active",
+            "id" => $entry_object->raffle_id,
+        ))->row();
+        
+        $this->email('raffle_subscription',  $raffle_object->id,  $raffle_object->title, $id, $first_name, $last_name, $phone_number, $email_address, $remarks);
+
         echo json_encode(array("success" => true, 'message' => "Congratulation! see your prize."));
     }
 
@@ -229,8 +236,9 @@ class EventRaffle extends CI_Controller {
             exit;
         }
 
+        $participant_id = $this->uuid->v4();
         $user_data = array(
-            "uuid" => $this->uuid->v4(),
+            "uuid" => $participant_id,
             "first_name" => $first_name,
             "last_name" => $last_name,
             "email" => $email_address,
@@ -246,6 +254,8 @@ class EventRaffle extends CI_Controller {
             echo json_encode(array("success"=>true, "message"=>"Something went wrong during the subcription creation."));
             exit;
         }
+
+        $this->email('raffle_subscription', false, false, $participant_id, $first_name, $last_name, $phone_number, $email_address, $remarks);
 
         echo json_encode(array("success" => true, 'message' => "Visit our website for daily updates on the winners of our raffle and stay informed."));
     }
@@ -334,12 +344,37 @@ class EventRaffle extends CI_Controller {
             "user_id" => $cur_user->id,
             "remarks" => $remarks
         );
-        $success = $this->Raffle_draw_model->join_raffle($participant_data);
-        if(!$success) {
+        $participant_id = $this->Raffle_draw_model->join_raffle($participant_data);
+        if(!$participant_id) {
             echo json_encode(array("success" => false, 'data' => $participant_data, 'message' => "Something went wrong while joining the raffle."));
             exit;
         }
 
+        $this->email('raffle_join', $raffle_object->uuid, $raffle_object->title, $participant_id, $first_name, $last_name, $phone_number, $email_address, $remarks);
+
         echo json_encode(array("success" => true, 'message' => "Congratulation! you are now a participant of this raffle."));
+    }
+
+    private function email($template_id, $raffle_id, $raffle_title, $reference_id, $first_name, $last_name, $email, $phone, $remarks){
+        $email_template = $this->Email_templates_model->get_final_template($template_id);
+
+        if($raffle_id && $raffle_title) {
+            $parser_data["RAFFLE_ID"] = $raffle_id;
+            $parser_data["RAFFLE_TITLE"] = $raffle_title;
+        }
+
+        $parser_data["REFERENCE_ID"] = $reference_id;
+        $parser_data["SIGNATURE"] = $email_template->signature;
+
+        $parser_data["FIRST_NAME"] = $first_name;
+        $parser_data["LAST_NAME"] = $last_name;
+        $parser_data["PHONE_NUMBER"] = $phone;
+        $parser_data["REMARKS"] = $remarks;
+
+        $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
+
+        send_app_mail($email, $email_template->subject, $message, array(
+            "bcc" => get_setting('site_admin_email')
+        ));
     }
 }

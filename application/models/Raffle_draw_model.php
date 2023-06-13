@@ -205,5 +205,77 @@ class Raffle_draw_model extends Crud_model {
         $sql = "UPDATE $event_raffle_participants_table SET deleted=1 WHERE raffle_id = '$raffle_id'";
         return $this->db->query($sql);
     }
+
+    function template_raffle_entry() {
+        $content = '<div style="background-color: #eeeeef; padding: 50px 0; ">    <div style="max-width:640px; margin:0 auto; ">  <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Raffle Entry</h1> </div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello Brilliant,</span><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="font-weight: bold;"><br></span></span></p>            <p style=""><br></p><p><font color="#555555"><span style="font-size: 14px;">We are absolutely thrilled to welcome you to our BSEI raffle community!&nbsp;Now that you are officially a participant, get ready for an incredible experience filled with surprises, excitement, and the chance to win amazing prizes. Our raffle system is designed to provide a thrilling and enjoyable atmosphere for everyone involved, and we are confident that you will have a fantastic time.</span></font><br></p><p><font color="#555555"><span style="font-size: 14px;"><br>Title:&nbsp;</span></font><span style="color: rgb(85, 85, 85); font-size: 14px;">{RAFFLE_TITLE}</span></p><p><font color="#555555"><span style="font-size: 14px;">ID: {RAFFLE_ID}</span></font></p><p><font color="#555555"><span style="font-size: 14px;"><br></span></font></p><p><font color="#555555"><span style="font-size: 14px;">Participant`s details:</span></font></p><p><span style="color: rgb(85, 85, 85); font-size: 14px;">Reference ID: {REFERENCE_ID}</span></p><p><span style="font-size: 14px; color: rgb(85, 85, 85);">Name: {FIRST_NAME} {LAST_NAME}</span><br></p><p><font color="#555555"><span style="font-size: 14px;">Phone: {PHONE_NUMBER}</span></font></p><p><span style="font-size: 14px; color: rgb(85, 85, 85);">Remarks: {REMARKS}</span><br></p><p><br></p><p><font color="#555555"><span style="font-size: 14px;">Once again, welcome! May luck be on your side, and may this experience bring you joy and fulfillment.</span></font><br></p><p style=""><br></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>';
+
+        $template_name = 'raffle_entry';
+        $email_subject = 'Raffle Entry';
+
+        //Try to get the id and just update.
+        $template = $this->Email_templates_model->get_one_where(array(
+            "template_name" => $template_name 
+        ));
+
+        //If the id is null, create new one.
+        if(!$template->id) {
+            return $this->Email_templates_model->new_template($template_name, $email_subject, $content);
+        }
+
+        $data = array(
+            "email_subject" => $email_subject,
+            "default_message" => $content,
+        );
+
+        return $this->Email_templates_model->save($data, $template->id);
+    }
+
+    function template_subscription() {
+        $content = '<div style="background-color: #eeeeef; padding: 50px 0; ">    <div style="max-width:640px; margin:0 auto; ">  <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Subscription</h1> </div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello Brilliant,</span><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="font-weight: bold;"><br></span></span></p>            <p style=""><br></p><p><font color="#555555"><span style="font-size: 14px;">We are absolutely thrilled to welcome you to our BSEI raffle community!&nbsp;Now that you are officially a participant, get ready for an incredible experience filled with surprises, excitement, and the chance to win amazing prizes. Our raffle system is designed to provide a thrilling and enjoyable atmosphere for everyone involved, and we are confident that you will have a fantastic time.</span></font><br></p><p><br></p><p><font color="#555555"><span style="font-size: 14px;">Participant`s details:</span></font></p><p><span style="color: rgb(85, 85, 85); font-size: 14px;">Reference ID: {REFERENCE_ID}</span></p><p><span style="font-size: 14px; color: rgb(85, 85, 85);">Name: {FIRST_NAME} {LAST_NAME}</span><br></p><p><font color="#555555"><span style="font-size: 14px;">Phone: {PHONE_NUMBER}</span></font></p><p><span style="font-size: 14px; color: rgb(85, 85, 85);">Remarks: {REMARKS}</span><br></p><p><br></p><p><font color="#555555"><span style="font-size: 14px;">Once again, welcome! May luck be on your side, and may this experience bring you joy and fulfillment.</span></font><br></p><p style=""><br></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>';
+
+        $template_name = 'raffle_subscription';
+        $email_subject = 'Raffle Subscription';
+
+        //Try to get the id and just update.
+        $template = $this->Email_templates_model->get_one_where(array(
+            "template_name" => $template_name 
+        ));
+
+        //If the id is null, create new one.
+        if(!$template->id) {
+            return $this->Email_templates_model->new_template($template_name, $email_subject, $content);
+        }
+
+        $data = array(
+            "email_subject" => $email_subject,
+            "default_message" => $content,
+        );
+
+        return $this->Email_templates_model->save($data, $template->id);
+    }
+
+    function template_join_raffle() {
+        $content = '<div style="background-color: #eeeeef; padding: 50px 0; ">    <div style="max-width:640px; margin:0 auto; ">  <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Join Raffle</h1> </div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello Brilliant,</span><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="font-weight: bold;"><br></span></span></p>            <p style=""><br></p><p><font color="#555555"><span style="font-size: 14px;">We are absolutely thrilled to welcome you to our BSEI raffle community!&nbsp;Now that you are officially a participant, get ready for an incredible experience filled with surprises, excitement, and the chance to win amazing prizes. Our raffle system is designed to provide a thrilling and enjoyable atmosphere for everyone involved, and we are confident that you will have a fantastic time.</span></font><br></p><p><font color="#555555"><span style="font-size: 14px;"><br>Title:&nbsp;</span></font><span style="color: rgb(85, 85, 85); font-size: 14px;">{RAFFLE_TITLE}</span></p><p><font color="#555555"><span style="font-size: 14px;">ID: {RAFFLE_ID}</span></font></p><p><font color="#555555"><span style="font-size: 14px;"><br></span></font></p><p><font color="#555555"><span style="font-size: 14px;">Participant`s details:</span></font></p><p><span style="color: rgb(85, 85, 85); font-size: 14px;">Reference ID: {REFERENCE_ID}</span></p><p><span style="font-size: 14px; color: rgb(85, 85, 85);">Name: {FIRST_NAME} {LAST_NAME}</span><br></p><p><font color="#555555"><span style="font-size: 14px;">Phone: {PHONE_NUMBER}</span></font></p><p><span style="font-size: 14px; color: rgb(85, 85, 85);">Remarks: {REMARKS}</span><br></p><p><br></p><p><font color="#555555"><span style="font-size: 14px;">Once again, welcome! May luck be on your side, and may this experience bring you joy and fulfillment.</span></font><br></p><p style=""><br></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>';
+
+        $template_name = 'raffle_join';
+        $email_subject = 'Join Raffle';
+
+        //Try to get the id and just update.
+        $template = $this->Email_templates_model->get_one_where(array(
+            "template_name" => $template_name 
+        ));
+
+        //If the id is null, create new one.
+        if(!$template->id) {
+            return $this->Email_templates_model->new_template($template_name, $email_subject, $content);
+        }
+
+        $data = array(
+            "email_subject" => $email_subject,
+            "default_message" => $content,
+        );
+
+        return $this->Email_templates_model->save($data, $template->id);
+    }
     
 }
