@@ -28,6 +28,18 @@ class Raffle_draw extends MY_Controller {
         return $event_lists;
     }
 
+    function get_winners_select2_data($raffle_id, $prize_id) {
+        $winners = $this->Raffle_draw_model->get_winners(array(
+            "raffle_id" => $raffle_id,
+            "prize_id" => $prize_id,
+        ))->result();
+        $winner_lists = array(array("id" => "", "text" => "- Select Winner -"));
+        foreach ($winners as $key => $value) {
+            $winner_lists[] = array("id" => $value->id, "text" => $value->raffle_name." - ".strtoupper($value->participants_uuid) );
+        }
+        return $winner_lists;
+    }
+
     function make_status_element($status = "draft") {
         if ($status == "active") {
             $status_class = "label-primary";
@@ -74,7 +86,8 @@ class Raffle_draw extends MY_Controller {
             $data->title,
             $data->description,
             $data->winners,
-            $data->labels,
+            $data->current_participants." / ".strval($data->total_participants?$data->total_participants:$data->current_participants),
+            strtoupper($data->draw_preview),
             nl2br($data->remarks),
             strtoupper($data->ranking),
             $data->draw_date?convert_date_utc_to_local($data->draw_date, "Y-m-d h:i A"):"-",
@@ -85,6 +98,7 @@ class Raffle_draw extends MY_Controller {
             .anchor(get_uri("Raffle_draw/export_qrcode/".$data->id), "<i class='fa fa-print'></i>", array("class" => "edit", "title" => lang('export_qrcode'), "target" => "_blank"))
             .modal_anchor(get_uri("Raffle_draw/modal_form_participants/"), "<i class='fa fa-users'></i>", array("class" => "edit", "title" => lang('view_participants'), "data-post-id" => $data->id))
             .modal_anchor(get_uri("Raffle_draw/modal_form_winners/"), "<i class='fa fa-star'></i>", array("class" => "edit", "title" => lang('view_winners'), "data-post-id" => $data->id))
+            .anchor(get_uri("Raffle_draw/view_prizes/".$data->id), "<i class='fa fa-gift'></i>", array("title" => lang('prizes')))
             .modal_anchor(get_uri("Raffle_draw/modal_form_status"), "<i class='fa fa-power-off'></i>", array("class" => "edit", "title" => lang('update_Status'), "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("Raffle_draw/delete"), "data-action" => "delete-confirmation"))
         );
@@ -116,6 +130,8 @@ class Raffle_draw extends MY_Controller {
         validate_submitted_data(array(
             "title" => "required",
             "number_of_winners" => "required",
+            "total_participants" => "required",
+            "draw_preview" => "required",
             "crowd_type" => "required",
             "draw_date" => "required",
             "draw_time" => "required",
@@ -140,6 +156,8 @@ class Raffle_draw extends MY_Controller {
             "description" => $this->input->post('description'),
             "remarks" => $this->input->post('remarks'),
             "winners" => $this->input->post('number_of_winners'),
+            "total_participants" => $this->input->post('total_participants'),
+            "draw_preview" => $this->input->post('draw_preview'),
             "ranking" => $this->input->post('ranking'),
             //"labels" => $this->input->post('labels'),
             "draw_date" => $draw_date,
@@ -245,6 +263,7 @@ class Raffle_draw extends MY_Controller {
                 $result[] = array(
                     $data->id,
                     $data->participants_uuid,
+                    $data->prize_id,
                     get_team_member_profile_link($data->user_id, $data->user_name, array("target" => "_blank")),
                     $data->remarks,
                     $data->updated_at,
@@ -265,8 +284,147 @@ class Raffle_draw extends MY_Controller {
         $view_data['model_info'] = $this->Raffle_draw_model->get_details(array("id"=>$raffle_id))->row();
 
         if($raffle_id) {
-            $view_data['raffle_id'] = $id;
+            $view_data['raffle_id'] = $raffle_id;
             $this->load->view('raffle_draw/modal_form_winners', $view_data);
+        }
+    }
+
+    function modal_form_prizes($raffle_id) {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        $id = $this->input->post('id');
+        if(!$id) {
+            $id = "empty";
+        }
+        
+        $view_data['model_info'] = $this->Raffle_draw_model->get_prizes(array("id"=>$id))->row();
+        $view_data['winners_dropdown'] = $this->get_winners_select2_data($raffle_id, $id);
+        $view_data['raffle_id'] = $raffle_id;
+        
+        if($raffle_id) {
+            $this->load->view('raffle_draw/modal_form_prizes', $view_data);
+        }
+    }
+
+    function list_prizes($id = 0) {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        if($id) {
+            $list_data = $this->Raffle_draw_model->get_prizes(array(
+                "raffle_id" => $id
+            ))->result();
+            
+            $result = array();
+            foreach ($list_data as $data) {
+                $result[] = $this->make_row_prize($data);
+            }
+            echo json_encode(array("data" => $result));
+        } else {
+            echo json_encode(array("data" => array()));
+        }
+    }
+
+    protected function make_row_prize($data) {
+        $image_url =  $data->image_url?$data->image_url:get_uri("assets/images/image.jpg");
+
+        $prize_preview = form_open(get_uri( "Raffle_draw/save_prize/" . $data->id), array("id" => $data->id."-prize-image-form", "class" => "cropper-form", "role" => "form")). 
+        '<div id="'.$data->id.'-holder" class="file-upload btn mt0 p0 prize-image-upload">
+            <span><i class="btn fa fa-camera"></i></span> 
+            <input id="'.$data->id.'-prize_image_file" class="upload" name="'.$data->id.'-prize_image_file" type="file" data-height="200" data-width="200" data-preview-container="#'.$data->id.'-prize-image-preview" data-input-field="#'.$data->id.'-prize_image" />
+        </div>'.
+        '<input type="hidden" class="prize_base64" id="'.$data->id.'-prize_image" name="'.$data->id.'-prize_image" value=""  />'.
+        "<span class='avatar avatar-s'><img id='".$data->id."-prize-image-preview' src='$image_url' alt='...' style='max-width: 100px; border-radius: 5%;'></span>".form_close();
+
+        return array(
+            $data->id,
+            '<i class="fa fa-bars" aria-hidden="true"></i> ',
+            $prize_preview,
+            $data->participant_uuid,
+            $data->remarks,
+            $data->updated_at,
+            modal_anchor(get_uri("Raffle_draw/modal_form_prizes/".$data->raffle_id), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_entry'), "data-post-id" => $data->id))
+                . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_entry'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("Raffle_draw/delete_prize"), "data-action" => "delete-confirmation"))
+        );
+    }
+
+    protected function row_prize($id) {
+        $options = array("id" => $id);
+        $data = $this->Raffle_draw_model->get_prizes($options)->row();
+        return $this->make_row_prize($data);
+    }
+
+    function save_prize() {
+        validate_submitted_data(array(
+            "raffle_id" => "required",
+            "remarks" => "required",
+        ));
+        $id = $this->input->post('id');
+
+        $data = array(
+            "raffle_id" => $this->input->post('raffle_id'),
+            "winner_id" => $this->input->post('winner_id'),
+            "remarks" => $this->input->post('remarks')
+        );
+        $data = clean_data($data);
+
+        if(!$id) {
+            $data["uuid"] = $this->uuid->v4();
+        }
+
+        $save_id = $this->Raffle_draw_model->save_prize($data, $id);
+        if ($save_id) {
+            echo json_encode(array("success" => true, "data" => $this->row_prize($save_id), 'id' => $save_id, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function update_prize_image() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        $id = $this->input->post('id');
+
+        $image = $this->input->post('image'); //TODO: Process
+        $saved_url = save_base_64_image($image, get_setting("raffle_prize_path"));
+
+        //save url to database.
+        $data = array( "image_url" => $saved_url );
+        $where = array( "id" => $id );
+        $item_id = $this->Raffle_draw_model->update_prize_image($data, $where);
+        
+        if ($item_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+            exit;
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function view_prizes($id) {
+        $raffle_id = $id;
+        $view_data['model_info'] = $this->Raffle_draw_model->get_details(array("id"=>$raffle_id))->row();
+
+        if($raffle_id) {
+            $view_data['raffle_id'] = $id;
+            $this->template->rander('raffle_draw/view_prizes', $view_data);
+        }
+    }
+
+    function delete_prize() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        $id = $this->input->post('id');
+
+        $success = $this->Raffle_draw_model->delete_prize($id);
+        if ( $success ) {
+            echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
         }
     }
 
@@ -323,9 +481,14 @@ class Raffle_draw extends MY_Controller {
             exit;
         }
 
-        $raffles = $this->Raffle_draw_model->get_details(array("id"=>$raffle_id));
-        if(count($raffles->result()) == 0) {
+        $raffle_object = $this->Raffle_draw_model->get_details(array("id"=>$raffle_id))->row();
+        if(!$raffle_object) {
             echo json_encode(array("success" => false, 'message' => lang('raffle_not_exist')));
+            exit;
+        }
+
+        if($raffle_object->current_participants >= $raffle_object->total_participants ) {
+            echo json_encode(array("success" => false, 'message' => "Participants for this raffle is already full!"));
             exit;
         }
 
@@ -425,6 +588,18 @@ class Raffle_draw extends MY_Controller {
                     "raffle_id" => $raffle_id,
                     "remarks" => "Bulk Join Anonymous"
                 );
+
+                $raffle_object = $this->Raffle_draw_model->get_details(array("id"=>$raffle_id))->row();
+                if(!$raffle_object) {
+                    echo json_encode(array("success" => false, 'message' => lang('raffle_not_exist')));
+                    exit;
+                }
+
+                if($raffle_object->current_participants >= $raffle_object->total_participants ) {
+                    echo json_encode(array("success" => false, 'message' => "Participants for this raffle is already full!"));
+                    exit;
+                }
+
                 $cleared = $this->Raffle_draw_model->join_raffle($data);
             }
             
@@ -439,6 +614,17 @@ class Raffle_draw extends MY_Controller {
         if($raffle_id) {
             $data = array("user_type"=>"customer", "randomize" => true);
             $subcribers = $this->Users_model->get_details($data)->row();
+
+            $raffle_object = $this->Raffle_draw_model->get_details(array("id"=>$raffle_id))->row();
+            if(!$raffle_object) {
+                echo json_encode(array("success" => false, 'message' => lang('raffle_not_exist')));
+                exit;
+            }
+
+            if($raffle_object->current_participants >= $raffle_object->total_participants ) {
+                echo json_encode(array("success" => false, 'message' => "Participants for this raffle is already full!"));
+                exit;
+            }
 
             $data = array(
                 "uuid" => $this->uuid->v4(),

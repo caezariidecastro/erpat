@@ -308,6 +308,11 @@ class EventRaffle extends CI_Controller {
             exit;
         }
 
+        if($raffle_object->current_participants >= $raffle_object->total_participants ) {
+            echo json_encode(array("success" => false, 'message' => "Participants for this raffle is already full!"));
+            exit;
+        }
+
         //Check if the user exist else create and get the id. use email to get id.
         $cur_user = $this->Users_model->is_email_exists($email_address);
         if (!$cur_user) {
@@ -350,7 +355,14 @@ class EventRaffle extends CI_Controller {
             exit;
         }
 
-        $this->email('raffle_join', $raffle_object->uuid, $raffle_object->title, $participant_id, $first_name, $last_name, $phone_number, $email_address, $remarks);
+        //Get prize set.
+
+        if($raffle_object->draw_preview === "via_email") {
+            $this->email('raffle_join', $raffle_object->uuid, $raffle_object->title, $participant_id, $first_name, $last_name, $phone_number, $email_address, $remarks);
+        } else if($raffle_object->draw_preview === "instant_show") {
+            echo json_encode(array("success" => true, 'message' => "Congratulation! you are now a participant of this raffle.", "msg_content"=>"", "msg_url"=>""));
+            exit;
+        }
 
         echo json_encode(array("success" => true, 'message' => "Congratulation! you are now a participant of this raffle."));
     }

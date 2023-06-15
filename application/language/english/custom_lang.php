@@ -1048,3 +1048,15 @@ $lang["ananymous_subscribers"] = "Generate";
 $lang["raffle_entry"] = "Submit Entry";
 $lang["raffle_subscription"] = "Subscription";
 $lang["raffle_join"] = "Join Raffle";
+
+$lang["total_participants"] = "Total Participants";
+
+$lang["winner_draw"] = "Winner Draw";
+$lang["unset"] = "Not Set";
+
+$lang["prizes"] = "Prizes";
+$lang["add_prize"] = "Add Prize";
+
+$lang["image"] = "Image";
+
+$lang["create_prizes"] = "Create Prizes";

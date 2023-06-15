@@ -48,11 +48,12 @@ class Raffle_draw_model extends Crud_model {
 
         $sql = "SELECT $event_raffle_table.*, 
             users.id as users, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS user_name, users.id as user_id,
-            events.id as event_id,  events.title as event_name, $select_labels_data_query
+            events.id as event_id,  events.title as event_name, COUNT(event_raffle_participants.id) as current_participants, $select_labels_data_query
         FROM $event_raffle_table
             LEFT JOIN users ON users.id = $event_raffle_table.creator
             LEFT JOIN events ON events.id = $event_raffle_table.event_id 
-        WHERE $event_raffle_table.deleted=0 $where";
+            LEFT JOIN event_raffle_participants ON event_raffle_participants.raffle_id = $event_raffle_table.id AND event_raffle_participants.deleted = 0
+        WHERE $event_raffle_table.deleted=0 $where GROUP BY $event_raffle_table.id";
         return $this->db->query($sql);
     }
 
@@ -126,6 +127,7 @@ class Raffle_draw_model extends Crud_model {
         $event_raffle_table = $this->db->dbprefix('event_raffle');
         $event_raffle_participants = $this->db->dbprefix('event_raffle_participants');
         $users_table = $this->db->dbprefix('users');
+        $event_raffle_prize_table = $this->db->dbprefix('event_raffle_prizes');
 
         $where = "";
 
@@ -149,6 +151,15 @@ class Raffle_draw_model extends Crud_model {
             $where .= " AND $users_table.id IS NOT NULL ORDER BY updated_at DESC LIMIT 20";
         }
 
+        $prize_id = get_array_value($options, "prize_id");
+        if ($prize_id) {
+            if($prize_id === "empty") {
+                $where .= " AND ($event_raffle_prize_table.winner_id IS NULL)";
+            } else {
+                $where .= " AND ($event_raffle_prize_table.winner_id IS NULL OR $event_raffle_prize_table.id = $prize_id)";
+            }
+        }
+
         $sql = "SELECT $event_raffle_winner_table.*, 
             $event_raffle_table.title as raffle_name,
             $event_raffle_participants.uuid as participants_uuid, 
@@ -158,10 +169,74 @@ class Raffle_draw_model extends Crud_model {
         FROM $event_raffle_winner_table
             INNER JOIN $event_raffle_participants ON $event_raffle_participants.id = $event_raffle_winner_table.participant_id
             INNER JOIN $event_raffle_table ON $event_raffle_table.id = $event_raffle_participants.raffle_id AND $event_raffle_table.status = 'active'
+            LEFT JOIN $event_raffle_prize_table ON $event_raffle_prize_table.winner_id = $event_raffle_winner_table.id 
             LEFT JOIN events ON events.id = $event_raffle_table.event_id 
             LEFT JOIN $users_table ON $users_table.id = $event_raffle_participants.user_id
         WHERE $event_raffle_winner_table.deleted=0 $where";
         return $this->db->query($sql);
+    }
+
+    function get_prizes($options = array()) {
+        $event_raffle_prize_table = $this->db->dbprefix('event_raffle_prizes');
+        $event_raffle_winner_table = $this->db->dbprefix('event_raffle_winners');
+        $event_raffle_table = $this->db->dbprefix('event_raffle');
+        $event_raffle_participants = $this->db->dbprefix('event_raffle_participants');
+        $users_table = $this->db->dbprefix('users');
+
+        $where = "";
+
+        $id = get_array_value($options, "id");
+        if ($id) {
+            $where .= " AND $event_raffle_prize_table.id='$id'";
+        }
+
+        $raffle_id = get_array_value($options, "raffle_id");
+        if ($raffle_id) {
+            $where .= " AND $event_raffle_table.id='$raffle_id'";
+        }
+
+        $sql = "SELECT $event_raffle_prize_table.*,
+            $event_raffle_participants.uuid as participant_uuid 
+        FROM $event_raffle_prize_table 
+            INNER JOIN $event_raffle_table 
+                ON $event_raffle_table.id = $event_raffle_prize_table.raffle_id 
+                    AND $event_raffle_table.status = 'active'
+            LEFT JOIN $event_raffle_winner_table ON $event_raffle_winner_table.id = $event_raffle_prize_table.winner_id
+            LEFT JOIN $event_raffle_participants ON $event_raffle_participants.id = $event_raffle_winner_table.participant_id
+        WHERE $event_raffle_prize_table.deleted=0 $where";
+        return $this->db->query($sql);
+
+    }
+
+    function save_prize($data = array(), $id) {
+        $event_raffle_prize_table = $this->db->dbprefix('event_raffle_prizes');
+
+        if($id) {
+            $this->db->where('id', $id);
+            $this->db->update( $event_raffle_prize_table, $data );
+            return $id;
+        }
+
+        $this->db->insert($event_raffle_prize_table, $data);
+        return $this->db->insert_id();
+    }
+
+    function update_prize_image($data, $where) {
+        $event_raffle_prize_table = $this->db->dbprefix('event_raffle_prizes');
+        $this->use_table( $event_raffle_prize_table  );
+        return $this->update_where($data, $where);
+    }
+
+    function delete_prize($id) {
+        $event_raffle_prize_table = $this->db->dbprefix('event_raffle_prizes');
+
+        $data = array('deleted' => 1);
+        if ($undo === true) {
+            $data = array('deleted' => 0);
+        }
+        $this->db->where("id", $id);
+
+        return $this->db->update($event_raffle_prize_table, $data);
     }
 
     function pick_winners($options = array()) {

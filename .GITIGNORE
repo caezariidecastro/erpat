@@ -32,6 +32,7 @@ files/epass_ticket/*
 files/stores_images/*
 files/epass_qrcodes/*
 files/raffle_entry/*
+files/raffle_prize/*
 files/profile_images/*
 files/project_files/*
 files/system_files/*

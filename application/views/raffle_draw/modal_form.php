@@ -49,6 +49,28 @@
             )); ?>
         </div>
         <div class="col-md-4">
+            <?php echo form_input(array(
+                "id" => "total_participants",
+                "name" => "total_participants",
+                "type" => "number",
+                "value" => strtoupper($model_info->total_participants),
+                "class" => "form-control",
+                "placeholder" => lang('total_participants'),
+                "required" => true,
+                ($model_info->id && $model_info->status!=='draft')?"disabled":"" => $model_info->id && $model_info->status!=='draft'?"disabled":"",
+            )); ?>
+        </div>
+        <div class="col-md-4">
+            <?php
+            echo form_dropdown(
+                "draw_preview", array("event_draw"=>"Event Draw", "instant_show"=>"Instant Show", "via_email"=>"Sent via Email"), 
+                $model_info->draw_preview, 
+                "class='select2 validate-hidden' id='draw_preview' ".(($model_info->id && $model_info->status!=='draft')?"disabled":"")." data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-5">
             <?php
             echo form_dropdown(
                 "ranking", array("asc"=>"ASCENDING","desc"=>"DESCENDING"), 
@@ -56,8 +78,8 @@
                 "class='select2 validate-hidden' id='ranking' ".(($model_info->id && $model_info->status!=='draft')?"disabled":"")." data-rule-required='true' data-msg-required='".lang("field_required")."'");
             ?>
         </div>
-        <div class="col-md-4">
-        <input type="text" value="<?php echo $model_info->crowd_type; ?>" name="crowd_type" id="crowd_type" class="w100p validate-hidden"  placeholder="<?php echo lang('crowd_type'); ?>" <?= ($model_info->id && $model_info->status!=='draft')?"disabled":"" ?>  />
+        <div class="col-md-7">
+            <input type="text" value="<?php echo $model_info->crowd_type; ?>" name="crowd_type" id="crowd_type" class="w100p validate-hidden"  placeholder="<?php echo lang('crowd_type'); ?>" <?= ($model_info->id && $model_info->status!=='draft')?"disabled":"" ?>  />
         </div>
     </div>
     <div class="form-group">
@@ -136,7 +158,7 @@
                 $("#raffle_draw-table").appTable({newData: result.data, dataId: result.id});
             }
         });
-        $("#ranking, #raffle_type").select2();
+        $("#ranking, #draw_preview, #raffle_type").select2();
         $("#crowd_type").select2({
             multiple: true,
             data: <?php echo json_encode([
@@ -150,8 +172,10 @@
         $("#number_of_winners").on("input", function () {
             if($(this).val() > 1) {
                 $("#ranking").prop( "disabled", false );
+                $("#draw_preview").prop( "disabled", false );
             } else {
                 $("#ranking").prop( "disabled", true );
+                $("#draw_preview").prop( "disabled", true );
             }
         });
 
