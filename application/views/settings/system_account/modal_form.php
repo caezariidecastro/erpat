@@ -42,6 +42,7 @@
             echo form_input(array(
                 "id" => "email",
                 "name" => "email",
+                "value" => $model_info->email,
                 "class" => "form-control",
                 "placeholder" => lang('email'),
                 "autofocus" => true,
