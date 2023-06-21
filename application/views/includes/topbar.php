@@ -35,15 +35,15 @@
             //get the array of hidden topbar menus
             $hidden_topbar_menus = explode(",", get_setting("user_" . $user . "_hidden_topbar_menus"));
 
-            // if (!in_array("to_do", $hidden_topbar_menus)) {
-            //     $this->load->view("todo/topbar_icon");
-            // }
-            // if (!in_array("favorite_projects", $hidden_topbar_menus) && !(get_setting("disable_access_favorite_project_option_for_clients") && $this->login_user->user_type == "client")) {
-            //     $this->load->view("projects/star/topbar_icon");
-            // }
-            // if (!in_array("favorite_clients", $hidden_topbar_menus)) {
-            //     $this->load->view("clients/star/topbar_icon");
-            // }
+            if (!in_array("to_do", $hidden_topbar_menus)) {
+                $this->load->view("todo/topbar_icon");
+            }
+            if (!in_array("favorite_projects", $hidden_topbar_menus) && !(get_setting("disable_access_favorite_project_option_for_clients") && $this->login_user->user_type == "client")) {
+                $this->load->view("projects/star/topbar_icon");
+            }
+            if (!in_array("favorite_clients", $hidden_topbar_menus)) {
+                $this->load->view("clients/star/topbar_icon");
+            }
             if (!in_array("dashboard_customization", $hidden_topbar_menus) && (get_setting("disable_new_dashboard_icon") != 1)) {
                 $this->load->view("dashboards/list/topbar_icon");
             }
