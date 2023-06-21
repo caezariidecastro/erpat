@@ -58,18 +58,18 @@
         </ul>
         <ul class="nav navbar-nav navbar-right inline-block">
 
-            <?php /* if ($this->login_user->user_type == "staff") {
+            <?php if ($this->login_user->user_type == "staff") {
                 load_js(array("assets/js/awesomplete/awesomplete.min.js"));
                 ?>
                 <li class="hidden-xs" title="<?php echo lang('search') . ' (/)'; ?>" data-toggle="tooltip" data-placement="left">
                     <?php echo modal_anchor(get_uri("search/search_modal_form"), "<i class='fa fa-search'></i>", array("class" => "pull-left", "data-modal-title" => lang('search') . ' (/)', "data-post-hide-header" => true, "id" => "global-search-btn")); ?>
                 </li>
-            <?php } */ ?>
+            <?php } ?>
 
             <?php
-                // if (!in_array("quick_add", $hidden_topbar_menus)) {
-                //     $this->load->view("settings/topbar_parts/quick_add");
-                // }
+                if (!in_array("quick_add", $hidden_topbar_menus)) {
+                    $this->load->view("settings/topbar_parts/quick_add");
+                }
             ?>
 
             <?php /* if (!in_array("language", $hidden_topbar_menus) && (($this->login_user->user_type == "staff" && !get_setting("disable_language_selector_for_team_members")) || ($this->login_user->user_type == "client" && !get_setting("disable_language_selector_for_clients")))) { ?>
