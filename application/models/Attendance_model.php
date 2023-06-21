@@ -10,23 +10,46 @@ class Attendance_model extends Crud_model {
         parent::__construct($this->table);
     }
 
-    //Clock out all user more than time out.
-    function auto_clockout() {
+    protected function get_attendance_for_clockout() {
         $now = get_current_utc_time();
-        
-        $whitelisted = get_setting('whitelisted_autoclockout');
 
         // Auto clouckout greater than number of clocked hours.
         $trigger = floatval(get_setting('autoclockout_trigger_hour', 12.00));
-        $sql = "UPDATE attendance SET out_time=in_time, status='clockout', note='System Clockout' 
-            WHERE out_time IS NULL
-                AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 >= $trigger ";
+
+        //List of user to exclude.
+        $whitelisted = get_setting('whitelisted_autoclockout');
+
+        $sql = "SELECT *, TIME_TO_SEC(TIMEDIFF('$now', in_time)) as test FROM attendance WHERE out_time IS NULL AND deleted=0 
+            AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 > $trigger";
         if( !empty($whitelisted) ) {
             $sql .= "AND user_id NOT IN (".$whitelisted.")";
         }
-        $this->db->query($sql);
+        return $this->db->query($sql);
+    }
 
+    //Clock out all user more than time out.
+    function auto_clockout() {
+        if($query = $this->get_attendance_for_clockout()) {
+            $attds = $query->result();
+            
+            foreach($attds as $item) {
+                $cur_id = $item->id;
 
+                //Find the last tap in.
+                $clockout = $item->in_time;
+                $breaktimes = isset($item->break_time)?unserialize($item->break_time):[];
+                for($i=0; $i<count($breaktimes); $i++) {
+                    if( isset($breaktimes[$i]) ) {
+                        $clockout = $breaktimes[$i];
+                    }
+                }
+
+                $sql = "UPDATE attendance SET out_time='$clockout', status='clockout', note='System Clockout' WHERE id=$cur_id";
+                $this->db->query($sql);
+            }
+        }
+
+        // AUTOCLOCKIN MECHANISM.
         $autoclockout_list = get_setting("auto_clockin_employee");
 
         //get list of user in autoclocked out.
