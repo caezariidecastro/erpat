@@ -1067,3 +1067,4 @@ $lang["calendars"] = "Calendars";
 $lang["imaps"] = "Ticket IMAP";
 
 $lang["cron_updated"] = "Cronjob Updated";
+$lang["staffs"] = "Staffs";

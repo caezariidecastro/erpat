@@ -298,6 +298,16 @@ class Users_model extends Crud_model {
         }
     }
 
+    function update_role_id($data) {
+        $field = array(
+            "role_id" => get_array_value($data, "role_id")
+        );
+        $where = array(
+            "id" => get_array_value($data, "user_id"),
+        );
+        return parent::update_where($field, $where);
+    }
+
     function update_all_user_sched($data) {
         $jobinfo = $this->db->dbprefix('team_member_job_info');
         

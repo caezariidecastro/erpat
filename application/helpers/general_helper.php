@@ -1271,7 +1271,7 @@ if (!function_exists('get_estimate_making_data')) {
  */
 if (!function_exists('get_team_members_and_teams_select2_data_list')) {
 
-    function get_team_members_and_teams_select2_data_list() {
+    function get_team_members_and_teams_select2_data_list($exclude_teams = false) {
         $ci = get_instance();
 
         $team_members = $ci->Users_model->get_all_where(array("deleted" => 0, "status" => "active", "user_type" => "staff"))->result();
@@ -1281,9 +1281,11 @@ if (!function_exists('get_team_members_and_teams_select2_data_list')) {
             $members_and_teams_dropdown[] = array("type" => "member", "id" => "member:" . $team_member->id, "text" => $team_member->first_name . " " . $team_member->last_name);
         }
 
-        $team = $ci->Team_model->get_all_where(array("deleted" => 0))->result();
-        foreach ($team as $team) {
-            $members_and_teams_dropdown[] = array("type" => "team", "id" => "team:" . $team->id, "text" => $team->title);
+        if(!$exclude_teams) {
+            $team = $ci->Team_model->get_all_where(array("deleted" => 0))->result();
+            foreach ($team as $team) {
+                $members_and_teams_dropdown[] = array("type" => "team", "id" => "team:" . $team->id, "text" => $team->title);
+            }
         }
 
         return $members_and_teams_dropdown;

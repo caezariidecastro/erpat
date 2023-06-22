@@ -19,6 +19,13 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="staffs" class=" col-md-3"><?php echo lang('staffs'); ?></label>
+        <div class="col-md-9">
+            <input type="hidden" value="<?= $model_info->staffs ?>" name="prev_staffs" />
+            <input type="text" value="<?= $model_info->staffs; ?>" name="staffs" id="staffs_dropdown" class="w100p validate-hidden"  placeholder="<?php echo lang('staffs'); ?>"  />    
+        </div>
+    </div>
+    <div class="form-group">
         <?php if (!$model_info->id) { ?>
             <label for="copy_settings" class=" col-md-3"><?php echo lang('use_seetings_from'); ?></label>
             <div class=" col-md-9">
@@ -31,7 +38,7 @@
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> <?php echo lang('close'); ?></button>
+    <button id="clear_staffs" type="button" class="btn btn-danger"><span class="fa fa-trash "></span>  <?php echo lang('clear'); ?></button>
     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
 </div>
 <?php echo form_close(); ?>
@@ -43,6 +50,18 @@
                 $("#role-table").appTable({newData: result.data, dataId: result.id});
             }
         });
+
+        $("#staffs_dropdown").select2({
+            multiple: true,
+            formatResult: teamAndMemberSelect2Format,
+            formatSelection: teamAndMemberSelect2Format,
+            data: <?php echo ($staffs_dropdown); ?>
+        });
+
+        $( "#clear_staffs" ).on( "click", function() {
+            $('#staffs_dropdown').val(null).trigger('change');
+        });
+
         $("#copy_settings").select2();
         $("#title").focus();
     });

@@ -156,8 +156,22 @@ class Roles extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Roles_model->get_one($this->input->post('id'));
         $view_data['roles_dropdown'] = array("" => "-") + $this->Roles_model->get_dropdown_list(array("title"), "id");
+        $view_data['staffs_dropdown'] = json_encode(get_team_members_and_teams_select2_data_list(true));
+
+        $model_info = $this->Roles_model->get_one($this->input->post('id'));
+        $lists = "";
+        $members = $this->Users_model->get_all_where(array("role_id" => $model_info->id, "deleted" => 0, "status" => "active", "user_type" => "staff"))->result();
+        foreach($members as $user) {
+            if( $lists ) {
+                $lists .= ",";
+            }
+            $lists .= "member:".$user->id;
+        }
+        $model_info->staffs = $lists; //get user using this role.
+
+        $view_data['model_info'] = $model_info;
+
         $this->load->view('roles/modal_form', $view_data);
     }
 
@@ -178,6 +192,35 @@ class Roles extends MY_Controller {
             $role = $this->Roles_model->get_one($copy_settings);
             $permit["permissions"] = $role->permissions;
         }
+
+        $new_staffs = $this->input->post('staffs');
+        $new_staffs = explode(",", $new_staffs);
+
+        foreach($new_staffs as $new) {
+            $user_id = str_replace("member:", "", $new);
+            $role_id = $id;
+
+            //Save Role ID.
+            $this->Users_model->update_role_id(array(
+                "user_id" => $user_id,
+                "role_id" => $role_id
+            ));
+        }
+
+        $prev_staffs = $this->input->post('prev_staffs');
+        $prev_staffs = explode(",", $prev_staffs);
+
+        foreach($prev_staffs as $prev) {
+            if( !in_array($prev, $new_staffs) ) {
+                $user_id = str_replace("member:", "", $prev);
+
+                //Remove Role.
+                $this->Users_model->update_role_id(array(
+                    "user_id" => $user_id,
+                    "role_id" => "0"
+                ));
+            }                        
+        }    
 
         $save_id = $this->Roles_model->save($permit, $id);
         if ($save_id) {
@@ -228,9 +271,19 @@ class Roles extends MY_Controller {
 
     //make a row of role list table
     private function _make_row($permit) {
-        return array("<a href='#' data-id='$permit->id' class='role-row link'>" . $permit->title . "</a>",
-            "<a class='edit'><i class='fa fa-check' ></i></a>" . modal_anchor(get_uri("roles/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "Coming Soon", "title" => lang('edit_role'), "data-post-id" => $permit->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_role'), "class" => "delete", "data-id" => $permit->id, "data-action-url" => get_uri("roles/delete"), "data-action" => "delete"))
+        $staff_count = $this->Users_model->get_all_where(array("role_id" => $permit->id, "deleted" => 0, "status" => "active", "user_type" => "staff"))->num_rows();
+
+        return array(
+            "<a href='#' data-id='$permit->id' class='role-row link'>" . $permit->title . "</a>",
+            "(".$staff_count.") " 
+            .modal_anchor(
+                get_uri("roles/modal_form"), 
+                "<i class='fa fa-pencil'></i>", 
+                array("class" => "Coming Soon", 
+                "title" => lang('edit_role'
+            ), "data-post-id" => $permit->id))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_role'), "class" => "delete", "data-id" => $permit->id, "data-action-url" => get_uri("roles/delete"), "data-action" => "delete")
+            )
         );
     }
 
