@@ -1065,3 +1065,5 @@ $lang["manage_crons"] = "Manage Crons";
 $lang["attendances"] = "Attendances";
 $lang["calendars"] = "Calendars";
 $lang["imaps"] = "Ticket IMAP";
+
+$lang["cron_updated"] = "Cronjob Updated";

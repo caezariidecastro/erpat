@@ -1510,14 +1510,17 @@ class Settings extends MY_Controller {
 
     function run_cron_command() {
         $this->load->library('cron_job');
-
         ini_set('max_execution_time', 300); //execute maximum 300 seconds 
 
-        //Make that cron is runnable adjust to 1 minute last cron.
-        $current_time = get_current_utc_time() - 60;
-        $this->Settings_model->save_setting("last_minutely_job_time", $current_time);
-		
         $this->cron_job->run();
+        echo json_encode(array("success" => true, "data" => get_my_local_time('d/m/Y h:i:s A'), 'message' => lang('record_updated')));
+    }
+
+    function override_cron_command() {
+        $this->load->library('cron_job');
+        ini_set('max_execution_time', 600); //execute maximum 600 seconds 
+		
+        $this->cron_job->override();
         echo json_encode(array("success" => true, "data" => get_my_local_time('d/m/Y h:i:s A'), 'message' => lang('record_updated')));
     }
 

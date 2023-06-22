@@ -58,12 +58,12 @@
                             </div>
                         </div>
                     </div> 
-                    <div class="form-group clearfix" style="margin: 0;">
-                        <?php echo form_open(get_uri("settings/run_cron_command"), array("id" => "cron-settings-form", "class" => "general-form dashed-row", "style" => "display: block;", "role" => "form")); ?>
+                    <div class="form-group clearfix" >
+                        <?php echo form_open(get_uri("settings/override_cron_command"), array("id" => "cron-settings-form", "class" => "general-form dashed-row", "style" => "display: flex;", "role" => "form")); ?>
                         <button type="submit" class="btn btn-primary"><span class="fa fa-fire"></span> <?php echo lang('run_cron_command'); ?></button>
-                        <div style="text-align: right; position: relative; top: -30px;">
+                        <div style="position: absolute; right: 30px;">
                             <input id="autocron" type="checkbox" data-toggle="toggle" style="transform: scale(1.4); margin-right: 10px;">
-                            Toggle to Auto-Cron every <input type="number" id="cronfreq" min="2" max="60" value="5"> s
+                            Auto-Cron every <input type="number" id="cronfreq" min="2" max="60" value="5"> s
                         </div>
                         <?php echo form_close(); ?>
                     </div> 
