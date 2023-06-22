@@ -1274,7 +1274,7 @@ if (!function_exists('get_team_members_and_teams_select2_data_list')) {
     function get_team_members_and_teams_select2_data_list() {
         $ci = get_instance();
 
-        $team_members = $ci->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"))->result();
+        $team_members = $ci->Users_model->get_all_where(array("deleted" => 0, "status" => "active", "user_type" => "staff"))->result();
         $members_and_teams_dropdown = array();
 
         foreach ($team_members as $team_member) {
