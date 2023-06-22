@@ -58,9 +58,13 @@
                             </div>
                         </div>
                     </div> 
-                    <div class="form-group clearfix">
-                        <?php echo form_open(get_uri("settings/run_cron_command"), array("id" => "cron-settings-form", "class" => "general-form dashed-row", "role" => "form")); ?>
+                    <div class="form-group clearfix" style="margin: 0;">
+                        <?php echo form_open(get_uri("settings/run_cron_command"), array("id" => "cron-settings-form", "class" => "general-form dashed-row", "style" => "display: block;", "role" => "form")); ?>
                         <button type="submit" class="btn btn-primary"><span class="fa fa-fire"></span> <?php echo lang('run_cron_command'); ?></button>
+                        <div style="text-align: right; position: relative; top: -30px;">
+                            <input id="autocron" type="checkbox" data-toggle="toggle" style="transform: scale(1.4); margin-right: 10px;">
+                            Toggle to Auto-Cron every <input type="number" id="cronfreq" min="2" max="60" value="5"> s
+                        </div>
                         <?php echo form_close(); ?>
                     </div> 
                 </div>
@@ -84,5 +88,42 @@
                 appAlert.error(result.message, {duration: 5000});
             }
         });
+
+        let auto_loop = null;
+        $('#autocron').on('input', function() {
+            exe_loop();
+        });
+
+        $("#cronfreq").change(function(){
+            exe_loop();
+        });
+
+        function exe_loop() {
+            if(auto_loop) {
+                clearInterval(auto_loop);
+            }
+            
+            if( $('#autocron').is(":checked") ) {
+                let freq = $('#cronfreq').val();
+                start_loop( freq*1000 );
+            }
+        }
+
+        function start_loop(frequency) {
+            auto_loop = setInterval(() => {
+                $.ajax({
+                    url: "<?= get_uri("settings/run_cron_command") ?>",
+                    data: {},
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (response) {
+                        if(response.success) {
+                            $('#last_cron_job_time').text(response.data);
+                            appAlert.success("Autocron executed successfully.", {duration: 2000});
+                        }
+                    }
+                });
+            }, frequency);
+        }
     });
 </script>
