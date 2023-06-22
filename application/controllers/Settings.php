@@ -1520,6 +1520,85 @@ class Settings extends MY_Controller {
         $this->cron_job->run();
         echo json_encode(array("success" => true, "data" => get_my_local_time('d/m/Y h:i:s A'), 'message' => lang('record_updated')));
     }
+
+    function cron_list() {
+        $list_data = array(
+            'notifications' => 'General',
+            'invoices' => 'Sales',
+            'tasks' => 'Planning',
+            'calendars' => 'General',
+            'tickets' => 'Help Center',
+            'imaps' => 'Integration',
+            'expenses' => 'Sales',
+            'attendances' => 'Staffing',
+            'leaves' => 'Staffing',
+        );
+        $result = array();
+        foreach ($list_data as $key => $val) {
+            $result[] = $this->make_cron_row($key, $val);
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    function make_cron_row($key, $val) {
+
+        if (strpos($key, 'cron_') !== false) {
+            $key = str_replace("cron_", "", $key);
+        }
+        
+        return array(
+            lang($key), //Name
+            $val, //Group
+            get_setting("cron_$key") ? "Active" : "Inactive", 
+            js_anchor(
+                "<i class='fa fa-".( get_setting("cron_$key")?"stop":"play" )."' style='color: ".( get_setting("cron_$key")?"red":"green" ).";'></i>", 
+                array(
+                    'title' => lang('cron_updated'), 
+                    "class" => "update", 
+                    "data-action-url" => get_uri("settings/save_cron_status?key=cron_$key&val=$val"), 
+                    "data-action" => "update",
+                    "data-reload-on-success" => "1"
+                )
+            )
+        );
+    }
+
+    function crons() {
+        $this->template->rander("settings/crons");
+    }
+
+    function save_cron_status() {
+        $key = $this->input->get('key');
+        $val = $this->input->get('val');
+        $status = get_setting($key)?"0":"1";
+        $success = $this->Settings_model->save_setting($key, $status, 'crons');
+        echo json_encode(array("success" => true, 'data' => $this->make_cron_row($key, $val), 'message' => lang('settings_updated'))); 
+    }
+
+    function save_cron_settings() {
+
+        $settings = array(
+            'notifications',
+            'invoices',
+            'tasks',
+            'calendars',
+            'tickets',
+            'imaps',
+            'expenses',
+            'attendances',
+            'leaves'
+        );
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if (is_null($value)) {
+                $value = "";
+            }
+
+            $this->Settings_model->save_setting($setting, $value);
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
 }
 
 /* End of file general_settings.php */

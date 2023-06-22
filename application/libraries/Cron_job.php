@@ -81,6 +81,13 @@ class Cron_job {
         }
     }
 
+    private function _is_minutely_job_runnable() {
+        $last_minutely_job_time = get_setting('last_minutely_job_time');
+        if ($last_minutely_job_time == "" || ($this->current_time > ($last_minutely_job_time + 60))) {
+            return true;
+        }
+    }
+
     private function call_minutely_jobs() {
         //wait 1 minute for each call of following actions
         if ( $this->_is_minutely_job_runnable() ) {
@@ -93,13 +100,6 @@ class Cron_job {
             }
 
             $this->ci->Settings_model->save_setting("last_minutely_job_time", $this->current_time);
-        }
-    }
-
-    private function _is_minutely_job_runnable() {
-        $last_minutely_job_time = get_setting('last_minutely_job_time');
-        if ($last_minutely_job_time == "" || ($this->current_time > ($last_minutely_job_time + 60))) {
-            return true;
         }
     }
 
@@ -163,6 +163,8 @@ class Cron_job {
             return true;
         }
     }
+
+    // CRON LISTS STARTS HERE
 
     private function send_invoice_due_pre_reminder() {
 
@@ -511,7 +513,7 @@ class Cron_job {
         $this->ci->Expenses_model->save($recurring_expense_data, $expense->id);
 
         //finally send notification
-//        log_notification("recurring_expense_created_vai_cron_job", array("expense_id" => $new_expense_id), "0");
+        //log_notification("recurring_expense_created_vai_cron_job", array("expense_id" => $new_expense_id), "0");
     }
 
 }

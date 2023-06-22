@@ -18,6 +18,7 @@ $settings_menu = array(
     ),
     "maintainance" => array(
         array("name" => "apis", "url" => "settings/apis"),
+        array("name" => "crons", "url" => "settings/crons"),
         array("name" => "modules", "url" => "settings/modules"),
         array("name" => "migrate_database", "url" => "database"),
         array("name" => "check_fix", "url" => "check_fix")

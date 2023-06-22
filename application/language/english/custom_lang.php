@@ -1060,3 +1060,8 @@ $lang["add_prize"] = "Add Prize";
 $lang["image"] = "Image";
 
 $lang["create_prizes"] = "Create Prizes";
+$lang["crons"] = "Cron Jobs";
+$lang["manage_crons"] = "Manage Crons";
+$lang["attendances"] = "Attendances";
+$lang["calendars"] = "Calendars";
+$lang["imaps"] = "Ticket IMAP";
