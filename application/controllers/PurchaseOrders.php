@@ -136,6 +136,10 @@ class PurchaseOrders extends MY_Controller {
     }
 
     function save_material(){
+        validate_submitted_data(array(
+            "purchase_id" => "numeric"
+        ));
+
         $id = $this->input->post('id');
         $purchase_id = $this->input->post('purchase_id');
         $vendor_id = $this->input->post('vendor_id');

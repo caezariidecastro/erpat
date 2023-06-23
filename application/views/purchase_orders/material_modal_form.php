@@ -11,7 +11,7 @@
         <label for="material" class="col-md-3"><?php echo lang('material'); ?></label>
         <div class="col-md-9">
             <?php
-            echo form_dropdown("material_id", $material_dropdown, $model_info ? $model_info->material_id : "", "class='select2 validate-hidden' id='material' data-rule-required='true' data-msg-required='".lang("field_required")."'");
+            echo form_dropdown("material_id", $material_dropdown, $model_info ? $model_info->material_id : "", "class='select2 validate-hidden' id='material'");
             ?>
         </div>
     </div>

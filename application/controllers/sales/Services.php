@@ -223,7 +223,7 @@ class Services extends MY_Controller {
             $data->updated_at,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             modal_anchor(
-                get_uri("services/modal_form"), 
+                get_uri("Sales/Services/modal_form"), 
                 "<i class='fa fa-pencil'></i>", 
                 array(
                     "class" => "edit", "title" => lang('edit_item'), 
@@ -233,7 +233,7 @@ class Services extends MY_Controller {
             . js_anchor("<i class='fa fa-times fa-fw'></i>", 
                 array('title' => lang('delete'), 
                 "class" => "delete", "data-id" => $data->id, 
-                "data-action-url" => get_uri("services/delete"), 
+                "data-action-url" => get_uri("Sales/Services/delete"), 
                 "data-action" => "delete-confirmation"))
         );
     }
