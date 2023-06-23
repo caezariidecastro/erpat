@@ -49,7 +49,7 @@ class Leaves extends MY_Controller {
 
         $option = array("status" => "active");
         $leave_types = $this->Leave_types_model->get_details($option)->result();
-        $leave_type_select2 = array(array('id' => '', 'text'  => '- Leave Type -'));
+        $leave_type_select2 = array();
 
         foreach($leave_types as $leave_type){
             $leave_type_select2[] = array('id' => $leave_type->id, 'text'  => $leave_type->title);
