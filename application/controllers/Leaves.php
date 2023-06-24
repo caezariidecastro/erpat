@@ -18,46 +18,12 @@ class Leaves extends MY_Controller {
         $this->init_permission_checker("leave");
     }
 
-    //only admin or assigend members can access/manage other member's leave
-    //none admin users who has limited permission to manage other members leaves, can't manage his/her own leaves
-    protected function access_only_allowed_members($user_id = 0) {
-        if ($this->access_type !== "all") {
-            if ($user_id === $this->login_user->id || !array_search($user_id, $this->allowed_members)) {
-                redirect("forbidden");
-            }
-        }
-    }
-
     protected function can_delete_leave_application() {
         if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "can_delete_leave_application") == "1") {
             return true;
         }
     }
-
-    protected function _get_team_select2_data() {
-        $teams = $this->Team_model->get_details()->result();
-        $team_select2 = array(array('id' => '', 'text'  => '- Departments -'));
-
-        foreach($teams as $team){
-            $team_select2[] = array('id' => $team->id, 'text'  => $team->title);
-        }
-
-        return $team_select2;
-    }
-
-    protected function _get_leave_types_select2_data() {
-
-        $option = array("status" => "active");
-        $leave_types = $this->Leave_types_model->get_details($option)->result();
-        $leave_type_select2 = array();
-
-        foreach($leave_types as $leave_type){
-            $leave_type_select2[] = array('id' => $leave_type->id, 'text'  => $leave_type->title);
-        }
-
-        return $leave_type_select2;
-    }
-
+    
     function index() {
         $this->template->rander("leaves/index");
     }
@@ -77,7 +43,7 @@ class Leaves extends MY_Controller {
             } else {
                 $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
             }
-            $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
+            $view_data['team_members_dropdown'] = $this->get_users_select2_filter();
         }
 
         $view_data['leave_types_dropdown'] = array("" => "-") + $this->Leave_types_model->get_dropdown_list(array("title"), "id", array("status" => "active"));
@@ -224,16 +190,16 @@ class Leaves extends MY_Controller {
         $view_data['status_dropdown'] = array(
             array('id' => '', 'text'  => '- Leave Status -'),
             array('id' => 'pending', 'text'  => '- Pending -'),
-            array('id' => 'rejected', 'text'  => '- Approved -'),
-            array('id' => 'approved', 'text'  => '- Rejected -')
+            array('id' => 'approved', 'text'  => '- Approved -'),
+            array('id' => 'rejected', 'text'  => '- Rejected -')
         );
         $this->load->view("leaves/all_applications", $view_data);
     }
 
     // load leave summary tab
     function summary() {
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
-        $view_data['leave_types_dropdown'] = json_encode($this->_get_leave_types_dropdown_list_for_filter());
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $view_data['leave_types_dropdown'] = json_encode($this->_get_leave_types_dropdown());
         $this->load->view("leaves/summary", $view_data);
     }
 
@@ -534,50 +500,9 @@ class Leaves extends MY_Controller {
         }
     }
 
-    //summary dropdown list of team members
-
-    private function _get_members_dropdown_list_for_filter() {
-
-        if ($this->access_type === "all") {
-            $where = array("user_type" => "staff");
-        } else {
-            if (!count($this->allowed_members)) {
-                $where = array("user_type" => "nothing");
-            } else {
-                $allowed_members = $this->allowed_members;
-                $allowed_members[] = $this->login_user->id;
-
-                $where = array("user_type" => "staff", "where_in" => array("id" => $allowed_members));
-            }
-        }
-
-        $members = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
-
-        $members_dropdown = array(array("id" => "", "text" => "- " . lang("users") . " -"));
-        foreach ($members as $id => $name) {
-            $members_dropdown[] = array("id" => $id, "text" => $name);
-        }
-        return $members_dropdown;
-    }
-
-    //summary dropdown list of leave type 
-
-    private function _get_leave_types_dropdown_list_for_filter() {
-
-        $leave_type = $this->Leave_types_model->get_dropdown_list(array("title"), "id", array("status" => "active"));
-
-        $leave_type_dropdown = array(array("id" => "", "text" => "- " . lang("leave_type") . " -"));
-        foreach ($leave_type as $id => $name) {
-            $leave_type_dropdown[] = array("id" => $id, "text" => $name);
-        }
-        return $leave_type_dropdown;
-    }
-
     // load leave credits tab 
     function leave_credits() {
-        $fields = array("first_name", "last_name");
-        $where = array("user_type" => "staff");
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $view_data['department_select2'] = $this->_get_team_select2_data();
         $view_data['leave_types_dropdown'] = $this->_get_leave_types_select2_data();
         $this->load->view("leaves/leave_credits", $view_data);
@@ -617,7 +542,7 @@ class Leaves extends MY_Controller {
             } else {
                 $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
             }
-            $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
+            $view_data['team_members_dropdown'] = $this->get_users_select2_filter();
         }
         $view_data['leave_types_dropdown'] = array("" => "-") + $this->Leave_types_model->get_dropdown_list(array("title"), "id", array("status" => "active"));
         $view_data['model_info'] = $this->Leave_types_model->get_one($this->input->post('id'));

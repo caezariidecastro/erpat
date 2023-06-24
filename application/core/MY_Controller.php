@@ -729,10 +729,18 @@ class MY_Controller extends CI_Controller {
     }
 
     protected function get_users_select2_dropdown($default_text = "users", $allowed_users = [], $where = array()) {
+        if ($this->access_type !== "all") {
+            $allowed_members = $this->allowed_members;
+            $allowed_members[] = $this->login_user->id;
+        }
+
         $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang($default_text) . " -"));
 
         $assigned_to_list = $this->Users_model->get_dropdown_list(
-            array("first_name", "last_name"), "id", array_merge($where, array( "deleted" => 0, "user_type" => "staff")),
+            array("first_name", "last_name"), "id", 
+            array_merge($where, 
+                array( "deleted" => 0, "status" => "active", "user_type" => "staff")
+            ),
             //"where_in" => array("id" => $allowed_users TODO: Optimized by using this.
         );
 
@@ -755,7 +763,10 @@ class MY_Controller extends CI_Controller {
 
         $assigned_to_filter = array("" => "- ".lang($default_text)." -");
         $assigned_to_list = $this->Users_model->get_dropdown_list(
-            array("first_name", "last_name"), "id", array_merge($where, array( "deleted" => 0, "user_type" => "staff")),
+            array("first_name", "last_name"), "id", 
+            array_merge($where, 
+                array( "deleted" => 0, "status" => "active", "user_type" => "staff")
+            ),
             //"where_in" => array("id" => $allowed_users TODO: Optimized by using this.
         );
 
@@ -774,6 +785,17 @@ class MY_Controller extends CI_Controller {
         return $assigned_to_filter;
     }
 
+    protected function _get_team_select2_data() {
+        $teams = $this->Team_model->get_details()->result();
+        $team_select2 = array(array('id' => '', 'text'  => '- Departments -'));
+
+        foreach($teams as $team){
+            $team_select2[] = array('id' => $team->id, 'text'  => $team->title);
+        }
+
+        return $team_select2;
+    }
+
     protected function _get_ticket_types_select2_filter() {
 
         $where = array();
@@ -788,5 +810,29 @@ class MY_Controller extends CI_Controller {
             $ticket_type_dropdown[] = array("id" => $id, "text" => $name);
         }
         return $ticket_type_dropdown;
+    }
+
+    protected function _get_leave_types_dropdown() {
+
+        $leave_type = $this->Leave_types_model->get_dropdown_list(array("title"), "id", array("status" => "active"));
+
+        $leave_type_dropdown = array(array("id" => "", "text" => "- " . lang("leave_type") . " -"));
+        foreach ($leave_type as $id => $name) {
+            $leave_type_dropdown[] = array("id" => $id, "text" => $name);
+        }
+        return $leave_type_dropdown;
+    }
+
+    protected function _get_leave_types_select2_data() {
+
+        $option = array("status" => "active");
+        $leave_types = $this->Leave_types_model->get_details($option)->result();
+        $leave_type_select2 = array();
+
+        foreach($leave_types as $leave_type){
+            $leave_type_select2[] = array('id' => $leave_type->id, 'text'  => $leave_type->title);
+        }
+
+        return $leave_type_select2;
     }
 }
