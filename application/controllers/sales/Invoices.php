@@ -30,7 +30,7 @@ class Invoices extends MY_Controller {
         $inventory_items = $this->Inventory_model->get_details(array('warehouse_id' => $warehouse_id))->result();
 
         foreach ($inventory_items as $inventory_item) {
-            $inventory_items_select2[] = array("id" => $inventory_item->name, "text" => $inventory_item->name . " (". $inventory_item->warehouse_name . ": " . get_current_item_inventory_count($inventory_item) . " ) ", "inventory_id" => $inventory_item->id);
+            $inventory_items_select2[] = array("id" => $inventory_item->id, "inventory_id" => $inventory_item->inventory_id, "text" => $inventory_item->name);
         }
 
         echo json_encode($inventory_items_select2);
@@ -740,10 +740,13 @@ class Invoices extends MY_Controller {
         ));
 
         $invoice_id = $this->input->post('invoice_id');
-        $options = array("invoice_id" => $invoice_id);
-        $view_data['delivery_info'] = $this->Deliveries_model->get_details($options)->row();
 
-        $view_data['model_info'] = $this->Inventory_item_entries_model->get_one($this->input->post('id'));
+        if($invoice_item = $this->input->post('id')) {
+            $options = array("invoice_id" => $invoice_id, "id" => $invoice_item);
+            $model_info = $this->Invoice_items_model->get_details($options)->row();
+            $view_data['model_info'] = $model_info;
+        }
+
         $view_data['invoice_id'] = $invoice_id;
         $this->load->view('invoices/product_modal_form', $view_data);
     }
@@ -765,24 +768,22 @@ class Invoices extends MY_Controller {
         $id = $this->input->post('id');
         $rate = unformat_currency($this->input->post('invoice_item_rate'));
         $quantity = unformat_currency($this->input->post('invoice_item_quantity'));
-        $inventory_id = $this->input->post('inventory_id');
-        $delivery_reference_no = $this->input->post('delivery_reference_no');
 
         $invoice_item_data = array(
             "invoice_id" => $invoice_id,
-            "title" => $this->input->post('invoice_item_title'),
             "description" => $this->input->post('invoice_item_description'),
             "quantity" => $quantity,
             "unit_type" => $this->input->post('invoice_unit_type'),
             "rate" => unformat_currency($this->input->post('invoice_item_rate')),
             "total" => $rate * $quantity
         );
-
-        if($inventory_id) {
-            $inventory_id['inventory_id'] = $inventory_id;
-        }
-        if($delivery_reference_no) {
-            $delivery_reference_no['delivery_reference_no'] = $delivery_reference_no;
+        
+        //If has inventory id, then this is a product.
+        if($inventory_id = $this->input->post('inventory_id')) {
+            $invoice_item_data['inventory_id'] = $inventory_id;
+            $invoice_item_data['title'] = is_numeric($this->input->post('invoice_item_title'))?$this->input->post('item_name'):$this->input->post('invoice_item_title');
+        } else { // else service
+            $invoice_item_data['title'] = $this->input->post('invoice_item_title');
         }
 
         $invoice_item_id = $this->Invoice_items_model->save($invoice_item_data, $id);
@@ -793,11 +794,12 @@ class Invoices extends MY_Controller {
             if ($add_new_item_to_library) {
                 $library_item_data = array(
                     "uuid" => $this->uuid->v4(),
-                    "title" => $this->input->post('invoice_item_title'),
+                    "title" => $this->input->post('item_name'),
                     "description" => $this->input->post('invoice_item_description'),
                     "unit_type" => $this->input->post('invoice_unit_type'),
                     "rate" => unformat_currency($this->input->post('invoice_item_rate')),
-                    "created_by" => $this->login_user->id
+                    "created_by" => $this->login_user->id,
+                    "unofficial" => '1'
                 );
                 $this->Services_model->save($library_item_data);
             }
@@ -876,7 +878,7 @@ class Invoices extends MY_Controller {
 
         $actions = "";
 
-        if($data->delivery_reference_no){
+        if($data->inventory_id){
             $actions = modal_anchor(get_uri("sales/Invoices/product_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_invoice'), "data-post-invoice_id" => $data->invoice_id, "data-post-id" => $data->id))
             . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("sales/Invoices/delete_item"), "data-action" => "delete"));
         }
@@ -942,7 +944,7 @@ class Invoices extends MY_Controller {
         $items = $this->Invoice_items_model->get_item_suggestion();
 
         foreach ($items as $item) {
-            $item_list[] = array("id" => $item->title, "text" => $item->title);
+            $item_list[] = array("id" => $item->title, "text" => ($item->unofficial?"":"* ").$item->title);
         }
 
         $item_list[] = array("id" => "+", "text" => "+ " . lang("create_new_service"));

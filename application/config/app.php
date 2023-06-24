@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //don't change or add new config in this file
 
-$config['app_version'] = '1.40.184';
+$config['app_version'] = '1.40.185';
 
 define("TOKEN_EXPIRY", 43200); //12hrs
 

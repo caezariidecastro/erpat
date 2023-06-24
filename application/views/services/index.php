@@ -33,6 +33,11 @@
             source: '<?php echo_uri("sales/Services/list_data") ?>',
             filterDropdown: [
                 {name: "labels_select2_filter", class: "w200", options: <?php echo $services_labels_dropdown; ?>}, {name: "status_select2_filter", class: "w150", options: <?php echo json_encode($status_select2); ?>}, 
+                {name: "is_unofficial", class: "w100", options: <?= json_encode(array(
+                        array('id' => '', 'text'  => '- Official -'),
+                        array('id' => '1', 'text'  => '- Unofficial -'),
+                    )); ?> 
+                },
                 {id: "category_select2_filter", name: "category_select2_filter", class: "w200", options: <?php echo json_encode($category_select2); ?>},
             ],
             order: [[0, 'desc']],

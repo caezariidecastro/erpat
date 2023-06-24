@@ -603,7 +603,8 @@ class Estimates extends MY_Controller {
                     "description" => $this->input->post('estimate_item_description'),
                     "unit_type" => $this->input->post('estimate_unit_type'),
                     "rate" => unformat_currency($this->input->post('estimate_item_rate')),
-                    "created_by" => $this->login_user->id
+                    "created_by" => $this->login_user->id,
+                    "unofficial" => '1'
                 );
                 $this->Services_model->save($library_item_data);
             }

@@ -16,6 +16,6 @@ class Migration_Alter_raffle_winners_participant_id extends CI_Migration {
 
         public function down()
         {
-                $this->dbforge->drop_column('event_raffle_winners', $fields);
+                $this->dbforge->drop_column('event_raffle_winners', 'participant_id');
         }
 }

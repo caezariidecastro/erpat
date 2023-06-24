@@ -139,7 +139,8 @@ class Services extends MY_Controller {
             "unit_type" => $this->input->post('unit_type'),
             "rate" => unformat_currency($this->input->post('item_rate')),
             "labels" => $this->input->post('labels') ? $this->input->post('labels') : "",
-            "created_at" => get_current_utc_time()
+            "created_at" => get_current_utc_time(),
+            "unofficial" => NULL
         );
 
         if(!$id){
@@ -192,7 +193,8 @@ class Services extends MY_Controller {
         $list_data = $this->Services_model->get_details(array(
             'category' => $this->input->post('category_select2_filter'),
             'labels' => $this->input->post('labels_select2_filter'),
-            'status' => $this->input->post('status_select2_filter')
+            'status' => $this->input->post('status_select2_filter'),
+            'is_unofficial' => $this->input->post('is_unofficial'),
         ))->result();
         $result = array();
         foreach ($list_data as $data) {

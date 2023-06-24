@@ -30,6 +30,13 @@ class Services_model extends Crud_model {
             $where .= " AND $services_table.status='$status'";
         }
 
+        $is_unofficial = get_array_value($options, "is_unofficial");
+        if ($is_unofficial) {
+            $where .= " AND $services_table.unofficial IS NOT NULL";
+        } else {
+            $where .= " AND $services_table.unofficial IS NULL";
+        }
+
         $select_labels_data_query = $this->get_labels_data_query();
 
         $sql = "SELECT $services_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, cat.title AS category_name, $select_labels_data_query 

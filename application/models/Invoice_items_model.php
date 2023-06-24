@@ -37,7 +37,7 @@ class Invoice_items_model extends Crud_model {
         $items_table = $this->db->dbprefix('services');
         
         $limits = 1000;
-        $sql = "SELECT $items_table.title
+        $sql = "SELECT $items_table.title,  $items_table.unofficial
             FROM $items_table
             WHERE $items_table.deleted=0
                 AND $items_table.active=1  

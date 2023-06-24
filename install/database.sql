@@ -1152,7 +1152,6 @@ CREATE TABLE `invoice_items` (
   `inventory_id` int(11) NOT NULL DEFAULT 0,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `delivery_reference_no` text COLLATE utf8_unicode_ci NOT NULL,
   `quantity` double NOT NULL,
   `unit_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `rate` double NOT NULL,

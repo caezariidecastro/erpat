@@ -59,15 +59,10 @@ class Inventory_item_entries_model extends Crud_model {
             FROM invoice_items
             LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
             LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
-            LEFT JOIN deliveries ON deliveries.reference_number = invoice_items.delivery_reference_no
+            LEFT JOIN deliveries ON deliveries.invoice_id = invoices.id
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
             AND i.item_id = $inventory_items_table.id
-            AND (
-                invoice_items.delivery_reference_no IS NOT NULL
-                OR
-                invoice_items.delivery_reference_no != ''
-            )
             AND invoices.status NOT IN ('draft', 'cancelled')
             AND (
                 (
@@ -93,11 +88,6 @@ class Inventory_item_entries_model extends Crud_model {
             LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
-            AND (
-                invoice_items.delivery_reference_no IS NULL
-                OR
-                invoice_items.delivery_reference_no = ''
-            )
             AND invoices.status NOT IN ('draft', 'cancelled')
             AND (
                 (
@@ -145,6 +135,8 @@ class Inventory_item_entries_model extends Crud_model {
             AND bill_of_materials.item_id = $inventory_items_table.id
         ), 0) AS bom
         FROM $inventory_items_table
+        LEFT JOIN invoice_items ON invoice_items.inventory_id = $inventory_items_table.id
+        LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by
         LEFT JOIN inventory_item_categories cat ON cat.id = $inventory_items_table.category
         LEFT JOIN product_brands brand ON brand.id = $inventory_items_table.brand 

@@ -1,9 +1,9 @@
-<?php echo form_open(get_uri("sales/Invoices/save_item"), array("id" => "invoice-item-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Invoices/save_item"), array("id" => "product-item-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>" />
-    <input type="hidden" name="delivery_reference_no" value="<?= $delivery_info ? $delivery_info->reference_number : "" ?>" />
     <input type="hidden" id="inventory_id" name="inventory_id" value="<?php echo $model_info ? $model_info->inventory_id : "" ?>" />
+    <input type="hidden" id="item_name" name="item_name" value="<?php echo $model_info ? $model_info->name : "" ?>" />
     <div class="form-group">
         <div class="col-md-12 text-off"> <?php echo lang('inactive_hidden'); ?></div>
     </div>
@@ -95,7 +95,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#invoice-item-form").appForm({
+        $("#product-item-form").appForm({
             onSuccess: function (result) {
                 $("#invoice-item-table").appTable({newData: result.data, dataId: result.id});
                 $("#invoice-total-section").html(result.invoice_total_view);
@@ -123,18 +123,23 @@
             dataType: 'json',
             success: function(data){
                 $("#invoice_item_title").select2({data: data}).change(function (e) {
-                    let inventory_id = e.added.inventory_id;
-                    $('#inventory_id').val(inventory_id);
+                    let item_id = e.added.id;
+                    $('#inventory_id').val(e.added.inventory_id);
+                    if(e.added.text) {
+                        $('#item_name').val(e.added.text);
+                    }
         
                     $.ajax({
                         url: "<?php echo get_uri("sales/ProductInventory/get_inventory"); ?>",
-                        data: {id: inventory_id},
+                        data: {id: item_id},
                         cache: false,
                         type: 'POST',
                         dataType: "json",
                         success: function (response) {
                             if (response && response.success) {
-                                $("#invoice_item_description").val(response.inventory_info.description);
+                                if(response.inventory_info.description) {
+                                    $("#invoice_item_description").val(response.inventory_info.description);
+                                }
                                 $("#invoice_unit_type").val(response.inventory_info.unit_abbreviation);
                                 $("#invoice_item_rate").val(response.inventory_info.selling_price);
                             }
