@@ -10,11 +10,11 @@
                     "id" => "search_field",
                     "name" => "search_field",
                     "class" => "form-control pull-left",
-                    "value" => $selected_search_field_of_user_cookie ? $selected_search_field_of_user_cookie : "task"
+                    "value" => $selected_search_field_of_user_cookie ? $selected_search_field_of_user_cookie : "all"
                 ));
                 ?>
             </div>
-            <div class="col-sm-9 pl0">
+            <div class="col-sm-7 pl0">
                 <?php
                 echo form_input(array(
                     "id" => "search",
@@ -26,6 +26,9 @@
                     "type" => "search"
                 ));
                 ?>
+            </div>
+            <div class="col-sm-2" style="text-align: right;">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span></button>
             </div>
         </div>
     </div>
@@ -41,11 +44,11 @@
         });
 
         var $searchBox = $("#search"),
-                $searchField = $("#search_field");
+            $searchField = $("#search_field");
 
-        $searchField.select2({
-            data: <?php echo ($search_fields_dropdown); ?>
-        });
+            $searchField.select2({
+                data: <?php echo ($search_fields_dropdown); ?>
+            });
 
         var awesomplete = new Awesomplete($searchBox[0], {
             minChars: 1,
