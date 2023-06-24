@@ -31,29 +31,14 @@
                 </button>
             </li>
 
-            <?php
-            //get the array of hidden topbar menus
-            $hidden_topbar_menus = explode(",", get_setting("user_" . $user . "_hidden_topbar_menus"));
-
-            if (!in_array("to_do", $hidden_topbar_menus)) {
-                $this->load->view("todo/topbar_icon");
-            }
-            if (!in_array("favorite_projects", $hidden_topbar_menus) && !(get_setting("disable_access_favorite_project_option_for_clients") && $this->login_user->user_type == "client")) {
-                $this->load->view("projects/star/topbar_icon");
-            }
-            if (!in_array("favorite_clients", $hidden_topbar_menus)) {
-                $this->load->view("clients/star/topbar_icon");
-            }
-            if (!in_array("dashboard_customization", $hidden_topbar_menus) && (get_setting("disable_new_dashboard_icon") != 1)) {
-                $this->load->view("dashboards/list/topbar_icon");
-            }
-
-            ?>
+            <li>
+                <?php $this->load->view("includes/time"); ?>
+            </li>
 
             <?php
-            if (has_my_open_timers()) {
-                $this->load->view("projects/open_timers_topbar_icon");
-            }
+                if (has_my_open_timers()) {
+                    $this->load->view("projects/open_timers_topbar_icon");
+                }
             ?>
         </ul>
         <ul class="nav navbar-nav navbar-right inline-block">
@@ -65,12 +50,6 @@
                     <?php echo modal_anchor(get_uri("search/search_modal_form"), "<i class='fa fa-search'></i>", array("class" => "pull-left", "data-modal-title" => lang('search') . ' (/)', "data-post-hide-header" => true, "id" => "global-search-btn")); ?>
                 </li>
             <?php } ?>
-
-            <?php
-                if (!in_array("quick_add", $hidden_topbar_menus)) {
-                    $this->load->view("settings/topbar_parts/quick_add");
-                }
-            ?>
 
             <?php /* if (!in_array("language", $hidden_topbar_menus) && (($this->login_user->user_type == "staff" && !get_setting("disable_language_selector_for_team_members")) || ($this->login_user->user_type == "client" && !get_setting("disable_language_selector_for_clients")))) { ?>
 
@@ -134,10 +113,6 @@
                     </div>
                 </li>
             <?php } ?>
-
-            <li>
-                <?php $this->load->view("includes/time"); ?>
-            </li>
 
             <li class="dropdown pr15 dropdown-user">
                 <a id="user-dropdown-icon" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
