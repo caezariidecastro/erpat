@@ -65,8 +65,8 @@ class Cron_job {
         $this->ci = get_instance();
         $this->current_time = strtotime(get_current_utc_time());
 
-        $this->ci->Settings_model->save_setting("last_minutely_job_time", $this->current_time+60);
-        $this->ci->Settings_model->save_setting("last_hourly_job_time", $this->current_time+3600);
+        $this->ci->Settings_model->save_setting("last_minutely_job_time", $this->current_time-60);
+        $this->ci->Settings_model->save_setting("last_hourly_job_time", $this->current_time-3600);
         $this->ci->Settings_model->save_setting("last_daily_job_time", (int)get_current_utc_time("Ymd")-1);
         $this->ci->Settings_model->save_setting("last_weekly_job_time", (int)get_current_utc_time("Ymd")-7);
         $this->ci->Settings_model->save_setting("last_monthly_job_time", (int)get_current_utc_time("Ym")-1);
@@ -74,7 +74,7 @@ class Cron_job {
         $this->ci->Settings_model->save_setting("last_yearly_job_time", (int)get_current_utc_time("Y")-1);
     }
 
-    protected function is_enable($cron_name) {
+    private function is_enable($cron_name) {
         if ( $this->ci->Settings_model->get_setting("cron_".$cron_name) === "1" ) {
             return true;
         }

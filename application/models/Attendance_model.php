@@ -19,10 +19,10 @@ class Attendance_model extends Crud_model {
         //List of user to exclude.
         $whitelisted = get_setting('whitelisted_autoclockout');
 
-        $sql = "SELECT *, TIME_TO_SEC(TIMEDIFF('$now', in_time)) as test FROM attendance WHERE out_time IS NULL AND deleted=0 
+        $sql = "SELECT * FROM attendance WHERE out_time IS NULL AND deleted=0 
             AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 > $trigger";
         if( !empty($whitelisted) ) {
-            $sql .= "AND user_id NOT IN (".$whitelisted.")";
+            $sql .= " AND user_id NOT IN (".$whitelisted.")";
         }
         return $this->db->query($sql);
     }
