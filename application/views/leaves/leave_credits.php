@@ -2,6 +2,7 @@
 <div class="page-title clearfix">
     <div class="title-button-group">
         <?php echo modal_anchor(get_uri("hrs/leaves/modal_form_add_credit"), "<i class='fa fa-plus-circle'></i> " . lang('add_leave_credits'), array("class" => "btn btn-default", "title" => lang('leave_credit_add_form'))); ?>
+        <?php echo modal_anchor(get_uri("hrs/leaves/modal_form_convert_credit"), "<i class='fa fa-exchange'></i> " . lang('convert_leave_credits'), array("class" => "btn btn-default", "title" => lang('leave_credit_convert_form'))); ?>
         <?php echo modal_anchor(get_uri("hrs/leaves/modal_form_deduct_credit"), "<i class='fa fa-minus-circle'></i> " . lang('remove_leave_credits'), array("class" => "btn btn-default", "title" => lang('leave_credit_deduct_form'))); ?>
     </div>
 </div>
@@ -24,8 +25,9 @@
                         array('id' => 'credit', 'text'  => '- Credit Only -')
                     )); ?> 
                 },
-                {name: "leave_type_id", class: "w200", options: <?= json_encode($leave_types_dropdown) ?> },
+                {name: "leave_type_id", class: "w150", options: <?= json_encode($leave_types_dropdown) ?> },
             ],
+            dateRangeType: "yearly",
             columns: [
                 {title: '<?php echo lang("employee"); ?>'},
                 {title: '<?php echo lang("action"); ?>'},

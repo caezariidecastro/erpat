@@ -16,10 +16,12 @@
             columns: [
                 {title: '<?php echo lang("applicant") ?>', "class": "w30p"},
                 {title: '<?php echo lang("leave_type") ?>'},
-                {title: '<?php echo lang("total_leave_yearly") ?>'}
+                {title: '<?php echo lang("total_leave_yearly") ?>'},
+                {title: '<?php echo lang("leave_balance_yearly") ?>'}
             ],
             printColumns: [0, 1],
-            xlsColumns: [0, 1]
+            xlsColumns: [0, 1],
+            tableRefreshButton: true
         });
     }
     );

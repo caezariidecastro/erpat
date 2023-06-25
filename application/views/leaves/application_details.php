@@ -18,12 +18,13 @@
         <div class="table-responsive mb15">
             <table class="table dataTable display b-t">
                 <tr>
-                    <td class="w100"> <?php echo lang('overall_leave_credits'); ?></td>
-                    <td><?php echo get_total_leave_credit_balance($leave_info->applicant_id)." ".lang("days"); ?></td>
-                </tr>
-                <tr>
-                    <td class="w100"> <?php echo lang('leave_type_credits'); ?></td>
-                    <td><?php echo get_total_leave_credit_balance($leave_info->applicant_id, $leave_info->leave_type_id)." ".lang("days"); ?></td>
+                    <td class="w100"> <?php echo lang('leave_credit_balance'); ?></td>
+                    <td>
+                        <?php 
+                            $balance_current = get_total_leave_credit_balance($leave_info->applicant_id, $leave_info->leave_type_id); 
+                            echo $balance_current." ".lang("days")." (".($balance_current*8)." ".lang("hours").")";
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td class="w100"> <?php echo lang('leave_type'); ?></td>

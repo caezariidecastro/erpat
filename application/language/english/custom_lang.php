@@ -1068,3 +1068,16 @@ $lang["imaps"] = "Ticket IMAP";
 
 $lang["cron_updated"] = "Cronjob Updated";
 $lang["staffs"] = "Staffs";
+
+$lang["convert_leave_credits"] = "Convert";
+$lang["leave_credit_convert_form"] = "Convert Credits";
+
+$lang["leave_type_credit_insufficient"] = "Insufficient transfer issue for the leave type origin: <br> Current Balance: ";
+$lang["same_leave_type_origin_and_target"] = "The origin and target leave type is the same.";
+
+$lang["leave_credit_balance"] = "Leave credit Balance";
+
+$lang["can_only_update_pending_leave"] = "Only pending leave, can be approve.";
+$lang["permission_denied"] = "Access Denied: You are not permitted to execute this action.";
+$lang["leave_balance_yearly"] = "Leave Balance (Yearly)";
+

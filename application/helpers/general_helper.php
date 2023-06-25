@@ -2023,7 +2023,7 @@ if (!function_exists('get_total_leave_credit_balance')) {
     function get_total_leave_credit_balance($user_id = 0, $leave_type_id = 0) {
         $ci = get_instance();
         $ci->load->model("Leave_credits_model");
-        $options = array("user_id" => $user_id ? $user_id : $ci->login_user->id);
+        $options = array("user_id" => $user_id);
         if($leave_type_id) {
             $options = array_merge($options,
                 array("leave_type_id"=>$leave_type_id)
@@ -2279,4 +2279,15 @@ if (!function_exists('get_custom_link')) {
         return anchor($path . $name, $cur_name, $attributes);
     }
 
+}
+
+if (!function_exists('exit_response_with_message')) {
+
+    function exit_response_with_message($content, $is_lang = true) {
+        echo json_encode(array(
+            "success" => false,
+            "message" => $is_lang?lang($content):$content   
+        ));
+        exit;
+    }
 }

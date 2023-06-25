@@ -16,6 +16,7 @@
             filterDropdown: [
                 {name: "leave_type_id", class: "w200", options: <?= json_encode($leave_types_dropdown) ?> },
             ],
+            dateRangeType: "yearly",
             columns: [
                 {title: '<?php echo lang("applicant") ?>', "class": "w20p"},
                 {title: '<?php echo lang("leave_type") ?>'},
@@ -27,7 +28,8 @@
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6]
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6],
+            tableRefreshButton: true
         });
     });
 </script>

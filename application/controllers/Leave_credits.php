@@ -7,8 +7,12 @@ class Leave_credits extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->access_only_team_members();
+        
         $this->load->model("Leave_credits_model");
         $this->load->model("Leave_types_model");
+
+        $this->init_permission_checker("leave");
     }
 
     //load leave type list view
@@ -54,6 +58,57 @@ class Leave_credits extends MY_Controller {
         }
     }
 
+    function convert() {
+        validate_submitted_data(array(
+            "counts" => "numeric",
+            "user_id" => "required",
+            "leave_type_id" => "required",
+            "leave_type_to_id" => "required",
+            "counts" => "required",
+        ));
+
+        if($this->input->post('leave_type_id') === $this->input->post('leave_type_to_id')) {
+            echo json_encode(array("success" => false, 'message' => lang('same_leave_type_origin_and_target')));
+            exit;
+        }
+
+        $shared_data = array(
+            "user_id" => $this->input->post('user_id'),
+            "counts" => $this->input->post('counts'),
+            "date_created" => get_current_utc_time(),
+            "created_by" => $this->login_user->id,
+            "remarks" => $this->input->post('remarks'),
+        );
+
+        $balance = $this->Leave_credits_model->get_balance(
+            array(
+                "user_id"=>$this->input->post('user_id'),
+                "leave_type_id"=>$this->input->post('leave_type_id')
+            )
+        );
+
+        if(intval($this->input->post('counts')) > $balance) {
+            echo json_encode(array("success" => false, 'message' => lang('leave_type_credit_insufficient').$balance." credit(s)"));
+            exit;
+        }
+
+        $origin_data = $shared_data;
+        $origin_data['leave_type_id'] = $this->input->post('leave_type_id');
+        $origin_data['action'] = 'credit';
+        $origin_id = $this->Leave_credits_model->save($origin_data);
+
+        $target_data = $shared_data;
+        $target_data['leave_type_id'] = $this->input->post('leave_type_to_id');
+        $target_data['action'] = 'debit';
+        $target_id = $this->Leave_credits_model->save($target_data);
+
+        if ($origin_id && $target_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     //delete/undo a leve type
     function delete() {
         
@@ -89,6 +144,8 @@ class Leave_credits extends MY_Controller {
             "start_date" => $start_date,
             "end_date" => $end_date,
             "login_user_id" => $this->login_user->id,
+            "access_type" => $this->access_type, 
+            "allowed_members" => $this->allowed_members, 
             "user_id" => $user_id,
             "action" => $action,
             "department_id" => $department_id,

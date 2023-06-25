@@ -91,6 +91,7 @@ class Leave_applications_model extends Crud_model {
         $leave_applications_table = $this->db->dbprefix('leave_applications');
         $users_table = $this->db->dbprefix('users');
         $leave_types_table = $this->db->dbprefix('leave_types');
+        $leave_credits_table = $this->db->dbprefix('leave_credits');
 
         $where = "";
 
@@ -131,8 +132,15 @@ class Leave_applications_model extends Crud_model {
             $where .= " AND $leave_applications_table.applicant_id IN($allowed_members)";
         }
 
-
         $sql = "SELECT  SUM($leave_applications_table.total_hours) AS total_hours,
+                    ( SELECT ( SUM(IF($leave_credits_table.action='debit',$leave_credits_table.counts,0)) -
+                            SUM(IF($leave_credits_table.action='credit',$leave_credits_table.counts,0)) ) as balance
+                        FROM $leave_credits_table 
+                        WHERE $leave_credits_table.deleted=0 
+                            AND $leave_credits_table.leave_type_id=$leave_applications_table.leave_type_id 
+                            AND $leave_credits_table.user_id=$users_table.id
+                        GROUP BY user_id 
+                    ) as balance, 
                 SUM($leave_applications_table.total_days) AS total_days, MAX($leave_applications_table.applicant_id) AS applicant_id, $leave_applications_table.status,
                 CONCAT($users_table.first_name, ' ',$users_table.last_name) AS applicant_name, $users_table.image as applicant_avatar,
                 $leave_types_table.title as leave_type_title,   $leave_types_table.color as leave_type_color

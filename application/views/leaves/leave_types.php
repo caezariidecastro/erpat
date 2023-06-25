@@ -19,7 +19,8 @@
                 {title: '<?php echo lang("status"); ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 2]
+            printColumns: [0, 1, 2],
+            tableRefreshButton: true
         });
     });
 </script>

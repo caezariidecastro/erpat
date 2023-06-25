@@ -29,7 +29,8 @@
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6]
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6],
+            tableRefreshButton: true
         });
     });
 </script>

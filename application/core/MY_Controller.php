@@ -827,7 +827,7 @@ class MY_Controller extends CI_Controller {
 
         $option = array("status" => "active");
         $leave_types = $this->Leave_types_model->get_details($option)->result();
-        $leave_type_select2 = array();
+        $leave_type_select2 =  array(array("id" => "", "text" => "- " . lang("leave_type") . " -"));
 
         foreach($leave_types as $leave_type){
             $leave_type_select2[] = array('id' => $leave_type->id, 'text'  => $leave_type->title);

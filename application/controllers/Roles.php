@@ -33,7 +33,6 @@ class Roles extends MY_Controller {
 
             array("can_view_team_members_contact_info", "Coming Soon", "HR Employee", "View Contacts", null),
             array("can_view_team_members_social_links", "Coming Soon", "HR Employee", "View Social Links", null),
-            array("can_delete_leave_application", "Coming Soon", "HR Employee", "Delete Leave Application", null),
 
             array("department", "Coming Soon", "Staffing: Departments", "Enabled", null, true),
             array("attendance", "Coming Soon", "Attendance: Module", "Access", "dropdown", true),
