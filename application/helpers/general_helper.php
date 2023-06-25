@@ -2286,6 +2286,7 @@ if (!function_exists('exit_response_with_message')) {
     function exit_response_with_message($content, $is_lang = true) {
         echo json_encode(array(
             "success" => false,
+            "textColor" => "#ef4646",
             "message" => $is_lang?lang($content):$content   
         ));
         exit;
