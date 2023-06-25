@@ -66,9 +66,6 @@ class Leaves extends MY_Controller {
         $leave_data['checked_at'] = "0000:00:00";
         $leave_data['status'] = "pending";
 
-        //hasn't full access? allow to update only specific member's record, excluding loged in user's own record
-        $this->access_only_allowed_members($leave_data['applicant_id']);
-
         if(get_total_leave_credit_balance($leave_data['applicant_id']) < $leave_data['total_days']) {
             echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient') ) );
             return;
@@ -469,7 +466,7 @@ class Leaves extends MY_Controller {
             "id" => "required|numeric"
         ));
 
-        if ($this->with_permission("leave_delete")) {
+        if (!$this->with_permission("leave_delete")) {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
             exit;
         }

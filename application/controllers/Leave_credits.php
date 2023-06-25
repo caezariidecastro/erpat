@@ -36,7 +36,7 @@ class Leave_credits extends MY_Controller {
             "counts" => "required",
         ));
 
-        if($this->with_permission("leave_update")) {
+        if(!$this->with_permission("leave_update")) {
             exit_response_with_message("not_permitted_updating_leave_credits");
         }
 
@@ -71,7 +71,7 @@ class Leave_credits extends MY_Controller {
             "counts" => "required",
         ));
 
-        if($this->with_permission("leave_update")) {
+        if(!$this->with_permission("leave_update")) {
             exit_response_with_message("not_permitted_updating_leave_credits");
         }
 

@@ -741,14 +741,13 @@ class MY_Controller extends CI_Controller {
             array_merge($where, 
                 array( "deleted" => 0, "status" => "active", "user_type" => "staff")
             ),
-            //"where_in" => array("id" => $allowed_users TODO: Optimized by using this.
         );
 
         foreach ($assigned_to_list as $key => $value) {
             if( $this->login_user->is_admin ) {
                 $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
             } else {
-                foreach ($allowed_users as $user) {
+                foreach ($this->allowed_members as $user) {
                     if($key == $user) {
                         $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
                     }
@@ -767,14 +766,13 @@ class MY_Controller extends CI_Controller {
             array_merge($where, 
                 array( "deleted" => 0, "status" => "active", "user_type" => "staff")
             ),
-            //"where_in" => array("id" => $allowed_users TODO: Optimized by using this.
         );
 
         if( $this->login_user->is_admin ) {
             $assigned_to_filter += $assigned_to_list;
         } else {
             foreach ($assigned_to_list as $key => $value) {
-                foreach ($allowed_users as $user) {
+                foreach ($this->allowed_members as $user) {
                     if($key == $user) {
                         $assigned_to_filter[$key] = $value;
                     }
