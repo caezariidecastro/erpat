@@ -1081,3 +1081,8 @@ $lang["can_only_update_pending_leave"] = "Only pending leave, can be approve.";
 $lang["permission_denied"] = "Access Denied: You are not permitted to execute this action.";
 $lang["leave_balance_yearly"] = "Leave Balance (Yearly)";
 
+$lang["not_permitted_updating_leave_credits"] = "You are not permitted to update leave credits.";
+$lang["not_permitted_creating_leave_application"] = "You are not permitted to create leave application for other staff.";
+
+$lang["not_permitted_managing_leave_types"] = "You are not permitted to manage leave types.";
+

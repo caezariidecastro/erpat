@@ -5,7 +5,9 @@
             <li><a  role="presentation" class="active" href="<?php echo_uri("hrs/leaves/pending_approval/"); ?>" data-target="#leave-pending-approval"><?php echo lang("pending_approval"); ?></a></li>
             <li><a  role="presentation" href="<?php echo_uri("hrs/leaves/all_applications/"); ?>" data-target="#leave-all-applications"><?php echo lang("all_applications"); ?></a></li>
             <li><a  role="presentation" href="<?php echo_uri("hrs/leaves/leave_credits/"); ?>" data-target="#leave-credits"><?php echo lang("leave_credits"); ?></a></li>
+            <?php if($this->login_user->is_admin) { ?>
             <li><a  role="presentation" href="<?php echo_uri("hrs/leaves/leave_types/"); ?>" data-target="#leave-types"><?php echo lang("leave_types"); ?></a></li>
+            <?php } ?>
             <li><a  role="presentation" href="<?php echo_uri("hrs/leaves/summary/"); ?>" data-target="#leave-summary"><?php echo lang("summary"); ?></a></li>
         </ul>
         <div class="tab-content">

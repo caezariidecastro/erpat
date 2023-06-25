@@ -31,6 +31,10 @@ class Leave_types extends MY_Controller {
             "title" => "required"
         ));
 
+        if(!$this->login_user->is_admin) {
+            exit_response_with_message("not_permitted_managing_leave_types");
+        }
+
         $id = $this->input->post('id');
         $data = array(
             "title" => $this->input->post('title'),
@@ -53,6 +57,10 @@ class Leave_types extends MY_Controller {
         validate_submitted_data(array(
             "id" => "required|numeric"
         ));
+
+        if(!$this->login_user->is_admin) {
+            exit_response_with_message("not_permitted_managing_leave_types");
+        }
 
         $id = $this->input->post('id');
         if ($this->input->post('undo')) {

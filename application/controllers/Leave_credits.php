@@ -36,6 +36,10 @@ class Leave_credits extends MY_Controller {
             "counts" => "required",
         ));
 
+        if($this->with_permission("leave_update")) {
+            exit_response_with_message("not_permitted_updating_leave_credits");
+        }
+
         $id = $this->input->post('id');
         $data = array(
             "user_id" => $this->input->post('user_id'),
@@ -66,6 +70,10 @@ class Leave_credits extends MY_Controller {
             "leave_type_to_id" => "required",
             "counts" => "required",
         ));
+
+        if($this->with_permission("leave_update")) {
+            exit_response_with_message("not_permitted_updating_leave_credits");
+        }
 
         if($this->input->post('leave_type_id') === $this->input->post('leave_type_to_id')) {
             echo json_encode(array("success" => false, 'message' => lang('same_leave_type_origin_and_target')));

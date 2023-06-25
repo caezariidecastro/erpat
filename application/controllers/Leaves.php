@@ -26,6 +26,10 @@ class Leaves extends MY_Controller {
 
     function assign_leave_modal_form($applicant_id = 0) {
 
+        if(!$this->with_permission("leave_create")) {
+            exit_response_with_message("not_permitted_creating_leave_application");
+        }
+
         if ($applicant_id) {
             $view_data['team_members_info'] = $this->Users_model->get_one($applicant_id);
         } else {
@@ -506,22 +510,33 @@ class Leaves extends MY_Controller {
 
     //load leave type add/edit form
     function modal_form_type() {
+        if(!$this->login_user->is_admin) {
+            exit_response_with_message("not_permitted_managing_leave_types");
+        }
         $view_data['model_info'] = $this->Leave_types_model->get_one($this->input->post('id'));
         $this->load->view('leaves/modal_form_type', $view_data);
     }
 
     //load leave type add form
     function modal_form_add_credit($user_id = 0) {
+        if(!$this->with_permission("leave_update")) {
+            exit_response_with_message("not_permitted_updating_leave_credits");
+        }
         self::modal_form_credit("add", $user_id);
     }
-    
 
     //load leave type deduct form
     function modal_form_deduct_credit($user_id = 0) {
+        if(!$this->with_permission("leave_update")) {
+            exit_response_with_message("not_permitted_updating_leave_credits");
+        }
         self::modal_form_credit("deduct", $user_id);
     }
 
     function modal_form_convert_credit($user_id = 0) {
+        if(!$this->with_permission("leave_update")) {
+            exit_response_with_message("not_permitted_updating_leave_credits");
+        }
         self::modal_form_credit("convert", $user_id);
     }
     
