@@ -12,13 +12,18 @@ if (!function_exists('clock_widget')) {
         $ci->load->model("Attendance_model");
         $clock_status = $ci->Attendance_model->current_clock_in_record($ci->login_user->id); 
         $on_break = false;
+        $break_time = "";
         if( isset($clock_status->id) ) {
             $breaktimes = isset($clock_status->break_time)?unserialize($clock_status->break_time):[];
             if( count($breaktimes) === 1 || count($breaktimes) === 3 || count($breaktimes) === 5 ) {
                 $on_break = true;
             }
+            if(count($breaktimes) > 0) {
+                $break_time = $breaktimes[count($breaktimes)-1];
+                $break_time = format_to_time( $break_time );
+            }
         }
-        //Send Break status
+        $view_data["break_time"] = $break_time;
         $view_data["on_break"] = $on_break;
         $view_data["clock_status"] = $clock_status;
         return $ci->load->view("attendance/clock_widget", $view_data, $return_as_data);

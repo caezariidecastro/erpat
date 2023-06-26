@@ -1090,3 +1090,4 @@ $lang["take_a_break"] = "Pause";
 $lang["resume_work"] = "Resume";
 
 $lang["exit"] = "Exit";
+$lang["breaktime_starts_at"] = "Breaktime started at";

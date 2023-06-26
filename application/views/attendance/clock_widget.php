@@ -8,7 +8,10 @@
             if (isset($clock_status->id)) {
                 $in_time = format_to_time($clock_status->in_time);
                 $in_datetime = format_to_datetime($clock_status->in_time);
-                echo "<div class='mb15' title='$in_datetime'>" . lang('clock_started_at') . " : $in_time</div>";
+
+                $pre_break = $on_break?lang('breaktime_starts_at'):lang('clock_started_at');
+                $break_time = $on_break?$break_time:$in_time;
+                echo "<div class='mb15' title='$in_datetime'>" . $pre_break . " : $break_time</div>";
               
                 $break = array(
                     "class" => "btn btn-default no-border", 
