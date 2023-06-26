@@ -744,11 +744,11 @@ class MY_Controller extends CI_Controller {
         $options = array(
             "deleted" => 0, 
             "status" => "active", 
-            "user_type" => "staff",
-            "where_in" => array(
-                "id" => $this->get_allowed_users_only("staff")
-            )
+            "user_type" => "staff"
         );
+        if(!$this->login_user->is_admin) {
+            $options['where_in'] = array("id" => $this->allowed_members);
+        }
         return $this->Users_model->get_all_where( $options )->result();
     }
 
