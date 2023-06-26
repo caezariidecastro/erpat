@@ -17,6 +17,11 @@ class Team_model extends Crud_model {
             $where = " AND $team_table.id=$id";
         }
 
+        $access_only = get_array_value($options, "access_only");
+        if ($access_only) {
+            $where = " AND $team_table.id IN ($access_only)";
+        }
+
         $sql = "SELECT $team_table.*, TRIM(CONCAT(emp.first_name, ' ', emp.last_name)) AS creator_name
         FROM $team_table
         LEFT JOIN users emp ON emp.id = $team_table.created_by

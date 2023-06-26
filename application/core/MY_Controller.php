@@ -146,6 +146,7 @@ class MY_Controller extends CI_Controller {
         $this->access_type = $info->access_type;
         $this->allowed_members = $info->allowed_members;
         $this->allowed_ticket_types = $info->allowed_ticket_types;
+        $this->allowed_departments = $info->allowed_departments;
         $this->module_group = $info->module_group;
     }
 
@@ -203,10 +204,21 @@ class MY_Controller extends CI_Controller {
                 } else if ($group === "ticket") {
                     //check the accessable ticket types
                     $info->allowed_ticket_types = $permissions;
+                } else if ($group === "department") {
+                    //check the accessable ticket types
+                    $info->allowed_departments = $permissions;
                 }
             }
         }
         return $info;
+    }
+
+    protected function get_imploded_departments() {
+        if( isset($this->allowed_departments) ) {
+            return implode(",", $this->allowed_departments);
+        }
+
+        return "";
     }
 
     protected function prepare_allowed_members_array($permissions) {
@@ -726,6 +738,18 @@ class MY_Controller extends CI_Controller {
         }
 
         return true;
+    }
+
+    protected function get_users_manage_only() {
+        $options = array(
+            "deleted" => 0, 
+            "status" => "active", 
+            "user_type" => "staff",
+            "where_in" => array(
+                "id" => $this->get_allowed_users_only("staff")
+            )
+        );
+        return $this->Users_model->get_all_where( $options )->result();
     }
 
     protected function get_users_select2_dropdown($default_text = "users", $allowed_users = [], $where = array()) {

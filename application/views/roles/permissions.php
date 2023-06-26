@@ -64,7 +64,7 @@
 
                     $('[data-toggle="tooltip"]').tooltip();
 
-                    var selectors = ["leave", "attendance", "timesheet", "team_member_update", "ticket", "message_permission", "timesheet_manage_permission", "lead", "ticket_staff", "staff"];
+                    var selectors = ["leave", "attendance", "timesheet", "team_member_update", "department", "ticket", "message_permission", "timesheet_manage_permission", "lead", "ticket_staff", "staff"];
                     $.each(selectors, function (index, element) {
                         var id = element+"_specific_dropdown"; 
                         var val = $('#'+element).val();
@@ -87,6 +87,11 @@
                     $("#ticket_specific_dropdown").select2({
                         multiple: true,
                         data: <?php echo ($ticket_types_dropdown); ?>
+                    });
+
+                    $("#department_specific_dropdown").select2({
+                        multiple: true,
+                        data: <?php echo ($department_dropdown); ?>
                     });
 
                     $(".select2").select2();

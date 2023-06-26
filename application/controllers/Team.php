@@ -8,14 +8,18 @@ class Team extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_team_members();
+
+        $this->init_permission_checker("department");
     }
 
     function index() {
-        $this->template->rander("team/index");
+        $view_data["can_add_new"] = $this->with_permission("department_create");
+        $this->template->rander("team/index", $view_data);
     }
 
     function department(){
-        $this->template->rander("team/department");
+        $view_data["can_add_new"] = $this->with_permission("department_create");
+        $this->template->rander("team/department", $view_data);
     }
 
     /* load team add/edit modal */
@@ -25,8 +29,19 @@ class Team extends MY_Controller {
             "id" => "numeric"
         ));
         
-        $team_members = $this->Users_model->get_all_where(array("deleted" => 0, "status" => "active", "user_type" => "staff"))->result();
+        $team_members = $this->get_users_manage_only();
         $members_dropdown = array();
+
+        $id = $this->input->post('id');
+        if($id) {
+            if(!$this->with_permission("department_update")) {
+                exit_response_with_message("no_permission");
+            }
+        } else {
+            if(!$this->with_permission("department_create")) {
+                exit_response_with_message("no_permission");
+            }
+        }
 
         foreach ($team_members as $team_member) {
             $fullname = $team_member->first_name . " " . $team_member->last_name;
@@ -37,7 +52,7 @@ class Team extends MY_Controller {
         }
 
         $view_data['members_dropdown'] = json_encode($members_dropdown);
-        $view_data['model_info'] = $this->Team_model->get_one($this->input->post('id'));
+        $view_data['model_info'] = $this->Team_model->get_one($id);
         $this->load->view('team/modal_form', $view_data);
     }
 
@@ -45,8 +60,19 @@ class Team extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
+
+        $id = $this->input->post('id');
+        if($id) {
+            if(!$this->with_permission("department_update")) {
+                exit_response_with_message("no_permission");
+            }
+        } else {
+            if(!$this->with_permission("department_create")) {
+                exit_response_with_message("no_permission");
+            }
+        }
         
-        $team_members = $this->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"))->result();
+        $team_members = $this->get_users_manage_only();
         $members_dropdown = array();
 
         foreach ($team_members as $team_member) {
@@ -72,6 +98,16 @@ class Team extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        if($id) {
+            if(!$this->with_permission("department_update")) {
+                exit_response_with_message("no_permission");
+            }
+        } else {
+            if(!$this->with_permission("department_create")) {
+                exit_response_with_message("no_permission");
+            }
+        }
+
         $data = array(
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
@@ -100,6 +136,12 @@ class Team extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        if($id) {
+            if(!$this->with_permission("department_delete")) {
+                exit_response_with_message("no_permission");
+            }
+        }
+
         if ($this->input->post('undo')) {
             if ($this->Team_model->delete($id, true)) {
                 echo json_encode(array("success" => true, "data" => $this->_row_data($id), "message" => lang('record_undone')));
@@ -118,7 +160,10 @@ class Team extends MY_Controller {
     /* list of team prepared for datatable */
 
     function list_data() {
-        $list_data = $this->Team_model->get_details()->result();
+        $option = array(
+            "access_only" => $this->get_imploded_departments()
+        );
+        $list_data = $this->Team_model->get_details($option)->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -141,6 +186,17 @@ class Team extends MY_Controller {
         $total_members = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $member_count . "</span>";
         $head_count = $this->Users_model->get_actual_active($data->heads);
         $total_heads = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $head_count . "</span>";
+
+        $actions = "";
+        if($this->with_permission("department_update")) {            
+            $actions = anchor(get_uri("hrs/team/export_qrcode/".$data->id), "<i class='fa fa-qrcode'></i> ", array("class" => "edit", "target" => "_blank"))
+            .modal_anchor(get_uri("hrs/team/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_department'), "data-post-id" => $data->id));
+        }
+
+        if($this->with_permission("department_delete")) {            
+            $actions .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_department'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/team/delete"), "data-action" => "delete-confirmation"));
+        }
+
         return array(
             $data->title,
             $data->description,
@@ -148,9 +204,7 @@ class Team extends MY_Controller {
             modal_anchor(get_uri("hrs/team/members_list"), $total_members, array("title" => lang('employee'), "data-post-members" => $data->members)),
             $data->date_created,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
-            anchor(get_uri("hrs/team/export_qrcode/".$data->id), "<i class='fa fa-qrcode'></i> ", array("class" => "edit", "target" => "_blank"))
-            .modal_anchor(get_uri("hrs/team/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_department'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_department'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/team/delete"), "data-action" => "delete-confirmation"))
+            $actions
         );
     }
 

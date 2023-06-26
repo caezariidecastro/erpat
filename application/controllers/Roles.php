@@ -34,7 +34,7 @@ class Roles extends MY_Controller {
             array("can_view_team_members_contact_info", "Coming Soon", "HR Employee", "View Contacts", null),
             array("can_view_team_members_social_links", "Coming Soon", "HR Employee", "View Social Links", null),
 
-            array("department", "Coming Soon", "Staffing: Departments", "Enabled", null, true),
+            array("department", "Coming Soon", "Department: Module", "Access", "dropdown", true),
             array("attendance", "Coming Soon", "Attendance: Module", "Access", "dropdown", true),
             array("leave", "Coming Soon", "Leave: Module", "Access", "dropdown", true),
             array("holiday", "Coming Soon", "Staffing: Holiday", "Enabled", null, true),
@@ -300,6 +300,13 @@ class Roles extends MY_Controller {
                 $ticket_types_dropdown[] = array("id" => $type->id, "text" => $type->title);
             }
             $view_data['ticket_types_dropdown'] = json_encode($ticket_types_dropdown);
+
+            $department_dropdown = array();
+            $department = $this->Team_model->get_all_where(array("deleted" => 0))->result();
+            foreach ($department as $one) {
+                $department_dropdown[] = array("id" => $one->id, "text" => $one->title);
+            }
+            $view_data['department_dropdown'] = json_encode($department_dropdown);
 
             $this->load->view("roles/permissions", $view_data);
         }

@@ -4,9 +4,11 @@
             <div class="panel panel-default">
                 <div class="page-title clearfix">
                     <h4> <?php echo lang('department'); ?></h4>
+                    <?php if($can_add_new) {  ?>
                     <div class="title-button-group">
                         <?php echo modal_anchor(get_uri("hrs/team/department_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_department'), array("class" => "btn btn-default", "title" => lang('add_department'))); ?>
                     </div>
+                    <?php } ?>
                 </div>
                 <div class="table-responsive">
                     <table id="team-table" class="display" cellspacing="0" width="100%">            
@@ -29,7 +31,8 @@
                 {title: "<?php echo lang("created_by"); ?>"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
-            printColumns: [0, 1]
+            printColumns: [0, 1],
+            tableRefreshButton: true
         });
     });
 </script>
