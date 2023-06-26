@@ -10,6 +10,7 @@ class Team extends MY_Controller {
         $this->access_only_team_members();
 
         $this->init_permission_checker("department");
+        $this->init_permission_checker("staff");
     }
 
     function index() {

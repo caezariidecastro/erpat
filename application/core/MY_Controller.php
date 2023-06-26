@@ -146,7 +146,9 @@ class MY_Controller extends CI_Controller {
         $this->access_type = $info->access_type;
         $this->allowed_members = $info->allowed_members;
         $this->allowed_ticket_types = $info->allowed_ticket_types;
-        $this->allowed_departments = $info->allowed_departments;
+        if( !isset($this->allowed_departments) ) {
+            $this->allowed_departments = $info->allowed_departments;
+        }
         $this->module_group = $info->module_group;
     }
 
@@ -746,7 +748,7 @@ class MY_Controller extends CI_Controller {
             "status" => "active", 
             "user_type" => "staff"
         );
-        if(!$this->login_user->is_admin) {
+        if(!$this->login_user->is_admin && $this->access_type !== "all") {
             $options['where_in'] = array("id" => $this->allowed_members);
         }
         return $this->Users_model->get_all_where( $options )->result();
