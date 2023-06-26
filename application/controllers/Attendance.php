@@ -11,13 +11,13 @@ class Attendance extends MY_Controller {
         $this->with_permission("attendance", true);
         $this->access_only_team_members();
         
-        $this->init_permission_checker("attendance");
-
         $this->load->model("Attendance_model");
         $this->load->model("Schedule_model");
         $this->load->model("Users_model");
 
         $this->load->helper("biometric");
+
+        $this->init_permission_checker("attendance");
     }
 
     protected function _get_team_select2_data() {
@@ -31,14 +31,7 @@ class Attendance extends MY_Controller {
         return $team_select2;
     }
 
-    //only admin or assigend members can access/manage other member's attendance
-    protected function access_only_allowed_members($user_id = 0) {
-        if ($this->access_type !== "all") {
-            if ($user_id === $this->login_user->id || !array_search($user_id, $this->allowed_members)) {
-                redirect("forbidden");
-            }
-        }
-    }
+    
 
     //show attendance list view
     function index() {
@@ -63,14 +56,20 @@ class Attendance extends MY_Controller {
         $view_data['model_info'] = $model_info;
         if ($view_data['model_info']->id) {
             $user_id = $view_data['model_info']->user_id;
-
-            $this->access_only_allowed_members($user_id, true);
         }
 
         if ($user_id) {
+            if( !$this->with_permission("attendance_update") ) {
+                exit_response_with_message('no_permission');
+            }
+
             //edit mode. show user's info
             $view_data['team_members_info'] = $this->Users_model->get_one($user_id);
         } else {
+            if( !$this->with_permission("attendance_create") ) {
+                exit_response_with_message('no_permission');
+            }
+
             //new add mode. show users dropdown
             //don't show none allowed members in dropdown
             $allowed_users = $this->get_allowed_users_only("attendance");
@@ -110,9 +109,6 @@ class Attendance extends MY_Controller {
 
     //add/edit attendance record
     function save() {
-        $id = $this->input->post('id');
-        $sched_id = $this->input->post('sched_id');
-
         validate_submitted_data(array(
             "id" => "numeric",
             //"sched_id" => "required",
@@ -121,6 +117,9 @@ class Attendance extends MY_Controller {
             "in_time" => "required",
             //"out_time" => "required"
         ));
+
+        $id = $this->input->post('id');
+        $sched_id = $this->input->post('sched_id');
 
         if( $id ) {
             $this->with_permission("attendance_update", true);
@@ -241,9 +240,7 @@ class Attendance extends MY_Controller {
         } else {
             $data['sched_id'] = 0;
         }
-
-        $this->access_only_allowed_members($user_id);
-
+        
         $save_id = $this->Attendance_model->save($data, $id);
         if ($save_id) {
             echo json_encode(array("success" => true, "data" => $this->_row_data($save_id), 'id' => $save_id, 'isUpdate' => $id ? true : false, 'message' => lang('record_saved')));
@@ -279,7 +276,6 @@ class Attendance extends MY_Controller {
 
         if ($user_id && $user_id != $this->login_user->id) {
             //check if the login user has permission to clock in/out this user
-            $this->access_only_allowed_members($user_id);
         }
 
         $this->Attendance_model->log_time($user_id ? $user_id : $this->login_user->id, $note);
@@ -297,7 +293,6 @@ class Attendance extends MY_Controller {
 
         if ($user_id && $user_id != $this->login_user->id) {
             //check if the login user has permission to clock in/out this user
-            $this->access_only_allowed_members($user_id);
         }
 
         $this->Attendance_model->log_break($user_id ? $user_id : $this->login_user->id);
@@ -318,11 +313,8 @@ class Attendance extends MY_Controller {
         ));
         $id = $this->input->post('id');
 
-        $this->with_permission("attendance_delete", true);
-
-        if ($this->access_type !== "all") {
-            $info = $this->Attendance_model->get_one($id);
-            $this->access_only_allowed_members($info->user_id);
+        if( !$this->with_permission("attendance_delete") ) {
+            exit_response_with_message('no_permission');
         }
 
         if ($this->input->post('undo')) {
@@ -335,7 +327,7 @@ class Attendance extends MY_Controller {
             if ($this->Attendance_model->delete($id)) {
                 echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
             } else {
-                echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+                echo json_encode(array("success" => false, 'message' => lang('not_permitted')));
             }
         }
     }
