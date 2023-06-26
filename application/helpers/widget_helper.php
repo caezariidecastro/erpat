@@ -10,7 +10,17 @@ if (!function_exists('clock_widget')) {
     function clock_widget($return_as_data = false) {
         $ci = get_instance();
         $ci->load->model("Attendance_model");
-        $view_data["clock_status"] = $ci->Attendance_model->current_clock_in_record($ci->login_user->id);
+        $clock_status = $ci->Attendance_model->current_clock_in_record($ci->login_user->id); 
+        $on_break = false;
+        if( isset($clock_status->id) ) {
+            $breaktimes = isset($clock_status->break_time)?unserialize($clock_status->break_time):[];
+            if( count($breaktimes) === 1 || count($breaktimes) === 3 || count($breaktimes) === 5 ) {
+                $on_break = true;
+            }
+        }
+        //Send Break status
+        $view_data["on_break"] = $on_break;
+        $view_data["clock_status"] = $clock_status;
         return $ci->load->view("attendance/clock_widget", $view_data, $return_as_data);
     }
 

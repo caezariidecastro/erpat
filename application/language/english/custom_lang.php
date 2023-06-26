@@ -1086,3 +1086,7 @@ $lang["not_permitted_creating_leave_application"] = "You are not permitted to cr
 
 $lang["not_permitted_managing_leave_types"] = "You are not permitted to manage leave types.";
 
+$lang["take_a_break"] = "Pause";
+$lang["resume_work"] = "Resume";
+
+$lang["exit"] = "Exit";

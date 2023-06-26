@@ -184,32 +184,26 @@ class Attendance extends MY_Controller {
 
         $break_time = [];
         if( empty($_POST['first_start']) || empty($_POST['first_start_time']) ) {
-            $break_time[] = null;
         } else {
             $break_time[] = $first_start_time;
         }
         if( empty($_POST['first_end']) || empty($_POST['first_end_time']) ) {
-            $break_time[] = null;
         } else {
             $break_time[] = $first_end_time;
         }
         if( empty($_POST['lunch_start']) || empty($_POST['lunch_start_time']) ) {
-            $break_time[] = null;
         } else {
             $break_time[] = $lunch_start_time;
         }
         if( empty($_POST['lunch_end']) || empty($_POST['lunch_end_time']) ) {
-            $break_time[] = null;
         } else {
             $break_time[] = $lunch_end_time;
         }
         if( empty($_POST['second_start']) || empty($_POST['second_start_time']) ) {
-            $break_time[] = null;
         } else {
             $break_time[] = $second_start_time;
         }
         if( empty($_POST['second_end']) || empty($_POST['second_end_time']) ) {
-            $break_time[] = null;
         } else {
             $break_time[] = $second_end_time;
         }
@@ -289,6 +283,24 @@ class Attendance extends MY_Controller {
         }
 
         $this->Attendance_model->log_time($user_id ? $user_id : $this->login_user->id, $note);
+
+        if ($user_id) {
+            echo json_encode(array("success" => true, "data" => $this->_clock_in_out_row_data($user_id), 'id' => $user_id, 'message' => lang('record_saved'), "isUpdate" => true));
+        } else if ($this->input->post("clock_out")) {
+            echo json_encode(array("success" => true, "clock_widget" => clock_widget(true)));
+        } else {
+            clock_widget();
+        }
+    }
+
+    function log_breaktime($user_id = 0) {
+
+        if ($user_id && $user_id != $this->login_user->id) {
+            //check if the login user has permission to clock in/out this user
+            $this->access_only_allowed_members($user_id);
+        }
+
+        $this->Attendance_model->log_break($user_id ? $user_id : $this->login_user->id);
 
         if ($user_id) {
             echo json_encode(array("success" => true, "data" => $this->_clock_in_out_row_data($user_id), 'id' => $user_id, 'message' => lang('record_saved'), "isUpdate" => true));

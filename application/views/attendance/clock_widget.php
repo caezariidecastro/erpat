@@ -10,7 +10,30 @@
                 $in_datetime = format_to_datetime($clock_status->in_time);
                 echo "<div class='mb15' title='$in_datetime'>" . lang('clock_started_at') . " : $in_time</div>";
               
-                echo modal_anchor(get_uri("hrs/attendance/note_modal_form"), "<i class='fa fa-sign-out'></i> " . lang('clock_out'), array("class" => "btn btn-default no-border", "title" => lang('clock_out'), "id"=>"timecard-clock-out", "data-post-id" => $clock_status->id, "data-post-clock_out"=>1));
+                $break = array(
+                    "class" => "btn btn-default no-border", 
+                    "title" => lang('resume_work'), 
+                    "style" => "margin-right: 10px;", 
+                    "id"=>"timecard-break", 
+                    "data-post-id" => $clock_status->id, 
+                    "data-post-action"=>$on_break,
+                    "data-inline-loader" => "1",
+                    "data-closest-target" => "#js-clock-in-out"
+                );
+                $break_text = $on_break ?lang('resume_work'):lang("take_a_break");
+                echo ajax_anchor(get_uri("hrs/attendance/log_breaktime"), "<i class='fa fa-pause-circle'></i> " . $break_text, $break);
+
+                $clock_out = array(
+                    "class" => "btn btn-default no-border", 
+                    "title" => lang('exit'), 
+                    "id"=>"timecard-clock-out", 
+                    "data-post-id" => $clock_status->id, 
+                    "data-post-clock_out"=>1,
+                );
+                if($on_break) {
+                    $clock_out['disabled'] = true;
+                }
+                echo modal_anchor(get_uri("hrs/attendance/note_modal_form"), "<i class='fa fa-sign-out'></i> " . lang('exit'), $clock_out );
             } else {
                 echo "<div class='mb15'>" . lang('you_are_currently_clocked_out') . "</div>";
                 echo ajax_anchor(get_uri("hrs/attendance/log_time"), "<i class='fa fa-sign-in'></i> " . lang('clock_in'), array("class" => "btn btn-default no-border", "title" => lang('clock_in'), "data-inline-loader" => "1", "data-closest-target" => "#js-clock-in-out"));
@@ -19,3 +42,9 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        console.log('<?= json_encode($on_break) ?>');
+    });
+</script>
