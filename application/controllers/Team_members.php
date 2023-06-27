@@ -511,7 +511,7 @@ class Team_members extends MY_Controller {
     }
 
     function sched_modal_form() {
-        $this->with_permission("staff_update", "no_permission");
+        $this->with_permission("staff_update_schedule", "no_permission");
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -817,9 +817,11 @@ class Team_members extends MY_Controller {
             
             $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/edit_modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit_employee'), array("title" => lang('edit_employee'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
 
-            $sched = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/sched_modal_form"), "<i class='fa fa-clock-o'></i> " . lang('update_schedule'), array("title" => lang('update_schedule'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
-
             $rfid = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/rfid_modal"), "<i class='fa fa-barcode'></i> " . lang('set_rfid'), array("class" => "edit", "title" => lang('set_rfid'), "data-post-id" => $data->id)). '</li>';
+        }
+
+        if( $this->with_permission("staff_update_schedule") ) {
+            $sched = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/sched_modal_form"), "<i class='fa fa-clock-o'></i> " . lang('update_schedule'), array("title" => lang('update_schedule'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
         }
 
         if ( $this->with_permission("staff_delete") ) {

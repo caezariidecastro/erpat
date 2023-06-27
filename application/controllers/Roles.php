@@ -26,6 +26,7 @@ class Roles extends MY_Controller {
             array("staff", "Coming Soon", "Staffing: Module", "Access", "dropdown", true),
             array("staff_invite", "Coming Soon", "Staffing: Email Invite", "Email", null),
             array("staff_account", "Coming Soon", "Staffing: Account", "Account", null),
+            array("staff_update_schedule", "Coming Soon", "Staffing: Update Schedule", "Schedule", null),
             array("staff_view_personal_background", "Coming Soon", "Staffing: Personal Background", "View", null),
             array("staff_view_job_description", "Coming Soon", "Staffing: Job Description", "View", null),
             array("staff_view_bank_info", "Coming Soon", "Staffing: Bank Info", "View", null),
