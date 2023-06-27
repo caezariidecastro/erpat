@@ -7,8 +7,8 @@ class Forbidden extends CI_Controller {
     }
 
     function index() {
-        $view_data["heading"] = "403 Forbidden";
-        $view_data["message"] = "You don't have  permission to access this module.";
+        $view_data["heading"] = "Forbidden Access";
+        $view_data["message"] = "Entrance to this page is restricted. You do not have permission to view it.";
         if ($this->input->is_ajax_request()) {
             $view_data["no_css"] = true;
         }
