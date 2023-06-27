@@ -7,7 +7,7 @@ class Announcements extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("announcement", true);
+        $this->with_module("announcement", "redirect");
 
         $this->init_permission_checker("announcement");
         $this->load->model("Announcements_model");

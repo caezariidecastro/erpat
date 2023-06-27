@@ -7,8 +7,8 @@ class Loans extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("loan", true);
-        $this->with_permission("loan", true);
+        $this->with_module("loan", "redirect");
+        $this->with_permission("loan", "redirect");
 
         $this->load->model("Loans_model");
         $this->load->model("Loan_categories_model");
@@ -28,7 +28,7 @@ class Loans extends MY_Controller {
 
     //load loan add/edit form
     function modal_form() {
-        $this->with_permission("loan_create", true);
+        $this->with_permission("loan_create", "no_permission");
         $view_data['model_info'] = $this->Loans_model->get_one($this->input->post('id'));
         $view_data['team_members_dropdown'] = array("" => "- Select -") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
         $view_data['loan_categories_dropdown'] = array("" => "- Select -") + $this->Loan_categories_model->get_dropdown_list(array("name"), "id", array("deleted" => 0, "status" => 1));
@@ -36,7 +36,7 @@ class Loans extends MY_Controller {
     }
 
     function modal_form_update() {
-        $this->with_permission("loan_update", true);
+        $this->with_permission("loan_update", "no_permission");
         $view_data['model_info'] = $this->Loans_model->get_one($this->input->post('id'));
         $this->load->view('loans/modal_form_update', $view_data);
     }
@@ -216,7 +216,7 @@ class Loans extends MY_Controller {
 
     //save loan
     function save() {
-        $this->with_permission("loan_create", true);
+        $this->with_permission("loan_create", "no_permission");
 
         validate_submitted_data(array(
             "category_id" => "numeric|required",
@@ -263,7 +263,7 @@ class Loans extends MY_Controller {
 
     //delete/undo a leve type
     function delete() {
-        $this->with_permission("loan_delete", true);
+        $this->with_permission("loan_delete", "no_permission");
         
         validate_submitted_data(array(
             "id" => "required|numeric"

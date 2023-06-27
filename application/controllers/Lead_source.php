@@ -7,8 +7,8 @@ class Lead_source extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("lead", true);
-        $this->with_permission("lead", true);
+        $this->with_module("lead", "redirect");
+        $this->with_permission("lead", "redirect");
 
         $this->load->model("Lead_source_model");
     }

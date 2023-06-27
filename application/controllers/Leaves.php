@@ -7,7 +7,7 @@ class Leaves extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("leave", true);   
+        $this->with_module("leave", "redirect");   
         $this->access_only_team_members();
 
         $this->load->model("Leave_credits_model");
@@ -516,24 +516,18 @@ class Leaves extends MY_Controller {
 
     //load leave type add form
     function modal_form_add_credit($user_id = 0) {
-        if(!$this->with_permission("leave_update")) {
-            exit_response_with_message("not_permitted_updating_leave_credits");
-        }
+        $this->with_permission("leave_update", "not_permitted_updating_leave_credits");
         self::modal_form_credit("add", $user_id);
     }
 
     //load leave type deduct form
     function modal_form_deduct_credit($user_id = 0) {
-        if(!$this->with_permission("leave_update")) {
-            exit_response_with_message("not_permitted_updating_leave_credits");
-        }
+        $this->with_permission("leave_update", "not_permitted_updating_leave_credits");
         self::modal_form_credit("deduct", $user_id);
     }
 
     function modal_form_convert_credit($user_id = 0) {
-        if(!$this->with_permission("leave_update")) {
-            exit_response_with_message("not_permitted_updating_leave_credits");
-        }
+        $this->with_permission("leave_update", "not_permitted_updating_leave_credits");
         self::modal_form_credit("convert", $user_id);
     }
     

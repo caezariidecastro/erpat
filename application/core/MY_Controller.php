@@ -60,48 +60,19 @@ class MY_Controller extends CI_Controller {
     }
 
     /**
-     * Check if the current user has permission else return object info.
+     * Check if the current user is with permission and return as bool, redirect, and json exit.
      */
-    protected function check_permission($permission) {
+    protected function with_permission($permission, $failReturnAs = "bool") {
         $permission_lists = $this->login_user->permissions;
         if( $this->login_user->is_admin || get_array_value($permission_lists, $permission) ){
-            return;
-        } 
-        
-        echo json_encode(array("success" => false, "message"=>lang('permission_denied'))); 
-        exit;
-    }
-
-    /**
-     * Check if the current user is with permission.
-     */
-    protected function with_permission($permission, $redirect = false, $allAccess = false) {
-        $permission_lists = $this->login_user->permissions;
-        
-        if( $this->login_user->is_admin || $this->login_user->user_type === "client"){
             return true;
         }
-
-        if($allAccess) {
-            if(get_array_value($permission_lists, $permission."_create")) {
-                return true;
-            }
-
-            if(get_array_value($permission_lists, $permission."_update")) {
-                return true;
-            }
-
-            if(get_array_value($permission_lists, $permission."_delete")) {
-                return true;
-            }
-        } else {
-            if(get_array_value($permission_lists, $permission)) {
-                return true;
-            }
-        }
-
-        if($redirect) {
+        
+        if($failReturnAs === "redirect") {
             redirect("forbidden");
+        } else if($failReturnAs !== "bool" && $failReturnAs !== "redirect") {
+            echo json_encode( array("success" => false, "message" => lang($failReturnAs)) );
+            exit;
         }
 
         return false;
@@ -110,13 +81,16 @@ class MY_Controller extends CI_Controller {
     /**
      * Check if the module is enabled or not.
      */
-    protected function with_module($module_name, $redirect = false) {
+    protected function with_module($module_name, $failReturnAs = "bool") {
         if ( $this->Settings_model->get_setting("module_".$module_name) === "1" ) {
             return true;
         }
 
-        if($redirect) {
+        if($failReturnAs === "redirect") {
             redirect("forbidden");
+        } else if($failReturnAs!== "bool" && $failReturnAs !== "redirect") {
+            echo json_encode( array("success" => false, "message" => lang($failReturnAs)) );
+            exit;
         }
 
         return false;

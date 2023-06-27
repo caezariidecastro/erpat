@@ -7,8 +7,8 @@ class EventPass extends MY_Controller {
 
 	function __construct() {
        	parent::__construct();
-        $this->with_module("epass", true);
-        $this->with_permission("event_epass", true);
+        $this->with_module("epass", "redirect");
+        $this->with_permission("event_epass", "redirect");
    
         $this->load->library('encryption');
 		$this->load->model("EventPass_model");

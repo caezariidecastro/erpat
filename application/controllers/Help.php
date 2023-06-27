@@ -7,8 +7,8 @@ class Help extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("help", true);
-        $this->with_permission("help", true);
+        $this->with_module("help", "redirect");
+        $this->with_permission("help", "redirect");
 
         $this->load->model("Help_categories_model");
         $this->load->model("Help_articles_model");
@@ -18,8 +18,8 @@ class Help extends MY_Controller {
     function index() {
         $type = "help";
         $view_data["type"] = $type;
-        $view_data["list_articles"] = $this->with_permission($type, false, true);
-        $view_data["list_categories"] = $this->with_permission($type."_category", false, true);
+        $view_data["list_articles"] = $this->with_permission($type);
+        $view_data["list_categories"] = $this->with_permission($type);
 
         $this->template->rander("help_and_knowledge_base/articles/index", $view_data);
     }
@@ -122,9 +122,9 @@ class Help extends MY_Controller {
         $id = $this->input->post('id');
 
         if( isset($id) ) {
-            $this->with_permission($type."_category_update", true);
+            $this->with_permission($type."_category_update", "no_permission");
         } else {
-            $this->with_permission($type."_category_create", true);
+            $this->with_permission($type."_category_create", "no_permission");
         }
 
         $view_data['model_info'] = $this->Help_categories_model->get_one($id);
@@ -143,9 +143,9 @@ class Help extends MY_Controller {
         $type = $this->input->post('type');
 
         if( isset($id) ) {
-            $this->check_permission($type."_category_update");
+            $this->with_permission($type."_category_update", "no_permission");
         } else {
-            $this->check_permission($type."_category_create");
+            $this->with_permission($type."_category_create", "no_permission");
         }
 
         $data = array(
@@ -171,7 +171,7 @@ class Help extends MY_Controller {
         $id = $this->input->post('id');
         $type = $this->input->get('type');
 
-        $this->check_permission($type."_category_delete");
+        $this->with_permission($type."_category_delete", "no_permission");
 
         if ($this->input->post('undo')) {
             if ($this->Help_categories_model->delete($id, true)) {
@@ -230,7 +230,7 @@ class Help extends MY_Controller {
         $view_data['model_info'] = $this->Help_articles_model->get_one($id);
         $view_data['type'] = $type;
         $view_data['categories_dropdown'] = $this->Help_categories_model->get_dropdown_list(array("title"), "id", array("type" => $type));
-        $view_data['create_article'] = $this->with_permission($type."_create", true);
+        $view_data['create_article'] = $this->with_permission($type."_create");
         $this->template->rander('help_and_knowledge_base/articles/form', $view_data);
     }
 
@@ -246,9 +246,9 @@ class Help extends MY_Controller {
         $type = $this->input->post('type');
 
         if( isset($id) ) {
-            $this->with_permission($type."_update", true);
+            $this->with_permission($type."_update", "no_permission");
         } else {
-            $this->with_permission($type."_create", true);
+            $this->with_permission($type."_create", "no_permission");
         }
         
         $target_path = get_setting("timeline_file_path");
@@ -297,7 +297,7 @@ class Help extends MY_Controller {
         $id = $this->input->post('id');
         $type = $this->input->get('type');
 
-        $this->check_permission($type."_delete");
+        $this->with_permission($type."_delete", "no_permission");
         
         if ($this->input->post('undo')) {
             if ($this->Help_articles_model->delete($id, true)) {

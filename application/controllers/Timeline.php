@@ -7,6 +7,7 @@ class Timeline extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
+        $this->with_module("timeline", "redirect");
         $this->access_only_team_members();
         $this->load->model("Posts_model");
     }
@@ -14,8 +15,6 @@ class Timeline extends MY_Controller {
     /* load timeline view */
 
     function index() {
-        $this->with_module("timeline");
-
         $view_data['team_members'] = "";
         $this->init_permission_checker("message_permission");
         if (get_array_value($this->login_user->permissions, "message_permission") !== "") {

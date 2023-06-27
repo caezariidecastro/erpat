@@ -10,7 +10,6 @@ class Team extends MY_Controller {
         $this->access_only_team_members();
 
         $this->init_permission_checker("department");
-        $this->init_permission_checker("staff");
     }
 
     function index() {
@@ -35,13 +34,9 @@ class Team extends MY_Controller {
 
         $id = $this->input->post('id');
         if($id) {
-            if(!$this->with_permission("department_update")) {
-                exit_response_with_message("no_permission");
-            }
+            $this->with_permission("department_update", "no_permission");
         } else {
-            if(!$this->with_permission("department_create")) {
-                exit_response_with_message("no_permission");
-            }
+            $this->with_permission("department_create", "no_permission");
         }
 
         foreach ($team_members as $team_member) {
@@ -64,13 +59,9 @@ class Team extends MY_Controller {
 
         $id = $this->input->post('id');
         if($id) {
-            if(!$this->with_permission("department_update")) {
-                exit_response_with_message("no_permission");
-            }
+            $this->with_permission("department_update", "no_permission");
         } else {
-            if(!$this->with_permission("department_create")) {
-                exit_response_with_message("no_permission");
-            }
+            $this->with_permission("department_create", "no_permission");
         }
         
         $team_members = $this->get_users_manage_only();
@@ -100,13 +91,9 @@ class Team extends MY_Controller {
 
         $id = $this->input->post('id');
         if($id) {
-            if(!$this->with_permission("department_update")) {
-                exit_response_with_message("no_permission");
-            }
+            $this->with_permission("department_update", "no_permission");
         } else {
-            if(!$this->with_permission("department_create")) {
-                exit_response_with_message("no_permission");
-            }
+            $this->with_permission("department_create", "no_permission");
         }
 
         $data = array(
@@ -138,9 +125,7 @@ class Team extends MY_Controller {
 
         $id = $this->input->post('id');
         if($id) {
-            if(!$this->with_permission("department_delete")) {
-                exit_response_with_message("no_permission");
-            }
+            $this->with_permission("department_delete", "no_permission");
         }
 
         if ($this->input->post('undo')) {

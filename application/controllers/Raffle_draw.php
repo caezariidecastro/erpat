@@ -7,8 +7,8 @@ class Raffle_draw extends MY_Controller {
 
 	function __construct() {
        	parent::__construct();
-        $this->with_module("raffle", true);
-        $this->with_permission("raffle_draw", true);
+        $this->with_module("raffle", "redirect");
+        $this->with_permission("raffle_draw", "redirect");
 
         $this->load->library('encryption');
 		$this->load->model("Raffle_draw_model");

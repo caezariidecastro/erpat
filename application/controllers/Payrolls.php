@@ -7,8 +7,8 @@ class Payrolls extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        //$this->with_module("payroll", true);
-        //$this->with_permission("payroll", true);
+        //$this->with_module("payroll", "redirect");
+        //$this->with_permission("payroll", "redirect");
 
         $this->load->helper('payhp');
         $this->load->helper("biometric");
@@ -362,7 +362,7 @@ class Payrolls extends MY_Controller {
     }
 
     function save_contribution() {
-        $this->with_permission("staff_update", true);
+        $this->with_permission("staff_update", "no_permission");
 
         $user_id = $this->input->post('user_id');
         $deductions = get_user_deductions($user_id, true);
@@ -421,7 +421,7 @@ class Payrolls extends MY_Controller {
     }
 
     function save_auto_contribution() {
-        $this->with_permission('payroll_auto_contribution', true);
+        $this->with_permission('payroll_auto_contribution', "no_permission");
 
         $success = 0; $failed = 0;
 

@@ -7,8 +7,8 @@ class Pages extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("page", true);
-        $this->with_permission("page", true);
+        $this->with_module("page", "redirect");
+        $this->with_permission("page", "redirect");
 
         $this->load->model("Pages_model");
     }
@@ -26,9 +26,9 @@ class Pages extends MY_Controller {
         $id = $this->input->post('id');
         
         if( isset($id) ) {
-            $this->with_permission("page_edit", true);
+            $this->with_permission("page_edit", "no_permission");
         } else {
-            $this->with_permission("page_create", true);
+            $this->with_permission("page_create", "no_permission");
         }
 
         $view_data['model_info'] = $this->Pages_model->get_one($id);
@@ -61,9 +61,9 @@ class Pages extends MY_Controller {
         );
     
         if( isset($id) ) {
-            $this->check_permission("page_update");
+            $this->with_permission("page_update", "no_permission");
         } else {
-            $this->check_permission("page_create");
+            $this->with_permission("page_create", "no_permission");
         }
 
         $save_id = $this->Pages_model->save($data, $id);
@@ -79,7 +79,7 @@ class Pages extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
-        $this->check_permission("page_delete");
+        $this->with_permission("page_delete", "no_permission");
 
         $id = $this->input->post('id');
         if ($this->input->post('undo')) {

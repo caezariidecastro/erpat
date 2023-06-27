@@ -7,7 +7,7 @@ class Notes extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("note", true);
+        $this->with_module("note", "redirect");
 
         $this->access_only_team_members();
         $this->load->model("Notes_model");

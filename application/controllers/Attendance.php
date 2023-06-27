@@ -7,8 +7,8 @@ class Attendance extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("attendance", true);
-        $this->with_permission("attendance", true);
+        $this->with_module("attendance", "redirect");
+        $this->with_permission("attendance", "redirect");
         $this->access_only_team_members();
         
         $this->load->model("Attendance_model");
@@ -59,16 +59,12 @@ class Attendance extends MY_Controller {
         }
 
         if ($user_id) {
-            if( !$this->with_permission("attendance_update") ) {
-                exit_response_with_message('no_permission');
-            }
+            $this->with_permission("attendance_update", "no_permission");
 
             //edit mode. show user's info
             $view_data['team_members_info'] = $this->Users_model->get_one($user_id);
         } else {
-            if( !$this->with_permission("attendance_create") ) {
-                exit_response_with_message('no_permission');
-            }
+            $this->with_permission("attendance_create", "no_permission");
 
             //new add mode. show users dropdown
             //don't show none allowed members in dropdown
@@ -122,9 +118,9 @@ class Attendance extends MY_Controller {
         $sched_id = $this->input->post('sched_id');
 
         if( $id ) {
-            $this->with_permission("attendance_update", true);
+            $this->with_permission("attendance_update", "no_permission");
         } else {
-            $this->with_permission("attendance_create", true);
+            $this->with_permission("attendance_create", "no_permission");
         }
 
         //convert to 24hrs time format
@@ -313,9 +309,7 @@ class Attendance extends MY_Controller {
         ));
         $id = $this->input->post('id');
 
-        if( !$this->with_permission("attendance_delete") ) {
-            exit_response_with_message('no_permission');
-        }
+        $this->with_permission("attendance_delete", "no_permission");
 
         if ($this->input->post('undo')) {
             if ($this->Attendance_model->delete($id, true)) {

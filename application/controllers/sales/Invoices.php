@@ -7,7 +7,7 @@ class Invoices extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("invoice", true);
+        $this->with_module("invoice", "redirect");
 
         $this->init_permission_checker("invoice");
         $this->load->model("Inventory_model");

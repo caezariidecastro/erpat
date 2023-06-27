@@ -7,7 +7,7 @@ class Events extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("event", true);
+        $this->with_module("event", "redirect");
 
         $this->load->model("Events_model");
         $this->load->model("Leave_applications_model");

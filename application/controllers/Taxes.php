@@ -7,7 +7,7 @@ class Taxes extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_permission('compensation_tax_table', true);
+        $this->with_permission('compensation_tax_table', "redirect");
         
         $this->load->model("Taxes_model");
     }

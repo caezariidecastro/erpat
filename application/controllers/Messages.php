@@ -7,7 +7,7 @@ class Messages extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("message", true);
+        $this->with_module("message", "redirect");
 
         $this->init_permission_checker("message_permission");
     }

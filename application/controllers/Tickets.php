@@ -7,8 +7,8 @@ class Tickets extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("ticket", true);
-        $this->with_permission("ticket", true);
+        $this->with_module("ticket", "no_permission");
+        $this->with_permission("ticket", "no_permission");
         $this->init_permission_checker("ticket");
 
         $this->load->model("Ticket_templates_model");

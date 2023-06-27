@@ -7,8 +7,8 @@ class Team_members extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("employee", true);
-        $this->with_permission("staff", true);
+        $this->with_module("employee", "redirect");
+        $this->with_permission("staff", "redirect");
 
         $this->access_only_team_members();
         $this->load->library('Phpqr');
@@ -100,7 +100,7 @@ class Team_members extends MY_Controller {
     }
 
     public function index() {
-        $this->with_permission("staff", true);
+        $this->with_permission("staff", "redirect");
 
         $view_data["staff_view_personal_background"] = $this->with_permission("staff_view_personal_background");
         $view_data["staff_view_job_description"] = $this->with_permission("staff_view_job_description");
@@ -111,7 +111,7 @@ class Team_members extends MY_Controller {
     }
 
     public function lists() {
-        $this->with_permission("staff", true);
+        $this->with_permission("staff", "no_permission");
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -130,7 +130,7 @@ class Team_members extends MY_Controller {
     }
 
     public function personal_view() {
-        $this->with_permission("staff_view_personal_background", true);
+        $this->with_permission("staff_view_personal_background", "redirect");
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -145,7 +145,7 @@ class Team_members extends MY_Controller {
     }
 
     public function personal_view_data() {
-        $this->with_permission("staff_view_personal_background", true);
+        $this->with_permission("staff_view_personal_background", "redirect");
 
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -186,7 +186,7 @@ class Team_members extends MY_Controller {
     }
 
     public function job_view() {
-        $this->with_permission("staff_view_job_description", true);
+        $this->with_permission("staff_view_job_description", "redirect");
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -201,7 +201,7 @@ class Team_members extends MY_Controller {
     }
 
     public function job_view_data() {
-        $this->with_permission("staff_view_job_description", true);
+        $this->with_permission("staff_view_job_description", "redirect");
 
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -237,7 +237,7 @@ class Team_members extends MY_Controller {
     }
 
     public function bank_view() {
-        $this->with_permission("staff_view_bank_info", true);
+        $this->with_permission("staff_view_bank_info", "redirect");
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
 
@@ -252,7 +252,7 @@ class Team_members extends MY_Controller {
     }
 
     public function bank_view_data() {
-        $this->with_permission("staff_view_bank_info", true);
+        $this->with_permission("staff_view_bank_info", "redirect");
         
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -288,7 +288,7 @@ class Team_members extends MY_Controller {
     }
 
     public function contribution_view() {
-        $this->with_permission("staff_view_contribution_details", true);
+        $this->with_permission("staff_view_contribution_details", "redirect");
 
         $view_data["show_contact_info"] = $this->can_view_team_members_contact_info();
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("team_members", $this->login_user->is_admin, $this->login_user->user_type);
@@ -301,7 +301,7 @@ class Team_members extends MY_Controller {
     }
 
     public function contribution_view_data() {
-        $this->with_permission("staff_view_contribution_details", true);
+        $this->with_permission("staff_view_contribution_details", "redirect");
 
         $filter_user = $this->input->post("status");
         if($filter_user == "applicant") {
@@ -351,9 +351,9 @@ class Team_members extends MY_Controller {
         );
 
         if($id) {
-            $this->with_permission("staff_update", true);
+            $this->with_permission("staff_update", "no_permission");
         } else {
-            $this->with_permission("staff_create", true);
+            $this->with_permission("staff_create", "no_permission");
         }
 
         $view_data['model_info'] = $this->Users_model->get_details($options)->row();
@@ -473,7 +473,7 @@ class Team_members extends MY_Controller {
     /* edit employee */
 
     function edit_modal_form() {
-        $this->with_permission("staff_update", true);
+        $this->with_permission("staff_update", "no_permission");
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -511,7 +511,7 @@ class Team_members extends MY_Controller {
     }
 
     function sched_modal_form() {
-        $this->with_permission("staff_update", true);
+        $this->with_permission("staff_update", "no_permission");
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -558,7 +558,7 @@ class Team_members extends MY_Controller {
 
     /* set rfid */
     function rfid_modal() {
-        $this->with_permission("staff_update", true);
+        $this->with_permission("staff_update", "no_permission");
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -597,7 +597,7 @@ class Team_members extends MY_Controller {
     }
 
     function update_user_form($user_id) {
-        $this->with_permission("staff_update", true);
+        $this->with_permission("staff_update", "no_permission");
 
         validate_submitted_data(array(
             "first_name" => "required",
@@ -672,14 +672,14 @@ class Team_members extends MY_Controller {
     /* open invitation modal */
 
     function invitation_modal() {
-        $this->with_permission("staff_invite", true);
+        $this->with_permission("staff_invite", "no_permission");
 
         $this->load->view('team_members/invitation_modal');
     }
 
     //send a team member invitation to an email address
     function send_invitation() {
-        $this->with_permission("staff_invite", true);
+        $this->with_permission("staff_invite", "no_permission");
 
         validate_submitted_data(array(
             "email[]" => "required|valid_email"
@@ -847,7 +847,7 @@ class Team_members extends MY_Controller {
 
     //delete a team member
     function delete() {
-        $this->with_permission("staff_delete", true);
+        $this->with_permission("staff_delete", "no_permission");
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -863,7 +863,7 @@ class Team_members extends MY_Controller {
     }
 
     function restore() {
-        $this->with_permission("staff_update", true);
+        $this->with_permission("staff_update", "no_permission");
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -933,7 +933,7 @@ class Team_members extends MY_Controller {
     }
 
     function qrcode($id) {
-        $this->with_permission("attendance");       
+        $this->with_permission("attendance", "redirect");       
 
         $user_info = $this->Users_model->get_details(array("id" => $id, "where_in" => $this->get_allowed_users_only("staff") ))->row();
         if($user_info == null) {

@@ -11,8 +11,8 @@ class Knowledge_base extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->with_module("knowledge_base", true);
-        $this->with_permission("knowledge_base", true);
+        $this->with_module("knowledge_base", "redirect");
+        $this->with_permission("knowledge_base", "redirect");
 
         $this->load->model("Help_categories_model");
         $this->load->model("Help_articles_model");
@@ -23,8 +23,8 @@ class Knowledge_base extends MY_Controller {
         $type = "knowledge_base";
         $view_data["categories"] = $this->Help_categories_model->get_details(array("type" => $type, "only_active_categories" => true))->result();
         $view_data["type"] = $type;
-        $view_data["list_articles"] = $this->with_permission($type, false, true);
-        $view_data["list_categories"] = $this->with_permission($type."_category", false, true);
+        $view_data["list_articles"] = $this->with_permission($type, "no_permission");
+        $view_data["list_categories"] = $this->with_permission($type."_category", "no_permission");
 
         if (isset($this->login_user->id)) {
             $view_data['external'] = true;
