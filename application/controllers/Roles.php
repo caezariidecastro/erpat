@@ -43,6 +43,8 @@ class Roles extends MY_Controller {
 
             array("can_use_biometric", "Coming Soon", "Syntry Guard", "Enabled", null),
 
+            array("schedule", "Coming Soon", "Staffing: Schedule", "Schedule", null, true),
+
             //DISTRIBUTION
             array("warehouse", "Coming Soon", "Distribution: Warehouses", "Enabled", null, true),
             array("inventory", "Coming Soon", "Distribution: Inventories", "Enabled", null, true),

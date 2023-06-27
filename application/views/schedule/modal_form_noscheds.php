@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("hrs/schedule/save_30m_break"), array("id" => "30m-breaks-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open("", array("id" => "no_schedule-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
 
@@ -20,18 +20,11 @@
 
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> <?php echo lang('close'); ?></button>
-    <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
 </div>
 <?php echo form_close(); ?>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#30m-breaks-form").appForm({
-            onSuccess: function (result) {
-                //$(".dataTable:visible").appTable({reload: true});
-            }
-        });
-        
         $("#team_members_dropdown_30min_break").select2({
             multiple: true,
             data: <?php echo ($team_members_dropdown); ?>

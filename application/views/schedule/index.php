@@ -3,12 +3,12 @@
         <div class="page-title clearfix">
             <h4> <?php echo lang('schedule'); ?></h4>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("hrs/schedule/modal_form"), "<i class='fa fa-plus-circle'></i> " 
+                <?php if($create_schedule) { ?>
+                    <?php echo modal_anchor(get_uri("hrs/schedule/modal_form"), "<i class='fa fa-plus-circle'></i> " 
                     . lang('add_sched'), array("class" => "btn btn-default", "title" => lang('add_sched'))); ?>
+                <?php } ?>
                 <?php echo modal_anchor(get_uri("hrs/schedule/modal_form_noscheds"), "<i class='fa fa-calendar-plus-o'></i> " 
                     . lang('no_schedules'), array("class" => "btn btn-default", "title" => lang('no_schedules'))); ?>
-                <?php echo modal_anchor(get_uri("hrs/schedule/modal_form_breaks"), "<i class='fa fa-pencil'></i> " 
-                    . lang('edit_breaks'), array("class" => "btn btn-default", "title" => lang('30min_break_employee'))); ?>
             </div>
         </div>
         <div class="table-responsive">

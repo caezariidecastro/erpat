@@ -96,6 +96,19 @@ class MY_Controller extends CI_Controller {
         return false;
     }
 
+    protected function get_my_team_users($users, $module = "staff") {
+        $user_list = $this->get_allowed_users_only($module);
+
+        $included = array();
+        foreach($users as $one) {
+            if(in_array($one, $user_list )) {
+                $included[] = $one;
+            }
+        }
+
+        return $included;
+    }
+
     protected function can_manage_user($user_id, $access = "staff", $allow_self = false) {
         if($this->login_user->is_admin) {
             return true;
@@ -127,7 +140,7 @@ class MY_Controller extends CI_Controller {
         $allowed_members = array();
 
         $module_permission = get_array_value($this->login_user->permissions, $access);
-        if ($module_permission === "all") {
+        if ($this->login_user->is_admin || $module_permission === "all") {
             $list_users = $this->Users_model->get_all_active();
             foreach($list_users as $user) {
                 $allowed_members[] = $user->id; 
@@ -713,25 +726,7 @@ class MY_Controller extends CI_Controller {
         return true;
     }
 
-    protected function get_users_manage_only() {
-        $options = array(
-            "deleted" => 0, 
-            "status" => "active", 
-            "user_type" => "staff"
-        );
-        if(!$this->login_user->is_admin && $this->access_type !== "all") {
-            $user_list = $this->get_allowed_users_only("staff");
-            $options['where_in'] = array("id" => implode(",",  $user_list));
-        }
-        return $this->Users_model->get_all_where( $options )->result();
-    }
-
-    protected function get_users_select2_dropdown($default_text = "users", $allowed_users = [], $where = array()) {
-        if ($this->access_type !== "all") {
-            $allowed_members = $this->allowed_members;
-            $allowed_members[] = $this->login_user->id;
-        }
-
+    protected function get_users_select2_dropdown($default_text = "users", $module = "staff", $where = array()) {
         $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang($default_text) . " -"));
 
         $assigned_to_list = $this->Users_model->get_dropdown_list(
@@ -742,10 +737,11 @@ class MY_Controller extends CI_Controller {
         );
 
         foreach ($assigned_to_list as $key => $value) {
-            if( $this->login_user->is_admin ) {
+            if( $this->login_user->is_admin || $this->access_type === "all") {
                 $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
             } else {
-                foreach ($this->allowed_members as $user) {
+                $allowed_members = $this->get_allowed_users_only($module);
+                foreach ($allowed_members as $user) {
                     if($key == $user) {
                         $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
                     }
@@ -756,9 +752,9 @@ class MY_Controller extends CI_Controller {
         return $assigned_to_dropdown;
     }
 
-    protected function get_users_select2_filter($default_text = "users", $allowed_users = [], $where = array()) {
-
+    protected function get_users_select2_filter($default_text = "users", $module = "staff", $where = array()) {
         $assigned_to_filter = array("" => "- ".lang($default_text)." -");
+
         $assigned_to_list = $this->Users_model->get_dropdown_list(
             array("first_name", "last_name"), "id", 
             array_merge($where, 
@@ -766,11 +762,12 @@ class MY_Controller extends CI_Controller {
             ),
         );
 
-        if( $this->login_user->is_admin ) {
-            $assigned_to_filter += $assigned_to_list;
-        } else {
-            foreach ($assigned_to_list as $key => $value) {
-                foreach ($this->allowed_members as $user) {
+        foreach ($assigned_to_list as $key => $value) {
+            if( $this->login_user->is_admin || $this->access_type === "all") {
+                $assigned_to_filter[$key] = $value;
+            } else {
+                $allowed_members = $this->get_allowed_users_only($module);
+                foreach ($allowed_members as $user) {
                     if($key == $user) {
                         $assigned_to_filter[$key] = $value;
                     }

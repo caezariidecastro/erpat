@@ -35,7 +35,7 @@ class Attendance extends MY_Controller {
 
     //show attendance list view
     function index() {
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $view_data['department_select2'] = $this->_get_team_select2_data();
         $view_data['allowed_create'] = $this->with_permission("attendance_create");
         $this->template->rander("attendance/index", $view_data);
@@ -68,8 +68,7 @@ class Attendance extends MY_Controller {
 
             //new add mode. show users dropdown
             //don't show none allowed members in dropdown
-            $allowed_users = $this->get_allowed_users_only("attendance");
-            $view_data['team_members_dropdown'] = $this->get_users_select2_filter("select_user", $allowed_users);
+            $view_data['team_members_dropdown'] = $this->get_users_select2_filter("select_user", "attendance");
         }
         $view_data['sched_dropdown'] = $this->_get_schedule_dropdown();
 
@@ -471,7 +470,7 @@ class Attendance extends MY_Controller {
 
     //load the custom date view of attendance list 
     function custom() {
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $view_data['department_select2'] = $this->_get_team_select2_data();
         $this->load->view("attendance/custom_list", $view_data);
     }
@@ -481,16 +480,9 @@ class Attendance extends MY_Controller {
         $this->load->view("attendance/members_clocked_in");
     }
 
-    private function _get_members_dropdown_list_for_filter() {
-        //prepare the dropdown list of members
-        //don't show none allowed members in dropdown
-        $allowed_users = $this->get_allowed_users_only("attendance");
-        return $this->get_users_select2_dropdown("select_user", $allowed_users);
-    }
-
     //load the custom date view of attendance list 
     function summary() {
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $view_data['department_select2'] = $this->_get_team_select2_data();
         $this->load->view("attendance/summary_list", $view_data);
     }
@@ -573,7 +565,7 @@ class Attendance extends MY_Controller {
 
     //load the attendance summary details tab
     function export() {
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $view_data['department_select2'] = $this->_get_team_select2_data();
         $this->load->view("attendance/export_list", $view_data);
     }

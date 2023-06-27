@@ -288,7 +288,6 @@ class Left_menu {
             if (module_enabled("module_attendance") && current_has_permit("attendance")) {
                 $sidebar_menu["attendance"] = array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance", "class" => "fa-circle");
             }
-            $sidebar_menu["schedule"] = array("name" => "submenu_hrm_schedule", "url" => "hrs/schedule", "class" => "fa-circle");
             $sidebar_menu["disciplinary"] = array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary", "class" => "fa-circle");
             if ($this->ci->login_user->is_admin || (module_enabled("module_leave") == "1" && $access_leave)) {
                 $sidebar_menu["leaves"] = array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves", "class" => "fa-circle");
@@ -300,6 +299,11 @@ class Left_menu {
             // STAFFING > Employee
             if( module_enabled("module_employee") && current_has_permit("staff") ) {
                 $sidebar_menu["employee"] = array("name" => "employee", "url" => "Team_members", "class" => "fa-circle");
+            }
+
+            // STAFFING > Schedule
+            if( module_enabled("module_schedule") && current_has_permit("schedule") ) {
+                $sidebar_menu["schedule"] = array("name" => "submenu_hrm_schedule", "url" => "hrs/schedule", "class" => "fa-circle");
             }
 
             // SECURITY > ACCESS LOG

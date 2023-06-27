@@ -29,9 +29,6 @@ class Team extends MY_Controller {
             "id" => "numeric"
         ));
         
-        $team_members = $this->get_users_manage_only();
-        $members_dropdown = array();
-
         $id = $this->input->post('id');
         if($id) {
             $this->with_permission("department_update", "no_permission");
@@ -39,15 +36,7 @@ class Team extends MY_Controller {
             $this->with_permission("department_create", "no_permission");
         }
 
-        foreach ($team_members as $team_member) {
-            $fullname = $team_member->first_name . " " . $team_member->last_name;
-            if(get_setting('name_format') == "lastfirst") {
-                $fullname = $team_member->last_name.", ".$team_member->first_name;
-            }
-            $members_dropdown[] = array("id" => $team_member->id, "text" => $fullname);
-        }
-
-        $view_data['members_dropdown'] = json_encode($members_dropdown);
+        $view_data['members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $view_data['model_info'] = $this->Team_model->get_one($id);
         $this->load->view('team/modal_form', $view_data);
     }
@@ -63,19 +52,8 @@ class Team extends MY_Controller {
         } else {
             $this->with_permission("department_create", "no_permission");
         }
-        
-        $team_members = $this->get_users_manage_only();
-        $members_dropdown = array();
 
-        foreach ($team_members as $team_member) {
-            $fullname = $team_member->first_name . " " . $team_member->last_name;
-            if(get_setting('name_format') == "lastfirst") {
-                $fullname = $team_member->last_name.", ".$team_member->first_name;
-            }
-            $members_dropdown[] = array("id" => $team_member->id, "text" => $fullname);
-        }
-
-        $view_data['members_dropdown'] = json_encode($members_dropdown);
+        $view_data['members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $view_data['model_info'] = $this->Team_model->get_one($this->input->post('id'));
         $this->load->view('team/department_modal_form', $view_data);
     }

@@ -5,9 +5,11 @@ if (!defined('BASEPATH'))
 
 class Schedule extends MY_Controller 
 {
-    function __construct() 
-    {
+    function __construct() {
         parent::__construct();
+        $this->with_module("schedule", "redirect");
+        $this->with_permission("schedule", "redirect");
+
         $this->load->model("Schedule_model");
         $this->load->model('Users_model');
 
@@ -36,24 +38,9 @@ class Schedule extends MY_Controller
         return $where;
     }
 
-    private function _get_members_dropdown_list_for_filter() {
-        //prepare the dropdown list of members
-        //don't show none allowed members in dropdown
-        $where = $this->_get_members_query_options();
-
-        $members = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
-
-        $members_dropdown = array(array("id" => "", "text" => "- " . lang("user") . " -"));
-        foreach ($members as $id => $name) {
-            $members_dropdown[] = array("id" => $id, "text" => $name);
-        }
-
-        return $members_dropdown;
-    }
-
     function index() {
-        $this->with_module("attendance");
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $view_data["create_schedule"] = $this->with_permission("schedule_create");
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $this->template->rander("schedule/index", $view_data);
     }
 
@@ -87,10 +74,14 @@ class Schedule extends MY_Controller
 
     //make a row of role list table
     private function _make_row($data) {
-        $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/schedule/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
+        if($this->with_permission("schedule_update")) {
+            $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/schedule/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
+        }
 
-        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/schedule/delete"), "data-action" => "delete-confirmation")) . '</li>';
-
+        if($this->with_permission("schedule_delete")) {
+            $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/schedule/delete"), "data-action" => "delete-confirmation")) . '</li>';
+        }
+        
         $actions = '<span class="dropdown inline-block">
                         <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
                             <i class="fa fa-cogs"></i>&nbsp;
@@ -180,22 +171,14 @@ class Schedule extends MY_Controller
     }
 
     function modal_form_noscheds() {
-        $view_data['members_no_scheds'] = $this->Schedule_model->get_user_without_schedule();
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
+        $members_no_scheds = explode(",", $this->Schedule_model->get_user_without_schedule());
+        //log_message("error",  json_encode($members_no_scheds));
+        $view_data['members_no_scheds'] = implode(",", $this->get_my_team_users($members_no_scheds));
+        //log_message("error",  json_encode($this->get_my_team_users($members_no_scheds)));
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        log_message("error",  json_encode($this->get_users_select2_dropdown()));
+
         $this->load->view('schedule/modal_form_noscheds', $view_data);
-    }
-
-    function modal_form_breaks() {
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
-        $this->load->view('schedule/modal_form_breaks', $view_data);
-    }
-
-    function save_30m_break() {
-        $setting = "30min_break_employee";
-        $value = $this->input->post($setting);
-        $success = $this->Settings_model->save_setting($setting, $value, 'calendar');
-        
-        echo json_encode(array("success" => $success?true:false, 'message' => lang('record_saved')));
     }
 
     //show add/edit attendance modal
@@ -206,6 +189,11 @@ class Schedule extends MY_Controller
         
         $view_data['time_format_24_hours'] = get_setting("time_format") == "24_hours" ? true : false;
         $id = (int)$this->input->post('id');
+        if($id) {
+            $this->with_permission("schedule_update", "no_permission");
+        } else {
+            $this->with_permission("schedule_create", "no_permission");
+        }
         
         if($id !== 0) {
             $view_data['model_info'] = $this->Schedule_model->get_details(array(
@@ -289,19 +277,20 @@ class Schedule extends MY_Controller
         $data["date_created"] = get_current_utc_time();
         $data["created_by"] = $this->login_user->id;
 
+        if( $id ) {
+            $this->with_permission("schedule_update", "no_permission");
+        } else {
+            $this->with_permission("schedule_create", "no_permission");
+        }
+
         $saved_id = $this->Schedule_model->save($data);
 
-        if ($saved_id) {            
+        if ($saved_id) {    
             $data = array(
                 "sched_id"=>$saved_id,
                 "prev_sched_id"=>$id
             );
             $this->Users_model->update_all_user_sched($data);
-
-            // //if(!$test) {
-            //     echo json_encode(array("success" => false, 'message' => json_encode($test) ));
-            //     exit;
-            // //}
 
             //Delete previous
             $this->Schedule_model->delete( $id );
@@ -318,6 +307,7 @@ class Schedule extends MY_Controller
         validate_submitted_data(array(
             "id" => "required|numeric"
         ));
+        $this->with_permission("schedule_delete", "no_permission");
 
         $id = $this->input->post('id');
         $query = $this->Schedule_model->delete($id);

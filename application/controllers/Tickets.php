@@ -135,8 +135,7 @@ class Tickets extends MY_Controller {
         $requested_by_suggestion = array(array("id" => "", "text" => "-"));
         $view_data['requested_by_dropdown'] = $requested_by_suggestion;
 
-        $allowed_users = $this->get_allowed_users_only("ticket_staff");
-        $view_data['assigned_to_dropdown'] = $this->get_users_select2_filter("assigned_to", $allowed_users);
+        $view_data['assigned_to_dropdown'] = $this->get_users_select2_filter("assigned_to", "ticket_staff");
 
         //prepare label suggestions
         $view_data['label_suggestions'] = $this->make_labels_dropdown("ticket", $view_data['model_info']->labels);
