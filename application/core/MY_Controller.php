@@ -15,30 +15,27 @@ class MY_Controller extends CI_Controller {
     function __construct($initialize = true) {
         parent::__construct();
 
-        if($initialize) {
-            //check user's login status, if not logged in redirect to signin page
-            $login_user_id = $this->Users_model->login_user_id();
-            if (!$login_user_id) {
-                $uri_string = uri_string();
+        //check user's login status, if not logged in redirect to signin page
+        $login_user_id = $this->Users_model->login_user_id();
+        if (!$login_user_id) {
+            $uri_string = uri_string();
 
-                if (!$uri_string || $uri_string === "signin") {
-                    redirect('signin');
-                } else {
-                    redirect('signin?redirect=' . get_uri($uri_string));
-                }
-            }
-
-            //initialize login users required information
-            $this->login_user = $this->Users_model->get_access_info($login_user_id);
-
-            //initialize login users access permissions
-            if ($this->login_user->permissions) {
-                $permissions = unserialize($this->login_user->permissions);
-                $this->login_user->permissions = is_array($permissions) ? $permissions : array();
-                //echo "<script> console.log(JSON.parse('".json_encode($this->login_user->permissions)."')); </script>";
+            if (!$uri_string || $uri_string === "signin") {
+                redirect('signin');
             } else {
-                $this->login_user->permissions = array();
+                redirect('signin?redirect=' . get_uri($uri_string));
             }
+        }
+
+        //initialize login users required information
+        $this->login_user = $this->Users_model->get_access_info($login_user_id);
+
+        //initialize login users access permissions
+        if ($this->login_user->permissions) {
+            $permissions = unserialize($this->login_user->permissions);
+            $this->login_user->permissions = is_array($permissions) ? $permissions : array();
+        } else {
+            $this->login_user->permissions = array();
         }
 
         //we can set ip restiction to access this module. validate user access
@@ -749,7 +746,8 @@ class MY_Controller extends CI_Controller {
             "user_type" => "staff"
         );
         if(!$this->login_user->is_admin && $this->access_type !== "all") {
-            $options['where_in'] = array("id" => $this->allowed_members);
+            $user_list = $this->get_allowed_users_only("staff");
+            $options['where_in'] = array("id" => implode(",",  $user_list));
         }
         return $this->Users_model->get_all_where( $options )->result();
     }
