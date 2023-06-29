@@ -4,11 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //don't change or add new config in this file
 
-$config['app_version'] = '1.40.188';
+$config['app_version'] = '1.40.189';
 
 define("TOKEN_EXPIRY", 43200); //12hrs
 
-$config['app_update_url'] = 'http://app.bytescrafter.erpat/latest/';
+$config['app_update_url'] = 'http://update.erpat.app/latest/';
 
 $config['updates_path'] = './updates/';
 

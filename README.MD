@@ -26,6 +26,15 @@ chmod 600 .env.production.php
 SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 ```
 
+## Issues on MySQL slow query
+- First we can truncate the ci_sessions table but will lgout users.
+- For long term, you need to set this on your php config.
+```
+session.gc_probability = 1
+session.gc_divisor = 1000
+session.gc_maxlifetime = 1440
+```
+
 ## Contributing
 
 Please read [CONTRIBUTING](CONTRIBUTING) for details on our code of conduct, and the process for submitting pull requests to us.
