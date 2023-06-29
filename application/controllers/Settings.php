@@ -1390,7 +1390,7 @@ class Settings extends MY_Controller {
     function settings_list_account() {
         $options = array(
             "status" => "active",
-            "user_type" => "system"
+            "user_type" => "sysadmin"
         );
         $list_data = $this->Users_model->get_details($options)->result();
 
@@ -1422,6 +1422,7 @@ class Settings extends MY_Controller {
         return array(
             $data->first_name,
             $data->last_name,
+            $data->is_admin?"ADMIN":strtoupper($data->user_type),
             $data->email,
             $data->access_syntry?"Biometric App":"None",
             $action_btn
@@ -1432,16 +1433,16 @@ class Settings extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
-        ;
 
         if( $user_id = $this->input->post('id') ) {
             $options = array(
                 "id"=>$user_id,
                 "status" => "active",
-                "user_type" => "system"
+                "user_type" => "sysadmin"
             );
             $data = $this->Users_model->get_details($options)->row();
             $view_data["model_info"] = $data;
+            $view_data["is_admin"] = $data->is_admin;
         }
         
         $this->load->view("settings/system_account/modal_form", $view_data);
@@ -1480,9 +1481,17 @@ class Settings extends MY_Controller {
             "first_name" => $this->input->post('first_name'),
             "last_name" => $this->input->post('last_name'),
             "email" => $this->input->post('email'),
-            "user_type" => "system",
             "access_syntry" => $this->input->post('access_syntry')?"1":"0",
         );
+
+        $user_type = $this->input->post('user_type');    
+        if($user_type === "admin") {
+            $user_data['is_admin'] = "1";
+            $user_data['user_type'] = "staff";
+        } else { //system
+            $user_data['is_admin'] = "0";
+            $user_data['user_type'] = "system";
+        }
 
         $new_pass = $this->input->post('new_pass');
         $confirm_pass = $this->input->post('confirm_pass');
@@ -1497,8 +1506,7 @@ class Settings extends MY_Controller {
 
         if ($this->Users_model->save($user_data, $user_id)) {
             $options = array(
-                "id" => $user_id,
-                "user_type" => "system"
+                "id" => $user_id
             );
             $current = $this->Users_model->get_details($options)->row();
 

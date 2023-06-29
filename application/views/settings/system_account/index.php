@@ -30,10 +30,12 @@
             columns: [
                 {title: '<?php echo lang("first_name"); ?>'},
                 {title: '<?php echo lang("last_name"); ?>'},
+                {title: '<?php echo lang("account_type"); ?>'},
                 {title: '<?php echo lang("email"); ?>'},
                 {title: '<?php echo lang("access_lists"); ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
-            ]
+            ],
+            tableRefreshButton: true,
         });
     });
 </script>

@@ -37,7 +37,7 @@
     </div>
     <div class="form-group">
         <label for="email" class=" col-md-4"><?php echo lang('email'); ?></label>
-        <div class=" col-md-6">
+        <div class=" col-md-8">
             <?php
             echo form_input(array(
                 "id" => "email",
@@ -86,6 +86,17 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="account_type" class=" col-md-4"><?php echo lang('account_type'); ?></label>
+        <div class="col-md-8">
+            <?= form_dropdown(
+                    "account_type", 
+                    array("system"=>"System","admin"=>"Admin"), 
+                    array($is_admin?"admin":"is_admin"), 
+                    "class='select2'"
+            ); ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="access_syntry" class="col-md-4"><?php echo lang('access_syntry'); ?>
             <span class="help" data-toggle="tooltip" title="<?php echo lang('access_syntry_help_text'); ?>"><i class="fa fa-question-circle"></i></span>
         </label>
@@ -117,5 +128,6 @@
         });
         $("#title").focus();
         $('[data-toggle="tooltip"]').tooltip();
+        $('.select2').select2();
     });
 </script>    

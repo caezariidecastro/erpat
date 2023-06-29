@@ -30,6 +30,11 @@ class MY_Controller extends CI_Controller {
         //initialize login users required information
         $this->login_user = $this->Users_model->get_access_info($login_user_id);
 
+        if(in_array($this->login_user->user_type, array("", "system"))) {
+            $this->Users_model->sign_out();
+            redirect('forbidden');
+        }
+
         //initialize login users access permissions
         if ($this->login_user->permissions) {
             $permissions = unserialize($this->login_user->permissions);

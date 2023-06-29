@@ -1091,3 +1091,5 @@ $lang["resume_work"] = "Resume";
 
 $lang["exit"] = "Exit";
 $lang["breaktime_starts_at"] = "Breaktime started at";
+
+$lang["account_type"] = "Account Type";

@@ -160,9 +160,14 @@ class Users_model extends Crud_model {
             $where .= " $users_table.deleted='0'";
         }
 
-        if ($user_type) {
+        if ($user_type && $user_type !== "sysadmin") {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.user_type='$user_type'";
+        }
+
+        if ($user_type && $user_type === "sysadmin") {
+            $where .= empty($where) ? " " : " AND";
+            $where .= " ($users_table.user_type='system' OR $users_table.is_admin=1)";
         }
 
         if ($user_type == 'client') {
