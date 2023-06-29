@@ -66,7 +66,7 @@ class Leaves extends MY_Controller {
         $leave_data['checked_at'] = "0000:00:00";
         $leave_data['status'] = "pending";
 
-        if(get_total_leave_credit_balance($leave_data['applicant_id']) < $leave_data['total_days']) {
+        if(is_leave_credit_required($leave_type_id) && get_total_leave_credit_balance($leave_data['applicant_id'], $leave_data['leave_type_id']) < $leave_data['total_days'] ) {
             echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient') ) );
             return;
         }
@@ -89,7 +89,7 @@ class Leaves extends MY_Controller {
         $leave_data['checked_at'] = "0000:00:00";
         $leave_data['status'] = "pending";
 
-        if(get_total_leave_credit_balance($leave_data['applicant_id']) < $leave_data['total_days']) {
+        if(is_leave_credit_required($leave_type_id) && get_total_leave_credit_balance($leave_data['applicant_id'], $leave_data['leave_type_id']) < $leave_data['total_days'] ) {
             echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient') ) );
             return;
         }
