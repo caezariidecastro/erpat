@@ -465,7 +465,7 @@ class Attendance_model extends Crud_model {
 
         $sql = "SELECT DATE_FORMAT($attendnace_table.in_time,'%d') AS day, SUM(TIME_TO_SEC(TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time))) total_sec
                 FROM $attendnace_table 
-                WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='approved' AND $attendnace_table.out_time IS NOT NULL $where
+                WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NOT NULL $where
                 GROUP BY DATE($attendnace_table.in_time)";
         return $this->db->query($sql);
     }
@@ -503,7 +503,7 @@ class Attendance_model extends Crud_model {
 
         $timesheet_sql = "SELECT (SUM(TIME_TO_SEC(TIMEDIFF($timesheet_table.end_time,$timesheet_table.start_time))) + SUM((ROUND(($timesheet_table.hours * 60), 0)) * 60)) total_sec
                 FROM $timesheet_table 
-                WHERE $timesheet_table.deleted=0 AND $attendnace_table.status='approved' AND $timesheet_table.status='logged' $timesheet_where";
+                WHERE $timesheet_table.deleted=0 AND $timesheet_table.status='logged' $timesheet_where";
 
         $info->timesheet_total = $this->db->query($timesheet_sql)->row()->total_sec;
 
