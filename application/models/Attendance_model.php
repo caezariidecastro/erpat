@@ -27,7 +27,6 @@ class Attendance_model extends Crud_model {
         return $this->db->query($sql);
     }
 
-    //Clock out all user more than time out.
     function auto_clockout() {
         if($query = $this->get_attendance_for_clockout()) {
             $attds = $query->result();
@@ -156,7 +155,7 @@ class Attendance_model extends Crud_model {
             $count_start = strtotime($scheduled_clocked_out);
             $count_end = strtotime($current_local_time);
             $time_diff_sec = max(($count_end-$count_start), 0);
-            log_message("error", $time_diff_sec);
+
             if($time_diff_sec > 0) { 
                 $data = array(
                     "out_time" => convert_date_local_to_utc($scheduled_clocked_out),
@@ -267,8 +266,18 @@ class Attendance_model extends Crud_model {
         if ($id) {
             $where .= " AND $attendnace_table.id=$id";
         }
-        $offset = convert_seconds_to_time_format(get_timezone_offset());
 
+        $log_type = get_array_value($options, "log_type");
+        if ($log_type) {
+            $where .= " AND $attendnace_table.log_type='$log_type' ";
+        }
+
+        $status = get_array_value($options, "status");
+        if ($status) {
+            $where .= " AND $attendnace_table.status='$status' ";
+        }
+
+        $offset = convert_seconds_to_time_format(get_timezone_offset());
         $start_date = get_array_value($options, "start_date");
         if ($start_date) {
             $where .= " AND DATE(ADDTIME($attendnace_table.in_time,'$offset'))>='$start_date'";
@@ -329,6 +338,20 @@ class Attendance_model extends Crud_model {
         WHERE $attendnace_table.deleted=0 $where
         ORDER BY $attendnace_table.in_time DESC";
         return $this->db->query($sql);
+    }
+
+    function get_details_info($id = 0) {
+        $attendance = $this->db->dbprefix('attendance');
+        $users_table = $this->db->dbprefix('users');
+
+        $sql = "SELECT $attendance.*, 
+                CONCAT(applicant_table.first_name, ' ',applicant_table.last_name) AS applicant_name, applicant_table.image as applicant_avatar, applicant_table.job_title,
+                CONCAT(checker_table.first_name, ' ',checker_table.last_name) AS checker_name, checker_table.image as checker_avatar
+            FROM $attendance
+            LEFT JOIN $users_table AS applicant_table ON applicant_table.id= $attendance.user_id
+            LEFT JOIN $users_table AS checker_table ON checker_table.id= $attendance.checked_by
+            WHERE $attendance.deleted=0 AND $attendance.id=$id";
+        return $this->db->query($sql)->row();
     }
 
     function get_summary_details($options = array()) {
@@ -442,7 +465,7 @@ class Attendance_model extends Crud_model {
 
         $sql = "SELECT DATE_FORMAT($attendnace_table.in_time,'%d') AS day, SUM(TIME_TO_SEC(TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time))) total_sec
                 FROM $attendnace_table 
-                WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NOT NULL $where
+                WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='approved' AND $attendnace_table.out_time IS NOT NULL $where
                 GROUP BY DATE($attendnace_table.in_time)";
         return $this->db->query($sql);
     }
@@ -480,7 +503,7 @@ class Attendance_model extends Crud_model {
 
         $timesheet_sql = "SELECT (SUM(TIME_TO_SEC(TIMEDIFF($timesheet_table.end_time,$timesheet_table.start_time))) + SUM((ROUND(($timesheet_table.hours * 60), 0)) * 60)) total_sec
                 FROM $timesheet_table 
-                WHERE $timesheet_table.deleted=0 AND $timesheet_table.status='logged' $timesheet_where";
+                WHERE $timesheet_table.deleted=0 AND $attendnace_table.status='approved' AND $timesheet_table.status='logged' $timesheet_where";
 
         $info->timesheet_total = $this->db->query($timesheet_sql)->row()->total_sec;
 
@@ -542,9 +565,14 @@ class Attendance_model extends Crud_model {
             $member_name = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS member_name";
         }
 
-        $sql = "SELECT $member_name, $users_table.image, $users_table.id, attendance_table.id AS attendance_id, attendance_table.in_time
+        $sql = "SELECT $member_name, $users_table.image, $users_table.id, attendance_table.id AS attendance_id, attendance_table.log_type, attendance_table.in_time
         FROM $users_table
-        LEFT JOIN (SELECT user_id, id, in_time FROM $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NULL) AS attendance_table ON attendance_table.user_id=$users_table.id
+            LEFT JOIN (
+                SELECT user_id, id, in_time, log_type
+                FROM $attendnace_table 
+                WHERE $attendnace_table.deleted=0 
+                    AND $attendnace_table.out_time IS NULL
+            ) AS attendance_table ON attendance_table.user_id=$users_table.id
         WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' $where";
         return $this->db->query($sql);
     }

@@ -9,7 +9,9 @@
             <li><a role="presentation" href="<?php echo_uri("hrs/attendance/summary/"); ?>" data-target="#summary-attendance"><?php echo lang('summary'); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("hrs/attendance/export/"); ?>" data-target="#export-attendance"><?php echo lang('export'); ?></a></li>
             <li><a role="presentation" href="<?php echo_uri("hrs/attendance/members_clocked_in/"); ?>" data-target="#members-clocked-in"><?php echo lang('clocked_in'); ?></a></li>
+            <?php if($allowed_create) { ?>
             <li><a role="presentation" href="<?php echo_uri("hrs/attendance/clock_in_out"); ?>" data-target="#clock-in-out"><?php echo lang('override'); ?></a></li>
+            <?php } ?>
 
             <div class="tab-title clearfix no-border">
                 <div class="title-button-group">
@@ -43,13 +45,30 @@
             order: [[2, "desc"]],
             filterDropdown: [
                 {name: "department_id", class: "w200", options: <?= json_encode($department_select2) ?>},
-                {name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>}
+                {name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>},
+                {name: "log_type", class: "w10", options: <?= json_encode(array(
+                        array('id' => '', 'text'  => '- Log Type -'),
+                        array('id' => 'schedule', 'text'  => '- Scheduled -'),
+                        array('id' => 'overtime', 'text'  => '- Overtime -'),
+                    )); ?> 
+                },
+                {name: "status", class: "w10", options: <?= json_encode(array(
+                        array('id' => '', 'text'  => '- Log Status -'),
+                        array('id' => 'incomplete', 'text'  => '- Incomplete -'),
+                        array('id' => 'pending', 'text'  => '- Pending -'),
+                        array('id' => 'approved', 'text'  => '- Approved -'),
+                        array('id' => 'rejected', 'text'  => '- Rejected -'),
+                        array('id' => 'clockout', 'text'  => '- Clockout -'),
+                    )); ?> 
+                },
             ],
             dateRangeType: "daily",
             columns: [
                 {title: "<?php echo lang("employee"); ?>", "class": "w20p"},
                 {title: "<?php echo lang("department"); ?>", "class": "w15p text-center"},
                 {visible: false, searchable: false},
+                {title: "<?php echo lang("log_type"); ?>", class: "w100"},
+                {title: "<?php echo lang("status"); ?>", class: "w100"},
                 {title: "<?php echo lang("in_date"); ?>", "class": "text-center w10p", iDataSort: 2},
                 {title: "<?php echo lang("in_time"); ?>", "class": "text-center w10p"},
                 <?php if(get_setting('breaktime_tracking')) { ?>
@@ -76,32 +95,32 @@
                 {title: "<?php echo lang("info"); ?>", "class": "text-center w50"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
-            xlsColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+            printColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+            xlsColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
             <?php if(get_setting('breaktime_tracking')) { ?>
                 summation: [
-                    {column: 14, dataType: 'time'},
-                    {column: 15, dataType: 'number'},
-                    {column: 16, dataType: 'number'},
+                    {column: 16, dataType: 'time'},
                     {column: 17, dataType: 'number'},
                     {column: 18, dataType: 'number'},
                     {column: 19, dataType: 'number'},
                     {column: 20, dataType: 'number'},
+                    {column: 21, dataType: 'number'},
+                    {column: 22, dataType: 'number'},
                     <?php if(get_setting('bonuspay_trigger') && get_setting('bonuspay_trigger') != "0.00") { ?>
-                    {column: 21, dataType: 'number'}
+                    {column: 23, dataType: 'number'}
                     <?php } ?>
                 ],
             <?php } else { ?>
                 summation: [
-                    {column: 8, dataType: 'time'},
-                    {column: 9, dataType: 'number'},
-                    {column: 10, dataType: 'number'},
+                    {column: 10, dataType: 'time'},
                     {column: 11, dataType: 'number'},
                     {column: 12, dataType: 'number'},
                     {column: 13, dataType: 'number'},
                     {column: 14, dataType: 'number'},
-                    <?php if(get_setting('bonuspay_trigger') && get_setting('bonuspay_trigger') != "0.00") { ?>
                     {column: 15, dataType: 'number'},
+                    {column: 16, dataType: 'number'},
+                    <?php if(get_setting('bonuspay_trigger') && get_setting('bonuspay_trigger') != "0.00") { ?>
+                    {column: 17, dataType: 'number'},
                     <?php } ?>
                 ],
             <?php } ?>

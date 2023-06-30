@@ -98,6 +98,7 @@ class Attendance extends MY_Controller {
         $view_data["clock_out"] = $this->input->post("clock_out"); //trigger clockout after submit?
         $view_data["user_id"] = $user_id;
 
+        $view_data['can_update'] = $this->with_permission("attendance_update");
         $view_data['model_info'] = $this->Attendance_model->get_one($this->input->post('id'));
         $this->load->view('attendance/note_modal_form', $view_data);
     }
@@ -111,9 +112,11 @@ class Attendance extends MY_Controller {
             //"out_date" => "required",
             "in_time" => "required",
             //"out_time" => "required"
+            "log_type" => "required",
         ));
 
         $id = $this->input->post('id');
+        $log_type = $this->input->post('log_type');
         $sched_id = $this->input->post('sched_id');
 
         if( $id ) {
@@ -215,6 +218,7 @@ class Attendance extends MY_Controller {
 
         $data = array(
             "in_time" => $in_date_time,
+            "log_type" => $log_type,
             "out_time" => $out_date_time,
             "break_time" => $all_null?NULL:serialize($break_time),
             "note" => $this->input->post('note')
@@ -269,8 +273,8 @@ class Attendance extends MY_Controller {
     function log_time($user_id = 0) {
         $note = $this->input->post('note');
 
-        if ($user_id && $user_id != $this->login_user->id) {
-            //check if the login user has permission to clock in/out this user
+        if ($user_id && $user_id !== $this->login_user->id) {
+            $this->with_permission("attendance_update", "no_permission");
         }
 
         $this->Attendance_model->log_time($user_id ? $user_id : $this->login_user->id, $note);
@@ -332,6 +336,8 @@ class Attendance extends MY_Controller {
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
         $department_id = $this->input->post('department_id');
+        $log_type = $this->input->post('log_type');
+        $status = $this->input->post('status');
 
         $options = array(
             "start_date" => $start_date, 
@@ -339,6 +345,8 @@ class Attendance extends MY_Controller {
             "login_user_id" => $this->login_user->id, 
             "user_id" => $user_id, 
             "department_id" => $department_id,
+            "log_type" => $log_type,
+            "status" => $status,
             "access_type" => $this->access_type, 
             "allowed_members" => $this->allowed_members,
             "active_only" => true, 
@@ -372,13 +380,106 @@ class Attendance extends MY_Controller {
         return $this->_make_row($data);
     }
 
+    private function _prepare_log_info($data) {
+        $image_url = get_avatar($data->applicant_avatar);
+        $data->applicant_meta = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span>" . $data->applicant_name;
+
+        if ($data->status === "pending") {
+            $status_class = "label-warning";
+        } else if ($data->status === "approved") {
+            $status_class = "label-success";
+        } else if ($data->status === "rejected") {
+            $status_class = "label-danger";
+        } else if ($data->status === "clockout") {
+            $status_class = "label-info";
+        } else if ($data->status === "incomplete") {
+            $status_class = "label-default";
+        } else {
+            $status_class = "label-default";
+        }
+        $data->status_meta = "<span class='label $status_class'>" . lang($data->status) . "</span>";
+
+        if (isset($data->in_time)) {
+            $data->start_date_meta = convert_date_utc_to_local($data->in_time, "h:i a - Y-m-d");
+            $data->end_date_meta = convert_date_utc_to_local($data->out_time, "h:i a - Y-m-d");
+        }
+
+        $duration = $data->out_time?strtotime($data->out_time)-strtotime($data->in_time):0;
+        $data->duration_meta = convert_seconds_to_time_format($duration);
+
+        $data->log_type_meta = $data->log_type==="schedule"?"Scheduled":"Overtime";
+
+        $options = array("id" => $data->id);
+        $data_info = $this->Attendance_model->get_details($options)->row();
+
+        //Get job info for computation of total hours.
+        $attd = (new BioMeet($this, array(), true))
+            ->addAttendance($data_info)
+            ->calculate();
+
+        $data->worked_meta = $attd->getTotalWork();
+        $data->overtime_meta = $attd->getTotalOvertime();
+        $data->night_meta = $attd->getTotalNightpay();
+        $data->lates_meta = $attd->getTotalLates();
+        $data->overbreak_meta = $attd->getTotalOverbreak();
+        $data->undertime_meta = $attd->getTotalUndertime();
+        
+        $data->checked_date = convert_date_utc_to_local($data->checked_at, "d/m/Y");
+        return $data;
+    }
+
+    function log_details() {
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $user_id = $this->input->post('id');
+        $info = $this->Attendance_model->get_details_info($user_id);
+        if (!$info) {
+            show_404();
+        }
+
+        $view_data['can_approve'] = $this->with_permission("attendance_update");
+        $view_data['model_info'] = $this->_prepare_log_info($info);
+        $this->load->view("attendance/log_details", $view_data);
+    }
+
+    function update_status() {
+        validate_submitted_data(array(
+            "id" => "required|numeric",
+            "status" => "required"
+        ));
+        $this->with_permission("attendance_update", "no_permission");
+
+        $log_id = $this->input->post('id');
+        $status = $this->input->post('status');
+        $now = get_current_utc_time();
+
+        $log_data = array(
+            "checked_by" => $this->login_user->id,
+            "checked_at" => $now,
+            "status" => $status
+        );
+
+        $save_id = $this->Attendance_model->save($log_data, $log_id);
+        if ($save_id) {
+            echo json_encode(array("success" => true, "data" => $this->_row_data($save_id), 'id' => $save_id, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     //prepare a row of attendance list
     private function _make_row($data) {
         $image_url = get_avatar($data->created_by_avatar);
         $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
 
         if( $this->with_permission("attendance_update") ) {
-            $option_links .= modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_attendance'), "data-post-id" => $data->id));
+            $option_links .= modal_anchor(get_uri("hrs/attendance/log_details"), "<i class='fa fa-".($data->status==="pending"?"bolt":"info")."'></i>", array("class" => "edit", "title" => lang('approve'), "data-post-id" => $data->id));
+
+            if($data->status==="pending") {
+                $option_links .= modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_attendance'), "data-post-id" => $data->id));
+            }
         }
 
         if( $this->with_permission("attendance_delete") ) {
@@ -417,10 +518,27 @@ class Attendance extends MY_Controller {
         //Get the break time.
         $btime = serialized_breaktime($data->break_time, '-');
 
+        if ($data->status === "pending") {
+            $status_class = "label-warning";
+        } else if ($data->status === "approved") {
+            $status_class = "label-success";
+        } else if ($data->status === "rejected") {
+            $status_class = "label-danger";
+        } else if ($data->status === "clockout") {
+            $status_class = "label-info";
+        } else if ($data->status === "incomplete") {
+            $status_class = "label-default";
+        } else {
+            $status_class = "label-default";
+        }
+        $data->status_meta = "<span class='label $status_class'>" . lang($data->status) . "</span>";
+
         $response = array(
             get_team_member_profile_link($data->user_id, $user),
             $data->team_list,
             $data->in_time,
+            $data->log_type==="schedule"?"Scheduled":"Overtime",
+            $data->status_meta,
             format_to_date($data->in_time),
             format_to_time($data->in_time)
         );
@@ -438,7 +556,7 @@ class Attendance extends MY_Controller {
             $data->out_time ? $data->out_time : 0,
             $data->out_time ? format_to_date( $data->out_time ) : "-",
             $data->out_time ? format_to_time( $data->out_time ) : "-",
-            $attd->getTotalDuration(),
+            $attd->getTotalDuration($data->out_time?null:$data->in_time),
         ));
 
         $response = array_merge($response, array(
@@ -637,6 +755,7 @@ class Attendance extends MY_Controller {
 
     //load the clock in / out tab view of attendance list 
     function clock_in_out() {
+        $this->with_permission("attendance_create", "no_permission");
         $this->load->view("attendance/clock_in_out");
     }
 
@@ -667,7 +786,8 @@ class Attendance extends MY_Controller {
         if (isset($data->attendance_id)) {
             $in_time = format_to_time($data->in_time);
             $in_datetime = format_to_datetime($data->in_time);
-            $status = "<div class='mb15' title='$in_datetime'>" . lang('clock_started_at') . " : $in_time</div>";
+            $logtype = $data->log_type==="schedule"?"Scheduled":"Overtime";
+            $status = "<div class='mb15' title='$in_datetime'>" . lang('clock_started_at') . " : $in_time ($logtype)</div>";
             
             if( $this->with_permission("attendance_update") ) {
                 $view_data = modal_anchor(get_uri("hrs/attendance/note_modal_form/$data->id"), "<i class='fa fa-sign-out'></i> " . lang('clock_out'), array("class" => "btn btn-default", "title" => lang('clock_out'), "id" => "timecard-clock-out", "data-post-id" => $data->attendance_id, "data-post-clock_out" => 1, "data-post-id" => $data->id));

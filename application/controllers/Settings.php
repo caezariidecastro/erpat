@@ -1484,7 +1484,7 @@ class Settings extends MY_Controller {
             "access_syntry" => $this->input->post('access_syntry')?"1":"0",
         );
 
-        $user_type = $this->input->post('user_type');    
+        $user_type = $this->input->post('account_type');    
         if($user_type === "admin") {
             $user_data['is_admin'] = "1";
             $user_data['user_type'] = "staff";

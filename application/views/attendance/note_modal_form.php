@@ -14,14 +14,18 @@ echo form_open(get_uri($url), array("id" => "attendance-note-form", "class" => "
         <label for="note" class=" col-md-12"><?php echo lang('note'); ?></label>
         <div class=" col-md-12">
             <?php
-            echo form_textarea(array(
+            $field = array(
                 "id" => "note",
                 "name" => "note",
                 "class" => "form-control",
                 "placeholder" => lang('note'),
                 "value" => $model_info->note,
                 "data-rich-text-editor" => true
-            ));
+            );
+            if(!$can_update) {
+                $field["disabled"] = true; 
+            }
+            echo form_textarea($field);
             ?>
         </div>
         <input name="clock_out" type="hidden" value="<?php echo $clock_out; ?>" />
@@ -30,7 +34,9 @@ echo form_open(get_uri($url), array("id" => "attendance-note-form", "class" => "
 
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> <?php echo lang('close'); ?></button>
+    <?php if($can_update) { ?>
     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
+    <?php } ?>
 </div>
 <?php echo form_close(); ?>
 

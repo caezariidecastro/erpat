@@ -20,14 +20,25 @@
             </div>
         </div>
 
-        <label for="current_schedule" class=" col-md-3 col-sm-3"><?php echo lang('current_schedule'); ?></label>
-        <div class="col-md-6 col-sm-6 form-group">
-            <div class="form-group">
-                <?php
-                    echo form_dropdown("sched_id", $sched_dropdown, $model_info->sched_id, "class='select2 validate-hidden' id='sched_id' required'");
-                ?>
+        <div class="form-group">
+            <label for="log_type" class=" col-md-3"><?php echo lang('log_type'); ?></label>
+            <div class="col-md-4">
+                <?= form_dropdown(
+                        "log_type", 
+                        array("overtime"=>"Overtime","schedule"=>"Scheduled"), 
+                        array($model_info->log_type==="overtime"?"Overtime":"Scheduled"), 
+                        "class='select2' id='log_type'"
+                ); ?>
+            </div>
+            <div id="schedule_display" class="col-md-5 col-sm-5">
+                <div class="form-group">
+                    <?php
+                        echo form_dropdown("sched_id", $sched_dropdown, $model_info->sched_id, "class='select2 validate-hidden' id='sched_id' required'");
+                    ?>
+                </div>
             </div>
         </div>
+
     </div>
 
     <div class="clearfix">
@@ -367,6 +378,20 @@
         setTimePicker("#in_time, #first_start_time, #first_end_time, #lunch_start_time, #lunch_end_time, #second_start_time, #second_end_time, #out_time");
 
         $("#name").focus();
+
+        function checkLogtype(log_type) {            
+            if(log_type === 'overtime') {
+                $("#schedule_display").hide();
+            } else {
+                $("#schedule_display").show();
+            }
+        }
+        $("#log_type").val('<?= $model_info->log_type?$model_info->log_type:"overtime" ?>');
+        checkLogtype('<?= $model_info->log_type?$model_info->log_type:"overtime" ?>');
+
+        $("#log_type").on('change', function () {
+            checkLogtype($("#log_type").val());
+        });        
 
         $("#attendance-form .select2").select2();
     });

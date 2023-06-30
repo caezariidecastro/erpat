@@ -47,7 +47,11 @@ class BioMeet {
         return convert_number_to_decimal($this->sched_hours);
     }
 
-    public function getTotalDuration() {
+    public function getTotalDuration($in_time = null) {
+        if( isset($in_time) ) {
+            $duration = strtotime(get_current_utc_time())-strtotime($in_time);
+            return convert_seconds_to_time_format($duration);
+        }
         $total = 0;
         foreach($this->attd_data as $data) {
             if( is_numeric($data['duration']) ) {

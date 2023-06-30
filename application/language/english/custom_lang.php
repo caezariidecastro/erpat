@@ -1093,3 +1093,7 @@ $lang["exit"] = "Exit";
 $lang["breaktime_starts_at"] = "Breaktime started at";
 
 $lang["account_type"] = "Account Type";
+
+$lang["log_type"] = "Log type";
+$lang["incomplete"] = "Incomplete";
+$lang["clockout"] = "Clockout";
