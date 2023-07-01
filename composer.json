@@ -1,6 +1,11 @@
 {
     "name": "bytescrafter/erpat",
+    "description": "Enterprise Resource Planning Automation.",
+    "type": "project",
+    "homepage": "https://erpat.app",
+    "license": "MIT",
     "require": {
+        "php": ">=5.3.7",
         "intervention/image": "^2.7"
     },
     "authors": [
@@ -8,5 +13,18 @@
             "name": "BytesCrafter",
             "email": "support@bytescrafter.net"
         }
-    ]
+    ],
+	"suggest": {
+		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
+	},
+	"scripts": {
+		"test:coverage": [
+			"@putenv XDEBUG_MODE=coverage",
+			"phpunit --color=always --coverage-text --configuration tests/travis/sqlite.phpunit.xml"
+		]
+	},
+    "require-dev": {
+		"mikey179/vfsstream": "1.6.*",
+		"phpunit/phpunit": "4.* || 5.* || 9.*"
+	}
 }
