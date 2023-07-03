@@ -56,7 +56,7 @@
                     <td><?php echo $model_info->undertime_meta; ?></td>
                 </tr>
                 </table>
-                <table  class="table dataTable display b-t">
+                <table  class="table dataTable display b-t" style="margin-top: 20px;">
                 <?php } ?>
                 
                 

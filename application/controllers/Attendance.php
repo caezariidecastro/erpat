@@ -417,49 +417,16 @@ class Attendance extends MY_Controller {
         $image_url = get_avatar($data->created_by_avatar);
         $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
 
-        if( $this->with_permission("attendance_update") ) {
-            $option_links .= modal_anchor(get_uri("hrs/attendance/log_details"), "<i class='fa fa-".($data->status==="pending"?"bolt":"info")."'></i>", array("class" => "edit", "title" => lang('approve'), "data-post-id" => $data->id));
-
-            if($data->status==="pending") {
-                $option_links .= modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_attendance'), "data-post-id" => $data->id));
-            }
-        }
-
-        if( $this->with_permission("attendance_delete") ) {
-            $option_links .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_attendance'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/attendance/delete"), "data-action" => "delete"));
-        }
-
-        if ($this->access_type != "all") {
-            //don't show options links for none admin user's own records
-            if ($data->user_id === $this->login_user->id) {
-                $option_links = "";
-            }
-        }
-
         //if the rich text editor is enabled, don't show the note as title
         $note_title = $data->note;
         if (get_setting('enable_rich_text_editor')) {
             $note_title = "";
         }
 
-        $note_link = modal_anchor(get_uri("hrs/attendance/note_modal_form"), "<i class='fa fa-comment-o p10'></i>", array("class" => "edit text-muted", "title" => lang("note"), "data-post-id" => $data->id));
-        if ($data->note) {
-            $note_link = modal_anchor(get_uri("hrs/attendance/note_modal_form"), "<i class='fa fa-comment p10'></i>", array("class" => "edit text-muted", "title" => $note_title, "data-modal-title" => lang("note"), "data-post-id" => $data->id));
-        }
-
-        $sched_link = modal_anchor(get_uri("modal/notify"), "<i class='fa fa-circle-o p10'></i>", array("class" => "edit text-muted", "title" => lang("sys_msg"), "data-post-msg" => lang('no_sched') ));
-        if ($data->sched_id) {
-            $sched_link = modal_anchor(get_uri("hrs/schedule/modal_form/display"), "<i class='fa fa-clock-o p10'></i>", array("class" => "edit text-muted", "title" => lang("schedule"), "data-modal-title" => lang("schedule"), "data-post-id" => $data->sched_id));
-        }
-        $info_link = $note_link.$sched_link;
-
         //Get job info for computation of total hours.
         $attd = (new BioMeet($this, array(), true))
             ->addAttendance($data)
             ->calculate();
-
-        //Get the break time.
-        $btime = serialized_breaktime($data->break_time, '-');
 
         if ($data->status === "pending") {
             $status_class = "label-warning";
@@ -476,24 +443,19 @@ class Attendance extends MY_Controller {
         }
         $data->status_meta = "<span class='label $status_class'>" . lang($data->status) . "</span>";
 
+        $sched_url = $data->sched_id ? get_uri("hrs/schedule/modal_form/display") : get_uri("modal/notify");
+        $sched_name = $data->sched_id ? $data->schedule_name : ' - ';
+        $sched_info = $data->sched_id ? $data->schedule_info : lang("no_schedule");
+        $sched_meta = '<li role="presentation" style="list-style: none;">' . modal_anchor($sched_url, $sched_name, array("class" => "", "title" => "", "data-modal-title" => lang("schedule_detail"), "data-toggle" => "tooltip", "data-placement" => "top", "title"=>$sched_info, "data-post-id" => $data->sched_id)) . '</li>';
+
         $response = array(
             get_team_member_profile_link($data->user_id, $user),
             $data->team_list,
+            $sched_meta,
             $data->in_time,
-            $data->log_type==="schedule"?"Scheduled":"Overtime",
-            $data->status_meta,
             format_to_date($data->in_time),
             format_to_time($data->in_time)
         );
-
-        $track_btime = get_setting('breaktime_tracking');
-        if($track_btime) {
-            $response = array_merge($response, array(
-                $btime[0],$btime[1],
-                $btime[2],$btime[3],
-                $btime[4],$btime[5],
-            ));
-        }
         
         $response = array_merge($response, array(
             $data->out_time ? $data->out_time : 0,
@@ -520,9 +482,42 @@ class Attendance extends MY_Controller {
             strval($attd->getTotalOverbreak()), 
             strval($attd->getTotalUndertime())
         ));
+
+        if( $this->with_permission("attendance_update") ) {
+            $info = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/log_details"), "<i class='fa fa-".($data->status==="pending"?"bolt":"info")." p10'></i>".lang(($data->status==="pending"?"approval":"detail")), array("class" => "", "title" => lang(($data->status==="pending"?"approval":"detail")), "data-post-id" => $data->id)) . '</li>';
+
+            if($data->status==="pending") {
+                $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil p10'></i> ".lang("edit_attendance"), array("class" => "", "title" => lang('edit_attendance'), "data-post-id" => $data->id)) . '</li>';
+            }
+        }
+
+        $note = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/note_modal_form"), "<i class='fa fa-comment-o p10'></i> ".lang("note"), array("class" => "", "title" => lang("note"), "data-post-id" => $data->id));
+        if ($data->note) {
+            $note = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/note_modal_form"), "<i class='fa fa-comment p10'></i> ".lang("note"), array("class" => "", "title" => $note_title, "data-modal-title" => lang("note"), "data-post-id" => $data->id)) . '</li>';
+        }
+
+        if( $this->with_permission("attendance_delete") ) {
+            $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times p10'></i> ".lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/attendance/delete"), "data-action" => "delete")) . '</li>';
+        }
+
+        if ($this->access_type != "all") {
+            //don't show options links for none admin user's own records
+            if ($data->user_id === $this->login_user->id) {
+                $option_links = "";
+            }
+        }
+
+        $option_links = '<span class="dropdown inline-block">
+                        <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                            <i class="fa fa-cogs"></i>&nbsp;
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $info . $note . $edit . $delete . '</ul>
+                    </span>';
             
         $response = array_merge($response, array(
-            $info_link,
+            $data->log_type==="schedule"?"Scheduled":"Overtime",
+            $data->status_meta,
             $option_links
         ));
 

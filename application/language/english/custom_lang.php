@@ -1107,3 +1107,10 @@ $lang["5-rank"] = "5th";
 $lang["6-rank"] = "6th";
 $lang["7-rank"] = "7th";
 $lang["8-rank"] = "8th";
+
+$lang["approval"] = "Approval";
+$lang["detail"] = "Detail";
+
+$lang["schedule_detail"] = "Schedule Detail";
+$lang["no_schedule"] = "No schedule assigned";
+
