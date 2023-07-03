@@ -1097,3 +1097,13 @@ $lang["account_type"] = "Account Type";
 $lang["log_type"] = "Log type";
 $lang["incomplete"] = "Incomplete";
 $lang["clockout"] = "Clockout";
+
+$lang["break_log"] = "Break Log";
+$lang["1-rank"] = "1st";
+$lang["2-rank"] = "2nd";
+$lang["3-rank"] = "3rd";
+$lang["4-rank"] = "4th";
+$lang["5-rank"] = "5th";
+$lang["6-rank"] = "6th";
+$lang["7-rank"] = "7th";
+$lang["8-rank"] = "8th";

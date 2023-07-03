@@ -127,92 +127,35 @@ class Attendance extends MY_Controller {
 
         //convert to 24hrs time format
         $in_time = $this->input->post('in_time');
-
-        $first_start = $this->input->post('first_start');
-        $first_start_time = $this->input->post('first_start_time');
-        
-        $first_end = $this->input->post('first_end');
-        $first_end_time = $this->input->post('first_end_time');
-
-        $lunch_start = $this->input->post('lunch_start');
-        $lunch_start_time = $this->input->post('lunch_start_time');
-        
-        $lunch_end = $this->input->post('lunch_end');
-        $lunch_end_time = $this->input->post('lunch_end_time');
-
-        $second_start = $this->input->post('second_start');
-        $second_start_time = $this->input->post('second_start_time');
-        
-        $second_end = $this->input->post('second_end');
-        $second_end_time = $this->input->post('second_end_time');
-
         $out_time = $this->input->post('out_time');
-
         if (get_setting("time_format") != "24_hours") {
             $in_time = convert_time_to_24hours_format($in_time);
-            $first_start_time = convert_time_to_24hours_format($first_start_time);
-            $first_end_time = convert_time_to_24hours_format($first_end_time);
-            $lunch_start_time = convert_time_to_24hours_format($lunch_start_time);
-            $lunch_end_time = convert_time_to_24hours_format($lunch_end_time);
-            $second_start_time = convert_time_to_24hours_format($second_start_time);
-            $second_end_time = convert_time_to_24hours_format($second_end_time);
             $out_time = convert_time_to_24hours_format($out_time);
         }
-
-        //join date with time
         $in_date_time = $this->input->post('in_date') . " " . $in_time;
-        $first_start_time = $this->input->post('first_start') . " " . $first_start_time;
-        $first_end_time = $this->input->post('first_end') . " " . $first_end_time;
-        $lunch_start_time = $this->input->post('lunch_start') . " " . $lunch_start_time;
-        $lunch_end_time = $this->input->post('lunch_end') . " " . $lunch_end_time;
-        $second_start_time = $this->input->post('second_start') . " " . $second_start_time;
-        $second_end_time = $this->input->post('second_end') . " " . $second_end_time;
         $out_date_time = $this->input->post('out_date') . " " . $out_time;
-
-        //add time offset
         $in_date_time = convert_date_local_to_utc($in_date_time);
-        $first_start_time = convert_date_local_to_utc($first_start_time);
-        $first_end_time = convert_date_local_to_utc($first_end_time);
-        $lunch_start_time = convert_date_local_to_utc($lunch_start_time);
-        $lunch_end_time = convert_date_local_to_utc($lunch_end_time);
-        $second_start_time = convert_date_local_to_utc($second_start_time);
-        $second_end_time = convert_date_local_to_utc($second_end_time);
         $out_date_time = convert_date_local_to_utc($out_date_time);
-
-        $break_time = [];
-        if( empty($_POST['first_start']) || empty($_POST['first_start_time']) ) {
-        } else {
-            $break_time[] = $first_start_time;
-        }
-        if( empty($_POST['first_end']) || empty($_POST['first_end_time']) ) {
-        } else {
-            $break_time[] = $first_end_time;
-        }
-        if( empty($_POST['lunch_start']) || empty($_POST['lunch_start_time']) ) {
-        } else {
-            $break_time[] = $lunch_start_time;
-        }
-        if( empty($_POST['lunch_end']) || empty($_POST['lunch_end_time']) ) {
-        } else {
-            $break_time[] = $lunch_end_time;
-        }
-        if( empty($_POST['second_start']) || empty($_POST['second_start_time']) ) {
-        } else {
-            $break_time[] = $second_start_time;
-        }
-        if( empty($_POST['second_end']) || empty($_POST['second_end_time']) ) {
-        } else {
-            $break_time[] = $second_end_time;
-        }
-
         if( empty($_POST['out_date']) || empty($_POST['out_time']) ) {
             $out_date_time = null;
         }
 
-        $all_null = true;
-        for( $i=0; $i<count($break_time); $i++) {
-            if($break_time[$i] !== null) {
-                $all_null = false;
+        $break_time = [];
+        foreach([1,2,3,4,5,6,7,8] as $index) {
+            $date = $this->input->post($index.'-date');
+            $time = $this->input->post($index.'-time');
+
+            if (get_setting("time_format") != "24_hours") {
+                $time = convert_time_to_24hours_format($time);
+            }
+
+            $date_time = $date . " " . $time;
+            $utc_datetime = convert_date_local_to_utc($date_time);
+
+            if( empty($date) || empty($time) ) {
+                $break_time[] = null;
+            } else {
+                $break_time[] = $utc_datetime;
             }
         }
 
@@ -220,7 +163,7 @@ class Attendance extends MY_Controller {
             "in_time" => $in_date_time,
             "log_type" => $log_type,
             "out_time" => $out_date_time,
-            "break_time" => $all_null?NULL:serialize($break_time),
+            "break_time" => serialize($break_time),
             "note" => $this->input->post('note')
         );
 
