@@ -9,7 +9,7 @@
         }
         echo form_open(get_uri($url . "/save_profile_image/" . $user_info->id), array("id" => "profile-image-form", "class" => "general-form", "role" => "form"));
         ?>
-        <?php if ($this->login_user->is_admin || $user_info->id === $this->login_user->id || get_array_value($this->login_user->permissions, "team_member_update_permission")) { ?>
+        <?php if ($this->login_user->is_admin || $user_info->id === $this->login_user->id || current_has_permit("staff_update")) { ?>
             <div class="file-upload btn mt0 p0 profile-image-upload">
                 <span><i class="btn fa fa-camera" ></i></span> 
                 <input id="profile_image_file" class="upload" name="profile_image_file" type="file" data-height="200" data-width="200" data-preview-container="#profile-image-preview" data-input-field="#profile_image" />
