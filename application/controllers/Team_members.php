@@ -749,7 +749,7 @@ class Team_members extends MY_Controller {
             'sched_id' => $this->input->post('schedule_select2_filter'),
             "user_type" => $type_of_user,
             "custom_fields" => $custom_fields, 
-            "where_in" => $this->get_allowed_users_only("staff")
+            "where_in" => $this->get_allowed_users_only("staff", true)
         );
 
         $list_data = $this->Users_model->get_details($options)->result();

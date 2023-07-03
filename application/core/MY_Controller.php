@@ -141,14 +141,16 @@ class MY_Controller extends CI_Controller {
         $this->module_group = $info->module_group;
     }
 
-    protected function get_allowed_users_only($access) {
+    protected function get_allowed_users_only($access, $emptyIfAll = false) {
         $allowed_members = array();
 
         $module_permission = get_array_value($this->login_user->permissions, $access);
         if ($this->login_user->is_admin || $module_permission === "all") {
             $list_users = $this->Users_model->get_all_active();
-            foreach($list_users as $user) {
-                $allowed_members[] = $user->id; 
+            if(!$emptyIfAll) {
+                foreach($list_users as $user) {
+                    $allowed_members[] = $user->id; 
+                }
             }
         } else if ($module_permission === "specific") {
             $module_permission = get_array_value($this->login_user->permissions, $access . "_specific");
