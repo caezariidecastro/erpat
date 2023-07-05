@@ -127,6 +127,15 @@ class Attendance extends MY_Controller {
             $this->with_permission("attendance_create", "no_permission");
         }
 
+        $cur_sched = $this->Schedule_model->get_details(array(
+            "id" => $sched_id,
+        ))->row();
+
+        if($log_type === "schedule" && (empty($sched_id) || !isset($cur_sched->id)) ) { 
+            echo json_encode(array("success" => false, 'message' => lang('no_schedule')));
+            exit;
+        }
+
         //convert to 24hrs time format
         $in_time = $this->input->post('in_time');
         $out_time = $this->input->post('out_time');
