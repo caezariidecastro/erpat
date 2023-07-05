@@ -953,7 +953,11 @@ class BioMeet {
                     $nonworked = $lunch + $lates + $over + $under;
                     $worked = max($sched_duration-$nonworked, 0);
 
-                    $overtime = max((convert_seconds_to_hour_decimal($actual_duration)-($worked+$nonworked)), 0);
+                    $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
+                    $overtime_duration = max((convert_seconds_to_hour_decimal($actual_duration)-($worked+$nonworked)), 0);
+                    if( $overtime_duration > $overtime_trigger ) {
+                        $overtime = $overtime_duration;
+                    }
 
                     $night_diff_secs = get_night_differential( $schedobj["start_time"], $schedobj["end_time"] );
                     $night = max(convert_seconds_to_hour_decimal( $night_diff_secs ) - $nonworked, 0); 
