@@ -99,7 +99,7 @@
                 echo form_input(array(
                     "id" => ($index+1)."-date",
                     "name" => ($index+1)."-date",
-                    "value" => $break_log ? date("Y-m-d", strtotime($break_log)) : "",
+                    "value" => $break_log ? convert_date_utc_to_local($break_log, "Y-m-d") : "",
                     "class" => "form-control break_date",
                     "style" => "background-color: #ffffff; border-color: #dbdbdb;",
                     "placeholder" => lang('date'),
