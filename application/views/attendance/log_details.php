@@ -118,8 +118,8 @@
         });
 
         $("#log-status-form").appForm({
-            onSuccess: function() {
-                location.reload();
+            onSuccess: function (result) {
+                $(".dataTable:visible").appTable({newData: result.data, dataId: result.id});
             }
         });
 
