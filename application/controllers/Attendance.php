@@ -48,6 +48,7 @@ class Attendance extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
+        $view_data['is_clockout'] = $this->input->post('is_clockout');
 
         $view_data['time_format_24_hours'] = get_setting("time_format") == "24_hours" ? true : false;
         $model_info = $this->Attendance_model->get_one($this->input->post('id'));
@@ -118,6 +119,7 @@ class Attendance extends MY_Controller {
         $id = $this->input->post('id');
         $log_type = $this->input->post('log_type');
         $sched_id = $this->input->post('sched_id');
+        $status = $this->input->post('status');
 
         if( $id ) {
             $this->with_permission("attendance_update", "no_permission");
@@ -175,6 +177,10 @@ class Attendance extends MY_Controller {
             $data["status"] = "pending";
             $user_id = $this->input->post('user_id');
             $data["user_id"] = $user_id;
+        }
+
+        if($status) { //override
+            $data['status'] = $status;
         }
 
         if ($sched_id) {
@@ -486,8 +492,8 @@ class Attendance extends MY_Controller {
         if( $this->with_permission("attendance_update") ) {
             $info = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/log_details"), "<i class='fa fa-".($data->status==="pending"?"bolt":"info")." p10'></i>".lang(($data->status==="pending"?"approval":"detail")), array("class" => "", "title" => lang(($data->status==="pending"?"approval":"detail")), "data-post-id" => $data->id)) . '</li>';
 
-            if($data->status==="pending") {
-                $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil p10'></i> ".lang("edit_attendance"), array("class" => "", "title" => lang('edit_attendance'), "data-post-id" => $data->id)) . '</li>';
+            if($data->status==="incomplete" || $data->status==="pending" || $data->status==="clockout") {
+                $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil p10'></i> ".lang("edit_attendance"), array("class" => "", "title" => lang('edit_attendance'), "data-post-id" => $data->id, "data-post-is_clockout" => $data->status==="clockout"? true:false)) . '</li>';
             }
         }
 

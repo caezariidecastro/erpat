@@ -1,7 +1,8 @@
 <?php echo form_open(get_uri("hrs/attendance/save"), array("id" => "attendance-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
-
+    <input type="hidden" name="status" value="<?= $is_clockout?'pending':''; ?>" />
+    
     <div class="clearfix">
         <div class="form-group">
             <label for="applicant_id" class=" col-md-3"><?php echo lang('user'); ?></label>
@@ -98,7 +99,7 @@
                 echo form_input(array(
                     "id" => ($index+1)."-date",
                     "name" => ($index+1)."-date",
-                    "value" => $break_log ? date("d/m/Y", strtotime($break_log)) : "",
+                    "value" => $break_log ? date("Y-m-d", strtotime($break_log)) : "",
                     "class" => "form-control break_date",
                     "style" => "background-color: #ffffff; border-color: #dbdbdb;",
                     "placeholder" => lang('date'),
@@ -199,9 +200,9 @@
         if (!$("#attendance_user_id").length) {
             $("#attendance_user_id").select2();
         }
-        setDatePicker("#in_date, #out_date, .break_date");
+        setDatePicker("#in_date, #out_date, #1-date, #2-date, #3-date, #4-date, #5-date, #6-date, #7-date, #8-date");
 
-        setTimePicker("#in_time, #out_time, .break_time");
+        setTimePicker("#in_time, #out_time, #1-time, #2-time, #3-time, #4-time, #5-time, #6-time, #7-time, #8-time");
 
         $("#name").focus();
 
