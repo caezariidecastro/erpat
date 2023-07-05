@@ -864,9 +864,7 @@ class BioMeet {
                     $to_time = strtotime( convert_date_utc_to_local($data->out_time) );
                     $actual_duration = max($to_time-$from_time, 0);
 
-                    //We now require schedule for attendance.
-                    $schedobj = $this->getScheduleObj($data);
-                    if( !isset($schedobj['have_schedule']) || $data->log_type === "overtime") {
+                    if( $data->log_type === "overtime") {
                         
                         $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
                         $breakobj = (new DailyLog())->process($breaklog);
@@ -900,6 +898,23 @@ class BioMeet {
                         );
                         continue;
                     }
+                    
+                    //We now require schedule for attendance.
+                    $schedobj = $this->getScheduleObj($data);
+                    if( !isset($schedobj['have_schedule']) ) {
+                        $this->attd_data[] = array(
+                            "duration" => 0,
+                            "schedule" => 0,
+                            "worked" => 0,
+                            "absent" => 0,
+                            "overtime" => 0,
+                            "night" => 0,
+                            "lates" => 0,
+                            "over" => 0,
+                            "under" => 0
+                        );
+                        continue;
+                    } //we required schedule in order to compute for attendance.
 
                     $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
                     $breakobj = (new DailyLog())->process($breaklog);
