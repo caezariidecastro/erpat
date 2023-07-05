@@ -943,12 +943,6 @@ class BioMeet {
                     $lunch_sched = convert_seconds_to_hour_decimal($schedobj["lunch_duration"]);
                     $lunch_log = $breakobj->getDuration('lunch', true);
                     $lunch = max($lunch_log, $lunch_sched);
-
-                    log_message("error", "Start1: ".$schedobj["start_time"]);
-                    log_message("error", "End1: ".$schedobj["end_time"]);
-
-                    log_message("error", "Start: ".convert_date_utc_to_local($data->in_time));
-                    log_message("error", "End: ".convert_date_utc_to_local($data->out_time));
                     
                     $under = convert_seconds_to_hour_decimal( max(strtotime($schedobj["end_time"])-$to_time, 0) );
                     $lates = convert_seconds_to_hour_decimal( max($from_time-strtotime($schedobj["start_time"]), 0) );
@@ -961,7 +955,7 @@ class BioMeet {
 
                     $overtime = max((convert_seconds_to_hour_decimal($actual_duration)-($worked+$nonworked)), 0);
 
-                    $night_diff_secs = get_night_differential( convert_date_utc_to_local($schedobj["start_time"]), convert_date_utc_to_local($schedobj["end_time"]) );
+                    $night_diff_secs = get_night_differential( $schedobj["start_time"], $schedobj["end_time"] );
                     $night = max(convert_seconds_to_hour_decimal( $night_diff_secs ) - $nonworked, 0); 
 
                     //TODO: Process overbreak for personal.
