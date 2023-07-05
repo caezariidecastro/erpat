@@ -898,11 +898,24 @@ class BioMeet {
                         $night_diff_secs = get_night_differential( convert_date_utc_to_local($data->in_time), convert_date_utc_to_local($data->out_time) );
                         $night = max(convert_seconds_to_hour_decimal( $night_diff_secs ) - $lunch, 0); 
 
-                        $overtime = 0;
-                        if( $data->status === "approved" ) {
-                            $overtime = convert_seconds_to_hour_decimal($actual_duration);
+                        $pre_excess = convert_seconds_to_hour_decimal( max($to_time-strtotime($schedobj["end_time"]), 0) );
+                        $post_excess = convert_seconds_to_hour_decimal( max(strtotime($schedobj["start_time"])-$from_time, 0) );
+                        
+                        $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
+                        if( $pre_excess > $overtime_trigger ) {
+                            $overtime += $pre_excess;
                         }
-                        $overtime = max( $overtime-$lunch, 0 );
+                        if( $post_excess > $overtime_trigger ) {
+                            $overtime += $post_excess;
+                        }
+
+                        $bonuspay_trigger = number_with_decimal(max(get_setting('bonuspay_trigger'), 0));
+                        if( $pre_excess > $bonuspay_trigger ) {
+                            $bonus += $pre_excess;
+                        }
+                        if( $post_excess > $bonuspay_trigger ) {
+                            $bonus += $post_excess;
+                        }          
 
                         $this->attd_data[] = array(
                             "duration" => $actual_duration,
@@ -910,6 +923,7 @@ class BioMeet {
                             "worked" => 0,
                             "absent" => 0,
                             "overtime" => $overtime,
+                            "bonus" => 0,
                             "night" => $night,
                             "lates" => 0,
                             "over" => 0,
@@ -927,6 +941,7 @@ class BioMeet {
                             "worked" => 0,
                             "absent" => 0,
                             "overtime" => 0,
+                            "bonus" => 0,
                             "night" => 0,
                             "lates" => 0,
                             "over" => 0,
@@ -953,11 +968,24 @@ class BioMeet {
                     $nonworked = $lunch + $lates + $over + $under;
                     $worked = max($sched_duration-$nonworked, 0);
 
+                    $pre_excess = convert_seconds_to_hour_decimal( max($to_time-strtotime($schedobj["end_time"]), 0) );
+                    $post_excess = convert_seconds_to_hour_decimal( max(strtotime($schedobj["start_time"])-$from_time, 0) );
+                    
                     $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
-                    $overtime_duration = max((convert_seconds_to_hour_decimal($actual_duration)-($worked+$nonworked)), 0);
-                    if( $overtime_duration > $overtime_trigger ) {
-                        $overtime = $overtime_duration;
+                    if( $pre_excess > $overtime_trigger ) {
+                        $overtime += $pre_excess;
                     }
+                    if( $post_excess > $overtime_trigger ) {
+                        $overtime += $post_excess;
+                    }
+
+                    $bonuspay_trigger = number_with_decimal(max(get_setting('bonuspay_trigger'), 0));
+                    if( $pre_excess > $bonuspay_trigger ) {
+                        $bonus += $pre_excess;
+                    }
+                    if( $post_excess > $bonuspay_trigger ) {
+                        $bonus += $post_excess;
+                    }          
 
                     $night_diff_secs = get_night_differential( $schedobj["start_time"], $schedobj["end_time"] );
                     $night = max(convert_seconds_to_hour_decimal( $night_diff_secs ) - $nonworked, 0); 
@@ -970,6 +998,7 @@ class BioMeet {
                         "absent" => $nonworked,
                         "overtime" => $overtime,
                         "night" => $night,
+                        "bonus" => $bonus,
                         "lates" => $lates,
                         "over" => $over,
                         "under" => $under
