@@ -867,13 +867,25 @@ class BioMeet {
                     //We now require schedule for attendance.
                     $schedobj = $this->getScheduleObj($data);
                     if( !isset($schedobj['have_schedule']) || $data->log_type === "overtime") {
-                        $overtime = 0;
+                        
+                        $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
+                        $breakobj = (new DailyLog())->process($breaklog);
 
+                        $over = 30; //TO: Set this on config.
+                        $break = $breakobj->getDuration('lunch', true);
+                        $lunch = 0;
+                        if($lunch > $over) { 
+                            $lunch = max($break-$over, 0);
+                        }
+                        
+                        $night_diff_secs = get_night_differential( convert_date_utc_to_local($data->in_time), convert_date_utc_to_local($data->out_time) );
+                        $night = max(convert_seconds_to_hour_decimal( $night_diff_secs ) - $lunch, 0); 
+
+                        $overtime = 0;
                         if( $data->status === "approved" ) {
                             $overtime = convert_seconds_to_hour_decimal($actual_duration);
                         }
-
-                        //TODO: Should have option to deduct the lunch breaks.
+                        $overtime = max( $overtime-$lunch, 0 );
 
                         $this->attd_data[] = array(
                             "duration" => $actual_duration,
@@ -881,7 +893,7 @@ class BioMeet {
                             "worked" => 0,
                             "absent" => 0,
                             "overtime" => $overtime,
-                            "night" => 0,
+                            "night" => $night,
                             "lates" => 0,
                             "over" => 0,
                             "under" => 0
