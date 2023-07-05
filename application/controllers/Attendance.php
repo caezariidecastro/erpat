@@ -179,7 +179,9 @@ class Attendance extends MY_Controller {
             $data["user_id"] = $user_id;
         }
 
-        if($status) { //override
+        if( !isset($out_date_time) ) {
+            $data['status'] = "incomplete";
+        } else if($status) { //override
             $data['status'] = $status;
         }
 
