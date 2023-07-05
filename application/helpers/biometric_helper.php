@@ -416,6 +416,7 @@ class BioMeet {
 
             $second_start_date = null;
             $second_end_date = null;
+            $need_adjust = false;
 
             //First! If no schedule make sure to have an actual in and out as official schedule.
             $sched_day_in = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
@@ -425,6 +426,19 @@ class BioMeet {
             $day_name = convert_date_format($sched_day_in, 'D');  //local
             if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
                 $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
+
+                // Check if time start local is 00:00:00 to 00:03:00 then last day.
+                // TODO: Have the start and end check to settings and also reconsider.
+                $start_time = strtotime('00:00'); // 12 AM (midnight)
+                $end_time = strtotime('03:00'); // 3 AM
+                if ($sched_time >= $start_time || $sched_time <= $end_time) {
+                    $shift = convert_date_utc_to_local($data->in_time, 'A');
+                    if($shift === "PM") { //if in is pm then
+                        $sched_day_in = add_period_to_date($sched_day_in, 1);
+                        $need_adjust = true;
+                    }
+                }
+
                 $sched_in = $sched_day_in .' '. $sched_time; //local
                 $current_schedin = $today_sched;
             }
@@ -441,6 +455,10 @@ class BioMeet {
                 }
                 $sched_out = $sched_day_out .' '. $sched_time; //local
                 $current_schedout = $today_sched;
+
+                if($need_adjust) {
+                    $sched_out = add_day_to_datetime( $sched_out, 1);
+                }
             }
 
             if($current_schedin && $current_schedout) {
@@ -924,10 +942,12 @@ class BioMeet {
                     $lunch_sched = convert_seconds_to_hour_decimal($schedobj["lunch_duration"]);
                     $lunch_log = $breakobj->getDuration('lunch', true);
                     $lunch = max($lunch_log, $lunch_sched);
-
+                    
                     $under = convert_seconds_to_hour_decimal( max(strtotime($schedobj["end_time"])-$to_time, 0) );
                     $lates = convert_seconds_to_hour_decimal( max($from_time-strtotime($schedobj["start_time"]), 0) );
-                    $over = max($lunch_log-$lunch_sched, 0);
+                    if( intval($lunch_sched) > 0 ) {
+                        $over = max($lunch_log-$lunch_sched, 0);
+                    }
                     
                     $nonworked = $lunch + $lates + $over + $under;
                     $worked = max($sched_duration-$nonworked, 0);
