@@ -48,7 +48,7 @@ class Attendance extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
-        $view_data['is_clockout'] = $this->input->post('is_clockout');
+        $view_data['status'] = $this->input->post('status');
 
         $view_data['time_format_24_hours'] = get_setting("time_format") == "24_hours" ? true : false;
         $model_info = $this->Attendance_model->get_one($this->input->post('id'));
@@ -492,9 +492,10 @@ class Attendance extends MY_Controller {
         if( $this->with_permission("attendance_update") ) {
             $info = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/log_details"), "<i class='fa fa-".($data->status==="pending"?"bolt":"info")." p10'></i>".lang(($data->status==="pending"?"approval":"detail")), array("class" => "", "title" => lang(($data->status==="pending"?"approval":"detail")), "data-post-id" => $data->id)) . '</li>';
 
-            if($data->status==="incomplete" || $data->status==="pending" || $data->status==="clockout") {
-                $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil p10'></i> ".lang("edit_attendance"), array("class" => "", "title" => lang('edit_attendance'), "data-post-id" => $data->id, "data-post-is_clockout" => $data->status==="clockout"? true:false)) . '</li>';
-            }
+            //TODO: Have this on settings.
+            //if($data->status==="incomplete" || $data->status==="pending" || $data->status==="clockout") {
+                $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/modal_form"), "<i class='fa fa-pencil p10'></i> ".lang("edit_attendance"), array("class" => "", "title" => lang('edit_attendance'), "data-post-id" => $data->id, "data-post-status" => "pending" )) . '</li>';
+            //}
         }
 
         $note = '<li role="presentation">' . modal_anchor(get_uri("hrs/attendance/note_modal_form"), "<i class='fa fa-comment-o p10'></i> ".lang("note"), array("class" => "", "title" => lang("note"), "data-post-id" => $data->id));
