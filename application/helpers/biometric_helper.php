@@ -429,9 +429,10 @@ class BioMeet {
 
                 // Check if time start local is 00:00:00 to 00:03:00 then last day.
                 // TODO: Have the start and end check to settings and also reconsider.
+                $current_time = strtotime($sched_time); 
                 $start_time = strtotime('00:00'); // 12 AM (midnight)
                 $end_time = strtotime('03:00'); // 3 AM
-                if ($sched_time >= $start_time || $sched_time <= $end_time) {
+                if ($current_time >= $start_time && $current_time <= $end_time) {
                     $shift = convert_date_utc_to_local($data->in_time, 'A');
                     if($shift === "PM") { //if in is pm then
                         $sched_day_in = add_period_to_date($sched_day_in, 1);
@@ -942,6 +943,12 @@ class BioMeet {
                     $lunch_sched = convert_seconds_to_hour_decimal($schedobj["lunch_duration"]);
                     $lunch_log = $breakobj->getDuration('lunch', true);
                     $lunch = max($lunch_log, $lunch_sched);
+
+                    log_message("error", "Start1: ".$schedobj["start_time"]);
+                    log_message("error", "End1: ".$schedobj["end_time"]);
+
+                    log_message("error", "Start: ".convert_date_utc_to_local($data->in_time));
+                    log_message("error", "End: ".convert_date_utc_to_local($data->out_time));
                     
                     $under = convert_seconds_to_hour_decimal( max(strtotime($schedobj["end_time"])-$to_time, 0) );
                     $lates = convert_seconds_to_hour_decimal( max($from_time-strtotime($schedobj["start_time"]), 0) );
