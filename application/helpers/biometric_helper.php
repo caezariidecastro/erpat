@@ -402,7 +402,7 @@ class BioMeet {
             "id" => $data->sched_id,
             "deleted" => true
         ))->row();
-
+        
         if( isset($cur_sched) ) {
 
             $current_schedin = null;
@@ -488,22 +488,24 @@ class BioMeet {
                 }
 
                 if(strtotime($sched_in) !== false && strtotime($sched_out) !== false) {
-                    $time_duration = strtotime($sched_out)-strtotime($sched_in);
+                    $time_duration = max(strtotime($sched_out)-strtotime($sched_in), 0);
                 }
 
                 if(strtotime($first_start_date) !== false && strtotime($first_end_date) !== false) {
-                    $first_duration = strtotime($first_end_date)-strtotime($first_start_date);
+                    $first_duration = max(strtotime($first_end_date)-strtotime($first_start_date), 0);
                 }
 
                 if(strtotime($lunch_start_date) !== false && strtotime($lunch_end_date) !== false) {
-                    $lunch_duration = strtotime($lunch_end_date)-strtotime($lunch_start_date);
+                    $lunch_duration = max(strtotime($lunch_end_date)-strtotime($lunch_start_date), 0);
                 }
                 
                 if(strtotime($second_start_date) !== false && strtotime($second_end_date) !== false) {
-                    $second_duration = strtotime($second_end_date)-strtotime($second_start_date);
+                    $second_duration = max(strtotime($second_end_date)-strtotime($second_start_date), 0);
                 }
 
                 return array(
+                    "have_schedule" => (isset($sched_in) && isset($sched_out) ? true:false),
+                    
                     "start_time" => $sched_in,
                     "end_time" => $sched_out,
                     "time_duration" => intval($time_duration),
@@ -862,27 +864,51 @@ class BioMeet {
                     $to_time = strtotime( convert_date_utc_to_local($data->out_time) );
                     $actual_duration = max($to_time-$from_time, 0);
 
+                    //We now require schedule for attendance.
+                    $schedobj = $this->getScheduleObj($data);
+                    if( !isset($schedobj['have_schedule']) || $data->log_type === "overtime") {
+                        $overtime = 0;
+
+                        if( $data->status === "approved" ) {
+                            $overtime = convert_seconds_to_hour_decimal($actual_duration);
+                        }
+
+                        //TODO: Should have option to deduct the lunch breaks.
+
+                        $this->attd_data[] = array(
+                            "duration" => $actual_duration,
+                            "schedule" => 0,
+                            "worked" => 0,
+                            "absent" => 0,
+                            "overtime" => $overtime,
+                            "night" => 0,
+                            "lates" => 0,
+                            "over" => 0,
+                            "under" => 0
+                        );
+                        continue;
+                    }
+
                     $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
                     $breakobj = (new DailyLog())->process($breaklog);
 
-                    $schedobj = $this->getScheduleObj($data);
                     $sched_duration = convert_seconds_to_hour_decimal($schedobj["time_duration"]);
                     
                     $lunch_sched = convert_seconds_to_hour_decimal($schedobj["lunch_duration"]);
                     $lunch_log = $breakobj->getDuration('lunch', true);
-
-                    $night_diff_secs = get_night_differential( convert_date_utc_to_local($data->in_time), convert_date_utc_to_local($data->out_time) );
-                    $break_on_night = get_night_differential($schedobj["start_lunch"], $schedobj["end_lunch"] );
-                    $night = convert_seconds_to_hour_decimal( $night_diff_secs ) - convert_seconds_to_hour_decimal($break_on_night); 
+                    $lunch = max($lunch_log, $lunch_sched);
 
                     $under = convert_seconds_to_hour_decimal( max(strtotime($schedobj["end_time"])-$to_time, 0) );
                     $lates = convert_seconds_to_hour_decimal( max($from_time-strtotime($schedobj["start_time"]), 0) );
                     $over = max($lunch_log-$lunch_sched, 0);
                     
-                    $nonworked = $lunch_sched + $lates + $over + $under;
+                    $nonworked = $lunch + $lates + $over + $under;
                     $worked = max($sched_duration-$nonworked, 0);
 
                     $overtime = max((convert_seconds_to_hour_decimal($actual_duration)-($worked+$nonworked)), 0);
+
+                    $night_diff_secs = get_night_differential( convert_date_utc_to_local($schedobj["start_time"]), convert_date_utc_to_local($schedobj["end_time"]) );
+                    $night = max(convert_seconds_to_hour_decimal( $night_diff_secs ) - $nonworked, 0); 
 
                     //TODO: Process overbreak for personal.
                     $this->attd_data[] = array(
