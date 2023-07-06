@@ -888,34 +888,18 @@ class BioMeet {
                         $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
                         $breakobj = (new DailyLog())->process($breaklog);
 
-                        $over = 30; //TO: Set this on config.
+                        $over_trigger = 0.5; //TODO: Set this on config. Note: in hours
                         $break = $breakobj->getDuration('lunch', true);
                         $lunch = 0;
-                        if($lunch > $over) { 
-                            $lunch = max($break-$over, 0);
+                        if($break > $over_trigger) { 
+                            $lunch = $over_trigger;
+                            $over = max($break-$over_trigger, 0);
                         }
                         
                         $night_diff_secs = get_night_differential( convert_date_utc_to_local($data->in_time), convert_date_utc_to_local($data->out_time) );
                         $night = max(convert_seconds_to_hour_decimal( $night_diff_secs ) - $lunch, 0); 
 
-                        $pre_excess = convert_seconds_to_hour_decimal( max($to_time-strtotime($schedobj["end_time"]), 0) );
-                        $post_excess = convert_seconds_to_hour_decimal( max(strtotime($schedobj["start_time"])-$from_time, 0) );
-                        
-                        $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
-                        if( $pre_excess > $overtime_trigger ) {
-                            $overtime += $pre_excess;
-                        }
-                        if( $post_excess > $overtime_trigger ) {
-                            $overtime += $post_excess;
-                        }
-
-                        $bonuspay_trigger = number_with_decimal(max(get_setting('bonuspay_trigger'), 0));
-                        if( $pre_excess > $bonuspay_trigger ) {
-                            $bonus += $pre_excess;
-                        }
-                        if( $post_excess > $bonuspay_trigger ) {
-                            $bonus += $post_excess;
-                        }          
+                        $overtime = convert_seconds_to_hour_decimal( max(($to_time-$from_time)-$lunch, 0) );
 
                         $this->attd_data[] = array(
                             "duration" => $actual_duration,
@@ -926,7 +910,7 @@ class BioMeet {
                             "bonus" => 0,
                             "night" => $night,
                             "lates" => 0,
-                            "over" => 0,
+                            "over" => $over,
                             "under" => 0
                         );
                         continue;
