@@ -941,11 +941,16 @@ class BioMeet {
                     
                     $lunch_sched = convert_seconds_to_hour_decimal($schedobj["lunch_duration"]);
                     $lunch_log = $breakobj->getDuration('lunch', true);
-                    $lunch = max($lunch_log, $lunch_sched);
                     
                     $under = convert_seconds_to_hour_decimal( max(strtotime($schedobj["end_time"])-$to_time, 0) );
                     $lates = convert_seconds_to_hour_decimal( max($from_time-strtotime($schedobj["start_time"]), 0) );
-                    if( intval($lunch_sched) > 0 ) {
+                    if( $lunch_sched > 0 ) {
+                        if( $lunch_log > 0 ) {
+                            $lunch = max($lunch_log, $lunch_sched);
+                        } else {
+                            $under -= $lunch_sched;
+                        }
+                        
                         $over = max($lunch_log-$lunch_sched, 0);
                     }
                     
