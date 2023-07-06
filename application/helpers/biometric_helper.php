@@ -627,33 +627,51 @@ class BioMeet {
                         $under = num_limit( $under-$lunch_sched, $payable);
                     }
                     
-                    $over = num_limit($lunch_log-$lunch_sched);
+                    $over = num_limit($lunch_log-$lunch_sched, $payable);
                 }
                 
-                $nonworked = $lates + $over + $under;
-                $worked = num_limit(convert_seconds_to_hour_decimal($actual_duration)-$nonworked, $payable);
+                //Stable
+                $nonworked = $lunch_sched + $lates + $over + $under;
+                $work_duration = get_time_overlap_seconds(
+                    convert_date_utc_to_local($data->in_time), 
+                    convert_date_utc_to_local($data->out_time), 
+                    $schedobj["start_time"], 
+                    $schedobj["end_time"]
+                ); //Get overlap of schedule and attendance.
+                $worked = num_limit( convert_seconds_to_hour_decimal($work_duration)-$nonworked );
 
+                //Stable
                 $pre_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
                 $post_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
                 
+                //Stable
                 $overtime_trigger = number_with_decimal( num_limit(get_setting('overtime_trigger')) );
-                if( $pre_excess > $overtime_trigger ) {
+                if( $overtime_trigger && $pre_excess > $overtime_trigger ) {
                     $overtime += $pre_excess;
                 }
-                if( $post_excess > $overtime_trigger ) {
+                if( $overtime_trigger && $post_excess > $overtime_trigger ) {
                     $overtime += $post_excess;
                 }
 
+                //Stable
                 $bonuspay_trigger = number_with_decimal( num_limit(get_setting('bonuspay_trigger')) );
-                if( $pre_excess > $bonuspay_trigger ) {
+                if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger ) {
                     $bonus += $pre_excess;
                 }
-                if( $post_excess > $bonuspay_trigger ) {
+                if( $bonuspay_trigger && $post_excess > $bonuspay_trigger ) {
                     $bonus += $post_excess;
                 }          
 
-                $night_diff_secs = get_night_differential( $schedobj["start_time"], $schedobj["end_time"] );
-                $night = num_limit(convert_seconds_to_hour_decimal( $night_diff_secs ) - $nonworked, 8); //TODO: 8, Get from config.
+                //Stable
+                $night_diff_secs = get_night_differential( //TODO
+                    convert_date_utc_to_local($data->in_time), 
+                    convert_date_utc_to_local($data->out_time)  
+                );
+                $night = num_limit( 
+                    convert_seconds_to_hour_decimal($night_diff_secs) - 
+                    ( $nonworked + $pre_excess + $post_excess ), 
+                    8 //TODO: 8, Get from config.
+                ); 
 
                 //TODO: Process overbreak for personal.
                 $this->attd_data[] = array(
