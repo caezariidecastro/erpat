@@ -47,3 +47,17 @@
             return $barcode;
         }
     }
+
+    if (!function_exists('num_limit')) {
+        function num_limit($number, $max = NULL, $min = 0) {
+            if($number < $min) {
+                return $min;
+            }
+            
+            if($max !== NULL && $number > $max) {
+                return $max;
+            }
+
+            return $number;
+        }
+    }

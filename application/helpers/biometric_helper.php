@@ -114,7 +114,7 @@ class DailyLog {
                 $first_log = 0;
                 if( count($breakdata) >= 2 && $this->isDatetime($breakdata[0]) && $this->isDatetime($breakdata[1]) ) {
                     $first_log = strtotime($breakdata[1])-strtotime($breakdata[0]);
-                    $first_log = max($first_log, 0);
+                    $first_log = num_limit($first_log);
 
                     if($first_log >= 945 && $first_log > $lunch_break) {
                         $lunch_break = $first_log; 
@@ -125,7 +125,7 @@ class DailyLog {
                 $second_log = 0;
                 if( count($breakdata) >= 4 && $this->isDatetime($breakdata[2]) && $this->isDatetime($breakdata[3]) ) {
                     $second_log = strtotime($breakdata[3])-strtotime($breakdata[2]);
-                    $second_log = max($second_log, 0);
+                    $second_log = num_limit($second_log);
 
                     if($second_log >= 945 && $second_log > $lunch_break) {
                         $lunch_break = $second_log; 
@@ -136,7 +136,7 @@ class DailyLog {
                 $third_log = 0;
                 if( count($breakdata) >= 6 && $this->isDatetime($breakdata[4]) && $this->isDatetime($breakdata[5]) ) {
                     $third_log = strtotime($breakdata[5])-strtotime($breakdata[4]);
-                    $third_log = max($third_log, 0);
+                    $third_log = num_limit($third_log);
 
                     if($third_log >= 945 && $third_log > $lunch_break) {
                         $lunch_break = $third_log; 
@@ -147,7 +147,7 @@ class DailyLog {
                 $fourth_log = 0;
                 if( count($breakdata) >= 8 && $this->isDatetime($breakdata[6]) && $this->isDatetime($breakdata[7]) ) {
                     $fourth_log = strtotime($breakdata[7])-strtotime($breakdata[6]);
-                    $fourth_log = max($fourth_log, 0);
+                    $fourth_log = num_limit($fourth_log);
 
                     if($fourth_log >= 945 && $fourth_log > $lunch_break) {
                         $lunch_break = $fourth_log; 
@@ -256,6 +256,7 @@ class BioMeet {
 
     function __construct( $ci, $options = array(), $on_debug = false ) {
         $this->ci = $ci;
+        $this->ci->load->helper('utility');
         $this->on_debug = $on_debug;
 
         $this->hours_per_day = isset($options['hours_per_day']) && is_numeric($options['hours_per_day'])?
@@ -507,19 +508,19 @@ class BioMeet {
                 }
 
                 if(strtotime($sched_in) !== false && strtotime($sched_out) !== false) {
-                    $time_duration = max(strtotime($sched_out)-strtotime($sched_in), 0);
+                    $time_duration = num_limit(strtotime($sched_out)-strtotime($sched_in));
                 }
 
                 if(strtotime($first_start_date) !== false && strtotime($first_end_date) !== false) {
-                    $first_duration = max(strtotime($first_end_date)-strtotime($first_start_date), 0);
+                    $first_duration = num_limit(strtotime($first_end_date)-strtotime($first_start_date));
                 }
 
                 if(strtotime($lunch_start_date) !== false && strtotime($lunch_end_date) !== false) {
-                    $lunch_duration = max(strtotime($lunch_end_date)-strtotime($lunch_start_date), 0);
+                    $lunch_duration = num_limit(strtotime($lunch_end_date)-strtotime($lunch_start_date));
                 }
                 
                 if(strtotime($second_start_date) !== false && strtotime($second_end_date) !== false) {
-                    $second_duration = max(strtotime($second_end_date)-strtotime($second_start_date), 0);
+                    $second_duration = num_limit(strtotime($second_end_date)-strtotime($second_start_date));
                 }
 
                 return array(
@@ -549,454 +550,127 @@ class BioMeet {
 
     public function calculate() {
 
-        if( get_setting('attendance_calc_mode') == "complex" ) {
+        foreach($this->attendance as $data) {
+            if(is_date_exists($data->out_time)) {
 
-            foreach($this->attendance as $data) {
-
-                //Get the instance of the schedule.
-                $cur_sched = $this->ci->Schedule_model->get_details(array(
-                    "id" => $data->sched_id,
-                    "deleted" => true
-                ))->row();
-
-                //Important attendance primary data.
                 $from_time = strtotime( convert_date_utc_to_local($data->in_time) );
-                $to_time = is_date_exists($data->out_time) ? strtotime( convert_date_utc_to_local($data->out_time) ) : null;
+                $to_time = strtotime( convert_date_utc_to_local($data->out_time) );
+                $actual_duration = num_limit($to_time-$from_time);
 
-                //Store important attendance metrics.
-                $schedule = 0;
-                $duration = 0;
-                $worked = 0;
-                $overtime = 0;
-                $nonworked = 0;
-                $lates = 0;
-                $over = 0;
-                $under = 0;
-                $bonus = 0;
-                $night = 0;
-                
-                $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
-                $bonuspay_trigger = number_with_decimal(max(get_setting('bonuspay_trigger'), 0));
-
-                $current_schedin = null;
-                $current_schedout = null;
-
-                /* #region SCHEDULE PROCESSING */
-
-                //First! If no schedule make sure to have an actual in and out as official schedule.
-                $sched_day_in = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
-                $sched_in = convert_date_utc_to_local($data->in_time);
-
-                //Second! Get the current day schedule instance based on in time.
-                $day_name = convert_date_format($sched_day_in, 'D');  //local
-                if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
-                    $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
-                    $sched_in = $sched_day_in .' '. $sched_time; //local
-                    $current_schedin = $today_sched;
-                }
-
-                //First! If no schedule make sure to have an actual in and out as official schedule.
-                $sched_day_out = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
-                $sched_out = convert_date_utc_to_local($data->in_time);
-
-                //Second! Get the current day schedule instance based on in time.
-                if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
-                    $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
-                    if( strpos($today_sched['in'], "PM") !== false && strpos($today_sched['out'], "AM") !== false) {
-                        $sched_day_out = add_day_to_datetime(convert_date_utc_to_local($data->in_time), 1, "Y-m-d");
-                    }
-                    $sched_out = $sched_day_out .' '. $sched_time; //local
-                    $current_schedout = $today_sched;
-                }
-
-                /* #endregion */
-
-                /* #region LATES PROCESSING */
-
-                if($from_time > strtotime($sched_in) && strtotime($sched_out) > $from_time) {
-                    //Get lates: x = diff_time(in_time, sched_in)
-                    $lates = convert_seconds_to_hour_decimal( max($from_time-strtotime($sched_in), 0) );
-                }
-
-                /* #endregion */
-
-                 /* #region PRE BONUSPAY */
-
-                 if(strtotime($sched_in) > $from_time && $to_time > strtotime($sched_in)) {
-                    $pre_bonus = convert_seconds_to_hour_decimal( max(strtotime($sched_in)-$from_time, 0) );
-                    $pre_bonus = $pre_bonus>=$bonuspay_trigger?$bonuspay_trigger:0;
-                    $bonus += number_with_decimal($pre_bonus);
-                }
-
-                /* #endregion */
-
-                if( $data->out_time ) {
-                    /* #region DURATION & SCHEDULE */
-
-                    //duration, Actual time in hours decimal.
-                    $duration = max($to_time-$from_time, 0);
-                                        
-                    //Get scheduled worked hours: z = diff_time(sched_in, sched_end) - 1 hour 
-                    $schedule = convert_seconds_to_hour_decimal( max(strtotime($sched_out)-strtotime($sched_in), 0) );
-
-                    /* #endregion */
-
-                    /* #region OVERBREAK PROCESSING */
-
-                    //Override schedule and hours per day according to schedule.
-                    if($current_schedin && $current_schedout) {
-                        //Get the hours per day minus the lunch break.
-                        if(isset($current_schedin) && isset($current_schedin['enabled_first']) && isset($current_schedin['in_first']) && isset($current_schedin['out_first'])) {
-                            $first_start_time = convert_time_to_24hours_format( $current_schedin['in_first'] ); //local
-                            $first_start_date = strtotime($sched_day_in .' '. $first_start_time);
-
-                            $first_end_time = convert_time_to_24hours_format( $current_schedin['out_first'] ); //local
-                            $first_end_date = strtotime($sched_day_in .' '. $first_end_time);
-
-                            //if IN lunch is PM and out is AM then use the sched day out. else same
-                            if( contain_str($current_schedin['in_first'], 'PM') && contain_str($current_schedin['out_first'], 'AM') ) {
-                                $first_end_date = strtotime($sched_day_out .' '. $first_end_time);
-                            }
-                            
-                            $this->first_break = convert_seconds_to_hour_decimal( max($first_end_date-$first_start_date, 0) );
-                        }
-
-                        //Get the hours per day minus the lunch break.
-                        if(isset($current_schedin) && isset($current_schedin['enabled_lunch']) && isset($current_schedin['in_lunch']) && isset($current_schedin['out_lunch'])) {
-                            $lunch_start_time = convert_time_to_24hours_format( $current_schedin['in_lunch'] ); //local
-                            $lunch_start_date = strtotime($sched_day_in .' '. $lunch_start_time);
-
-                            $lunch_end_time = convert_time_to_24hours_format( $current_schedin['out_lunch'] ); //local
-                            $lunch_end_date = strtotime($sched_day_in .' '. $lunch_end_time);
-                            //if IN lunch is PM and out is AM then use the sched day out. else same
-                            if( contain_str($current_schedin['in_lunch'], 'PM') && contain_str($current_schedin['out_lunch'], 'AM') ) {
-                                $lunch_end_date = strtotime($sched_day_out .' '. $lunch_end_time);
-                            }
-                            
-                            $this->lunch_break = convert_seconds_to_hour_decimal( max($lunch_end_date-$lunch_start_date, 0) );
-                        }
-
-                        //Get the hours per day minus the lunch break.
-                        if(isset($current_schedin) && isset($current_schedin['enabled_second']) && isset($current_schedin['in_second']) && isset($current_schedin['out_second'])) {
-                            $second_start_time = convert_time_to_24hours_format( $current_schedin['in_second'] ); //local
-                            $second_start_date = strtotime($sched_day_in .' '. $second_start_time);
-
-                            $second_end_time = convert_time_to_24hours_format( $current_schedin['out_second'] ); //local
-                            $second_end_date = strtotime($sched_day_in .' '. $second_end_time);
-                            
-                            //if IN lunch is PM and out is AM then use the sched day out. else same
-                            if( contain_str($current_schedin['in_second'], 'PM') && contain_str($current_schedin['out_second'], 'AM') ) {
-                                $second_end_date = strtotime($sched_day_out .' '. $second_end_time);
-                            }
-                            
-                            $this->second_break = convert_seconds_to_hour_decimal( max($second_end_date-$second_start_date, 0) );
-                        }
-
-                        //Default hours per day
-                        $this->hours_per_day = max($schedule - $this->lunch_break, 0);
-
-                        $users = get_setting("30min_break_employee");
-                        if(in_array($data->user_id, explode(",", $users))) {
-                            $this->lunch_break = 0.5;
-                        }
-                    }
-
-                    //BREAKTIME
-                    $btime = isset($data->break_time)?unserialize($data->break_time):[];
-                    $this->break_data = (new DailyLog())->process($btime);
-
-                    //1ST Overbreak
-                    if($this->break_data->getDuration('first', true) > $this->first_break) { //Get from encode.
-                        $over += ($this->break_data->getDuration('first', true)-$this->second_break);
-                    }
-
-                    //LUNCH Overbreak 
-                    if($this->break_data->getDuration('lunch', true) > $this->lunch_break) {
-                        $over += max($this->break_data->getDuration('lunch', true)-$this->lunch_break, 0);
-                    }
-
-                    //2ND Overbreak 
-                    if($this->break_data->getDuration('second', true) > $this->second_break) {
-                        $over += ($this->break_data->getDuration('second', true)-$this->second_break);
-                    }
-
-                    //TODO: Minus Extra break to work hour
-
-                    /* #endregion */
+                if( $data->log_type === "overtime") {
                     
-                    /* #region NIGHTDIFF PROCESSING */
-
-                    //Set the NightDiff
-                    $night_diff_secs = get_night_differential(
-                        convert_date_utc_to_local($data->in_time), 
-                        convert_date_utc_to_local($data->out_time)
-                    );
-                    $break_on_night = $this->get_lunch_nightdiff_overlap($btime);
-                    $night = convert_seconds_to_hour_decimal( $night_diff_secs ) - convert_seconds_to_hour_decimal($break_on_night); //deduct the lunch break.
-
-                    /* #endregion */
-
-                    /* #region OVERTIME PROCESSING */
-
-                    if(strtotime($sched_in) > $from_time && 
-                        ($to_time > strtotime($sched_in) || $to_time > strtotime($sched_out))) { //pre-ot
-                        $pre_ot += convert_seconds_to_hour_decimal( max(strtotime($sched_in)-$from_time, 0) );
-                        $overtime += $pre_ot>=$overtime_trigger ? $pre_ot:0; //60min greater
-                    }
-
-                    if(strtotime($sched_out) > $to_time && 
-                        (strtotime($sched_in) > $from_time || strtotime($sched_out) > $from_time)) { //post-ot
-                        $post_ot += convert_seconds_to_hour_decimal( max($to_time-strtotime($sched_out), 0) );
-                        $overtime += $post_ot>=$overtime_trigger ? $post_ot:0; //60min greater
-                    }
-
-                    //Handle the next the schedule.
-                    $sched_in_prev = sub_day_to_datetime($sched_in, 1);
-                    $sched_out_prev = sub_day_to_datetime($sched_out, 1);
-                    if(strtotime($sched_out_prev) > $from_time && 
-                        (strtotime($sched_in_prev) > $from_time || strtotime($sched_out_prev) > $from_time)) { //post-ot
-                        $post_ot += convert_seconds_to_hour_decimal( max($to_time-strtotime($sched_out_prev), 0) );
-                        $overtime += $post_ot>=$overtime_trigger ? $post_ot:0; //60min greater
-                    }
-
-                    /* #endregion */
-                    
-                    /* #region POST BONUSPAY */
-
-                    if(strtotime($sched_out) > $from_time && $to_time > strtotime($sched_out)) {
-                        $post_bonus = convert_seconds_to_hour_decimal( max($to_time-strtotime($sched_out), 0) );
-                        $post_bonus = $post_bonus>=$bonuspay_trigger?$bonuspay_trigger:0;
-                        $bonus += number_with_decimal($post_bonus);
-                    }
-
-                    /* #endregion */
-
-                    /* #region WORKED HOUR */
-
-                    //Make sure that if nonworked is non zero deduct. get from overlap.
-                    $worked = convert_seconds_to_hour_decimal( //current
-                        get_time_overlap_seconds(
-                            convert_date_utc_to_local($data->in_time), 
-                            convert_date_utc_to_local($data->out_time), 
-                            $sched_in, 
-                            $sched_out
-                        )
-                    );
-
-                    $worked += convert_seconds_to_hour_decimal( //previous
-                        get_time_overlap_seconds(
-                            convert_date_utc_to_local($data->in_time), 
-                            convert_date_utc_to_local($data->out_time), 
-                            sub_day_to_datetime($sched_in, 1), 
-                            sub_day_to_datetime($sched_out, 1)
-                        )
-                    );
-
-                    $worked += convert_seconds_to_hour_decimal( //future
-                        get_time_overlap_seconds(
-                            convert_date_utc_to_local($data->in_time), 
-                            convert_date_utc_to_local($data->out_time), 
-                            add_day_to_datetime($sched_in, 1), 
-                            add_day_to_datetime($sched_out, 1)
-                        )
-                    );
-
-                    // Add pre and post bonus pay to worked!
-                    $worked += $bonus;
-
-                    //Deduct the the lunch and extra break. 
-                    //Deduct the actual overtime schedule or default of 1hour.
-                    //TODO: Get the lunch break to actual breaktime log.
-                    $lunch = $this->break_data->getDuration('lunch', true);
-                    $extra = $this->break_data->getDuration('extra', true);
-                    $worked -= ($lunch+$extra); 
-
-                    /* #endregion */
-                    
-                    /* #region UNDERTIME PROCESSING */
-
-                    // (schedule - lunch break) - worked
-                    //$sched_worked = $schedule-$this->lunch_break;
-                    //$under = max($sched_worked-$worked, 0);
-
-                    if($to_time > strtotime($sched_in) && strtotime($sched_out) > $to_time) {
-                        //Get lates: x = diff_time(in_time, sched_in)
-                        $under = convert_seconds_to_hour_decimal( max(strtotime($sched_out)-$to_time, 0) );
-                    }
-
-                    /* #endregion */
-
-                    //idle, Get non worked hours: a = x+y
-                    $nonworked = convert_number_to_decimal( max(($lates+$over+$under), 0) );
-
-                    //TODO: Remove this: $this->hours_per_day
-
-                    if($this->on_debug && $duration == 0) {
-                        $duration = 'Invalid';
-                        $worked = "Invalid";
-                        $overtime = "Invalid";
-                        $nonworked = 'Invalid';
-                        $lates = 'Invalid';
-                        $over = 'Invalid';
-                        $under = 'Invalid';
-                        $bonus = 'Invalid';
-                        $night = 'Invalid';
-                    }
-                } else {
-                    if($this->on_debug) {
-                        $duration = 'Pending';
-                        $worked = 'Pending';
-                        $overtime = "Pending";
-                        $nonworked = 'Pending';
-                        $over = 'Pending';
-                        $under = 'Pending';
-                        $bonus = 'Pending';
-                        $night = 'Pending';
-                    }
-                }
-
-                if($this->on_debug && !$current_schedin && !$current_schedout) {
-                    $lates = '-';
-                    $under = '-';
-                }
-
-                $this->attd_data[] = array(
-                    "duration" => $duration,
-                    "schedule" => $schedule,
-                    "worked" => $worked,
-                    "overtime" => $overtime,
-                    "absent" => $nonworked,
-                    "lates" => $lates,
-                    "over" => $over,
-                    "under" => $under,
-                    "bonus" => $bonus,
-                    "night" => $night,
-                );
-            } 
-
-        } else {
-
-            foreach($this->attendance as $data) {
-                if(is_date_exists($data->out_time)) {
-
-                    $from_time = strtotime( convert_date_utc_to_local($data->in_time) );
-                    $to_time = strtotime( convert_date_utc_to_local($data->out_time) );
-                    $actual_duration = max($to_time-$from_time, 0);
-
-                    if( $data->log_type === "overtime") {
-                        
-                        $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
-                        $breakobj = (new DailyLog())->process($breaklog);
-
-                        $over_trigger = 0.5; //TODO: Set this on config. Note: in hours
-                        $break = $breakobj->getDuration('lunch', true);
-                        $lunch = 0;
-                        if($break > $over_trigger) { 
-                            $lunch = $over_trigger;
-                            $over = max($break-$over_trigger, 0);
-                        }
-                        
-                        $night_diff_secs = get_night_differential( convert_date_utc_to_local($data->in_time), convert_date_utc_to_local($data->out_time) );
-                        $night = max(convert_seconds_to_hour_decimal( $night_diff_secs ) - $lunch, 0); 
-
-                        $overtime = convert_seconds_to_hour_decimal( max(($to_time-$from_time)-$lunch, 0) );
-
-                        $this->attd_data[] = array(
-                            "duration" => $actual_duration,
-                            "schedule" => 0,
-                            "worked" => 0,
-                            "absent" => 0,
-                            "overtime" => $overtime,
-                            "bonus" => 0,
-                            "night" => $night,
-                            "lates" => 0,
-                            "over" => $over,
-                            "under" => 0
-                        );
-                        continue;
-                    }
-                    
-                    //We now require schedule for attendance.
-                    $schedobj = $this->getScheduleObj($data);
-                    if( !isset($schedobj['have_schedule']) ) {
-                        $this->attd_data[] = array(
-                            "duration" => $actual_duration,
-                            "schedule" => 0,
-                            "worked" => 0,
-                            "absent" => 0,
-                            "overtime" => 0,
-                            "bonus" => 0,
-                            "night" => 0,
-                            "lates" => 0,
-                            "over" => 0,
-                            "under" => 0
-                        );
-                        continue;
-                    } //we required schedule in order to compute for attendance.
-
                     $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
                     $breakobj = (new DailyLog())->process($breaklog);
 
-                    $sched_duration = convert_seconds_to_hour_decimal($schedobj["time_duration"]);
-                    
-                    $lunch_sched = convert_seconds_to_hour_decimal($schedobj["lunch_duration"]);
-                    $lunch_log = $breakobj->getDuration('lunch', true);
-                    
-                    $under = convert_seconds_to_hour_decimal( max(strtotime($schedobj["end_time"])-$to_time, 0) );
-                    $lates = convert_seconds_to_hour_decimal( max($from_time-strtotime($schedobj["start_time"]), 0) );
-                    if( $lunch_sched > 0 ) {
-                        if( $lunch_log > 0 ) {
-                            $lunch = max($lunch_log, $lunch_sched);
-                        } else {
-                            $under -= $lunch_sched;
-                        }
-                        
-                        $over = max($lunch_log-$lunch_sched, 0);
+                    $over_trigger = 0.5; //TODO: Set this on config. Note: in hours
+                    $break = $breakobj->getDuration('lunch', true);
+                    $lunch = 0;
+                    if($break > $over_trigger) { 
+                        $lunch = $over_trigger;
+                        $over = num_limit($break-$over_trigger);
                     }
                     
-                    $nonworked = $lunch + $lates + $over + $under;
-                    $worked = max($sched_duration-$nonworked, 0);
+                    $night_diff_secs = get_night_differential( convert_date_utc_to_local($data->in_time), convert_date_utc_to_local($data->out_time) );
+                    $night = num_limit(convert_seconds_to_hour_decimal( $night_diff_secs ) - $lunch, 8); 
 
-                    $pre_excess = convert_seconds_to_hour_decimal( max($to_time-strtotime($schedobj["end_time"]), 0) );
-                    $post_excess = convert_seconds_to_hour_decimal( max(strtotime($schedobj["start_time"])-$from_time, 0) );
-                    
-                    $overtime_trigger = number_with_decimal(max(get_setting('overtime_trigger'), 0));
-                    if( $pre_excess > $overtime_trigger ) {
-                        $overtime += $pre_excess;
-                    }
-                    if( $post_excess > $overtime_trigger ) {
-                        $overtime += $post_excess;
-                    }
+                    $overtime = convert_seconds_to_hour_decimal( num_limit(($to_time-$from_time)-$lunch, $actual_duration) );
 
-                    $bonuspay_trigger = number_with_decimal(max(get_setting('bonuspay_trigger'), 0));
-                    if( $pre_excess > $bonuspay_trigger ) {
-                        $bonus += $pre_excess;
-                    }
-                    if( $post_excess > $bonuspay_trigger ) {
-                        $bonus += $post_excess;
-                    }          
-
-                    $night_diff_secs = get_night_differential( $schedobj["start_time"], $schedobj["end_time"] );
-                    $night = max(convert_seconds_to_hour_decimal( $night_diff_secs ) - $nonworked, 0); 
-
-                    //TODO: Process overbreak for personal.
                     $this->attd_data[] = array(
                         "duration" => $actual_duration,
-                        "schedule" => $sched_duration,
-                        "worked" => $worked,
-                        "absent" => $nonworked,
+                        "schedule" => 0,
+                        "worked" => 0,
+                        "absent" => 0,
                         "overtime" => $overtime,
+                        "bonus" => 0,
                         "night" => $night,
-                        "bonus" => $bonus,
-                        "lates" => $lates,
+                        "lates" => 0,
                         "over" => $over,
-                        "under" => $under
+                        "under" => 0
                     );
+                    continue;
                 }
-            }
-            
-        }
+                
+                //We now require schedule for attendance.
+                $schedobj = $this->getScheduleObj($data);
+                if( !isset($schedobj['have_schedule']) ) {
+                    $this->attd_data[] = array(
+                        "duration" => $actual_duration,
+                        "schedule" => 0,
+                        "worked" => 0,
+                        "absent" => 0,
+                        "overtime" => 0,
+                        "bonus" => 0,
+                        "night" => 0,
+                        "lates" => 0,
+                        "over" => 0,
+                        "under" => 0
+                    );
+                    continue;
+                } //we required schedule in order to compute for attendance.
 
+                $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
+                $breakobj = (new DailyLog())->process($breaklog);
+
+                $sched_duration = convert_seconds_to_hour_decimal($schedobj["time_duration"]);
+                
+                $lunch_sched = convert_seconds_to_hour_decimal($schedobj["lunch_duration"]);
+                $lunch_log = $breakobj->getDuration('lunch', true);
+
+                $payable = num_limit($sched_duration-$lunch_sched);
+                
+                $under = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["end_time"])-$to_time, $payable) );
+                $lates = convert_seconds_to_hour_decimal( num_limit($from_time-strtotime($schedobj["start_time"]), $payable) );
+                if( $lunch_sched > 0 ) {
+                    if( $lunch_log > 0 ) {
+                        $lunch = num_limit($lunch_log, $payable, $lunch_sched);
+                    } else {
+                        $under = num_limit( $under-$lunch_sched, $payable);
+                    }
+                    
+                    $over = num_limit($lunch_log-$lunch_sched, $payable);
+                }
+                
+                $nonworked = $lunch + $lates + $over + $under;
+                $worked = num_limit($sched_duration-$nonworked, $payable);
+
+                $pre_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
+                $post_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
+                
+                $overtime_trigger = number_with_decimal( num_limit(get_setting('overtime_trigger')) );
+                if( $pre_excess > $overtime_trigger ) {
+                    $overtime += $pre_excess;
+                }
+                if( $post_excess > $overtime_trigger ) {
+                    $overtime += $post_excess;
+                }
+
+                $bonuspay_trigger = number_with_decimal( num_limit(get_setting('bonuspay_trigger')) );
+                if( $pre_excess > $bonuspay_trigger ) {
+                    $bonus += $pre_excess;
+                }
+                if( $post_excess > $bonuspay_trigger ) {
+                    $bonus += $post_excess;
+                }          
+
+                $night_diff_secs = get_night_differential( $schedobj["start_time"], $schedobj["end_time"] );
+                $night = num_limit(convert_seconds_to_hour_decimal( $night_diff_secs ) - $nonworked, 8); //TODO: 8, Get from config.
+
+                //TODO: Process overbreak for personal.
+                $this->attd_data[] = array(
+                    "duration" => $actual_duration,
+                    "schedule" => $sched_duration,
+                    "worked" => $worked,
+                    "absent" => $nonworked,
+                    "overtime" => $overtime,
+                    "night" => $night,
+                    "bonus" => $bonus,
+                    "lates" => $lates,
+                    "over" => $over,
+                    "under" => $under
+                );
+            }
+        }
+            
         return $this;
     }
 }
