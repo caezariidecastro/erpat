@@ -627,11 +627,11 @@ class BioMeet {
                         $under = num_limit( $under-$lunch_sched, $payable);
                     }
                     
-                    $over = num_limit($lunch_log-$lunch_sched, $payable);
+                    $over = num_limit($lunch_log-$lunch_sched);
                 }
                 
-                $nonworked = $lunch + $lates + $over + $under;
-                $worked = num_limit($sched_duration-$nonworked, $payable);
+                $nonworked = $lates + $over + $under;
+                $worked = num_limit(convert_seconds_to_hour_decimal($actual_duration)-$nonworked, $payable);
 
                 $pre_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
                 $post_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
