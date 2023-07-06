@@ -194,11 +194,6 @@ class Schedule extends MY_Controller
         
         $view_data['time_format_24_hours'] = get_setting("time_format") == "24_hours" ? true : false;
         $id = (int)$this->input->post('id');
-        if($id) {
-            $this->with_permission("schedule_update", "no_permission");
-        } else {
-            $this->with_permission("schedule_create", "no_permission");
-        }
         
         if($id !== 0) {
             $view_data['model_info'] = $this->Schedule_model->get_details(array(
@@ -212,6 +207,11 @@ class Schedule extends MY_Controller
         if($request == 'display') {
             $this->load->view('schedule/display', $view_data);
         } else {
+            if($id) {
+                $this->with_permission("schedule_update", "no_permission");
+            } else {
+                $this->with_permission("schedule_create", "no_permission");
+            }
             $this->load->view('schedule/modal_form', $view_data);
         }
     }
