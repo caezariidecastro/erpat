@@ -81,13 +81,15 @@ class Schedule extends MY_Controller
         if($this->with_permission("schedule_delete")) {
             $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/schedule/delete"), "data-action" => "delete-confirmation")) . '</li>';
         }
+
+        $detail = '<li role="presentation" style="list-style: none;">' . modal_anchor(get_uri("hrs/schedule/modal_form/display"), "<i class='fa fa-info'></i> " . lang("detail"), array("class" => "", "title" => "", "data-modal-title" => lang("schedule_detail"), "data-toggle" => "tooltip", "data-placement" => "top", "title"=>lang("schedule_detail"), "data-post-id" => $data->id)) . '</li>';
         
         $actions = '<span class="dropdown inline-block">
                         <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
                             <i class="fa fa-cogs"></i>&nbsp;
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu pull-right" role="menu">' . $edit . $delete . '</ul>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $detail . $edit . $delete . '</ul>
                     </span>';
 
         $monday = empty($data->mon) || $data->mon == null ? NULL : $this->dayserialize($data->mon);
@@ -156,6 +158,9 @@ class Schedule extends MY_Controller
                     }
                     $sched = max(strtotime($out) - strtotime($in), 0);
                     $sched = max(($sched - $lunch_break), 0);
+
+                    $lunch = $day."_lunch";
+                    $data_modal->$lunch = convert_seconds_to_hour_decimal($lunch_break);
 
                     $hours = $day."_hours";
                     $data_modal->$hours = convert_seconds_to_hour_decimal($sched);

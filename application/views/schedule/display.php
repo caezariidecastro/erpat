@@ -13,33 +13,25 @@
         <div class="table-responsive mb15">
             <table class="table dataTable display b-t">
                 <tr>
-                    <td class="w100"> <?php echo lang('monday'); ?></td>
-                    <td><?php echo $model_info->mon_text; ?></td>
+                    <th class="w100"> <?= lang("day") ?></th>
+                    <th> <?= lang("schedule") ?></th>
+                    <th> <?= lang("lunch_break") ?></th>
                 </tr>
+                <?php foreach(["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as $day) { ?>
                 <tr>
-                    <td> <?php echo lang('tuesday'); ?></td>
-                    <td><?php echo $model_info->tue_text; ?></td>
+                    <td class="w100"> <?php echo lang($day); ?></td>
+                    <td>
+                        <?php if( isset($model_info->{$day."_text"}) ) { ?>
+                        <?php echo $model_info->{$day."_text"}; ?> (<?= $model_info->{$day."_hours"} ?>h)</td>
+                        <?php } ?>
+                    <td>
+                        <?php if( isset($model_info->{$day."_enable_lunch"}) ) { ?>
+                            <?php echo $model_info->{$day."_in_lunch"}; ?> - 
+                            <?php echo $model_info->{$day."_out_lunch"}; ?>  (<?= $model_info->{$day."_lunch"} ?>h)
+                        <?php } ?>
+                    </td>
                 </tr>
-                <tr>
-                    <td> <?php echo lang('wednesday'); ?></td>
-                    <td><?php echo $model_info->wed_text; ?></td>
-                </tr>
-                <tr>
-                    <td> <?php echo lang('thursday'); ?></td>
-                    <td><?php echo nl2br($model_info->thu_text); ?></td>
-                </tr>
-                <tr>
-                    <td> <?php echo lang('friday'); ?></td>
-                    <td><?php echo $model_info->fri_text; ?></td>
-                </tr>
-                <tr>
-                    <td> <?php echo lang('saturday'); ?></td>
-                    <td><?php echo nl2br($model_info->sat_text); ?></td>
-                </tr>
-                <tr>
-                    <td> <?php echo lang('sunday'); ?></td>
-                    <td><?php echo $model_info->sun_text; ?></td>
-                </tr>
+                <?php } ?>
             </table>
         </div>
     </div>

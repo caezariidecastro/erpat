@@ -1114,3 +1114,12 @@ $lang["detail"] = "Detail";
 $lang["schedule_detail"] = "Schedule Detail";
 $lang["no_schedule"] = "No schedule assigned";
 
+$lang["mon"] = "Monday";
+$lang["tue"] = "Tuesday";
+$lang["wed"] = "Wednesday";
+$lang["thu"] = "Thursday";
+$lang["fri"] = "Friday";
+$lang["sat"] = "Saturday";
+$lang["sun"] = "Sunday";
+
+$lang["lunch_break"] = "Lunch Break";
