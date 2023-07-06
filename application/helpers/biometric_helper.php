@@ -920,7 +920,7 @@ class BioMeet {
                     $schedobj = $this->getScheduleObj($data);
                     if( !isset($schedobj['have_schedule']) ) {
                         $this->attd_data[] = array(
-                            "duration" => 0,
+                            "duration" => $actual_duration,
                             "schedule" => 0,
                             "worked" => 0,
                             "absent" => 0,
