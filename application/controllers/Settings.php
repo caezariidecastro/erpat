@@ -95,26 +95,12 @@ class Settings extends MY_Controller {
             $view_data['timezone_dropdown'][$zone] = $zone;
         }
 
-        $team_members = $this->Users_model->get_all_where(array(
-            "deleted" => 0, 
-            "status" => "active",
-            "user_type" => "staff"
-        ))->result();
-        $members_dropdown = array();
-        foreach ($team_members as $team_member) {
-            $fullname = $team_member->first_name . " " . $team_member->last_name;
-            if(get_setting('name_format') == "lastfirst") {
-                $fullname = $team_member->last_name.", ".$team_member->first_name;
-            }
-            $members_dropdown[] = array("id" => $team_member->id, "text" => $fullname);
-        }
-        $view_data['members_dropdown'] = json_encode($members_dropdown);
-
+        $view_data['members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $this->template->rander("settings/calendar", $view_data);
     }
 
     function save_calendar_settings() {
-        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "breaktime_tracking", "whitelisted_breaktime_tracking", "auto_clockout", "whitelisted_autoclockout", "autoclockout_trigger_hour", "auto_clockin_employee", "overtime_trigger", "bonuspay_trigger", "nightpay_start_trigger", "nightpay_end_trigger", "yearly_paid_time_off", "days_per_year");
+        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "overtime_trigger", "bonuspay_trigger", "nightpay_start_trigger", "nightpay_end_trigger", "yearly_paid_time_off", "days_per_year");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);
@@ -1091,6 +1077,32 @@ class Settings extends MY_Controller {
         $settings = array(
             "users_can_start_multiple_timers_at_a_time",
             "users_can_input_only_total_hours_instead_of_period"
+        );
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if (is_null($value)) {
+                $value = "";
+            }
+
+            $this->Settings_model->save_setting($setting, $value);
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
+    function kiosk() {
+        $view_data['members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $this->template->rander("settings/components/kiosk", $view_data);
+    }
+
+    function save_kiosk_settings() {
+        $settings = array(
+            "enable_selected_user_access", 
+            "whitelisted_selected_user_access",
+            "since_last_break", "since_last_clock_out",
+            "breaktime_tracking", "whitelisted_breaktime_tracking", 
+            "auto_clockout", "whitelisted_autoclockout", "autoclockout_trigger_hour", 
+            "auto_clockin_employee",
         );
 
         foreach ($settings as $setting) {

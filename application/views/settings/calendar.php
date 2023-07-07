@@ -102,56 +102,6 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="breaktime_tracking" class=" col-md-2"><?php echo lang('breaktime_tracking'); ?></label>
-                        <div class="col-md-2">
-                            <?php
-                            echo form_dropdown(
-                                "breaktime_tracking", array(
-                                "0" => lang("no"),
-                                "1" => lang("yes")
-                                ), get_setting('breaktime_tracking'), "class='select2 mini'"
-                            );
-                            ?>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" value="<?php echo get_setting('whitelisted_breaktime_tracking') ?>" name="whitelisted_breaktime_tracking" id="team_members_dropdown_breaktime_tracking" class="w100p validate-hidden"  placeholder="<?php echo lang('whitelisted'); ?>"  />    
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="auto_clockout" class=" col-md-2"><?php echo lang('auto_clockout'); ?></label>
-                        <div class="col-md-2">
-                            <?php
-                            echo form_dropdown(
-                                "auto_clockout", array(
-                                "0" => lang("no"),
-                                "1" => lang("yes")
-                                ), get_setting('auto_clockout'), "class='select2 mini'"
-                            );
-                            ?>
-                        </div>
-                        <div class="col-md-2">
-                            <?php
-                                $autoclockout_trigger_hour = get_setting('autoclockout_trigger_hour', 12.00);
-                                echo form_input(array(
-                                    "id" => "autoclockout_trigger_hour",
-                                    "name" => "autoclockout_trigger_hour",
-                                    "value" => $autoclockout_trigger_hour,
-                                    "class" => "form-control",
-                                    "placeholder" => lang('trigger_hour'),
-                                ));
-                            ?>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" value="<?php echo get_setting('whitelisted_autoclockout') ?>" name="whitelisted_autoclockout" id="team_members_dropdown_autoclockout" class="w100p validate-hidden"  placeholder="<?php echo lang('whitelisted'); ?>"  />    
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="auto_clockin" class=" col-md-2"><?php echo lang('auto_clockin'); ?></label>
-                        <div class="col-md-10">
-                            <input type="text" value="<?php echo get_setting('auto_clockin_employee') ?>" name="auto_clockin_employee" id="team_members_dropdown_autoclockin" class="w100p validate-hidden"  placeholder="<?php echo lang('type_employee_name'); ?>"  />    
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label for="overtime_trigger" class=" col-md-2"><?php echo lang('overtime_trigger'); ?></label>
                         <div class="col-md-2">
                             <?php
@@ -292,21 +242,6 @@
             bonuspayTriggerRefresh();
         });
 
-        function clockoutTriggerRefresh() {
-            let curVal = $("#autoclockout_trigger_hour").val();
-            let newVal = parseFloat(curVal).toFixed(2);
-            $("#autoclockout_trigger_hour").val(newVal);
-        }
-        clockoutTriggerRefresh();
-        $("#autoclockout_trigger_hour").change(() => {
-            clockoutTriggerRefresh();
-        });
-
         setTimePicker("#nightpay_start_trigger, #nightpay_end_trigger");
-
-        $("#team_members_dropdown_breaktime_tracking, #team_members_dropdown_autoclockout, #team_members_dropdown_autoclockin").select2({
-            multiple: true,
-            data: <?php echo ($members_dropdown); ?>
-        });
     });
 </script>

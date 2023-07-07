@@ -9,6 +9,7 @@ $settings_menu = array(
     ),
     "components" => array(
         array("name" => "gdpr", "url" => "settings/gdpr"),
+        array("name" => "kiosk", "url" => "settings/kiosk"),
         array("name" => "footer", "url" => "settings/footer"),
         array("name" => "tasks", "url" => "task_status")
     ),

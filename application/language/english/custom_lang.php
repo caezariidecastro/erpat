@@ -1128,3 +1128,6 @@ $lang["kiosk_config"] = "Kiosk Configuration";
 
 $lang["enable_selected_user_access"] = "Enable Selected User Access";
 $lang["whitelisted_selected_user_access"] = "Whitelisted User Access";
+
+$lang["since_last_break"] = "Waiting, since Last Break";
+$lang["since_last_clock_out"] = "Waiting, since Last Clockout";
