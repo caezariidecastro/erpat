@@ -1123,3 +1123,8 @@ $lang["sat"] = "Saturday";
 $lang["sun"] = "Sunday";
 
 $lang["lunch_break"] = "Lunch Break";
+$lang["kiosk"] = "Kiosk";
+$lang["kiosk_config"] = "Kiosk Configuration";
+
+$lang["enable_selected_user_access"] = "Enable Selected User Access";
+$lang["whitelisted_selected_user_access"] = "Whitelisted User Access";

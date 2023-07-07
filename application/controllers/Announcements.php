@@ -9,26 +9,24 @@ class Announcements extends MY_Controller {
         parent::__construct();
         $this->with_module("announcement", "redirect");
 
-        $this->init_permission_checker("announcement");
         $this->load->model("Announcements_model");
     }
 
     //show announcements list
     function index() {
-        $view_data["show_add_button"] = true;
-        if ($this->access_type !== "all") {
-            $view_data["show_add_button"] = false;
-        }
-        $view_data["show_option"] = true;
-        if ($this->access_type !== "all") {
-            $view_data["show_option"] = false;
-        }
+        $view_data["show_add_button"] = $this->with_permission("announcement_create");
+        $view_data["show_option"] = $this->with_permission("announcement");
+
         $this->template->rander("announcements/index", $view_data);
     }
 
     //show add/edit announcement form
     function form($id = 0) {
-        $this->access_only_allowed_members();
+        if($id) {
+            $this->with_permission("announcement_update", "no_permission");
+        } else {
+            $this->with_permission("announcement_create", "no_permission");
+        }
 
         $view_data['model_info'] = $this->Announcements_model->get_one($id);
         $view_data['share_with'] = $id ? explode(",", $view_data['model_info']->share_with) : array("all_members");
@@ -77,7 +75,6 @@ class Announcements extends MY_Controller {
 
     //add/edit an announcement
     function save() {
-        $this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "numeric",
@@ -87,6 +84,11 @@ class Announcements extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        if($id) {
+            $this->with_permission("announcement_update", "no_permission");
+        } else {
+            $this->with_permission("announcement_create", "no_permission");
+        }
 
         $target_path = get_setting("timeline_file_path");
         $files_data = move_files_from_temp_dir_to_permanent_dir($target_path, "announcement");
@@ -138,7 +140,13 @@ class Announcements extends MY_Controller {
 
     // upload a file 
     function upload_file() {
-        $this->access_only_allowed_members();
+        $create = $this->with_permission("announcement_create");
+        $update = $this->with_permission("announcement_create");
+
+        if(!$create && !$update) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
 
         upload_file_to_temp();
     }
@@ -162,7 +170,7 @@ class Announcements extends MY_Controller {
 
     //delete/undo an announcement
     function delete() {
-        $this->access_only_allowed_members();
+        $this->with_permission("announcement_delete", "no_permission");
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -218,11 +226,25 @@ class Announcements extends MY_Controller {
     private function _make_row($data) {
         $image_url = get_avatar($data->created_by_avatar);
         $user = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span> $data->created_by_user";
-        $option = "";
-        if ($this->access_type === "all") {
-            $option = anchor(get_uri("announcements/form/" . $data->id), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_announcement')))
-                    . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_announcement'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("announcements/delete"), "data-action" => "delete"));
+
+        if( $this->with_permission("announcement_update") ) {
+            $edit = '<li role="presentation">' . anchor(get_uri("announcements/form/" . $data->id), "<i class='fa fa-pencil'></i> ".lang('edit'), array("class" => "edit", "title" => lang('edit_announcement'))) . '</li>';
         }
+
+        if( $this->with_permission("announcement_delete") ) {
+            $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i> ".lang('delete'), array('title' => lang('delete_announcement'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("announcements/delete"), "data-action" => "delete")) . '</li>';
+        }
+
+        if($edit || $delete) {
+            $option_links = '<span class="dropdown inline-block">
+                <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                    <i class="fa fa-cogs"></i>&nbsp;
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">' . $edit . $delete . '</ul>
+            </span>';
+        }
+
         return array(
             anchor(get_uri("announcements/view/" . $data->id), $data->title, array("class" => "", "title" => lang('view'))),
             get_team_member_profile_link($data->created_by, $user),
@@ -230,7 +252,7 @@ class Announcements extends MY_Controller {
             format_to_date($data->start_date, false),
             $data->end_date,
             format_to_date($data->end_date, false),
-            $option
+            $option_links
         );
     }
 

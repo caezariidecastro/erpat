@@ -15,8 +15,8 @@ class Roles extends MY_Controller {
         $this->permission_lists = [ //empty, all, specific => team: 1, member: 23
 
             //DEFAULT
-            array("disable_event_sharing", "Coming Soon", "General", "Disable Event Sharing", null),
-            array("announcement", "Coming Soon", "General", "Manage Advisories", null),
+            array("disable_event_sharing", "Coming Soon", "Events", "Disable Event Sharing", null),
+            array("announcement", "Coming Soon", "Advisories", "Enabled", null, true),
             array("message_permission", "Coming Soon", "Default: Message", "Access", "dropdown"),
 
             //SECURITY
