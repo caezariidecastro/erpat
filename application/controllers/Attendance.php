@@ -483,15 +483,13 @@ class Attendance extends MY_Controller {
 
         $response = array_merge($response, array(
             strval($attd->getTotalWork()), 
-            strval($attd->getTotalOvertime()), 
+            strval($attd->getTotalRegularOvertime()), 
+            strval($attd->getTotalRestdayOvertime()), 
         ));
 
-        $track_bonuspay = get_setting('bonuspay_trigger');
-        if($track_bonuspay && $track_bonuspay != "0.00") {
-            $response = array_merge($response, array(
-                strval($attd->getTotalBonuspay())
-            ));
-        }
+        $response = array_merge($response, array(
+            strval($attd->getTotalBonuspay())
+        ));
 
         $response = array_merge($response, array(
             strval($attd->getTotalNightpay()), 
@@ -596,24 +594,26 @@ class Attendance extends MY_Controller {
                 if( isset($list_temp[$data->user_id]) ) {
                     $list_temp[$data->user_id][2] += (double)$attd->getTotalDuration();
                     $list_temp[$data->user_id][3] += (double)$attd->getTotalWork();
-                    $list_temp[$data->user_id][4] += (double)$attd->getTotalOvertime();
-                    $list_temp[$data->user_id][5] += (double)$attd->getTotalBonuspay();
-                    $list_temp[$data->user_id][6] += (double)$attd->getTotalNightpay();
-                    $list_temp[$data->user_id][7] += (double)$attd->getTotalLates();
-                    $list_temp[$data->user_id][8] += (double)$attd->getTotalOverbreak();
-                    $list_temp[$data->user_id][9] += (double)$attd->getTotalUndertime();
+                    $list_temp[$data->user_id][4] += (double)$attd->getTotalRegularOvertime();
+                    $list_temp[$data->user_id][5] += (double)$attd->getTotalRestdayOvertime();
+                    $list_temp[$data->user_id][6] += (double)$attd->getTotalBonuspay();
+                    $list_temp[$data->user_id][7] += (double)$attd->getTotalNightpay();
+                    $list_temp[$data->user_id][8] += (double)$attd->getTotalLates();
+                    $list_temp[$data->user_id][9] += (double)$attd->getTotalOverbreak();
+                    $list_temp[$data->user_id][10] += (double)$attd->getTotalUndertime();
                 } else {
                     $list_temp[$data->user_id] = array();
                     $list_temp[$data->user_id][0] = get_team_member_profile_link($data->user_id, $user);
                     $list_temp[$data->user_id][1] = $data->team_list;
                     $list_temp[$data->user_id][2] = (double)$attd->getTotalDuration();
                     $list_temp[$data->user_id][3] = (double)$attd->getTotalWork();
-                    $list_temp[$data->user_id][4] = (double)$attd->getTotalOvertime();
-                    $list_temp[$data->user_id][5] = (double)$attd->getTotalBonuspay();
-                    $list_temp[$data->user_id][6] = (double)$attd->getTotalNightpay();
-                    $list_temp[$data->user_id][7] = (double)$attd->getTotalLates();
-                    $list_temp[$data->user_id][8] = (double)$attd->getTotalOverbreak();
-                    $list_temp[$data->user_id][9] = (double)$attd->getTotalUndertime();
+                    $list_temp[$data->user_id][4] += (double)$attd->getTotalRegularOvertime();
+                    $list_temp[$data->user_id][5] += (double)$attd->getTotalRestdayOvertime();
+                    $list_temp[$data->user_id][6] = (double)$attd->getTotalBonuspay();
+                    $list_temp[$data->user_id][7] = (double)$attd->getTotalNightpay();
+                    $list_temp[$data->user_id][8] = (double)$attd->getTotalLates();
+                    $list_temp[$data->user_id][9] = (double)$attd->getTotalOverbreak();
+                    $list_temp[$data->user_id][10] = (double)$attd->getTotalUndertime();
                 }
             }
         }
@@ -631,6 +631,7 @@ class Attendance extends MY_Controller {
             $row[8] = strval($item[7]);
             $row[9] = strval($item[8]);
             $row[10] = strval($item[9]);
+            $row[11] = strval($item[10]);
             $result[] = $row;
         }
 

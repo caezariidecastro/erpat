@@ -75,8 +75,9 @@
                 {title: "<?php echo lang("out_time"); ?>", "class": "text-center"},
                 {title: "<?php echo lang("duration"); ?>", "class": "text-right"},
                 {title: "<?php echo lang("worked"); ?>", "class": "text-right"},
-                {title: "<?php echo lang("overtime"); ?>", "class": "text-right"},
-                {title: "<?php echo lang("bonus"); ?>", "class": "text-right"},
+                {title: "<?= lang("regular") ." ". lang("overtime"); ?>", "class": "text-right"},
+                {title: "<?= lang("restday") ." ". lang("overtime"); ?>", "class": "text-right"},
+                {title: "<?php echo lang("bonus_pay"); ?>", "class": "text-right"},
                 {title: "<?php echo lang("night"); ?>", "class": "text-right"},
                 {title: "<?php echo lang("lates"); ?>", "class": "text-right"},
                 {title: "<?php echo lang("overbreak"); ?>", "class": "text-right"},
@@ -85,8 +86,8 @@
                 {title: "<?php echo lang("status"); ?>", class: "w5p"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option"}
             ],
-            printColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17],
-            xlsColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17],
+            printColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18],
+            xlsColumns: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18],
             summation: [
                 {column: 9, dataType: 'time'},
                 {column: 10, dataType: 'number'},
@@ -96,6 +97,7 @@
                 {column: 14, dataType: 'number'},
                 {column: 15, dataType: 'number'},
                 {column: 16, dataType: 'number'},
+                {column: 17, dataType: 'number'},
             ],
             tableRefreshButton: true,
         });

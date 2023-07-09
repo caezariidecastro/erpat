@@ -16,10 +16,10 @@
                 {visible: false, searchable: false},
                 {title: "<?php echo lang("employee"); ?>", "class": "w20p", "iDataSort": 0},
                 {title: "<?php echo lang("department"); ?>", "class": "w15p text-center"},
-                {title: "<?php echo lang("date"); ?>", "class": "w15p text-center", "bSortable": false},
                 {title: "<?php echo lang("duration"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("worked"); ?>", "class": "w5p text-right"},
-                {title: "<?php echo lang("overtime"); ?>", "class": "w5p text-right"},
+                {title: "<?= lang("regular") ." ". lang("overtime"); ?>", "class": "text-right"},
+                {title: "<?= lang("restday") ." ". lang("overtime"); ?>", "class": "text-right"},
                 {title: "<?php echo lang("bonus"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("night"); ?>", "class": "w5p text-right"},
                 {title: "<?php echo lang("lates"); ?>", "class": "w5p text-right"},
@@ -27,7 +27,7 @@
                 {title: "<?php echo lang("undertime"); ?>", "class": "w5p text-right"},
             ],
             printColumns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-            xlsColumns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+            xlsColumns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10],
             summation: [
                 {column: 3, dataType: 'time'},
                 {column: 4, dataType: 'number'},
@@ -37,7 +37,7 @@
                 {column: 8, dataType: 'number'},
                 {column: 9, dataType: 'number'},
                 {column: 10, dataType: 'number'},
-                {column: 11, dataType: 'number'}
+                {column: 11, dataType: 'number'}            
             ],
             tableRefreshButton: true,
         });

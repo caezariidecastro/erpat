@@ -543,7 +543,7 @@ $lang["disable_access_help_message"] = "User will not be able to use the said mo
 
 $lang["worked"] = "Worked";
 $lang["idle"] = "Idle";
-$lang["bonus"] = "Bonus";
+$lang["bonus_pay"] = "Bonus Pay";
 $lang["night"] = "Night";
 $lang["lates"] = "Lates";
 $lang["undertime"] = "Undertime";
@@ -1131,3 +1131,5 @@ $lang["whitelisted_selected_user_access"] = "Whitelisted User Access";
 
 $lang["since_last_break"] = "Waiting, since Last Break";
 $lang["since_last_clock_out"] = "Waiting, since Last Clockout";
+
+$lang["restday"] = "Restday";

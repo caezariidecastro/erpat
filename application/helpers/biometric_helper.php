@@ -323,6 +323,26 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
+    public function getTotalRegularOvertime() {
+        $total = 0;
+        foreach($this->attd_data as $data) {
+            if( is_numeric($data['reg_ot']) ) {
+                $total += $data['reg_ot'];
+            }
+        }
+        return convert_number_to_decimal($total);
+    }
+
+    public function getTotalRestdayOvertime() {
+        $total = 0;
+        foreach($this->attd_data as $data) {
+            if( is_numeric($data['res_ot']) ) {
+                $total += $data['res_ot'];
+            }
+        }
+        return convert_number_to_decimal($total);
+    }
+
     public function getTotalAbsent() {
         $total = 0;
         foreach($this->attd_data as $data) {
@@ -404,7 +424,7 @@ class BioMeet {
             "deleted" => true
         ))->row();
         
-        if( isset($cur_sched) ) {
+        if( $data->sched_id && isset($cur_sched->id) ) {
 
             $current_schedin = null;
             $current_schedout = null;
@@ -524,7 +544,7 @@ class BioMeet {
                 }
 
                 return array(
-                    "have_schedule" => (isset($sched_in) && isset($sched_out) ? true:false),
+                    "have_schedule" => true,
                     
                     "start_time" => $sched_in,
                     "end_time" => $sched_out,
@@ -542,6 +562,10 @@ class BioMeet {
                     "start_second" => $second_end_date,
                     "second_duration" => intval($second_duration),
                 );
+            } else {
+                return array(
+                    "have_schedule" => false,
+                );
             }
         } 
         
@@ -557,12 +581,33 @@ class BioMeet {
                 $to_time = strtotime( convert_date_utc_to_local($data->out_time) );
                 $actual_duration = num_limit($to_time-$from_time);
 
+                //We now require schedule for attendance.
+                $schedobj = $this->getScheduleObj($data);
+
+                if( $data->status == "rejected" || $data->status == "clockout" || $schedobj == false ) {
+                    $this->attd_data[] = array(
+                        "duration" => $actual_duration,
+                        "schedule" => 0,
+                        "worked" => 0,
+                        "absent" => 0,
+                        "overtime" => 0,
+                        "reg_ot" => 0,
+                        "res_ot" => 0,
+                        "bonus" => 0,
+                        "night" => 0,
+                        "lates" => 0,
+                        "over" => 0,
+                        "under" => 0
+                    );
+                    continue;
+                } //we required schedule in order to compute for attendance.
+
                 if( $data->log_type === "overtime") {
                     
                     $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
                     $breakobj = (new DailyLog())->process($breaklog);
 
-                    $over_trigger = 0.5; //TODO: Set this on config. Note: in hours
+                    $over_trigger = 1.0; //TODO: Set this on config. Note: in hours
                     $break = $breakobj->getDuration('lunch', true);
                     $lunch = 0;
                     if($break > $over_trigger) { 
@@ -581,6 +626,8 @@ class BioMeet {
                         "worked" => 0,
                         "absent" => 0,
                         "overtime" => $overtime,
+                        "reg_ot" => 0,
+                        "res_ot" => $overtime,
                         "bonus" => 0,
                         "night" => $night,
                         "lates" => 0,
@@ -589,24 +636,6 @@ class BioMeet {
                     );
                     continue;
                 }
-                
-                //We now require schedule for attendance.
-                $schedobj = $this->getScheduleObj($data);
-                if( !isset($schedobj['have_schedule']) ) {
-                    $this->attd_data[] = array(
-                        "duration" => $actual_duration,
-                        "schedule" => 0,
-                        "worked" => 0,
-                        "absent" => 0,
-                        "overtime" => 0,
-                        "bonus" => 0,
-                        "night" => 0,
-                        "lates" => 0,
-                        "over" => 0,
-                        "under" => 0
-                    );
-                    continue;
-                } //we required schedule in order to compute for attendance.
 
                 $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
                 $breakobj = (new DailyLog())->process($breaklog);
@@ -618,15 +647,9 @@ class BioMeet {
 
                 $payable = num_limit($sched_duration-$lunch_sched);
                 
-                $under = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["end_time"])-$to_time, $payable) );
-                $lates = convert_seconds_to_hour_decimal( num_limit($from_time-strtotime($schedobj["start_time"]), $payable) );
+                $under = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["end_time"])-$to_time), $payable );
+                $lates = convert_seconds_to_hour_decimal( num_limit($from_time-strtotime($schedobj["start_time"]) ), $payable );
                 if( $lunch_sched > 0 ) {
-                    if( $lunch_log > 0 ) {
-                        $lunch = num_limit($lunch_log, $payable, $lunch_sched);
-                    } else {
-                        $under = num_limit( $under-$lunch_sched, $payable);
-                    }
-                    
                     $over = num_limit($lunch_log-$lunch_sched, $payable);
                 }
                 
@@ -640,52 +663,91 @@ class BioMeet {
                 ); //Get overlap of schedule and attendance.
                 $worked = num_limit( convert_seconds_to_hour_decimal($work_duration)-$nonworked );
 
-                //Stable
-                $pre_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
-                $post_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
-                
-                //Stable
-                $overtime_trigger = number_with_decimal( num_limit(get_setting('overtime_trigger')) );
-                if( $overtime_trigger && $pre_excess > $overtime_trigger ) {
-                    $overtime += $pre_excess;
-                }
-                if( $overtime_trigger && $post_excess > $overtime_trigger ) {
-                    $overtime += $post_excess;
+                if( isset($schedobj['have_schedule']) && $schedobj['have_schedule'] === true ) {
+
+                    //Stable
+                    $pre_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
+                    $post_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
+                    
+                    //Stable
+                    $overtime_trigger = number_with_decimal( get_setting('overtime_trigger', 0) );
+                    if( $overtime_trigger && $pre_excess > $overtime_trigger ) {
+                        $overtime += $pre_excess;
+                    }
+                    if( $overtime_trigger && $post_excess > $overtime_trigger ) {
+                        $overtime += $post_excess;
+                    }
+                    
+                    //Stable
+                    $bonuspay_trigger = number_with_decimal( get_setting('bonuspay_trigger', 0) );
+                    if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger ) {
+                        $bonus += $pre_excess;
+                    }
+                    if( $bonuspay_trigger && $post_excess > $bonuspay_trigger ) {
+                        $bonus += $post_excess;
+                    }          
+
+                    //Stable
+                    $night_diff_secs = get_night_differential( //TODO
+                        convert_date_utc_to_local($data->in_time), 
+                        convert_date_utc_to_local($data->out_time)  
+                    );
+                    $night = num_limit( 
+                        convert_seconds_to_hour_decimal($night_diff_secs) - $nonworked, 
+                        8 //TODO: 8, Get from config.
+                    ); 
+                    
+                    $this->attd_data[] = array(
+                        "duration" => $actual_duration,
+                        "schedule" => $sched_duration,
+                        "worked" => $worked,
+                        "absent" => $nonworked,
+                        "overtime" => $overtime,
+                        "reg_ot" => $overtime,
+                        "res_ot" => 0,
+                        "night" => $night,
+                        "bonus" => $bonus,
+                        "lates" => $lates,
+                        "over" => $over,
+                        "under" => $under
+                    ); //TODO: Process overbreak for personal.
+
+                } else { 
+
+                    //Stable
+                    $overtime = convert_seconds_to_hour_decimal( num_limit($to_time-$from_time) );
+                    $overtime = $overtime-$worked;
+
+                    //Stable
+                    $bonus = 0;       
+
+                    //Stable
+                    $night_diff_secs = get_night_differential( //TODO
+                        convert_date_utc_to_local($data->in_time), 
+                        convert_date_utc_to_local($data->out_time)  
+                    );
+                    $night = num_limit( 
+                        convert_seconds_to_hour_decimal($night_diff_secs) - $nonworked, 
+                        8 //TODO: 8, Get from config.
+                    ); 
+
+                    $this->attd_data[] = array(
+                        "duration" => $actual_duration,
+                        "schedule" => $sched_duration,
+                        "worked" => $worked,
+                        "absent" => $nonworked,
+                        "overtime" => $overtime,
+                        "reg_ot" => $overtime,
+                        "res_ot" => 0,
+                        "bonus" => 0,
+                        "night" => $night,
+                        "lates" => 0,
+                        "over" => 0,
+                        "under" => 0
+                    ); //date where employee dont have assigned worked sched.
+
                 }
 
-                //Stable
-                $bonuspay_trigger = number_with_decimal( num_limit(get_setting('bonuspay_trigger')) );
-                if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger ) {
-                    $bonus += $pre_excess;
-                }
-                if( $bonuspay_trigger && $post_excess > $bonuspay_trigger ) {
-                    $bonus += $post_excess;
-                }          
-
-                //Stable
-                $night_diff_secs = get_night_differential( //TODO
-                    convert_date_utc_to_local($data->in_time), 
-                    convert_date_utc_to_local($data->out_time)  
-                );
-                $night = num_limit( 
-                    convert_seconds_to_hour_decimal($night_diff_secs) - 
-                    ( $nonworked + $pre_excess + $post_excess ), 
-                    8 //TODO: 8, Get from config.
-                ); 
-
-                //TODO: Process overbreak for personal.
-                $this->attd_data[] = array(
-                    "duration" => $actual_duration,
-                    "schedule" => $sched_duration,
-                    "worked" => $worked,
-                    "absent" => $nonworked,
-                    "overtime" => $overtime,
-                    "night" => $night,
-                    "bonus" => $bonus,
-                    "lates" => $lates,
-                    "over" => $over,
-                    "under" => $under
-                );
             }
         }
             
