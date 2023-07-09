@@ -609,9 +609,9 @@ class BioMeet {
 
                     $over_trigger = 1.0; //TODO: Set this on config. Note: in hours
                     $break = $breakobj->getDuration('lunch', true);
-                    $lunch = 0;
+                    $lunch = $over_trigger;
                     if($break > $over_trigger) { 
-                        $lunch = $over_trigger;
+                        $lunch = $break;
                         $over = num_limit($break-$over_trigger);
                     }
                     
@@ -639,31 +639,29 @@ class BioMeet {
 
                 $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
                 $breakobj = (new DailyLog())->process($breaklog);
-
-                $sched_duration = convert_seconds_to_hour_decimal($schedobj["time_duration"]);
-                
-                $lunch_sched = convert_seconds_to_hour_decimal($schedobj["lunch_duration"]);
                 $lunch_log = $breakobj->getDuration('lunch', true);
-
-                $payable = num_limit($sched_duration-$lunch_sched);
                 
-                $under = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["end_time"])-$to_time), $payable );
-                $lates = convert_seconds_to_hour_decimal( num_limit($from_time-strtotime($schedobj["start_time"]) ), $payable );
-                if( $lunch_sched > 0 ) {
-                    $over = num_limit($lunch_log-$lunch_sched, $payable);
-                }
-                
-                //Stable
-                $nonworked = $lunch_sched + $lates + $over + $under;
-                $work_duration = get_time_overlap_seconds(
-                    convert_date_utc_to_local($data->in_time), 
-                    convert_date_utc_to_local($data->out_time), 
-                    $schedobj["start_time"], 
-                    $schedobj["end_time"]
-                ); //Get overlap of schedule and attendance.
-                $worked = num_limit( convert_seconds_to_hour_decimal($work_duration)-$nonworked );
-
                 if( isset($schedobj['have_schedule']) && $schedobj['have_schedule'] === true ) {
+                    
+                    $sched_duration = convert_seconds_to_hour_decimal($schedobj["time_duration"]);
+                    $lunch_sched = convert_seconds_to_hour_decimal($schedobj["lunch_duration"]);
+                    $payable = num_limit($sched_duration-$lunch_sched);
+
+                    $under = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["end_time"])-$to_time), $payable );
+                    $lates = convert_seconds_to_hour_decimal( num_limit($from_time-strtotime($schedobj["start_time"]) ), $payable );
+                    if( $lunch_sched > 0 ) {
+                        $over = num_limit($lunch_log-$lunch_sched, $payable);
+                    }
+                    
+                    //Stable
+                    $nonworked = $lunch_sched + $lates + $over + $under;
+                    $work_duration = get_time_overlap_seconds(
+                        convert_date_utc_to_local($data->in_time), 
+                        convert_date_utc_to_local($data->out_time), 
+                        $schedobj["start_time"], 
+                        $schedobj["end_time"]
+                    ); //Get overlap of schedule and attendance.
+                    $worked = num_limit( convert_seconds_to_hour_decimal($work_duration)-$lunch_sched );
 
                     //Stable
                     $night_diff_schedule = get_night_differential( //TODO
@@ -726,10 +724,7 @@ class BioMeet {
 
                     //Stable
                     $overtime = convert_seconds_to_hour_decimal( num_limit($to_time-$from_time) );
-                    $overtime = $overtime-$worked;
-
-                    //Stable
-                    $bonus = 0;       
+                    $overtime = $overtime-$lunch_log;      
 
                     //Stable
                     $night_diff_secs = get_night_differential( //TODO
@@ -747,8 +742,8 @@ class BioMeet {
                         "worked" => $worked,
                         "absent" => $nonworked,
                         "overtime" => $overtime,
-                        "reg_ot" => $overtime,
-                        "res_ot" => 0,
+                        "reg_ot" => 0,
+                        "res_ot" => $overtime,
                         "bonus" => 0,
                         "night" => $night,
                         "lates" => 0,

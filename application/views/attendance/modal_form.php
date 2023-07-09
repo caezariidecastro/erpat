@@ -204,6 +204,7 @@
 
         setTimePicker("#in_time, #out_time, #1-time, #2-time, #3-time, #4-time, #5-time, #6-time, #7-time, #8-time");
 
+        $("#log_type").val('<?= $model_info->log_type?$model_info->log_type:"overtime" ?>');    
         $("#attendance-form .select2").select2();
     });
 </script>
