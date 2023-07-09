@@ -666,16 +666,36 @@ class BioMeet {
                 if( isset($schedobj['have_schedule']) && $schedobj['have_schedule'] === true ) {
 
                     //Stable
-                    $pre_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
-                    $post_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
+                    $night_diff_schedule = get_night_differential( //TODO
+                        $schedobj["start_time"], 
+                        $schedobj["end_time"]
+                    );
+                    $night = num_limit( 
+                        convert_seconds_to_hour_decimal($night_diff_schedule)-($nonworked), 
+                        8 //TODO: 8, Get from config.
+                    ); //add if may overtime overlap pre and post.
+
+                    //Stable
+                    $pre_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
+                    $post_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
                     
                     //Stable
                     $overtime_trigger = number_with_decimal( get_setting('overtime_trigger', 0) );
                     if( $overtime_trigger && $pre_excess > $overtime_trigger ) {
                         $overtime += $pre_excess;
+                        
+                        $pre_night = get_night_differential(
+                            convert_date_utc_to_local($data->in_time), $schedobj["start_time"]
+                        );
+                        $night += convert_seconds_to_hour_decimal( $pre_night );
                     }
                     if( $overtime_trigger && $post_excess > $overtime_trigger ) {
                         $overtime += $post_excess;
+                        
+                        $post_night += get_night_differential(
+                            $schedobj["end_time"], convert_date_utc_to_local($data->out_time)
+                        );
+                        $night += convert_seconds_to_hour_decimal( $post_night );
                     }
                     
                     //Stable
@@ -686,16 +706,6 @@ class BioMeet {
                     if( $bonuspay_trigger && $post_excess > $bonuspay_trigger ) {
                         $bonus += $post_excess;
                     }          
-
-                    //Stable
-                    $night_diff_secs = get_night_differential( //TODO
-                        convert_date_utc_to_local($data->in_time), 
-                        convert_date_utc_to_local($data->out_time)  
-                    );
-                    $night = num_limit( 
-                        convert_seconds_to_hour_decimal($night_diff_secs) - $nonworked, 
-                        8 //TODO: 8, Get from config.
-                    ); 
                     
                     $this->attd_data[] = array(
                         "duration" => $actual_duration,
