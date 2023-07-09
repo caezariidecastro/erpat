@@ -584,7 +584,7 @@ class BioMeet {
                 //We now require schedule for attendance.
                 $schedobj = $this->getScheduleObj($data);
 
-                if( $data->status == "rejected" || $data->status == "clockout" || $schedobj == false ) {
+                if( $data->status == "rejected" || $data->status == "clockout" ) {
                     $this->attd_data[] = array(
                         "duration" => $actual_duration,
                         "schedule" => 0,
@@ -602,7 +602,7 @@ class BioMeet {
                     continue;
                 } //we required schedule in order to compute for attendance.
 
-                if( $data->log_type === "overtime") {
+                if( $data->log_type === "overtime" ) {
                     
                     $breaklog = isset($data->break_time)?unserialize($data->break_time):[];
                     $breakobj = (new DailyLog())->process($breaklog);
@@ -626,8 +626,8 @@ class BioMeet {
                         "worked" => 0,
                         "absent" => 0,
                         "overtime" => $overtime,
-                        "reg_ot" => 0,
-                        "res_ot" => $overtime,
+                        "reg_ot" => $schedobj == true ? $overtime : 0,
+                        "res_ot" => $schedobj == false ? $overtime : 0,
                         "bonus" => 0,
                         "night" => $night,
                         "lates" => 0,
