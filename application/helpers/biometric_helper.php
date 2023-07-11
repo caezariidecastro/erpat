@@ -439,6 +439,21 @@ class BioMeet {
             $second_end_date = null;
             $need_adjust = false;
 
+            $current_day = convert_date_utc_to_local($data->in_time);
+            //Override the date in and out to the previous to conpensate with the next day.
+            //This will only affect the overnight schedule on saturday.
+            if( is_within_range( $current_day ) && convert_date_format($current_day, 'N') == 6 ) {
+                $data->in_time = convert_date_local_to_utc( 
+                    sub_day_to_datetime(
+                        convert_date_utc_to_local($data->in_time), 1
+                ));
+
+                $data->out_time = convert_date_local_to_utc( 
+                    sub_day_to_datetime(
+                        convert_date_utc_to_local($data->out_time), 1
+                ));
+            }
+
             //First! If no schedule make sure to have an actual in and out as official schedule.
             $sched_day_in = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
             $sched_in = convert_date_utc_to_local($data->in_time);
@@ -576,6 +591,21 @@ class BioMeet {
 
         foreach($this->attendance as $data) {
             if(is_date_exists($data->out_time)) {
+
+                $current_day = convert_date_utc_to_local($data->in_time);
+                //Override the date in and out to the previous to conpensate with the next day.
+                //This will only affect the overnight schedule on saturday.
+                if( is_within_range( $current_day ) && convert_date_format($current_day, 'N') == 6 ) {
+                    $data->in_time = convert_date_local_to_utc( 
+                        sub_day_to_datetime(
+                            convert_date_utc_to_local($data->in_time), 1
+                    ));
+
+                    $data->out_time = convert_date_local_to_utc( 
+                        sub_day_to_datetime(
+                            convert_date_utc_to_local($data->out_time), 1
+                    ));
+                }
 
                 $from_time = strtotime( convert_date_utc_to_local($data->in_time) );
                 $to_time = strtotime( convert_date_utc_to_local($data->out_time) );

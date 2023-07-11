@@ -581,7 +581,7 @@ if (!function_exists('add_to_datetime')) {
     
 }
 
-if (!function_exists('add_to_datetime')) {
+if (!function_exists('sub_day_to_datetime')) {
 
     function sub_day_to_datetime($datetime, $days = 0, $format = "Y-m-d H:i:s") {
         $date = new DateTime($datetime);
@@ -753,5 +753,18 @@ if (!function_exists('get_time_overlap_seconds')) {
         }
      
         return 0; //Return 0 if there is no overlap
+    }
+}
+
+if (!function_exists('is_within_range')) {
+    function is_within_range($datetime, $start = '00:00', $end = '03:00') {
+        $dt = new DateTime($datetime);
+        $dt_time = $dt->format('H:i');
+    
+        if ($dt_time >= $start && $dt_time <= $end) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
