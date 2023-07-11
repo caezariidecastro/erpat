@@ -338,80 +338,63 @@ class Payrolls extends MY_Controller {
         $lists = array();
         $actives = $this->Users_model->get_all_active();
         $filter = $this->input->post('category_select2_filter');
-        $filter = $filter?$filter:"weekly"; //Temp: should be daily
 
         foreach($actives as $user) {
-            $deductions = get_user_deductions($user->id, true);
-            $contribution = get_contribution_by_category($deductions, $filter);
-            $lists[] = [
+            $user_id = $user->id;
+            $filter = $filter?$filter:"weekly";
+
+            $user_row = [
                 $user->id,
                 get_team_member_profile_link($user->id, $user->user_name),
-                cell_input('sss_contri_'.$user->id, convert_number_to_decimal($contribution['sss_contri']), 'number', 'cell-class cell-class-'.$user->id, true),
-                cell_input('pagibig_contri_'.$user->id, convert_number_to_decimal($contribution['pagibig_contri']), 'number', 'cell-class cell-class-'.$user->id, true),
-                cell_input('philhealth_contri_'.$user->id, convert_number_to_decimal($contribution['philhealth_contri']), 'number', 'cell-class cell-class-'.$user->id, true),
-                cell_input('hmo_contri_'.$user->id, convert_number_to_decimal($contribution['hmo_contri']), 'number', 'cell-class cell-class-'.$user->id, true),
-                cell_input('company_loan_'.$user->id, convert_number_to_decimal($contribution['company_loan']), 'number', 'cell-class cell-class-'.$user->id, true),
-                cell_input('sss_loan_'.$user->id, convert_number_to_decimal($contribution['sss_loan']), 'number', 'cell-class cell-class-'.$user->id, true),
-                cell_input('hdmf_loan_'.$user->id, convert_number_to_decimal($contribution['hdmf_loan']), 'number', 'cell-class cell-class-'.$user->id, true),
-
-                js_anchor("<i class='fa fa-pencil fa-fw'></i>", array('id' => "cell-edit-".$user->id, "data-filter" => $filter, 'name' => $user->id, 'title' => lang('edit'), "class" => "cell-style cell-edit")).
-                js_anchor("<i class='fa fa-save fa-fw'></i>", array('id' => "cell-save-".$user->id, "data-filter" => $filter, 'name' => $user->id, 'title' => lang('save'), "class" => "cell-style cell-save hide"))
             ];
+    
+            $total = 0;
+            foreach(array(
+                "sss_contri", "pagibig_contri", "philhealth_contri", "hmo_contri",
+                "company_loan", "sss_loan", "hdmf_loan"
+            ) as $item) {
+                $meta_key = "user_".$filter."_".$item."_".$user->id."_deductions";
+                $meta_val = $this->Settings_model->get_setting($meta_key, "user");
+    
+                $user_row[] = cell_input(
+                    $item.'_'.$user->id, 
+                    convert_number_to_decimal($meta_val), 'number', 
+                    'cell-class cell-class-'.$user->id, true
+                );
+            }
+
+            $user_row[] = js_anchor("<i class='fa fa-pencil fa-fw'></i>", 
+                    array('id' => "cell-edit-".$user->id, "data-filter" => $filter, 'name' => $user->id, 'title' => lang('edit'), 
+                    "class" => "cell-style cell-edit")).
+                js_anchor("<i class='fa fa-save fa-fw'></i>", 
+                    array('id' => "cell-save-".$user->id, "data-filter" => $filter, 'name' => $user->id, 'title' => lang('save'), 
+                    "class" => "cell-style cell-save hide"));
+
+            $lists[] = $user_row;
         }
         echo json_encode(array("data"=>$lists));
     }
 
     function save_contribution() {
         $this->with_permission("staff_update", "no_permission");
-
+        
         $user_id = $this->input->post('user_id');
-        $deductions = get_user_deductions($user_id, true);
-        $data = $deductions;
-
         $filter = $this->input->post('filter');
-        if($filter == 'monthly') {
-            $filter = 4;
-        } else if($filter == 'biweekly') {
-            $filter = 3;
-        } else if($filter == 'weekly') {
-            $filter = 2;
-        } else {
-            $filter = 1;
-        }
 
-        for($i=0; $i<count($data); $i++) {
-            if($data[$i][0] == "sss_contri") {
-                $data[$i][$filter] = $this->input->post('sss_contri');
-            }
-            if($data[$i][0] == "pagibig_contri") {
-                $data[$i][$filter] = $this->input->post('pagibig_contri');
-            }
-            if($data[$i][0] == "philhealth_contri") {
-                $data[$i][$filter] = $this->input->post('philhealth_contri');
-            }
-            if($data[$i][0] == "hmo_contri") {
-                $data[$i][$filter] = $this->input->post('hmo_contri');
-            }
-            if($data[$i][0] == "company_loan") {
-                $data[$i][$filter] = $this->input->post('company_loan');
-            }
-            if($data[$i][0] == "sss_loan") {
-                $data[$i][$filter] = $this->input->post('sss_loan');
-            }
-            if($data[$i][0] == "hdmf_loan") {
-                $data[$i][$filter] = $this->input->post('hdmf_loan');
+        $total = 0;
+        foreach(array(
+            "sss_contri", "pagibig_contri", "philhealth_contri", "hmo_contri",
+            "company_loan", "sss_loan", "hdmf_loan"
+        ) as $item) {
+            $meta_key = "user_".$filter."_".$item."_".$user_id."_deductions";
+            $meta_val = $this->input->post( $item );
+
+            if($saved = $this->Settings_model->save_setting($meta_key, $meta_val, "user")) {
+                $total += 1;
             }
         }
 
-        //Save now
-        $prefix = "user_".$user_id."_";
-        $result = serialize($data);
-
-        if($saved = $this->Settings_model->save_setting($prefix."deductions", $result, "user")) {
-            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
-        } else {
-            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
-        }        
+        echo json_encode(array("success" => true, 'message' => lang('record_saved')." Total: ".$total));       
     }
 
     function contribution_modal_form() {
@@ -427,57 +410,46 @@ class Payrolls extends MY_Controller {
 
         $actives = $this->Users_model->get_all_active();
         foreach($actives as $user) {
-            $deductions = get_user_deductions($user->id, true);
-            $data = $deductions;
-
-            $hourly_rate = get_hourly_rate($user->id, false);
+            
+            $user_id = $user->id;
+            $hourly_rate = get_hourly_rate($user_id, false);
             $monthly_salary = get_monthly_from_hourly($hourly_rate, false);
 
-            for($i=0; $i<count($data); $i++) {
-                if(is_numeric($monthly_salary) && $monthly_salary > 0) {
-                    if($data[$i][0] == "sss_contri") {
-                        $data[$i][2] = get_sss_contribution($monthly_salary, false)/4; //weekly
-                        $data[$i][3] = get_sss_contribution($monthly_salary, false)/2; //biweekly
-                        $data[$i][4] = get_sss_contribution($monthly_salary, false); //monthly
+            //Check monthly else pass.
+            $total = 0;
+            foreach(array(
+                "weekly", "biweekly", "monthly"
+            ) as $filter) {
+                if($filter == "weekly") {
+                    $devided = 4;
+                } else if($filter == "biweekly") {
+                    $devided = 2;
+                } else { //monthly
+                    $devided = 1;
+                } 
+
+                foreach(array(
+                    "sss_contri", "pagibig_contri", "philhealth_contri"
+                ) as $item) {
+                    $meta_key = "user_".$filter."_".$item."_".$user_id."_deductions";
+                    
+                    if($item == "sss_contri") {
+                        $this->Settings_model->save_setting($meta_key, 
+                            get_sss_contribution($monthly_salary, false)/$devided, "user");
+                    } else if($item == "pagibig_contri") {
+                        $this->Settings_model->save_setting($meta_key, 
+                            get_pagibig_contribution($monthly_salary, false)/$devided, "user");
+                    } else if($item == "philhealth_contri") {
+                        $this->Settings_model->save_setting($meta_key, 
+                            get_phealth_contribution($monthly_salary, false)/$devided, "user");
                     }
-                    if($data[$i][0] == "pagibig_contri") {
-                        $data[$i][2] = convert_number_to_decimal((200)/4); //weekly
-                        $data[$i][3] = convert_number_to_decimal((200/2)); //biweekly
-                        $data[$i][4] = convert_number_to_decimal((200)); //monthly
-                    }
-                    if($data[$i][0] == "philhealth_contri") {
-                        $data[$i][2] = get_phealth_contribution($monthly_salary, false)/4; //weekly
-                        $data[$i][3] = get_phealth_contribution($monthly_salary, false)/2; //biweekly
-                        $data[$i][4] = get_phealth_contribution($monthly_salary, false); //monthly
-                    }
-                    if($data[$i][0] == "hmo_contri") {
-                        $data[$i][2] = $data[$i][2];
-                    }
-                    if($data[$i][0] == "company_loan") {
-                        $data[$i][2] = $data[$i][2];
-                    }
-                    if($data[$i][0] == "sss_loan") {
-                        $data[$i][2] = $data[$i][2];
-                    }
-                    if($data[$i][0] == "hdmf_loan") {
-                        $data[$i][2] = $data[$i][2];
-                    }
+    
+                    $total += 1;
                 }
             }
-
-            //Save now
-            $prefix = "user_".$user->id."_";
-            $result = serialize($data);
-
-            if($saved = $this->Settings_model->save_setting($prefix."deductions", $result, "user")) {
-                $success += 1;
-            } else {
-                $error += 1;
-            }
         }
-        $total = $success + $failed;
 
-        echo json_encode(array("success" => true, 'message' => lang('record_saved').". $success out of {$total}."));
+        echo json_encode(array("success" => true, 'message' => lang('record_saved').". Total: $total"));
     }
 
     protected function generate_payslip($payroll_info, $user_id = 0) {

@@ -206,6 +206,19 @@ if (!function_exists('get_phealth_contribution')) {
     }
 }
 
+if (!function_exists('get_pagibig_contribution')) {
+    function get_pagibig_contribution($monthly_salary, $to_currency = true) {
+        
+        $current = 200;
+
+        if($to_currency) {
+            return to_currency($current);
+        }
+            
+        return $current;
+    }
+}
+
 if (!function_exists('get_user_deductions')) {
     function get_user_deductions($user_id, $is_raw = false) {
         $ci = get_instance();
