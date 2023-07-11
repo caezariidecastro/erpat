@@ -835,4 +835,14 @@ class MY_Controller extends CI_Controller {
 
         return $leave_type_select2;
     }
+
+    protected function _get_account_select2_data() {
+        $Accounts = $this->Accounts_model->get_all()->result();
+        $account_select2 = array(array('id' => '', 'text'  => '- Accounts -'));
+
+        foreach ($Accounts as $account) {
+            $account_select2[] = array('id' => $account->id, 'text' => $account->name) ;
+        }
+        return $account_select2;
+    }
 }

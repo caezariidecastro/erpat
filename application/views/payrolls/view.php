@@ -63,7 +63,7 @@
         <div class="box">
             <div class="box-content message-view">
                 <input type="hidden" id="item_id">
-                <div class="col-sm-12 col-md-5 pl0 pr10">
+                <div class="col-sm-12 pl0 pr10">
                     <div id="message-list-box" class="panel panel-default">
                         <div class="panel-heading clearfix">
                             <div class="pull-left p5" style="font-size: 18px;">
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-7 p0" id="item-details-placeholder">
+                <!-- <div class="col-sm-12 col-md-7 p0" id="item-details-placeholder">
                     <div class="panel panel-default p15 b-t">
                         <div class="clearfix">
                             <h4><span id="payslip-section-head">Preview</span></h4>
@@ -84,11 +84,10 @@
 
                         <div class="clearfix b-t b-info ">
                             <div id="payslip-section" class="col-md-12 mt20 mb20" style="text-align: center;">
-                                <?= lang('select_a_payslip'); ?>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -104,29 +103,32 @@
             optionVisibility = true;
         }
 
-        <?php //TODO: LISTING OF PAYSLIPS ?>
         $("#payslip-table").appTable({
             source: '<?php echo_uri("payrolls/payslip_list_data/" . $payroll_info->id . "/") ?>',
-            //order: [[0, "asc"]],
-            //filterDropdown: [
-                //{id: "user_select2_filter", name: "user_select2_filter", class: "w200", options: <?php //echo json_encode($user_select2); ?>},
-                //{id: "department_select2_filter", name: "department_select2_filter", class: "w200", options: <?php //echo json_encode($department_select2); ?>},
-            //],
+            order: [[0, "asc"]],
             columns: [
                 {title: '<?php echo lang("payslip_id") ?>', "class": "w10p"},
                 {title: '<?php echo lang("employee") ?>', "class": "w15p", "iDataSort": 1},
+                {title: '<?php echo lang("basic_pay") ?>', "class": "text-right w10p"},
                 {title: '<?php echo lang("work_hour") ?>', "class": "text-right w10p"},
+                {title: '<?php echo lang("overtime") ?>', "class": "text-right w10p"},
+                {title: '<?php echo lang("earnings") ?>', "class": "text-right w10p"},
+                {title: '<?php echo lang("deductions") ?>', "class": "text-right w10p"},
                 {title: '<?php echo lang("tax_due") ?>', "class": "text-right w10p"},
                 {title: '<?php echo lang("net_pay") ?>', "class": "text-right w10p"},
                 {title: '<?php echo lang("status") ?>', "class": "text-right w10p"},
-                {title: '<i class="fa fa-bars"></i>', "class": "text-center option w10p", visible: optionVisibility}
+                {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option w10p", visible: optionVisibility}
             ],
             summation: [
                 {column: 2, dataType: 'number'},
                 {column: 3, dataType: 'currency'},
                 {column: 4, dataType: 'currency'},
+                {column: 5, dataType: 'currency'},
+                {column: 6, dataType: 'currency'},
+                {column: 7, dataType: 'currency'},
+                {column: 8, dataType: 'currency'},
             ],
-            //tableRefreshButton: true,
+            tableRefreshButton: true,
             onInitComplete: function () {
                 $('.override_btn').on('click', function() {
                     appLoader.show();

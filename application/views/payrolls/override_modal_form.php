@@ -13,33 +13,32 @@
 
 <?php echo form_open(get_uri("fas/payrolls/save"), array("id" => "payslip-form", "class" => "general-form", "role" => "form")); ?>
 
-<div id="page-content" class="clearfix">
+<div class="clearfix" style="padding: 0 20px 15px;">
+    <div class="col-md-3"> 
+        <h6>NAME</h6><input id="fullname" type="text" name="fullname" value="<?= $fullname ?>" class="input-detail" disabled></input>
+    </div>
+    <div class="col-md-3"> 
+        <h6>DEPARTMENT</h6><input name="department" value="<?= $department ?>" class="input-detail" disabled></input>
+    </div>
+    <div class="col-md-3"> 
+        <h6>TITLE</h6><input name="job_title" value="<?= $job_title ?>" class="input-detail" disabled></input>
+    </div>
+    <div class="col-md-3"> 
+        <h6>MONTHLY SALARY</h6><input name="monthly_salary" value="<?= $salary ?>" class="input-detail" disabled></input>
+    </div>
+</div>
+
+<div id="page-content" class="clearfix" style="padding: 0 20px 15px;">
     <ul id="team-member-view-tabs" data-toggle="ajax-tab" class="nav nav-tabs" role="tablist">
-        <li><a  role="presentation" class="active" href="javascript:;" data-target="#tab-employee-info"> <?php echo lang('employee_info'); ?></a></li>
-        <li><a  role="presentation" href="javascript:;" data-target="#tab-biometric-logs"> <?php echo lang('biometric_logs'); ?></a></li>
+        <li><a  role="presentation" class="active" href="javascript:;" data-target="#tab-biometric-logs"> <?php echo lang('biometric_logs'); ?></a></li>
         <li><a  role="presentation" href="javascript:;" data-target="#tab-earnings"> <?php echo lang('earnings'); ?></a></li>
         <li><a  role="presentation" href="javascript:;" data-target="#tab-deductions"> <?php echo lang('deductions'); ?></a></li>
-        <li><a  role="presentation" href="javascript:;" data-target="#tab-summary"> <?php echo lang('summary'); ?></a></li>
     </ul>
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane mt15 fade active" id="tab-employee-info">
-            <div class="col-md-6"> 
-                <h6>NAME</h6><input id="fullname" type="text" name="fullname" value="<?= $fullname ?>" class="input-detail" disabled></input>
-            </div>
-            <div class="col-md-6"> 
-                <h6>DEPARTMENT</h6><input name="department" value="<?= $department ?>" class="input-detail" disabled></input>
-            </div>
-            <div class="col-md-6"> 
-                <h6>TITLE</h6><input name="job_title" value="<?= $job_title ?>" class="input-detail" disabled></input>
-            </div>
-            <div class="col-md-6"> 
-                <h6>MONTHLY SALARY</h6><input name="monthly_salary" value="<?= $salary ?>" class="input-detail" disabled></input>
-            </div>
-        </div>
-        <div role="tabpanel" class="tab-pane mt15 fade" id="tab-biometric-logs">
+        <div role="tabpanel" class="tab-pane mt15 fade active" id="tab-biometric-logs">
             <div class="row">
 
-                <div class="col-md-3"> 
+                <div class="col-md-4"> 
                     <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">WORK SCHEDULE (hrs)</h6>
                     <?php foreach($biometrics as $addt) { ?>
                         <div class="form-group">
@@ -72,9 +71,9 @@
                     <?php } ?>
                 </div> 
 
-                <div class="col-md-3"> 
-                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">NIGHT DIFFERENTIAL (hrs)</h6>
-                    <?php foreach($night_diff as $addt) { ?>
+                <div class="col-md-4"> 
+                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">Holidays (hrs)</h6>
+                    <?php foreach($holiday as $addt) { ?>
                         <div class="form-group">
                             <label for="<?= $addt['key'] ?>" class=" col-md-4"><?php echo lang( $addt['key'] ); ?></label>
                             <div class="col-md-8">
@@ -82,23 +81,19 @@
                                     "id" => $addt['key'],
                                     "name" => $addt['key'],
                                     "type" => "number",
-                                    
-                                    
                                     "value" => $addt['value'],
                                     "class" => "form-control",
                                     "style" => "text-align: right;",
                                     "placeholder" => "0.00",
                                     "autocomplete" => "off",
-                                    
-                                    
                                 )); ?>
                             </div>
                         </div>
                     <?php } ?>
                 </div> 
 
-                <div class="col-md-3">
-                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">OVERTIME PAY (hrs)</h6>
+                <div class="col-md-4">
+                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">OT/ND (hrs)</h6>
                     <?php foreach($overtime as $eother) { ?>
                         <div class="form-group">
                             <label for="<?= $eother['key'] ?>" class=" col-md-4"><?php echo lang( $eother['key'] ); ?></label>
@@ -107,40 +102,11 @@
                                     "id" => $eother['key'],
                                     "name" => $eother['key'],
                                     "type" => "number",
-                                    
-                                    
                                     "value" => $eother['value'],
                                     "class" => "form-control",
                                     "style" => "text-align: right;",
                                     "placeholder" => "0.00",
                                     "autocomplete" => "off",
-                                    
-                                    
-                                )); ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div> 
-
-                <div class="col-md-3">
-                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">OVERTIME ND (hrs)</h6>
-                    <?php foreach($ot_nd as $eother) { ?>
-                        <div class="form-group">
-                            <label for="<?= $eother['key'] ?>" class=" col-md-4"><?php echo lang( $eother['key'] ); ?></label>
-                            <div class="col-md-8">
-                                <?= form_input(array(
-                                    "id" => $eother['key'],
-                                    "name" => $eother['key'],
-                                    "type" => "number",
-                                    
-                                    
-                                    "value" => $eother['value'],
-                                    "class" => "form-control",
-                                    "style" => "text-align: right;",
-                                    "placeholder" => "0.00",
-                                    "autocomplete" => "off",
-                                    
-                                    
                                 )); ?>
                             </div>
                         </div>
@@ -194,15 +160,11 @@
                                     "id" => $addt['key'],
                                     "name" => $addt['key'],
                                     "type" => "number",
-                                    
-                                    
                                     "value" => $addt['value'],
                                     "class" => "form-control",
                                     "style" => "text-align: right;",
                                     "placeholder" => "0.00",
                                     "autocomplete" => "off",
-                                    
-                                    
                                 )); ?>
                             </div>
                         </div>
@@ -217,16 +179,12 @@
                                 <?= form_input(array(
                                     "id" => $eother['key'],
                                     "name" => $eother['key'],
-                                    "type" => "number",
-                                    
-                                    
+                                    "type" => $eother['type'],
                                     "value" => $eother['value'],
                                     "class" => "form-control",
                                     "style" => "text-align: right;",
-                                    "placeholder" => "0.00",
+                                    "placeholder" => $eother['type'],
                                     "autocomplete" => "off",
-                                    
-                                    
                                 )); ?>
                             </div>
                         </div>
@@ -246,15 +204,11 @@
                                     "id" => $non_tax['key'],
                                     "name" => $non_tax['key'],
                                     "type" => "number",
-                                    
-                                    
                                     "value" => $non_tax['value'],
                                     "class" => "form-control",
                                     "style" => "text-align: right;",
                                     "placeholder" => "0.00",
                                     "autocomplete" => "off",
-                                    
-                                    
                                 )); ?>
                             </div>
                         </div>
@@ -270,15 +224,11 @@
                                     "id" => $loans['key'],
                                     "name" => $loans['key'],
                                     "type" => "number",
-                                    
-                                    
-                                    "value" => $loans['value'],
+                                    "value" => $other['value'],
                                     "class" => "form-control",
                                     "style" => "text-align: right;",
                                     "placeholder" => "0.00",
                                     "autocomplete" => "off",
-                                    
-                                    
                                 )); ?>
                             </div>
                         </div>
@@ -293,95 +243,92 @@
                                 <?= form_input(array(
                                     "id" => $other['key'],
                                     "name" => $other['key'],
-                                    "type" => "number",
-                                    
-                                    
+                                    "type" => $other['type'],
                                     "value" => $other['value'],
                                     "class" => "form-control",
                                     "style" => "text-align: right;",
-                                    "placeholder" => "0.00",
-                                    "autocomplete" => "off",
-                                    
-                                    
-                                )); ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div>
-            </div>
-        </div>
-        <div role="tabpanel" class="tab-pane mt15 fade" id="tab-summary">
-            <div class="row">
-                <div class="col-md-4"> 
-                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">Additionals (auto)</h6>
-                    <?php foreach($summary_additionals as $summ) { ?>
-                        <div class="form-group">
-                            <label for="<?= $summ['key'] ?>" class=" col-md-4"><?php echo lang( $summ['key'] ); ?></label>
-                            <div class="col-md-8">
-                                <?= form_input(array(
-                                    "id" => $summ['key'],
-                                    "name" => $summ['key'],
-                                    "type" => "text",
-                                    "disabled" => true,
-                                    "value" => $summ['value'],
-                                    "class" => "disabled form-control",
-                                    "style" => "text-align: right;",
-                                    "placeholder" => "0.00",
+                                    "placeholder" => $other['type'],
                                     "autocomplete" => "off",
                                 )); ?>
                             </div>
                         </div>
                     <?php } ?>
                 </div>
-                <div class="col-md-4"> 
-                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">Deductions (auto)</h6>
-                    <?php foreach($summary_deductions as $summ) { ?>
-                        <div class="form-group">
-                            <label for="<?= $summ['key'] ?>" class=" col-md-4"><?php echo lang( $summ['key'] ); ?></label>
-                            <div class="col-md-8">
-                                <?= form_input(array(
-                                    "id" => $summ['key'],
-                                    "name" => $summ['key'],
-                                    "type" => "text",
-                                    "disabled" => true,
-                                    "value" => $summ['value'],
-                                    "class" => "disabled form-control",
-                                    "style" => "text-align: right;",
-                                    "placeholder" => "0.00",
-                                    "autocomplete" => "off",
-                                )); ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div>
-                <div class="col-md-4"> 
-                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">FINAL (auto)</h6>
-                    <?php foreach($summary_totals as $summ) { ?>
-                        <div class="form-group">
-                            <label for="<?= $summ['key'] ?>" class=" col-md-4"><?php echo lang( $summ['key'] ); ?></label>
-                            <div class="col-md-8">
-                                <?= form_input(array(
-                                    "id" => $summ['key'],
-                                    "name" => $summ['key'],
-                                    "type" => "text",
-                                    "disabled" => true,
-                                    "value" => $summ['value'],
-                                    "class" => "disabled form-control",
-                                    "style" => "text-align: right;",
-                                    "placeholder" => "0.00",
-                                    "autocomplete" => "off",
-                                )); ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="row mt15" style="text-align: center;">
-                <button type="button" class="calculate btn btn-info mr15" disabled><span class="fa fa-calculator"></span> <?php echo lang('calculate'); ?></button>
-                <button type="button" class="save_data btn btn-danger"><span class="fa fa-check-circle"></span> <?php echo lang('overwrite'); ?></button>
             </div>
         </div>
     </div>   
+</div>
+
+<div class="clearfix" style="padding: 0 20px 15px;">
+    <div class="row">
+        <div class="col-md-4"> 
+            <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">Additionals (auto)</h6>
+            <?php foreach($summary_additionals as $summ) { ?>
+                <div class="form-group">
+                    <label for="<?= $summ['key'] ?>" class=" col-md-4"><?php echo lang( $summ['key'] ); ?></label>
+                    <div class="col-md-8">
+                        <?= form_input(array(
+                            "id" => $summ['key'],
+                            "name" => $summ['key'],
+                            "type" => "text",
+                            "disabled" => true,
+                            "value" => $summ['value'],
+                            "class" => "disabled form-control",
+                            "style" => "text-align: right;",
+                            "placeholder" => "0.00",
+                            "autocomplete" => "off",
+                        )); ?>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="col-md-4"> 
+            <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">Deductions (auto)</h6>
+            <?php foreach($summary_deductions as $summ) { ?>
+                <div class="form-group">
+                    <label for="<?= $summ['key'] ?>" class=" col-md-4"><?php echo lang( $summ['key'] ); ?></label>
+                    <div class="col-md-8">
+                        <?= form_input(array(
+                            "id" => $summ['key'],
+                            "name" => $summ['key'],
+                            "type" => "text",
+                            "disabled" => true,
+                            "value" => $summ['value'],
+                            "class" => "disabled form-control",
+                            "style" => "text-align: right;",
+                            "placeholder" => "0.00",
+                            "autocomplete" => "off",
+                        )); ?>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="col-md-4"> 
+            <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">FINAL (auto)</h6>
+            <?php foreach($summary_totals as $summ) { ?>
+                <div class="form-group">
+                    <label for="<?= $summ['key'] ?>" class=" col-md-4"><?php echo lang( $summ['key'] ); ?></label>
+                    <div class="col-md-8">
+                        <?= form_input(array(
+                            "id" => $summ['key'],
+                            "name" => $summ['key'],
+                            "type" => "text",
+                            "disabled" => true,
+                            "value" => $summ['value'],
+                            "class" => "disabled form-control",
+                            "style" => "text-align: right;",
+                            "placeholder" => "0.00",
+                            "autocomplete" => "off",
+                        )); ?>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+    <div class="row mt15" style="text-align: center;">
+        <button type="button" class="calculate btn btn-info mr15" disabled><span class="fa fa-calculator"></span> <?php echo lang('calculate'); ?></button>
+        <button type="button" class="save_data btn btn-danger"><span class="fa fa-check-circle"></span> <?php echo lang('overwrite'); ?></button>
+    </div>
 </div>
 
 <?php echo form_close(); ?>
@@ -435,7 +382,9 @@
         });
 
         setTimeout(function () {
-            $("[data-target=#tab-employee-info]").trigger("click");
+            $("[data-target=#tab-biometric-logs]").trigger("click");
         }, 210);
     });
+
+    $(".modal-dialog").addClass("modal-lg");
 </script>

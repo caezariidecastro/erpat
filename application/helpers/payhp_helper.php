@@ -384,7 +384,8 @@ class PayHP {
             "deduct_adjust" => $this->deduct_adjust,
             "deduct_other" => $this->deduct_other,
 
-            "overtime_pay" => $this->overtimePay(),
+            "regot_pay" => $this->regOverPay(),
+            "resot_pay" => $this->resOverPay(),
             "nightdiff_pay" => $this->nightdiffPay(),
             "special_pay" => $this->specialPay(),
 
@@ -454,6 +455,16 @@ class PayHP {
         $spclhd_ot = $this->spclhd_ot * $this->spclhd_rate;
         $sub_total += ($spclhd_ot + ($spclhd_ot * $this->overtime_rate));
 
+        return $sub_total * $this->hourly_rate;
+    }
+
+    function regOverPay() {
+        $sub_total = ($this->regular_ot * $this->overtime_rate);
+        return $sub_total * $this->hourly_rate;
+    }
+
+    function resOverPay() {
+        $sub_total = $this->restday_ot * $this->restday_rate;
         return $sub_total * $this->hourly_rate;
     }
 

@@ -26,41 +26,7 @@ class Payrolls extends MY_Controller {
 
         $this->load->model("Expenses_model");
         $this->load->model("Expense_categories_model");
-    }
-
-    protected function _get_team_select2_data() {
-        $teams = $this->Team_model->get_details()->result();
-        $team_select2 = array(array('id' => '', 'text'  => '- Departments -'));
-
-        foreach($teams as $team){
-            $team_select2[] = array('id' => $team->id, 'text'  => $team->title);
-        }
-
-        return $team_select2;
-    }
-
-    protected function _get_users_select2_data() {
-        $users = $this->Users_model->get_team_members_for_select2(
-            array("deleted" => 0, "user_type" => "staff")
-        )->result();
-        $user_select2 = array(array('id' => '', 'text'  => '- Users -'));
-
-        foreach($users as $user){
-            $user_select2[] = array('id' => $user->id, 'text'  => $user->user_name);
-        }
-
-        return $user_select2;
-    }
-
-    protected function _get_account_select2_data() {
-        $Accounts = $this->Accounts_model->get_all()->result();
-        $account_select2 = array(array('id' => '', 'text'  => '- Accounts -'));
-
-        foreach ($Accounts as $account) {
-            $account_select2[] = array('id' => $account->id, 'text' => $account->name) ;
-        }
-        return $account_select2;
-    }
+    } 
 
     function index(){
         $view_data['account_select2'] = $this->_get_account_select2_data();
@@ -306,17 +272,10 @@ class Payrolls extends MY_Controller {
         if ($payroll_id && $payroll_info = $this->Payrolls_model->get_details( array("id"=>$payroll_id) )->row()) {            
             $view_data["payroll_info"] = $payroll_info;
             $view_data["status"] = $this->get_labeled_status( $payroll_info->status );
-
-            //$payroll_info->recurring = true;
-            //$payroll_info->no_of_cycles_completed = 6;
-            //$payroll_info->no_of_cycles = 12;
             $view_data["can_edit_payrolls"] = ($this->login_user->is_admin || $this->login_user->id == $payroll_info->signed_by)?true:false;
 
             $department = $this->Team_model->get_one($payroll_info->department);
             $view_data["department"] = $department->title;
-
-            $view_data['user_select2'] = $this->_get_users_select2_data();
-            $view_data['department_select2'] = $this->_get_team_select2_data();
 
             $this->template->rander('payrolls/view', $view_data);
         } else {
@@ -597,7 +556,8 @@ class Payrolls extends MY_Controller {
             "overbreak" => $attd->getTotalOverbreak(), //overbreak
             "undertime" => $attd->getTotalUndertime(), //undertime
 
-            "reg_ot" => $attd->getTotalOvertime(), //overtime
+            "reg_ot" => $attd->getTotalRegularOvertime(), //overtime
+            "rest_ot" => $attd->getTotalRestdayOvertime(), //overtime
             "reg_nd" => $attd->getTotalNightpay(), //Nightpay
 
             //tin?
@@ -847,9 +807,9 @@ class Payrolls extends MY_Controller {
 
         $preview = modal_anchor(get_uri("payrolls/preview/".$data->id), get_payslip_id($data->id, $data->payroll), array( "title" => lang('preview_payslip'), "data-post-payroll_id" => $data->id));
 
-        $check = '<li role="presentation">' . "<a href='#' id='$data->user' name='check' data-start_date='$payroll->start_date' data-end_date='$payroll->end_date' class='override_btn role-row link' style='border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;'><i class='fa fa-calendar'></i>  ".lang('check_logs')."</a>" . '</li>';
-
-        $view = '<li role="presentation">' . "<a href='#' id='$data->id' name='preview' class='override_btn role-row link' style='border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;'><i class='fa fa-eye'></i>  ".lang('view_pdf')."</a>" . '</li>';
+        $check = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/attendance_modal_form"), "<i class='fa fa-calendar'></i> " . lang('check_logs'), array("title" => lang('check_logs'), "data-post-user_id" => $data->id, "data-post-start_date" => "$payroll->start_date", "data-post-end_date" => "$payroll->end_date" )) . '</li>';
+        
+        $view = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/preview_modal_form/".$data->id), "<i class='fa fa-eye'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "data-post-view" => "details")) . '</li>';
 
         $pdf = ""; //todo
 
@@ -865,7 +825,7 @@ class Payrolls extends MY_Controller {
         } else if(!$data->signed_by && !$data->cancelled_by) {
             $signe = '<li role="presentation">' . js_anchor("<i class='fa fa-paw fa-fw'></i>" . lang('approve'), array("class" => "update", "style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "data-action-url" => get_uri("fas/payrolls/approve_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
 
-            $override = "<li role='presentation'><a href='#' id='$data->id' name='override' class='override_btn role-row link' style='border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;'><span class='fa fa-check'></span>   &nbsp" . lang('override') . "</a></i>";
+            $override = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/override_modal_form/".$data->id), "<i class='fa fa-check'></i> " . lang('override'), array("title" => lang('override'), "data-post-view" => "details")) . '</li>';
         }
         
         $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => "  &nbsp".lang('delete'), "class" => "delete", "style"=>"border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "data-id" => $data->id, "data-action-url" => get_uri("fas/payrolls/delete_payslip"), "data-action" => "delete-confirmation")) . '</li>';
@@ -875,14 +835,18 @@ class Payrolls extends MY_Controller {
                             <i class="fa fa-cogs"></i>&nbsp;
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu pull-right" role="menu">' . $check . $view . $pdf . $override . $signe . $cancel . $delete . '</ul>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $override . $check . $view . $pdf . $signe . $cancel . $delete . '</ul>
                     </span>';
 
         return array(
             $preview,//anchor(get_uri("payrolls/preview/" . $data->id), ), //payslip_id
             get_team_member_profile_link($data->user, $data->employee_name, array("target" => "_blank")), //user link
 
-            $data->work_hour, //work_hour            
+            to_currency( $summary['basic_pay'] ),
+            $data->work_hour, //work_hour    
+            to_currency( $summary['overtime_pay'] ),    
+            to_currency( $summary['earnings'] ),
+            to_currency( $summary['eductions'] ),    
             to_currency( $summary['tax_due'] ),  
             "<strong ".($summary['net_pay']<=0?"style='color: red;'":"").">".to_currency( $summary['net_pay'] )."</strong>", 
 
@@ -914,7 +878,7 @@ class Payrolls extends MY_Controller {
 
             ->setHour('schedule', $data->schedule)
             ->setHour('worked', $data->worked)
-            ->setHour('absent', $data->absent)
+            ->setHour('absent', num_limit($data->schedule-$data->worked))
             ->setHour('late', $data->lates)
             ->setHour('overbreak', $data->overbreak)
             ->setHour('undertime', $data->undertime)
@@ -955,7 +919,7 @@ class Payrolls extends MY_Controller {
             ->deductOther('other', $data->deduct_other);
     }
 
-    function override( $payslip_id = 0 ) {
+    function override_modal_form( $payslip_id = 0 ) {
 
         $data = $this->Payslips_model->get_details(array(
             "id" => $payslip_id
@@ -987,28 +951,12 @@ class Payrolls extends MY_Controller {
                 "value" => $data->absent
             ),
             array(
-                "key" => "lates",
-                "value" => $data->lates
-            ),
-            array(
-                "key" => "overbreak",
-                "value" => $data->overbreak
-            ),
-            array(
-                "key" => "undertime",
-                "value" => $data->undertime
-            ),
-            array(
-                "key" => "pto",
-                "value" => $data->pto
+                "key" => "bonus",
+                "value" => $data->bonus
             ),
         ];
 
-        $view_data["night_diff"] = [
-            array(
-                "key" => "regular_nd",
-                "value" => $data->reg_nd
-            ),
+        $view_data["holiday"] = [
             array(
                 "key" => "restday_nd",
                 "value" => $data->rest_nd
@@ -1018,9 +966,9 @@ class Payrolls extends MY_Controller {
                 "value" => $data->legal_nd
             ),
             array(
-                "key" => "special_hd_nd",
-                "value" => $data->spcl_nd
-            )
+                "key" => "pto",
+                "value" => $data->pto
+            ),
         ];
 
         $view_data["overtime"] = [
@@ -1033,32 +981,9 @@ class Payrolls extends MY_Controller {
                 "value" => $data->rest_ot
             ),
             array(
-                "key" => "legal_hd_ot",
-                "value" => $data->legal_ot
+                "key" => "regular_nd",
+                "value" => $data->reg_nd
             ),
-            array(
-                "key" => "special_hd_ot",
-                "value" => $data->spcl_ot
-            )
-        ];
-
-        $view_data["ot_nd"] = [
-            array(
-                "key" => "regular_ot_nd",
-                "value" => $data->reg_ot_nd
-            ),
-            array(
-                "key" => "restday_ot_nd",
-                "value" => $data->rest_ot_nd
-            ),
-            array(
-                "key" => "legal_hd_ot_nd",
-                "value" => $data->legal_ot_nd
-            ),
-            array(
-                "key" => "special_hd_ot_nd",
-                "value" => $data->spcl_ot_nd
-            )
         ];
 
         $view_data["earnings"] = [
@@ -1083,6 +1008,11 @@ class Payrolls extends MY_Controller {
                 "type" => "text",
                 "class" => "disabled",
             ),
+            array(
+                "key" => "leave_credits",
+                "value" => convert_number_to_decimal($data->leave_credits),
+                "type" => "number",
+            ),
         ];
 
         $view_data["additionals"] = [
@@ -1106,13 +1036,25 @@ class Payrolls extends MY_Controller {
 
         $view_data["earn_other"] = [
             array(
+                "key" => "earn_adjust_name",
+                "value" => $data->earn_adjust_name,
+                "type" => "text"
+            ),
+            array(
                 "key" => "earn_adjust",
-                "value" => $data->add_adjust
+                "value" => $data->earn_adjust,
+                "type" => "number"
+            ),
+            array(
+                "key" => "earn_other_name",
+                "value" => $data->earn_other_name,
+                "type" => "text"
             ),
             array(
                 "key" => "earn_other",
-                "value" => $data->add_other
-            ),
+                "value" => $data->earn_other,
+                "type" => "number"
+            )
         ];
 
         $view_data["non_tax_deducts"] = [
@@ -1146,17 +1088,33 @@ class Payrolls extends MY_Controller {
             array(
                 "key" => "sss_loan",
                 "value" => $data->sss_loan
+            ),
+            array(
+                "key" => "other_loan",
+                "value" => $data->other_loan
             )
         ];
 
         $view_data["non_tax_other"] = [
             array(
+                "key" => "deduct_adjust_name",
+                "value" => $data->deduct_adjust_name,
+                "type" => "text"
+            ),
+            array(
                 "key" => "deduct_adjust",
-                "value" => $data->deduct_adjust
+                "value" => $data->deduct_adjust,
+                "type" => "number"
+            ),
+            array(
+                "key" => "deduct_other_name",
+                "value" => $data->deduct_other_name,
+                "type" => "text"
             ),
             array(
                 "key" => "deduct_other",
-                "value" => $data->deduct_other
+                "value" => $data->deduct_other,
+                "type" => "number"
             )
         ];
 
@@ -1166,8 +1124,12 @@ class Payrolls extends MY_Controller {
                 "value" => $data->pto,
             ),
             array(
-                "key" => "overtimePay",
-                "value" => to_currency($summary['overtime_pay'])
+                "key" => "regOverPay",
+                "value" => to_currency($summary['regot_pay'])
+            ),
+            array(
+                "key" => "resOverPay",
+                "value" => to_currency($summary['resot_pay'])
             ),
             array(
                 "key" => "nightdiffPay",
@@ -1217,7 +1179,7 @@ class Payrolls extends MY_Controller {
             )
         ];
 
-        $this->load->view('payrolls/override', $view_data);
+        $this->load->view('payrolls/override_modal_form', $view_data);
     }
 
     function override_calculate( $payslip_id = 0 ) {
@@ -1320,7 +1282,7 @@ class Payrolls extends MY_Controller {
         }
     }
 
-    function preview( $payslip_id = 0 ) {
+    function preview_modal_form( $payslip_id = 0 ) {
         $payslip = $this->Payslips_model->get_details(array(
             "id" => $payslip_id
         ))->row();
@@ -1360,7 +1322,7 @@ class Payrolls extends MY_Controller {
 
         $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
 
-        $this->load->view('payrolls/preview', $view_data);
+        $this->load->view('payrolls/preview_modal_form', $view_data);
     }
 
     function download_pdf($id = 0, $mode = "download") {
@@ -1412,10 +1374,15 @@ class Payrolls extends MY_Controller {
         }
     }
 
-    function check($user_id = 0) {
+    function attendance_modal_form() {
+        $user_id = $this->input->post("user_id");
+        if(!$user_id) {
+            show_404();
+        }
+
         $view_data['user_id'] = $user_id;
-        $view_data['start_date'] = $this->input->get("start_date");
-        $view_data['end_date'] = $this->input->get("end_date");
-        $this->load->view('payrolls/attendance', $view_data);
+        $view_data['start_date'] = $this->input->post("start_date");
+        $view_data['end_date'] = $this->input->post("end_date");
+        $this->load->view('payrolls/attendance_modal_form', $view_data);
     }
 }

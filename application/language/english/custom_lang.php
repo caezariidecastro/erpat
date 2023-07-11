@@ -1135,3 +1135,15 @@ $lang["since_last_clock_out"] = "Waiting, since Last Clockout";
 $lang["restday"] = "Restday";
 $lang["incentives"] = "Incentive";
 $lang["others"] = "Others";
+
+$lang["regOverPay"] = "Regular OT";
+$lang["resOverPay"] = "Restday OT";
+
+$lang["other_loan"] = "Other Loan";
+
+
+$lang["deduct_adjust_name"] = "Adjustment Name";
+$lang["deduct_other_name"] = "Other Name";
+
+$lang["earn_adjust_name"] = "Adjustment Name";
+$lang["earn_other_name"] = "Other Name";

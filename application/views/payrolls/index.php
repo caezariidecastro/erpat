@@ -18,7 +18,7 @@
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade" id="payrolls-list">
-                <div class="table-responsive" style="display: contents;">
+                <div class="table-responsive">
                     <table id="payroll-table" class="display" cellspacing="0" width="100%">            
                     </table>
                 </div>

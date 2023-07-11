@@ -15,7 +15,12 @@
                 "prefix" => "(".convert_number_to_decimal($summary['worked_hour'])." hrs)"
             ),
             array(
-                "name" => "Overtime Pay",
+                "name" => "Regular Overtime",
+                "value" => $summary['overtime_pay'],
+                "prefix" => "(".convert_number_to_decimal($summary['overtime_hour'])." hrs)"
+            ),
+            array(
+                "name" => "Restday Overtime",
                 "value" => $summary['overtime_pay'],
                 "prefix" => "(".convert_number_to_decimal($summary['overtime_hour'])." hrs)"
             ),
@@ -181,7 +186,7 @@
     }
 </style>
 
-<div class="background-color" style="border: 2px solid grey;">
+<div class="background-color" style="border: 2px solid grey; padding: 20px;">
     
     <!-- HEADING -->
     <table>
