@@ -324,7 +324,94 @@ class Payrolls extends MY_Controller {
         }
     }
 
+    function earnings() {
+        $view_data['department_select2'] = $this->_get_team_select2_data();
+        $view_data['category_select2'] = [
+            array('id' => 'daily', 'text'  => '- Daily -'),
+            array('id' => 'weekly', 'text'  => '- Weekly -'),
+            array('id' => 'biweekly', 'text'  => '- Biweekly -'),
+            array('id' => 'monthly', 'text'  => '- Monthly -'),
+            array('id' => 'quarterly', 'text'  => '- Quartery -'),
+            array('id' => 'annually', 'text'  => '- Annually -')        
+        ];
+        $this->load->view('payrolls/earnings', $view_data);
+    }
+
+    function earning_lists() {
+        $lists = array();
+
+        $options = array(
+            "status" => 'active',
+            'department_id' => $this->input->post('department_id'),
+            "user_type" => 'staff',
+            "where_in" => $this->get_allowed_users_only("staff", true)
+        );
+        $actives = $this->Users_model->get_details($options)->result();
+
+        $filter = $this->input->post('category_select2_filter');
+
+        foreach($actives as $user) {
+            $user_id = $user->id;
+
+            $full_name = $user->first_name . " " . $user->last_name . " ";
+            if(get_setting('name_format') == "lastfirst") {
+                $full_name = $user->last_name . ", " . $user->first_name;
+            }
+
+            $user_row = [
+                $user->id,
+                get_team_member_profile_link($user->id, $full_name),
+            ];
+    
+            $total = 0;
+            foreach(array(
+                "allowances", "incentives", "others"
+            ) as $item) {
+                $meta_key = "user_".$filter."_".$item."_".$user->id."_earnings";
+                $meta_val = $this->Settings_model->get_setting($meta_key, "user");
+    
+                $user_row[] = cell_input(
+                    $item.'_'.$user->id, 
+                    convert_number_to_decimal($meta_val), 'number', 
+                    'cell-class cell-class-'.$user->id, true
+                );
+            }
+
+            $user_row[] = js_anchor("<i class='fa fa-pencil fa-fw'></i>", 
+                    array('id' => "cell-edit-".$user->id, "data-filter" => $filter, 'name' => $user->id, 'title' => lang('edit'), 
+                    "class" => "cell-style cell-edit")).
+                js_anchor("<i class='fa fa-save fa-fw'></i>", 
+                    array('id' => "cell-save-".$user->id, "data-filter" => $filter, 'name' => $user->id, 'title' => lang('save'), 
+                    "class" => "cell-style cell-save hide"));
+
+            $lists[] = $user_row;
+        }
+        echo json_encode(array("data"=>$lists));
+    }
+
+    function save_earning() {
+        $this->with_permission("staff_update", "no_permission");
+        
+        $user_id = $this->input->post('user_id');
+        $filter = $this->input->post('filter');
+
+        $total = 0;
+        foreach(array(
+            "allowances", "incentives", "others"
+        ) as $item) {
+            $meta_key = "user_".$filter."_".$item."_".$user_id."_earnings";
+            $meta_val = $this->input->post( $item );
+
+            if($saved = $this->Settings_model->save_setting($meta_key, $meta_val, "user")) {
+                $total += 1;
+            }
+        }
+
+        echo json_encode(array("success" => true, 'message' => lang('record_saved')." Total: ".$total));       
+    }
+
     function contributions() {
+        $view_data['department_select2'] = $this->_get_team_select2_data();
         $view_data['category_select2'] = [
             //array('id' => 'daily', 'text'  => '- Daily -'),
             array('id' => 'weekly', 'text'  => '- Weekly -'),
@@ -336,22 +423,35 @@ class Payrolls extends MY_Controller {
 
     function contribution_lists() {
         $lists = array();
-        $actives = $this->Users_model->get_all_active();
+        
+        $options = array(
+            "status" => 'active',
+            'department_id' => $this->input->post('department_id'),
+            "user_type" => 'staff',
+            "where_in" => $this->get_allowed_users_only("staff", true)
+        );
+        $actives = $this->Users_model->get_details($options)->result();
+
         $filter = $this->input->post('category_select2_filter');
 
         foreach($actives as $user) {
+            $full_name = $user->first_name . " " . $user->last_name . " ";
+            if(get_setting('name_format') == "lastfirst") {
+                $full_name = $user->last_name . ", " . $user->first_name;
+            }
+
             $user_id = $user->id;
             $filter = $filter?$filter:"weekly";
 
             $user_row = [
                 $user->id,
-                get_team_member_profile_link($user->id, $user->user_name),
+                get_team_member_profile_link($user->id, $full_name),
             ];
     
             $total = 0;
             foreach(array(
                 "sss_contri", "pagibig_contri", "philhealth_contri", "hmo_contri",
-                "company_loan", "sss_loan", "hdmf_loan"
+                "company_loan", "sss_loan", "hdmf_loan", "others"
             ) as $item) {
                 $meta_key = "user_".$filter."_".$item."_".$user->id."_deductions";
                 $meta_val = $this->Settings_model->get_setting($meta_key, "user");
@@ -384,7 +484,7 @@ class Payrolls extends MY_Controller {
         $total = 0;
         foreach(array(
             "sss_contri", "pagibig_contri", "philhealth_contri", "hmo_contri",
-            "company_loan", "sss_loan", "hdmf_loan"
+            "company_loan", "sss_loan", "hdmf_loan", "others"
         ) as $item) {
             $meta_key = "user_".$filter."_".$item."_".$user_id."_deductions";
             $meta_val = $this->input->post( $item );

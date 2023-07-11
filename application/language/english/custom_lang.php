@@ -1133,3 +1133,5 @@ $lang["since_last_break"] = "Waiting, since Last Break";
 $lang["since_last_clock_out"] = "Waiting, since Last Clockout";
 
 $lang["restday"] = "Restday";
+$lang["incentives"] = "Incentive";
+$lang["others"] = "Others";

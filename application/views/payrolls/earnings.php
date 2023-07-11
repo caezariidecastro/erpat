@@ -2,7 +2,7 @@
 <div id="page-content" class="clearfix p20">
     <div class="panel clearfix">
         <div class="table-responsive">
-            <table id="contribution-table" class="display" cellspacing="0" width="100%"></table>
+            <table id="earning-table" class="display" cellspacing="0" width="100%"></table>
         </div>
     </div>
 </div>
@@ -22,36 +22,31 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $("#contribution-table").appTable({
-            source: '<?php echo_uri("payrolls/contribution_lists") ?>',
+        $("#earning-table").appTable({
+            source: '<?php echo_uri("payrolls/earning_lists") ?>',
             filterDropdown: [
-                {id: "category_select2_filter_deductions", name: "category_select2_filter", class: "w200 select2_filter", options: <?php echo json_encode($category_select2); ?>},
+                {id: "category_select2_filter_earnings", name: "category_select2_filter", class: "w200 select2_filter", options: <?php echo json_encode($category_select2); ?>},
                 {name: "department_id", class: "w200", options: <?= json_encode($department_select2) ?>},
             ],
             columns: [
                 {visible: false},
                 {title: "<?php echo lang('fullname') ?>", "class": "text-left w200"},
-                {title: "<?php echo lang('sss') ?>", "class": "text-right w100"},
-                {title: "<?php echo lang('pagibig') ?>", "class": "text-right w100"},
-                {title: "<?php echo lang('phealth') ?>", "class": "text-right w100"},
-                {title: "<?php echo lang('hmo') ?>", "class": "text-right w100"},
-                {title: "<?= lang('company')." ".lang('loan') ?>", "class": "text-right w100"},
-                {title: "<?= lang('sss')." ".lang('loan') ?>", "class": "text-right w100"},
-                {title: "<?= lang('hdmf')." ".lang('loan') ?>", "class": "text-right w100"},
+                {title: "<?php echo lang('allowance') ?>", "class": "text-right w100"},
+                {title: "<?php echo lang('incentives') ?>", "class": "text-right w100"},
                 {title: "<?php echo lang('others') ?>", "class": "text-right w100"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}
             ],
             rowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 const dataId = aData[0];
             }, onInitComplete() {
-                
-                $("#category_select2_filter_deductions").on('change', function() {
+
+                $("#category_select2_filter_earnings").on('change', function() {
                     //filter by selected value on second column
                     //table.column(1).search($(this).val()).draw();
                     console.log($(this).val());
                 }); 
 
-                var table = $('#contribution-table').DataTable();
+                var table = $('#earning-table').DataTable();
                 
                 let refresh = function() {
                     $('.cell-edit').on( 'click', function () {
@@ -71,19 +66,14 @@
                         const data = {
                             'user_id': id,
                             'filter': filter,
-                            'sss_contri': $('#sss_contri_'+id).val(),
-                            'pagibig_contri': $('#pagibig_contri_'+id).val(),
-                            'philhealth_contri': $('#philhealth_contri_'+id).val(),
-                            'hmo_contri': $('#hmo_contri_'+id).val(),
-                            'company_loan': $('#company_loan_'+id).val(),
-                            'sss_loan': $('#sss_loan_'+id).val(),
-                            'hdmf_loan': $('#hdmf_loan_'+id).val(),
-                            'others': $('#others_'+id).val(),
+                            'allowances': $('#allowances_'+id).val(),
+                            'incentives': $('#incentives_'+id).val(),
+                            'others': $('#others_'+id).val()
                         };
                         
                         //TODO: Ajax request!
                         $.ajax({
-                            url: "<?= base_url() ?>/payrolls/save_contribution",
+                            url: "<?= base_url() ?>/payrolls/save_earning",
                             method: "POST",
                             data: data,
                             dataType: "json",
