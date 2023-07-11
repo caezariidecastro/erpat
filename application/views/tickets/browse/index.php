@@ -14,7 +14,7 @@
     </ul>
 
     <div class="panel panel-default">
-        <div class="table-responsive" style="display: contents;">
+        <div class="table-responsive">
             <table id="ticket-table" class="display" cellspacing="0" width="100%">            
             </table>
         </div>

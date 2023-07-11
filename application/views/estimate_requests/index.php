@@ -1,4 +1,4 @@
-<div class="table-responsive" style="display: contents;">
+<div class="table-responsive">
     <table id="estimate-request-table" class="display" cellspacing="0" width="100%">            
     </table>
 </div>

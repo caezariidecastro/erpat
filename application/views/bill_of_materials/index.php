@@ -6,7 +6,7 @@
                 <?php echo modal_anchor(get_uri("production/BillOfMaterials/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_bill_of_material'), array("class" => "btn btn-default", "title" => lang('add_bill_of_material'))); ?>
             </div>
         </div>
-        <div class="table-responsive" style="display: contents;">
+        <div class="table-responsive">
             <table id="bill-of-materials-table" class="display" cellspacing="0" width="100%">            
             </table>
         </div>
