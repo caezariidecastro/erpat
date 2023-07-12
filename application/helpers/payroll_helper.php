@@ -26,7 +26,7 @@ if (!function_exists('get_monthly_salary')) {
  */
 if (!function_exists('get_monthly_from_hourly')) {
     function get_monthly_from_hourly($hourly_rate, $to_currency = true) {
-        $monthly_salary = (floatval($hourly_rate) * 8.0) * (get_setting('days_per_year', 260)/12);
+        $monthly_salary = (floatval($hourly_rate) * 8.0) * (get_setting('days_per_year', 261)/12);
         $monthly_salary = floor($monthly_salary/1) * 1;
 
         if($to_currency) {
@@ -363,5 +363,33 @@ if (!function_exists('get_date_hired')) {
         }
         
         return "-";
+    }
+}
+
+/**
+ * Get the earnings by user id, filter, and item name
+ */
+if (!function_exists('get_earning_template')) {
+    function get_earning_template($user_id, $item, $filter = "biweekly") {
+        $ci = get_instance();
+
+        $meta_key = "user_".$filter."_".$item."_".$user_id."_earnings";
+        $meta_val = $ci->Settings_model->get_setting($meta_key, "user");
+        
+        return num_limit($meta_val);
+    }
+}
+
+/**
+ * Get the earnings by user id, filter, and item name
+ */
+if (!function_exists('get_deduction_template')) {
+    function get_deduction_template($user_id, $item, $filter = "biweekly") {
+        $ci = get_instance();
+
+        $meta_key = "user_".$filter."_".$item."_".$user_id."_deductions";
+        $meta_val = $ci->Settings_model->get_setting($meta_key, "user");
+        
+        return num_limit($meta_val);
     }
 }

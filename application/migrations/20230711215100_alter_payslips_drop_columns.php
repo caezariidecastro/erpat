@@ -44,11 +44,27 @@ class Migration_Alter_payslips_drop_columns extends CI_Migration {
                 $this->dbforge->drop_column('payslips', 'timestamp');
 
                 $fields = array(
-                        "`bonus` decimal(10,2) NOT NULL after absent",
-                        "`leave_credit` decimal(10,2) NOT NULL after bonus",
+                        "`bonus` decimal(10,2) NOT NULL DEFAULT 0 after absent",
+                        "`leave_credit` decimal(10,2) NOT NULL DEFAULT 0 after bonus",
+                        "`special_hd` decimal(10,2) NOT NULL DEFAULT 0 after leave_credit",
+                        "`legal_hd` decimal(10,2) NOT NULL DEFAULT 0 after special_hd",
                         "`status` enum('draft','approved','rejected') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'draft' after signed_at"
                 );
                 $this->dbforge->add_column('payslips', $fields);
+
+                $item_key = array(
+                        "`item_key` varchar(180) NOT NULL after payslip_id",
+                );
+
+                $this->dbforge->add_column('payslips_earnings', $item_key);
+                $this->dbforge->drop_column('payslips_earnings', 'status');
+                $this->dbforge->drop_column('payslips_earnings', 'timestamp');
+                $this->dbforge->drop_column('payslips_earnings', 'created_by');
+
+                $this->dbforge->add_column('payslips_deductions', $item_key);
+                $this->dbforge->drop_column('payslips_deductions', 'status');
+                $this->dbforge->drop_column('payslips_deductions', 'timestamp');
+                $this->dbforge->drop_column('payslips_deductions', 'created_by');
         }
 
         public function down()

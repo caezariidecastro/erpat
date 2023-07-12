@@ -379,7 +379,7 @@ class Attendance extends MY_Controller {
 
         $data->worked_meta = $attd->getTotalWork();
         $data->overtime_meta = $attd->getTotalOvertime();
-        $data->night_meta = $attd->getTotalNightpay();
+        $data->night_meta = $attd->getTotalNightDiff();
         $data->lates_meta = $attd->getTotalLates();
         $data->overbreak_meta = $attd->getTotalOverbreak();
         $data->undertime_meta = $attd->getTotalUndertime();
@@ -488,11 +488,11 @@ class Attendance extends MY_Controller {
         ));
 
         $response = array_merge($response, array(
-            strval($attd->getTotalBonuspay())
+            strval($attd->getTotalBonus())
         ));
 
         $response = array_merge($response, array(
-            strval($attd->getTotalNightpay()), 
+            strval($attd->getTotalNightDiff()), 
             strval($attd->getTotalLates()), 
             strval($attd->getTotalOverbreak()), 
             strval($attd->getTotalUndertime())
@@ -596,8 +596,8 @@ class Attendance extends MY_Controller {
                     $list_temp[$data->user_id][3] += (double)$attd->getTotalWork();
                     $list_temp[$data->user_id][4] += (double)$attd->getTotalRegularOvertime();
                     $list_temp[$data->user_id][5] += (double)$attd->getTotalRestdayOvertime();
-                    $list_temp[$data->user_id][6] += (double)$attd->getTotalBonuspay();
-                    $list_temp[$data->user_id][7] += (double)$attd->getTotalNightpay();
+                    $list_temp[$data->user_id][6] += (double)$attd->getTotalBonus();
+                    $list_temp[$data->user_id][7] += (double)$attd->getTotalNightDiff();
                     $list_temp[$data->user_id][8] += (double)$attd->getTotalLates();
                     $list_temp[$data->user_id][9] += (double)$attd->getTotalOverbreak();
                     $list_temp[$data->user_id][10] += (double)$attd->getTotalUndertime();
@@ -609,8 +609,8 @@ class Attendance extends MY_Controller {
                     $list_temp[$data->user_id][3] = (double)$attd->getTotalWork();
                     $list_temp[$data->user_id][4] += (double)$attd->getTotalRegularOvertime();
                     $list_temp[$data->user_id][5] += (double)$attd->getTotalRestdayOvertime();
-                    $list_temp[$data->user_id][6] = (double)$attd->getTotalBonuspay();
-                    $list_temp[$data->user_id][7] = (double)$attd->getTotalNightpay();
+                    $list_temp[$data->user_id][6] = (double)$attd->getTotalBonus();
+                    $list_temp[$data->user_id][7] = (double)$attd->getTotalNightDiff();
                     $list_temp[$data->user_id][8] = (double)$attd->getTotalLates();
                     $list_temp[$data->user_id][9] = (double)$attd->getTotalOverbreak();
                     $list_temp[$data->user_id][10] = (double)$attd->getTotalUndertime();
@@ -684,8 +684,8 @@ class Attendance extends MY_Controller {
                     $attd->getTotalDuration(),
                     strval($attd->getTotalWork()), 
                     strval($attd->getTotalOvertime()), 
-                    strval($attd->getTotalBonuspay()), 
-                    strval($attd->getTotalNightpay()), 
+                    strval($attd->getTotalBonus()), 
+                    strval($attd->getTotalNightDiff()), 
                     strval($attd->getTotalLates()), 
                     strval($attd->getTotalOverbreak()), 
                     strval($attd->getTotalUndertime()),

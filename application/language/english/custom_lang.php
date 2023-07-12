@@ -1147,3 +1147,10 @@ $lang["deduct_other_name"] = "Other Name";
 
 $lang["earn_adjust_name"] = "Adjustment Name";
 $lang["earn_other_name"] = "Other Name";
+
+$lang["special_hd"] = "Special HD";
+$lang["legal_hd"] = "Legal HD";
+
+$lang["bonusPay"] = "Bonus Pay";
+$lang["holidayPay"] = "Holiday Pay";
+$lang["taxDue"] = "Tax Due";

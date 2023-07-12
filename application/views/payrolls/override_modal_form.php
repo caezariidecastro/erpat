@@ -262,7 +262,7 @@
 <div class="clearfix" style="padding: 0 20px 15px;">
     <div class="row">
         <div class="col-md-4"> 
-            <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">Additionals (auto)</h6>
+            <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">Earnings (auto)</h6>
             <?php foreach($summary_additionals as $summ) { ?>
                 <div class="form-group">
                     <label for="<?= $summ['key'] ?>" class=" col-md-4"><?php echo lang( $summ['key'] ); ?></label>
@@ -304,7 +304,7 @@
             <?php } ?>
         </div>
         <div class="col-md-4"> 
-            <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">FINAL (auto)</h6>
+            <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">Summary (auto)</h6>
             <?php foreach($summary_totals as $summ) { ?>
                 <div class="form-group">
                     <label for="<?= $summ['key'] ?>" class=" col-md-4"><?php echo lang( $summ['key'] ); ?></label>

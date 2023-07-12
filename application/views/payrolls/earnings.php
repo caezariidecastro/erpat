@@ -33,7 +33,7 @@
                 {title: "<?php echo lang('fullname') ?>", "class": "text-left w200"},
                 {title: "<?php echo lang('allowance') ?>", "class": "text-right w100"},
                 {title: "<?php echo lang('incentives') ?>", "class": "text-right w100"},
-                {title: "<?php echo lang('others') ?>", "class": "text-right w100"},
+                {title: "<?php echo lang('bonus') ?>", "class": "text-right w100"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}
             ],
             rowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {

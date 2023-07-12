@@ -16,13 +16,13 @@
             ),
             array(
                 "name" => "Regular Overtime",
-                "value" => $summary['overtime_pay'],
-                "prefix" => "(".convert_number_to_decimal($summary['overtime_hour'])." hrs)"
+                "value" => $summary['regular_ot'],
+                "prefix" => "(".convert_number_to_decimal($summary['regular_ot_hour'])." hrs)"
             ),
             array(
                 "name" => "Restday Overtime",
-                "value" => $summary['overtime_pay'],
-                "prefix" => "(".convert_number_to_decimal($summary['overtime_hour'])." hrs)"
+                "value" => $summary['restday_ot'],
+                "prefix" => "(".convert_number_to_decimal($summary['restday_ot_hour'])." hrs)"
             ),
             array(
                 "name" => "Night Differential",
@@ -30,43 +30,32 @@
                 "prefix" => "(".convert_number_to_decimal($summary['nightdiff_hour'])." hrs)"
             ),
             array(
-                "name" => "Overtime ND",
-                "value" => $summary['special_pay']
-            )
+                "name" => "Bonus Pay",
+                "value" => $summary['bonus_pay'],
+                "prefix" => "(".convert_number_to_decimal($summary['bonus_hour'])." hrs)"
+            ) //forloop deductions
         ],
         "deductions" => array(
             array(
                 "name" => "No Work Deductions",
                 "value" => $summary['unwork_deduction'],
-                "prefix" => "(".convert_number_to_decimal($payslip->absent)." hrs)"
+                "prefix" => "(".convert_number_to_decimal($summary['unworked_hour'])." hrs)"
             ),
             array(
                 "name" => "Compensation Tax",
                 "value" => $summary['tax_due']
-            ),
-            array(
-                "name" => "SSS Contribution",
-                "value" => $summary['sss_contri']
-            ),
-            array(
-                "name" => "PAGIBIG Contribution",
-                "value" => $summary['pagibig_contri']
-            ),
-            array(
-                "name" => "PhilHealth Contribution",
-                "value" => $summary['phealth_contri']
-            ),
+            ) //forloop deductions
         ),
 
-        "total_earn" => to_currency($summary['total_earn']),
-        "total_deduct" => to_currency($summary['total_deduct']),
+        "total_earn" => to_currency($summary['gross_pay']),
+        "total_deduct" => to_currency($summary['total_deductions']),
 
         "net_pay" => to_currency($summary['net_pay']),
         "amount_in_words" => $payslip->amount_in_words,
         "pay_period" => $payslip->pay_period,
         "payment_date" => $payslip->pay_date,
 
-        "unwork_hours" => convert_number_to_decimal($payslip->absent),
+        "unwork_hours" => convert_number_to_decimal($summary['unworked_hour']),
         "unwork_deductions" => to_currency($summary['unwork_deduction']),
 
         "bank_name" => $payslip->bank_name,
@@ -76,79 +65,18 @@
         "accountant_sign" => "",
         "accountant_name" => $payslip->accountant_name,
     );
-
-    if( isset($summary['allowance']) ) {
+    
+    foreach($summary['earnings'] as $earn) {
         $payslip['earnings'][] = array(
-            "name" => "Allowance",
-            "value" => to_currency($summary['allowance'])
-        );
-    }
-    if( isset($summary['incentives']) ) {
-        $payslip['earnings'][] = array(
-            "name" => "Incentives",
-            "value" => to_currency($summary['incentives'])
-        );
-    }
-    if( isset($summary['bonus']) ) {
-        $payslip['earnings'][] = array(
-            "name" => "Bonus",
-            "value" => to_currency($summary['bonus'])
-        );
-    }
-    if( isset($summary['month13th']) ) {
-        $payslip['earnings'][] = array(
-            "name" => "13th Month",
-            "value" => to_currency($summary['month13th'])
-        );
-    }
-    if( isset($summary['add_adjust']) ) {
-        $payslip['earnings'][] = array(
-            "name" => "Adjustment",
-            "value" => to_currency($summary['add_adjust'])
-        );
-    }
-    if( isset($summary['add_other']) ) {
-        $payslip['earnings'][] = array(
-            "name" => "Other",
-            "value" => to_currency($summary['add_other'])
+            "name" => $earn['title'],
+            "value" => $earn['amount']
         );
     }
 
-
-    if( isset($summary['hmo_contri']) ) {
+    foreach($summary['deductions'] as $earn) {
         $payslip['deductions'][] = array(
-            "name" => "HMO Contribution",
-            "value" => to_currency($summary['hmo_contri'])
-        );
-    }
-    if( isset($summary['com_loan']) ) {
-        $payslip['deductions'][] = array(
-            "name" => "Company Loan",
-            "value" => to_currency($summary['com_loan'])
-        );
-    }
-    if( isset($summary['sss_loan']) ) {
-        $payslip['deductions'][] = array(
-            "name" => "SSS Loan",
-            "value" => to_currency($summary['sss_loan'])
-        );
-    }
-    if( isset($summary['hdmf_loan']) ) {
-        $payslip['deductions'][] = array(
-            "name" => "HDMF Loan",
-            "value" => to_currency($summary['hdmf_loan'])
-        );
-    }
-    if( isset($summary['deduct_adjust']) ) {
-        $payslip['deductions'][] = array(
-            "name" => "Adjustment",
-            "value" => to_currency($summary['deduct_adjust'])
-        );
-    }
-    if( isset($summary['deduct_other']) ) {
-        $payslip['deductions'][] = array(
-            "name" => "Other Deduction",
-            "value" => to_currency($summary['deduct_other'])
+            "name" => $earn['title'],
+            "value" => $earn['amount']
         );
     }
 

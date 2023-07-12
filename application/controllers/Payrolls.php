@@ -18,6 +18,8 @@ class Payrolls extends MY_Controller {
 
         $this->load->model("Payrolls_model");
         $this->load->model("Payslips_model");
+        $this->load->model("Payslip_earnings_model");
+        $this->load->model("Payslip_deductions_model");
         $this->load->model("Leave_credits_model");
         $this->load->model("Accounts_model");
         $this->load->model("Attendance_model");
@@ -539,8 +541,34 @@ class Payrolls extends MY_Controller {
             "user_id" => $user_id
         ));
 
-        $deductions = get_user_deductions($user_id, true);
-        $contribution = get_contribution_by_category($deductions, $payroll_info->tax_table);
+        //TODO: Generate from Data
+        $earnings = [
+            array( "payslip_id" => $payslip_id, "item_key" => "allowance", "title"=>"Allowance", "amount" => get_earning_template($payslip->user, "allowances", $payroll_info->tax_table), "remarks" => false ),
+            array( "payslip_id" => $payslip_id, "item_key" => "incentive", "title"=>"Incentive", "amount" => get_earning_template($payslip->user, "incentives", $payroll_info->tax_table), "remarks" => false ),
+            array( "payslip_id" => $payslip_id, "item_key" => "bonus", "title"=>"Bonus", "amount" => get_earning_template($payslip->user, "others", $payroll_info->tax_table), "remarks" => false ),
+            // array( "payslip_id" => $payslip_id, "item_key" => "adjust", "title"=>"Adjustment", "amount" => 123, "remarks" => "taxable=true" ),
+            // array( "payslip_id" => $payslip_id, "item_key" => "other", "title"=>"Other", "amount" => 123, "remarks" => false )
+        ];
+
+        //TODO: Generate from Data
+        $deductions = [
+            array( "payslip_id" => $payslip_id, "item_key" => "sss_contri", "title"=>"SSS Contribution", 
+                "amount" => get_deduction_template($payslip->user, "sss_contri", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
+            array( "payslip_id" => $payslip_id, "item_key" => "phealth_contri", "title"=>"Philhealth Contribution", 
+                "amount" => get_deduction_template($payslip->user, "philhealth_contri", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
+            array( "payslip_id" => $payslip_id, "item_key" => "pagibig_contri", "title"=>"Pagibig Contribution", 
+                "amount" => get_deduction_template($payslip->user, "pagibig_contri", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
+            array( "payslip_id" => $payslip_id, "item_key" => "hmo_contri", "title"=>"HMO Payment", 
+                "amount" => get_deduction_template($payslip->user, "hmo_contri", $payroll_info->tax_table), "remarks" => false ),
+            array( "payslip_id" => $payslip_id, "item_key" => "com_loan", "title"=>"Company Loan", 
+                "amount" => get_deduction_template($payslip->user, "company_loan", $payroll_info->tax_table), "remarks" => false ),
+            array( "payslip_id" => $payslip_id, "item_key" => "sss_loan", "title"=>"SSS Loan", 
+                "amount" => get_deduction_template($payslip->user, "sss_loan", $payroll_info->tax_table), "remarks" => false ),
+            array( "payslip_id" => $payslip_id, "item_key" => "hdmf_loan", "title"=>"HDMF Loan", 
+                "amount" => get_deduction_template($payslip->user, "hdmf_loan", $payroll_info->tax_table), "remarks" => false ),
+            // array( "payslip_id" => $payslip_id, "item_key" => "adjust", "title"=>"Adjustment", "amount" => 123, "remarks" => false ),
+            // array( "payslip_id" => $payslip_id, "item_key" => "other", "title"=>"Other", "amount" => 123, "remarks" => false )
+        ];
 
         return array(
             "id" => $payslip_id,
@@ -552,23 +580,18 @@ class Payrolls extends MY_Controller {
             "schedule" => $payroll_info->sched_hours,//$attd->getTotalSchedule(), //schedule
             "worked" => $attd->getTotalWork(), //work
             "absent" => $attd->getTotalAbsent(), //absent
-            "lates" => $attd->getTotalLates(), //lates
-            "overbreak" => $attd->getTotalOverbreak(), //overbreak
-            "undertime" => $attd->getTotalUndertime(), //undertime
+            "bonus" => $attd->getTotalBonus(), //bonus
+            "pto" => $attd->getTotalPto(), //pto
 
-            "reg_ot" => $attd->getTotalRegularOvertime(), //overtime
-            "rest_ot" => $attd->getTotalRestdayOvertime(), //overtime
-            "reg_nd" => $attd->getTotalNightpay(), //Nightpay
+            "reg_ot" => $attd->getTotalRegularOvertime(), //Regular OT
+            "rest_ot" => $attd->getTotalRestdayOvertime(), //Restday OT
+            "reg_nd" => $attd->getTotalNightDiff(), //Nightpay
 
-            //tin?
-            "sss" => convert_number_to_decimal($contribution['sss_contri']),
-            "pagibig" => convert_number_to_decimal($contribution['pagibig_contri']),
-            "phealth" => convert_number_to_decimal($contribution['philhealth_contri']),
-            "hmo" => convert_number_to_decimal($contribution['hmo_contri']),
+            "special_hd" => $attd->getTotalSpecialHD(), //overtime
+            "legal_hd" => $attd->getTotalLegalHD(), //overtime
 
-            "com_loan" => convert_number_to_decimal($contribution['company_loan']),
-            "sss_loan" => convert_number_to_decimal($contribution['sss_loan']),
-            "hdmf_loan" => convert_number_to_decimal($contribution['hdmf_loan']),
+            "earnings" => $earnings,
+            "deductions" => $deductions,
         );
     }
 
@@ -590,7 +613,22 @@ class Payrolls extends MY_Controller {
             
         foreach($payslips as $current) {
             $payslip = $this->generate_payslip($payroll_info, $current->user);
-            unset($payslip['leave_credit']);
+
+            $earnings = $payslip['earnings'];
+            foreach($earnings as $earn) {
+                $find = $this->Payslip_earnings_model->get_one_where(array("payslip_id"=>$current->id,"item_key"=>$earn['item_key']));
+                $id = isset($find->id)?$find->id:0;
+                $this->Payslip_earnings_model->save($earn, $id);
+            }
+            unset($payslip['earnings']);
+            
+            $deductions = $payslip['deductions'];
+            foreach($deductions as $deduct) {
+                $find = $this->Payslip_deductions_model->get_one_where(array("payslip_id"=>$current->id,"item_key"=>$deduct['item_key']));
+                $id = isset($find->id)?$find->id:0;
+                $this->Payslip_deductions_model->save($deduct, $id);
+            }
+            unset($payslip['deductions']);
 
             $this->Payslips_model->update_where( $payslip, array("id"=>$current->id) );
         }
@@ -622,7 +660,22 @@ class Payrolls extends MY_Controller {
             }
 
             $payslip = $this->generate_payslip($payroll_info, $user_id);
-            unset($payslip['leave_credit']);
+            
+            $earnings = $payslip['earnings'];
+            foreach($earnings as $earn) {
+                $find = $this->Payslip_earnings_model->get_one_where(array("payslip_id"=>$current->id,"item_key"=>$earn['item_key']));
+                $id = isset($find->id)?$find->id:0;
+                $this->Payslip_earnings_model->save($earn, $id);
+            }
+            unset($payslip['earnings']);
+            
+            $deductions = $payslip['deductions'];
+            foreach($deductions as $deduct) {
+                $find = $this->Payslip_deductions_model->get_one_where(array("payslip_id"=>$current->id,"item_key"=>$deduct['item_key']));
+                $id = isset($find->id)?$find->id:0;
+                $this->Payslip_deductions_model->save($deduct, $id);
+            }
+            unset($payslip['deductions']);
 
             //To create a payslip for that user in a list.
             $this->Payslips_model->save( $payslip, $payslip->id );
@@ -772,8 +825,7 @@ class Payrolls extends MY_Controller {
         
         $list_data = $this->Payslips_model->get_details(array(
             'payroll_id' => $payroll_id,
-            'user_id' => $this->input->post('user_select2_filter'),
-            'department_id' => $this->input->post('department_select2_filter'),
+            'user_id' => $this->input->post('user_select2_filter')
         ))->result();
 
         $result = array();
@@ -799,9 +851,7 @@ class Payrolls extends MY_Controller {
 
     function _make_payslip_row( $payslip, $payroll ) {
 
-        $data = $this->Payslips_model->get_details(array(
-            "id" => $payslip->id
-        ))->row();
+        $data = $payslip;
 
         $summary = $this->processPayHP( $data, $payroll->tax_table )->calculate();
 
@@ -818,11 +868,11 @@ class Payrolls extends MY_Controller {
         $override = "";
         $delete = "";
         
-        if($data->signed_by && !$data->cancelled_by) {
+        if($data->signed_by && $data->status == "draft") {
             $pdf = "<li role='presentation'>" . anchor(get_uri("fas/payrolls/download_pdf/".$data->id), "<i class='fa fa-download'></i>  &nbsp" . lang('download_pdf'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
 
             $cancel = '<li role="presentation">' . js_anchor("<i class='fa fa-exclamation fa-fw'></i>" . lang('cancel'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "class" => "update", "data-action-url" => get_uri("fas/payrolls/cancel_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
-        } else if(!$data->signed_by && !$data->cancelled_by) {
+        } else if(!$data->signed_by && $data->status == "draft") {
             $signe = '<li role="presentation">' . js_anchor("<i class='fa fa-paw fa-fw'></i>" . lang('approve'), array("class" => "update", "style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "data-action-url" => get_uri("fas/payrolls/approve_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
 
             $override = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/override_modal_form/".$data->id), "<i class='fa fa-check'></i> " . lang('override'), array("title" => lang('override'), "data-post-view" => "details")) . '</li>';
@@ -843,10 +893,10 @@ class Payrolls extends MY_Controller {
             get_team_member_profile_link($data->user, $data->employee_name, array("target" => "_blank")), //user link
 
             to_currency( $summary['basic_pay'] ),
-            $data->work_hour, //work_hour    
+            $data->worked,   
             to_currency( $summary['overtime_pay'] ),    
-            to_currency( $summary['earnings'] ),
-            to_currency( $summary['eductions'] ),    
+            to_currency( $summary['total_deductions'] ), 
+            to_currency( $summary['gross_pay'] ),   
             to_currency( $summary['tax_due'] ),  
             "<strong ".($summary['net_pay']<=0?"style='color: red;'":"").">".to_currency( $summary['net_pay'] )."</strong>", 
 
@@ -856,67 +906,52 @@ class Payrolls extends MY_Controller {
     }
 
     protected function processPayHP( $data, $tax_table ) {
-        $monthly_salary = get_monthly_salary($data->user, false);
 
-        return (new PayHP()) 
-            ->setMonthlySalary($monthly_salary)
+        $data->earnings = $this->Payslip_earnings_model->get_details(array(
+            "payslip_id" => $payslip->id,
+        ))->result();
+
+        $data->deductions = $this->Payslip_deductions_model->get_details(array(
+            "payslip_id" => $payslip->id
+        ))->result();
+
+        $instance = (new PayHP()) 
+            ->setMonthlySalary( get_monthly_salary($data->user, false) )
             ->setHourlyRate($data->hourly_rate)
             ->setTaxTable("term", $tax_table)
-            //TODO: Set scheduled hours?
-
-            ->setTaxTable('daily', get_compensation_tax('daily'))
-            ->setTaxTable('weekly', get_compensation_tax('weekly'))
-            ->setTaxTable('biweekly', get_compensation_tax('biweekly'))
-            ->setTaxTable('monthly', get_compensation_tax('monthly'))
-
-            ->addEarnings('allowance', $data->allowance)
-            ->addEarnings('incentive', $data->incentive)
-            ->addEarnings('bonus', $data->bonus_month)
-            ->addEarnings('13thmonth', $data->month13th)
-            ->addEarnings('adjust', $data->add_adjust)
-            ->addEarnings('other', $data->add_other)
+            ->setTaxTable($tax_table, get_compensation_tax($tax_table))
 
             ->setHour('schedule', $data->schedule)
             ->setHour('worked', $data->worked)
-            ->setHour('absent', num_limit($data->schedule-$data->worked))
-            ->setHour('late', $data->lates)
-            ->setHour('overbreak', $data->overbreak)
-            ->setHour('undertime', $data->undertime)
+            ->setHour('absent', $data->absent)
+            ->setHour('bonus', $data->bonus)
             ->setHour('pto', $data->pto)
-
-            ->setOvertime('allowance', $data->allowance)
-            ->setOvertime('incentive', $data->incentive)
-            ->setOvertime('bonus', $data->bonus_month)
-            ->setOvertime('13thmonth', $data->month13th)
-            ->setOvertime('adjust', $data->add_adjust)
-            ->setOvertime('other', $data->add_other)
 
             ->setOvertime('regular', $data->reg_ot)
             ->setOvertime('restday', $data->rest_ot)
-            ->setOvertime('legalhd', $data->legal_ot)
-            ->setOvertime('specialhd', $data->spcl_ot)
+            // TODO: Generate holiday
+            // ->setHoliday('legalhd', $data->legal_ot)
+            // ->setHoliday('specialhd', $data->spcl_ot)
 
             ->setNightdiff('regular', $data->reg_nd)
-            ->setNightdiff('restday', $data->rest_nd)
-            ->setNightdiff('legalhd', $data->legal_nd)
-            ->setNightdiff('specialhd', $data->spcl_nd)
 
-            ->setOtNd('regular', $data->reg_ot_nd)
-            ->setOtNd('restday', $data->rest_ot_nd)
-            ->setOtNd('legalhd', $data->legal_ot_nd)
-            ->setOtNd('specialhd', $data->spcl_ot_nd)
+            ->setHoliday('special', $data->special_hd)
+            ->setHoliday('legal', $data->legal_hd);
 
-            ->deductContribution('sss', $data->sss)
-            ->deductContribution('pagibig', $data->pagibig)
-            ->deductContribution('phealth', $data->phealth)
-            ->deductContribution('hmo', $data->hmo)
+        if(is_array($data->earnings)) {
+            foreach($data->earnings as $earn) {
+                $instance = $instance->addEarnings($earn->title, $earn->amount, $earn->remarks=="taxable=true"?true:false);
+            }
+        }
+        
+        if( is_array($data->deductions) ) {
+            foreach($data->deductions as $deduct) {
+                $instance = $instance->addDeductions($deduct->title, $deduct->amount, $deduct->remarks=="tax_excess=true"?true:false);
+            }
+        }
 
-            ->deductLoan('company', $data->com_loan)
-            ->deductLoan('pagibig', $data->hdmf_loan)
-            ->deductLoan('sss', $data->sss_loan)
-
-            ->deductOther('adjust', $data->deduct_adjust)
-            ->deductOther('other', $data->deduct_other);
+        $instance->leave_credit = $data->leave_credit;
+        return $instance;
     }
 
     function override_modal_form( $payslip_id = 0 ) {
@@ -958,12 +993,12 @@ class Payrolls extends MY_Controller {
 
         $view_data["holiday"] = [
             array(
-                "key" => "restday_nd",
-                "value" => $data->rest_nd
+                "key" => "special_hd",
+                "value" => $data->special_hd
             ),
             array(
-                "key" => "legal_hd_nd",
-                "value" => $data->legal_nd
+                "key" => "legal_hd",
+                "value" => $data->legal_hd
             ),
             array(
                 "key" => "pto",
@@ -1120,24 +1155,20 @@ class Payrolls extends MY_Controller {
 
         $view_data["summary_additionals"] = [
             array(
-                "key" => "paid_timeoff",
-                "value" => $data->pto,
+                "key" => "overtimePay",
+                "value" => to_currency($summary['overtime_pay'])
             ),
             array(
-                "key" => "regOverPay",
-                "value" => to_currency($summary['regot_pay'])
-            ),
-            array(
-                "key" => "resOverPay",
-                "value" => to_currency($summary['resot_pay'])
+                "key" => "holidayPay",
+                "value" => to_currency($summary['holiday_pay'])
             ),
             array(
                 "key" => "nightdiffPay",
                 "value" => to_currency($summary['nightdiff_pay'])
             ),
             array(
-                "key" => "specialPay",
-                "value" => to_currency($summary['special_pay'])
+                "key" => "bonusPay",
+                "value" => to_currency($summary['bonus_pay'])
             ),
         ];
 
@@ -1147,27 +1178,23 @@ class Payrolls extends MY_Controller {
                 "value" => to_currency($summary['unwork_deduction'])
             ),
             array(
-                "key" => "total_adjustother",
-                "value" => to_currency($summary['total_adjustother'])
+                "key" => "net_taxable",
+                "value" => to_currency($summary['net_taxable'])
             ),
             array(
-                "key" => "total_contributions",
-                "value" => to_currency($summary['tota_contribution'])
-            ),
-            array(
-                "key" => "total_loans",
-                "value" => to_currency($summary['total_loan'])
+                "key" => "taxDue",
+                "value" => to_currency($summary['tax_due'])
             ),
         ];
 
         $view_data["summary_totals"] = [
             array(
-                "key" => "net_taxable",
-                "value" => to_currency($summary['net_taxable'])
+                "key" => "earnings",
+                "value" => to_currency($summary['earnings'])
             ),
             array(
-                "key" => "compensation_tax",
-                "value" => to_currency($summary['tax_due'])
+                "key" => "deductions",
+                "value" => to_currency($summary['deductions'])
             ),
             array(
                 "key" => "gross_pay",
@@ -1198,40 +1225,31 @@ class Payrolls extends MY_Controller {
                 "overbreak" => $this->input->post('overbreak'),
                 "undertime" => $this->input->post('undertime'),
 
-                "allowance" => $this->input->post('allowance'),
-                "incentive" => $this->input->post('incentive'),
-                "bonus_month" => $this->input->post('bonus'),
-                "month13th" => $this->input->post('13th_month'),
+                // "allowance" => $this->input->post('allowance'),
+                // "incentive" => $this->input->post('incentive'),
+                // "bonus_month" => $this->input->post('bonus'),
+                // "month13th" => $this->input->post('13th_month'),
 
-                "add_adjust" => $this->input->post('earn_adjust'),
-                "add_other" => $this->input->post('earn_other'),
+                // "add_adjust" => $this->input->post('earn_adjust'),
+                // "add_other" => $this->input->post('earn_other'),
 
-                "sss" => $this->input->post('sss'),
-                "pagibig" => $this->input->post('pagibig'),
-                "phealth" => $this->input->post('phealth'),
-                "hmo" => $this->input->post('hmo'),
+                // "sss" => $this->input->post('sss'),
+                // "pagibig" => $this->input->post('pagibig'),
+                // "phealth" => $this->input->post('phealth'),
+                // "hmo" => $this->input->post('hmo'),
 
-                "com_loan" => $this->input->post('com_loan'),
-                "sss_loan" => $this->input->post('sss_loan'),
-                "hdmf_loan" => $this->input->post('hdmf_loan'),
+                // "com_loan" => $this->input->post('com_loan'),
+                // "sss_loan" => $this->input->post('sss_loan'),
+                // "hdmf_loan" => $this->input->post('hdmf_loan'),
 
-                "deduct_adjust" => $this->input->post('deduct_adjust'),
-                "deduct_other" => $this->input->post('deduct_other'),
+                // "deduct_adjust" => $this->input->post('deduct_adjust'),
+                // "deduct_other" => $this->input->post('deduct_other'),
 
                 "reg_nd" => $this->input->post('regular_nd'),
-                "rest_nd" => $this->input->post('restday_nd'),
-                "legal_nd" => $this->input->post('legal_hd_nd'),
-                "spcl_nd" => $this->input->post('special_hd_nd'),
-
                 "reg_ot" => $this->input->post('regular_ot'),
                 "rest_ot" => $this->input->post('restday_ot'),
-                "legal_ot" => $this->input->post('legal_hd_ot'),
-                "spcl_ot" => $this->input->post('special_hd_ot'),
-
-                "reg_ot_nd" => $this->input->post('regular_ot_nd'),
-                "rest_ot_nd" => $this->input->post('restday_ot_nd'),
-                "legal_ot_nd" => $this->input->post('legal_hd_ot_nd'),
-                "spcl_ot_nd" => $this->input->post('special_hd_ot_nd'),
+                "special_hd" => $this->input->post('special_hd'),
+                "legal_hd" => $this->input->post('legal_hd'),
             );
 
             $this->Payslips_model->save($payslip_data, $payslip_id);
@@ -1365,6 +1383,14 @@ class Payrolls extends MY_Controller {
     
             $view_data["payslip"] = $payslip;
             $view_data["summary"] = $this->processPayHP( $payslip, $payroll->tax_table )->calculate();
+
+            $view_data["earnings"] = $this->Payslip_earnings_model->get_details(array(
+                "payslip_id" => $payslip->id,
+            ))->result();
+    
+            $view_data["deductions"] = $this->Payslip_deductions_model->get_details(array(
+                "payslip_id" => $payslip->id
+            ))->result();
 
             $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
 

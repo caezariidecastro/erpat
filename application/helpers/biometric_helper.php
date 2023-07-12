@@ -383,7 +383,7 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
-    public function getTotalBonuspay() {
+    public function getTotalBonus() {
         $total = 0;
         foreach($this->attd_data as $data) {
             if( is_numeric($data['bonus']) ) {
@@ -393,13 +393,31 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
-    public function getTotalNightpay() {
+    public function getTotalNightDiff() {
         $total = 0;
         foreach($this->attd_data as $data) {
             if( is_numeric($data['night']) ) {
                 $total += $data['night'];
             }
         }
+        return convert_number_to_decimal($total);
+    }
+
+    public function getTotalSpecialHD() {
+        $total = 0;
+       //TODO: Process Holiday per day
+        return convert_number_to_decimal($total);
+    }
+
+    public function getTotalLegalHD() {
+        $total = 0;
+        //TODO: Process Holiday per day
+        return convert_number_to_decimal($total);
+    }
+
+    public function getTotalPto() {
+        $total = 0;
+        //TODO: Process Holiday per day
         return convert_number_to_decimal($total);
     }
 
