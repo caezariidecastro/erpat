@@ -224,7 +224,7 @@
                                     "id" => $loans['key'],
                                     "name" => $loans['key'],
                                     "type" => "number",
-                                    "value" => $other['value'],
+                                    "value" => $loans['value'],
                                     "class" => "form-control",
                                     "style" => "text-align: right;",
                                     "placeholder" => "0.00",
@@ -356,10 +356,10 @@
                 dataType: "json",
                 success: function (result) {
                     appLoader.hide();
-                    const pageName = 'Override <?= lang('payslip'); ?>';
-                    $("#payslip-section-head").html(pageName);
-                    $("#payslip-section").html(result);
-                    $("[data-target=#tab-summary]").trigger("click");
+                    // const pageName = 'Override <?= lang('payslip'); ?>';
+                    // $("#payslip-section-head").html(pageName);
+                    // $("#payslip-section").html(result);
+                    // $("[data-target=#tab-summary]").trigger("click");
                 }
             });
         });
@@ -376,6 +376,7 @@
                 dataType: "json",
                 success: function (result) {
                     appLoader.hide();
+                    appAlert.success(result.message, {duration: 2000});
                     $('#payslip-table').dataTable()._fnAjaxUpdate();
                 }
             });

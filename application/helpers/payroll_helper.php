@@ -367,29 +367,49 @@ if (!function_exists('get_date_hired')) {
 }
 
 /**
- * Get the earnings by user id, filter, and item name
+ * Get payslip item by user id, filter, and item name
  */
-if (!function_exists('get_earning_template')) {
-    function get_earning_template($user_id, $item, $filter = "biweekly") {
-        $ci = get_instance();
+if (!function_exists('get_payslip_item')) {
+    function get_payslip_item($payslip_id, $item_key, $item_type) {
+        if(!$payslip_id) {
+            return false;
+        }
 
-        $meta_key = "user_".$filter."_".$item."_".$user_id."_earnings";
-        $meta_val = $ci->Settings_model->get_setting($meta_key, "user");
+        $ci = get_instance();
+        $ci->load->model("Payslip_".$item_type."_model");
+
+        $object = $ci->{"Payslip_".$item_type."_model"}->get_details(array(
+            "payslip_id" => $payslip_id,
+            "item_key" => $item_key
+        ))->row();
+
+        if(!$object) {
+            return false;
+        }
         
-        return num_limit($meta_val);
+        return $object;
     }
 }
 
 /**
- * Get the earnings by user id, filter, and item name
+ * Set payslip item by user id, filter, and item name
  */
-if (!function_exists('get_deduction_template')) {
-    function get_deduction_template($user_id, $item, $filter = "biweekly") {
-        $ci = get_instance();
-
-        $meta_key = "user_".$filter."_".$item."_".$user_id."_deductions";
-        $meta_val = $ci->Settings_model->get_setting($meta_key, "user");
+if (!function_exists('set_payslip_item')) {
+    function set_payslip_item($payslip_id, $item_key, $object, $item_type, $remarks = "") {
+        if(!$payslip_id || !$item_key || !$item_type ) {
+            return false;
+        }
+        $object['payslip_id'] = $payslip_id;
+        $object['item_key'] = $item_key;
         
-        return num_limit($meta_val);
+        $ci = get_instance();
+        $ci->load->model("Payslip_".$item_type."_model");
+
+        $find = $ci->{"Payslip_".$item_type."_model"}
+            ->get_one_where(
+                array( "payslip_id"=>$payslip_id, "item_key"=>$item_key)
+            );
+        $id = isset($find->id)?$find->id:0;
+        return $ci->{"Payslip_".$item_type."_model"}->save($object, $id);
     }
 }

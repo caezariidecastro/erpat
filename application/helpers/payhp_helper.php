@@ -7,7 +7,7 @@ class PayHP {
 
     //CONSTANTS VARIABLES
     protected $overtime_rate = 1.25;
-    protected $nightdiff_rate = 1.10;
+    protected $nightdiff_rate = 0.10;
     protected $restday_rate = 1.30;
     protected $legalhd_rate = 2.00;
     protected $spclhd_rate = 1.44;
@@ -258,6 +258,7 @@ class PayHP {
             "nightdiff_pay" => $this->nightdiffPay(),
             "overtime_pay" => $this->overtimePay(),
             "holiday_pay" => $this->holidayPay(),
+            "pto_pay" => $this->ptoPay(),
 
             "net_taxable" => $this->netTaxable(),
             "tax_due" => $this->taxDue(),

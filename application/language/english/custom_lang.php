@@ -1154,3 +1154,8 @@ $lang["legal_hd"] = "Legal HD";
 $lang["bonusPay"] = "Bonus Pay";
 $lang["holidayPay"] = "Holiday Pay";
 $lang["taxDue"] = "Tax Due";
+$lang["leave_credit"] = "Leave Credit";
+
+$lang["pto_pay"] = "PTO Covered";
+$lang["allowances"] = "Allowance";
+$lang["bonuses"] = "Bonus";

@@ -68,7 +68,7 @@
                             'filter': filter,
                             'allowances': $('#allowances_'+id).val(),
                             'incentives': $('#incentives_'+id).val(),
-                            'others': $('#others_'+id).val()
+                            'bonuses': $('#bonuses_'+id).val()
                         };
                         
                         //TODO: Ajax request!

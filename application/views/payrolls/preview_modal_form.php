@@ -25,6 +25,16 @@
                 "prefix" => "(".convert_number_to_decimal($summary['restday_ot_hour'])." hrs)"
             ),
             array(
+                "name" => "Special Holiday",
+                "value" => $summary['special_hd'],
+                "prefix" => "(".convert_number_to_decimal($summary['special_hd_hour'])." hrs)"
+            ),
+            array(
+                "name" => "Legal Holiday",
+                "value" => $summary['legal_hd'],
+                "prefix" => "(".convert_number_to_decimal($summary['legal_hd_hour'])." hrs)"
+            ),
+            array(
                 "name" => "Night Differential",
                 "value" => $summary['nightdiff_pay'],
                 "prefix" => "(".convert_number_to_decimal($summary['nightdiff_hour'])." hrs)"

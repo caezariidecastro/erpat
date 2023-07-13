@@ -326,7 +326,7 @@ class Payrolls extends MY_Controller {
     
             $total = 0;
             foreach(array(
-                "allowances", "incentives", "others"
+                "allowances", "incentives", "bonuses"
             ) as $item) {
                 $meta_key = "user_".$filter."_".$item."_".$user->id."_earnings";
                 $meta_val = $this->Settings_model->get_setting($meta_key, "user");
@@ -358,7 +358,7 @@ class Payrolls extends MY_Controller {
 
         $total = 0;
         foreach(array(
-            "allowances", "incentives", "others"
+            "allowances", "incentives", "bonuses"
         ) as $item) {
             $meta_key = "user_".$filter."_".$item."_".$user_id."_earnings";
             $meta_val = $this->input->post( $item );
@@ -543,32 +543,55 @@ class Payrolls extends MY_Controller {
 
         //TODO: Generate from Data
         $earnings = [
-            array( "payslip_id" => $payslip_id, "item_key" => "allowance", "title"=>"Allowance", "amount" => get_earning_template($payslip->user, "allowances", $payroll_info->tax_table), "remarks" => false ),
-            array( "payslip_id" => $payslip_id, "item_key" => "incentive", "title"=>"Incentive", "amount" => get_earning_template($payslip->user, "incentives", $payroll_info->tax_table), "remarks" => false ),
-            array( "payslip_id" => $payslip_id, "item_key" => "bonus", "title"=>"Bonus", "amount" => get_earning_template($payslip->user, "others", $payroll_info->tax_table), "remarks" => false ),
-            // array( "payslip_id" => $payslip_id, "item_key" => "adjust", "title"=>"Adjustment", "amount" => 123, "remarks" => "taxable=true" ),
-            // array( "payslip_id" => $payslip_id, "item_key" => "other", "title"=>"Other", "amount" => 123, "remarks" => false )
-        ];
+            array( "payslip_id" => $payslip_id, "item_key" => "allowances", "title"=>"Allowance", 
+                "amount" => get_user_option($payslip->user, "allowances", "earnings", $payroll_info->tax_table), "remarks" => false ),
+            array( "payslip_id" => $payslip_id, "item_key" => "incentives", "title"=>"Incentive", 
+                "amount" => get_user_option($payslip->user, "incentives", "earnings", $payroll_info->tax_table), "remarks" => false ),
+            array( "payslip_id" => $payslip_id, "item_key" => "bonuses", "title"=>"Bonus", 
+                "amount" => get_user_option($payslip->user, "others", "earnings", $payroll_info->tax_table), "remarks" => false ),
+        ]; //get the value from earning table
+
+        $earn_adjust_title = get_user_option($payslip->user, "adjust", "earnings", "title", true);
+        $earn_adjust_amount = get_user_option($payslip->user, "adjust", "earnings", $payroll_info->tax_table);
+        if($earn_adjust_title && $earn_adjust_amount) {
+            $earnings[] = array( "payslip_id" => $payslip_id, "item_key" => "adjust", "title" => $earn_adjust_title, "amount" => $earn_adjust_amount, "remarks" => "taxable=true" );
+        }
+
+        $earn_other_title = get_user_option($payslip->user, "other", "earnings", "title", true);
+        $earn_other_amount = get_user_option($payslip->user, "other", "earnings", $payroll_info->tax_table);
+        if($earn_other_title && $earn_other_amount) {
+            $earnings[] = array( "payslip_id" => $payslip_id, "item_key" => "other", "title" => $earn_other_title, "amount" => $earn_other_amount, "remarks" => false );
+        }
 
         //TODO: Generate from Data
         $deductions = [
             array( "payslip_id" => $payslip_id, "item_key" => "sss_contri", "title"=>"SSS Contribution", 
-                "amount" => get_deduction_template($payslip->user, "sss_contri", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
+                "amount" => get_user_option($payslip->user, "sss_contri", "deductions", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
             array( "payslip_id" => $payslip_id, "item_key" => "phealth_contri", "title"=>"Philhealth Contribution", 
-                "amount" => get_deduction_template($payslip->user, "philhealth_contri", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
+                "amount" => get_user_option($payslip->user, "philhealth_contri", "deductions", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
             array( "payslip_id" => $payslip_id, "item_key" => "pagibig_contri", "title"=>"Pagibig Contribution", 
-                "amount" => get_deduction_template($payslip->user, "pagibig_contri", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
-            array( "payslip_id" => $payslip_id, "item_key" => "hmo_contri", "title"=>"HMO Payment", 
-                "amount" => get_deduction_template($payslip->user, "hmo_contri", $payroll_info->tax_table), "remarks" => false ),
+                "amount" => get_user_option($payslip->user, "pagibig_contri", "deductions", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
+            array( "payslip_id" => $payslip_id, "item_key" => "hmo", "title"=>"HMO Contribution", 
+                "amount" => get_user_option($payslip->user, "hmo_contri", "deductions", $payroll_info->tax_table), "remarks" => false ),
             array( "payslip_id" => $payslip_id, "item_key" => "com_loan", "title"=>"Company Loan", 
-                "amount" => get_deduction_template($payslip->user, "company_loan", $payroll_info->tax_table), "remarks" => false ),
+                "amount" => get_user_option($payslip->user, "company_loan", "deductions", $payroll_info->tax_table), "remarks" => false ),
             array( "payslip_id" => $payslip_id, "item_key" => "sss_loan", "title"=>"SSS Loan", 
-                "amount" => get_deduction_template($payslip->user, "sss_loan", $payroll_info->tax_table), "remarks" => false ),
+                "amount" => get_user_option($payslip->user, "sss_loan", "deductions", $payroll_info->tax_table), "remarks" => false ),
             array( "payslip_id" => $payslip_id, "item_key" => "hdmf_loan", "title"=>"HDMF Loan", 
-                "amount" => get_deduction_template($payslip->user, "hdmf_loan", $payroll_info->tax_table), "remarks" => false ),
-            // array( "payslip_id" => $payslip_id, "item_key" => "adjust", "title"=>"Adjustment", "amount" => 123, "remarks" => false ),
-            // array( "payslip_id" => $payslip_id, "item_key" => "other", "title"=>"Other", "amount" => 123, "remarks" => false )
+                "amount" => get_user_option($payslip->user, "hdmf_loan", "deductions", $payroll_info->tax_table), "remarks" => false )
         ];
+
+        $deduct_adjust_title = get_user_option($payslip->user, "adjust", "deductions", "title", true);
+        $deduct_adjust_amount = get_user_option($payslip->user, "adjust", "deductions", $payroll_info->tax_table);
+        if($deduct_adjust_title && $deduct_adjust_amount) {
+            $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "adjust", "title" => $deduct_adjust_title, "amount" => $deduct_adjust_amount, "remarks" => false );
+        }
+
+        $deduct_other_title = get_user_option($payslip->user, "other", "deductions", "title", true);
+        $deduct_other_amount = get_user_option($payslip->user, "other", "deductions", $payroll_info->tax_table);
+        if($deduct_other_title && $deduct_other_amount) {
+            $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "other", "title" => $deduct_other_title, "amount" => $deduct_other_amount, "remarks" => false );
+        }
 
         return array(
             "id" => $payslip_id,
@@ -616,17 +639,13 @@ class Payrolls extends MY_Controller {
 
             $earnings = $payslip['earnings'];
             foreach($earnings as $earn) {
-                $find = $this->Payslip_earnings_model->get_one_where(array("payslip_id"=>$current->id,"item_key"=>$earn['item_key']));
-                $id = isset($find->id)?$find->id:0;
-                $this->Payslip_earnings_model->save($earn, $id);
+                set_payslip_item($current->id, $earn['item_key'], $earn, "earnings");
             }
             unset($payslip['earnings']);
             
             $deductions = $payslip['deductions'];
             foreach($deductions as $deduct) {
-                $find = $this->Payslip_deductions_model->get_one_where(array("payslip_id"=>$current->id,"item_key"=>$deduct['item_key']));
-                $id = isset($find->id)?$find->id:0;
-                $this->Payslip_deductions_model->save($deduct, $id);
+                set_payslip_item($current->id, $deduct['item_key'], $deduct, "deductions");
             }
             unset($payslip['deductions']);
 
@@ -663,17 +682,13 @@ class Payrolls extends MY_Controller {
             
             $earnings = $payslip['earnings'];
             foreach($earnings as $earn) {
-                $find = $this->Payslip_earnings_model->get_one_where(array("payslip_id"=>$current->id,"item_key"=>$earn['item_key']));
-                $id = isset($find->id)?$find->id:0;
-                $this->Payslip_earnings_model->save($earn, $id);
+                set_payslip_item($payslip->id, $earn['item_key'], $earn, "earnings");
             }
             unset($payslip['earnings']);
             
             $deductions = $payslip['deductions'];
             foreach($deductions as $deduct) {
-                $find = $this->Payslip_deductions_model->get_one_where(array("payslip_id"=>$current->id,"item_key"=>$deduct['item_key']));
-                $id = isset($find->id)?$find->id:0;
-                $this->Payslip_deductions_model->save($deduct, $id);
+                set_payslip_item($payslip->id, $deduct['item_key'], $deduct, "deductions");
             }
             unset($payslip['deductions']);
 
@@ -908,11 +923,11 @@ class Payrolls extends MY_Controller {
     protected function processPayHP( $data, $tax_table ) {
 
         $data->earnings = $this->Payslip_earnings_model->get_details(array(
-            "payslip_id" => $payslip->id,
+            "payslip_id" => $data->id,
         ))->result();
 
         $data->deductions = $this->Payslip_deductions_model->get_details(array(
-            "payslip_id" => $payslip->id
+            "payslip_id" => $data->id
         ))->result();
 
         $instance = (new PayHP()) 
@@ -933,7 +948,7 @@ class Payrolls extends MY_Controller {
             // ->setHoliday('legalhd', $data->legal_ot)
             // ->setHoliday('specialhd', $data->spcl_ot)
 
-            ->setNightdiff('regular', $data->reg_nd)
+            ->setNightdiff($data->reg_nd)
 
             ->setHoliday('special', $data->special_hd)
             ->setHoliday('legal', $data->legal_hd);
@@ -968,7 +983,7 @@ class Payrolls extends MY_Controller {
         $view_data["fullname"] = $data->employee_name;
         $view_data["job_title"] = $data->job_title;
         $view_data["department"] = $data->department_name;
-        $view_data["salary"] = to_currency($data->salary_amount);
+        $view_data["salary"] = to_currency( get_monthly_salary($data->user, false) );
 
         $summary = $this->processPayHP( $data, $payroll->tax_table )->calculate();
 
@@ -1030,13 +1045,6 @@ class Payrolls extends MY_Controller {
                 "class" => "disabled",
             ),
             array(
-                "key" => "hours_paid",
-                "value" => to_currency($summary['hours_paid']),
-                "disabled" => true,
-                "type" => "text",
-                "class" => "disabled",
-            ),
-            array(
                 "key" => "hourly_rate",
                 "value" => convert_number_to_decimal($data->hourly_rate),
                 "disabled" => true,
@@ -1044,50 +1052,55 @@ class Payrolls extends MY_Controller {
                 "class" => "disabled",
             ),
             array(
-                "key" => "leave_credits",
-                "value" => convert_number_to_decimal($data->leave_credits),
+                "key" => "bonusPay",
+                "value" => to_currency($summary['bonus_pay']),
+                "disabled" => true,
+                "type" => "text",
+                "class" => "disabled",
+            ),
+            array(
+                "key" => "leave_credit",
+                "value" => convert_number_to_decimal($data->leave_credit),
                 "type" => "number",
             ),
         ];
 
         $view_data["additionals"] = [
             array(
-                "key" => "allowance",
-                "value" => $data->allowance
+                "key" => "allowances",
+                "value" => get_payslip_item($payslip_id, 'allowances', "earnings")->amount
             ),
             array(
-                "key" => "incentive",
-                "value" => $data->incentive
+                "key" => "incentives",
+                "value" => get_payslip_item($payslip_id, 'incentives', "earnings")->amount
             ),
             array(
-                "key" => "bonus",
-                "value" => $data->bonus_month
-            ),
-            array(
-                "key" => "13th_month",
-                "value" => $data->month13th
+                "key" => "bonuses",
+                "value" => get_payslip_item($payslip_id, 'bonuses', "earnings")->amount
             )
         ];
 
+        $earn_adjust = get_payslip_item($payslip_id, 'earn_adjust', "earnings");
+        $earn_other = get_payslip_item($payslip_id, 'earn_other', "earnings");
         $view_data["earn_other"] = [
             array(
                 "key" => "earn_adjust_name",
-                "value" => $data->earn_adjust_name,
+                "value" => $earn_adjust->title,
                 "type" => "text"
             ),
             array(
                 "key" => "earn_adjust",
-                "value" => $data->earn_adjust,
+                "value" => $earn_adjust->amount,
                 "type" => "number"
             ),
             array(
                 "key" => "earn_other_name",
-                "value" => $data->earn_other_name,
+                "value" => $earn_other->title,
                 "type" => "text"
             ),
             array(
                 "key" => "earn_other",
-                "value" => $data->earn_other,
+                "value" => $earn_other->amount,
                 "type" => "number"
             )
         ];
@@ -1095,60 +1108,62 @@ class Payrolls extends MY_Controller {
         $view_data["non_tax_deducts"] = [
             array(
                 "key" => "sss",
-                "value" => $data->sss
+                "value" => get_payslip_item($payslip_id, 'sss_contri', "deductions")->amount
             ),
             array(
                 "key" => "pagibig",
-                "value" => $data->pagibig
+                "value" => get_payslip_item($payslip_id, 'pagibig_contri', "deductions")->amount
             ),
             array(
                 "key" => "phealth",
-                "value" => $data->phealth
+                "value" => get_payslip_item($payslip_id, 'phealth_contri', "deductions")->amount
             ),
             array(
                 "key" => "hmo",
-                "value" => $data->hmo
+                "value" => get_payslip_item($payslip_id, 'hmo', "deductions")->amount
             )
         ];
 
         $view_data["non_tax_loans"] = [
             array(
                 "key" => "com_loan",
-                "value" => $data->com_loan
+                "value" => get_payslip_item($payslip_id, 'com_loan', "deductions")->amount
             ),
             array(
                 "key" => "hdmf_loan",
-                "value" => $data->hdmf_loan
+                "value" => get_payslip_item($payslip_id, 'hdmf_loan', "deductions")->amount
             ),
             array(
                 "key" => "sss_loan",
-                "value" => $data->sss_loan
+                "value" => get_payslip_item($payslip_id, 'sss_loan', "deductions")->amount
             ),
             array(
                 "key" => "other_loan",
-                "value" => $data->other_loan
+                "value" => get_payslip_item($payslip_id, 'other_loan', "deductions")->amount
             )
         ];
 
+        $deduct_adjust = get_payslip_item($payslip_id, 'deduct_adjust', "deductions");
+        $deduct_other = get_payslip_item($payslip_id, 'deduct_other', "deductions");
         $view_data["non_tax_other"] = [
             array(
                 "key" => "deduct_adjust_name",
-                "value" => $data->deduct_adjust_name,
+                "value" => $deduct_adjust->title,
                 "type" => "text"
             ),
             array(
                 "key" => "deduct_adjust",
-                "value" => $data->deduct_adjust,
+                "value" => $deduct_adjust->amount,
                 "type" => "number"
             ),
             array(
                 "key" => "deduct_other_name",
-                "value" => $data->deduct_other_name,
+                "value" => $deduct_other->title,
                 "type" => "text"
             ),
             array(
                 "key" => "deduct_other",
-                "value" => $data->deduct_other,
+                "value" => $deduct_other->amount,
                 "type" => "number"
             )
         ];
@@ -1165,11 +1180,7 @@ class Payrolls extends MY_Controller {
             array(
                 "key" => "nightdiffPay",
                 "value" => to_currency($summary['nightdiff_pay'])
-            ),
-            array(
-                "key" => "bonusPay",
-                "value" => to_currency($summary['bonus_pay'])
-            ),
+            )
         ];
 
         $view_data["summary_deductions"] = [
@@ -1178,8 +1189,11 @@ class Payrolls extends MY_Controller {
                 "value" => to_currency($summary['unwork_deduction'])
             ),
             array(
-                "key" => "net_taxable",
-                "value" => to_currency($summary['net_taxable'])
+                "key" => "pto_pay",
+                "value" => to_currency($summary['pto_pay']),
+                "disabled" => true,
+                "type" => "text",
+                "class" => "disabled",
             ),
             array(
                 "key" => "taxDue",
@@ -1189,12 +1203,8 @@ class Payrolls extends MY_Controller {
 
         $view_data["summary_totals"] = [
             array(
-                "key" => "earnings",
-                "value" => to_currency($summary['earnings'])
-            ),
-            array(
-                "key" => "deductions",
-                "value" => to_currency($summary['deductions'])
+                "key" => "net_taxable",
+                "value" => to_currency($summary['net_taxable'])
             ),
             array(
                 "key" => "gross_pay",
@@ -1221,41 +1231,99 @@ class Payrolls extends MY_Controller {
                 "schedule" => $this->input->post('schedule'),
                 "worked" => $this->input->post('worked'),
                 "absent" => $this->input->post('absent'),
-                "lates" => $this->input->post('lates'),
-                "overbreak" => $this->input->post('overbreak'),
-                "undertime" => $this->input->post('undertime'),
+                "bonus" => $this->input->post('bonus'),
 
-                // "allowance" => $this->input->post('allowance'),
-                // "incentive" => $this->input->post('incentive'),
-                // "bonus_month" => $this->input->post('bonus'),
-                // "month13th" => $this->input->post('13th_month'),
-
-                // "add_adjust" => $this->input->post('earn_adjust'),
-                // "add_other" => $this->input->post('earn_other'),
-
-                // "sss" => $this->input->post('sss'),
-                // "pagibig" => $this->input->post('pagibig'),
-                // "phealth" => $this->input->post('phealth'),
-                // "hmo" => $this->input->post('hmo'),
-
-                // "com_loan" => $this->input->post('com_loan'),
-                // "sss_loan" => $this->input->post('sss_loan'),
-                // "hdmf_loan" => $this->input->post('hdmf_loan'),
-
-                // "deduct_adjust" => $this->input->post('deduct_adjust'),
-                // "deduct_other" => $this->input->post('deduct_other'),
+                "leave_credit" => $this->input->post('leave_credit'),
 
                 "reg_nd" => $this->input->post('regular_nd'),
                 "reg_ot" => $this->input->post('regular_ot'),
                 "rest_ot" => $this->input->post('restday_ot'),
+
                 "special_hd" => $this->input->post('special_hd'),
                 "legal_hd" => $this->input->post('legal_hd'),
+                "pto" => $this->input->post('pto'),
             );
 
-            $this->Payslips_model->save($payslip_data, $payslip_id);
+            if( $success = $this->Payslips_model->save($payslip_data, $payslip_id) ) {
+                set_payslip_item($payslip_id, "allowances", array(
+                    "title" => "Allowance",
+                    "amount" => $this->input->post('allowances')
+                ), "earnings", "");
+
+                set_payslip_item($payslip_id, "incentives", array(
+                    "title" => "Incentive",
+                    "amount" => $this->input->post('incentives')
+                ), "earnings", "");
+
+                set_payslip_item($payslip_id, "bonuses", array(
+                    "title" => "Bonus",
+                    "amount" => $this->input->post('bonuses')
+                ), "earnings", "");
+
+                set_payslip_item($payslip_id, "earn_adjust", array(
+                    "title" => $this->input->post('earn_adjust_name'),
+                    "amount" => $this->input->post('earn_adjust')
+                ), "earnings", "");
+
+                set_payslip_item($payslip_id, "earn_other", array(
+                    "title" => $this->input->post('earn_other_name'),
+                    "amount" => $this->input->post('earn_other')
+                ), "earnings", "");
+
+
+                set_payslip_item($payslip_id, "sss_contri", array(
+                    "title" => "SSS Contribution",
+                    "amount" => $this->input->post('sss')
+                ), "deductions", "");
+
+                set_payslip_item($payslip_id, "phealth_contri", array(
+                    "title" => "Philhealth Contribution",
+                    "amount" => $this->input->post('phealth')
+                ), "deductions", "");
+
+                set_payslip_item($payslip_id, "pagibig_contri", array(
+                    "title" => "Pagibig Contribution",
+                    "amount" => $this->input->post('pagibig')
+                ), "deductions", "");
+
+                set_payslip_item($payslip_id, "hmo", array(
+                    "title" => "HMO Contribution",
+                    "amount" => $this->input->post('hmo')
+                ), "deductions", "");
+
+                set_payslip_item($payslip_id, "com_loan", array(
+                    "title" => "Company Loan",
+                    "amount" => $this->input->post('com_loan')
+                ), "deductions", "");
+
+                set_payslip_item($payslip_id, "sss_loan", array(
+                    "title" => "SSS Loan",
+                    "amount" => $this->input->post('sss_loan')
+                ), "deductions", "");
+
+                set_payslip_item($payslip_id, "hdmf_loan", array(
+                    "title" => "HDMF Loan",
+                    "amount" => $this->input->post('hdmf_loan')
+                ), "deductions", "");
+
+                set_payslip_item($payslip_id, "other_loan", array(
+                    "title" => "Other Loan",
+                    "amount" => $this->input->post('other_loan')
+                ), "deductions", "");
+
+                set_payslip_item($payslip_id, "deduct_adjust", array(
+                    "title" => $this->input->post('deduct_adjust_name'),
+                    "amount" => $this->input->post('deduct_adjust')
+                ), "deductions", "");
+
+                set_payslip_item($payslip_id, "deduct_other", array(
+                    "title" => $this->input->post('deduct_other_name'),
+                    "amount" => $this->input->post('deduct_other')
+                ), "deductions", "");
+            };
         }
         
-        echo json_encode(array("success"=>true, "tab"=>"summary"));
+        echo json_encode(array("success"=>true, "message"=>lang('record_saved')));
     }
 
     function cancel_payslip( $id ) {
@@ -1317,11 +1385,6 @@ class Payrolls extends MY_Controller {
         ))->row();
         $payslip->fullname = $user->first_name." ".$user->last_name;
         $payslip->job_title = $user->job_title;
-
-        $leave_credit_balance = $this->Leave_credits_model->get_balance(array(
-            "user_id" => $payslip->user
-        ));
-        $payslip->leave_credit = $leave_credit_balance;
 
         $team = $this->Team_model->get_teams($payslip->user)->row();//todo
         $payslip->department = $team?$team->title:"None";
