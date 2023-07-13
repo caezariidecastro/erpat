@@ -73,6 +73,18 @@ class Taxes extends MY_Controller {
         }
     }
 
+    function restore_daily_tax() {
+
+        $daily_tax_table = $this->Taxes_model->get_daily_raw_default();
+
+        $save_id = $this->Settings_model->save_setting("daily_tax_table", serialize($daily_tax_table), "payroll");
+        if ($save_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     function list_weekly() {
         $result = get_compensation_tax('weekly');
 
@@ -101,6 +113,18 @@ class Taxes extends MY_Controller {
                 $this->input->post('weekly_tax_level_'.$i.'_rate')
             );
         }
+
+        $save_id = $this->Settings_model->save_setting("weekly_tax_table", serialize($weekly_tax_table), "payroll");
+        if ($save_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function restore_weekly_tax() {
+
+        $weekly_tax_table = $this->Taxes_model->get_weekly_raw_default();
 
         $save_id = $this->Settings_model->save_setting("weekly_tax_table", serialize($weekly_tax_table), "payroll");
         if ($save_id) {
@@ -147,6 +171,18 @@ class Taxes extends MY_Controller {
         }
     }
 
+    function restore_biweekly_tax() {
+
+        $biweekly_tax_table = $this->Taxes_model->get_biweekly_raw_default();
+
+        $save_id = $this->Settings_model->save_setting("biweekly_tax_table", serialize($biweekly_tax_table), "payroll");
+        if ($save_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     function list_monthly() {
         $result = get_compensation_tax('monthly');
 
@@ -165,10 +201,6 @@ class Taxes extends MY_Controller {
 
     function save_monthly_tax() {
 
-        // validate_submitted_data(array(
-        //     "percentage" => "required"
-        // ));
-
         $monthly_tax_table = array();
         for($i=1; $i<=6; $i++) {
             $monthly_tax_table[] = array(
@@ -179,6 +211,18 @@ class Taxes extends MY_Controller {
                 $this->input->post('monthly_tax_level_'.$i.'_rate')
             );
         }
+
+        $save_id = $this->Settings_model->save_setting("monthly_tax_table", serialize($monthly_tax_table), "payroll");
+        if ($save_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function restore_monthly_tax() {
+
+        $monthly_tax_table = $this->Taxes_model->get_monthly_raw_default();
 
         $save_id = $this->Settings_model->save_setting("monthly_tax_table", serialize($monthly_tax_table), "payroll");
         if ($save_id) {
