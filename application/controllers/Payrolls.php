@@ -74,31 +74,24 @@ class Payrolls extends MY_Controller {
 
     private function _make_row($data) {
 
-        $edit = "";
-        $delete = "";
-        $pay = "";
-        $generate = "";
-        $cancel = "";
-
         if($data->status == "draft"){
             $edit = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
-            $generate = '<li role="presentation">'. js_anchor("<i class='fa fa-wrench'></i> " . lang('mark_as_ongoing'), array('title' => lang('update'), "data-action-url" => get_uri("fas/payrolls/mark_as_ongoing/$data->id"), "data-action" => "update", "data-action" => "update", "data-reload-on-success" => "1"));
-            $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/payrolls/delete"), "data-action" => "delete-confirmation")) . '</li>';
+            
+            $generate = '<li role="presentation">'. js_anchor("<i class='fa fa-wrench'></i> " . lang('mark_as_ongoing'), array('title' => lang('update'), "data-action-url" => get_uri("fas/payrolls/mark_as_ongoing/$data->id"), "data-action" => "update")). '</li>';
         }
 
         if($data->status == "cancelled"){
             $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/payrolls/delete"), "data-action" => "delete-confirmation")) . '</li>';
         }
 
-        if($data->status == "ongoing") {
-            $pay =  '<li role="presentation">' . modal_anchor(get_uri("payrolls/lock_payment/".$data->id), "<i class='fa fa-money'></i> " . lang('lock_payment'), array("class" => "btn btn-default", "title" => lang('payslip_preview'), "data-post-payroll_id" => $data->id, "data-action" => "update", "data-reload-on-success" => "1")) .'</li>';
-
-            $cancel = '<li role="presentation">' . js_anchor("<i class='fa fa-exclamation fa-fw'></i>" . lang('cancel'), array("class" => "update", "data-action-url" => get_uri("fas/payrolls/mark_as_cancelled/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
-        }
-
-        if( $data->status == "ongoing" || $data->status == "completed" ){
+        if($data->status == "ongoing" || $data->status == "completed") {
             $view = "<li role='presentation'>" . anchor(get_uri("fas/payrolls/view/".$data->id), "<i class='fa fa-file-pdf-o'></i> " . lang('view_payroll'), array("title" => lang('view_payroll'), "target" => "_blank")) . "</li>";
-            $cancel = '<li role="presentation">' . js_anchor("<i class='fa fa-exclamation fa-fw'></i>" . lang('cancel'), array("class" => "update", "data-action-url" => get_uri("fas/payrolls/mark_as_cancelled/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
+
+            $cancel = '<li role="presentation">' . js_anchor("<i class='fa fa-exclamation fa-fw'></i> " . lang('cancel'), array('title' => lang('update'), "data-action-url" => get_uri("fas/payrolls/mark_as_cancelled/$data->id"), "data-action" => "update", "data-reload-on-success" => "1")). '</li>';
+
+            if( $data->status == "ongoing" ) {
+                $pay =  '<li role="presentation">' . modal_anchor(get_uri("payrolls/lock_payment/".$data->id), "<i class='fa fa-money'></i> " . lang('lock_payment'), array("class" => "btn btn-default", "title" => lang('payslip_preview'), "data-post-payroll_id" => $data->id, "data-action" => "update", "data-reload-on-success" => "1")) .'</li>';
+            }
         }
 
         if( $this->login_user->is_admin || $data->signed_by == $this->login_user->id) {
@@ -652,7 +645,6 @@ class Payrolls extends MY_Controller {
     }
 
     function mark_as_ongoing( $payroll_id = 0 ) {
-
         //Get payroll instance
         $payroll_info = $this->Payrolls_model->get_details(array(
             "id" => $payroll_id
@@ -675,31 +667,33 @@ class Payrolls extends MY_Controller {
             }
 
             $payslip = $this->generate_payslip($payroll_info, $user_id);
-            
-            $earnings = $payslip['earnings'];
-            foreach($earnings as $earn) {
-                set_payslip_item($payslip->id, $earn['item_key'], $earn, "earnings");
-            }
-            unset($payslip['earnings']);
-            
-            $deductions = $payslip['deductions'];
-            foreach($deductions as $deduct) {
-                set_payslip_item($payslip->id, $deduct['item_key'], $deduct, "deductions");
-            }
-            unset($payslip['deductions']);
 
+            $earnings = $payslip['earnings'];
+            unset($payslip['earnings']);
+
+            $deductions = $payslip['deductions'];
+            unset($payslip['deductions']);
+            
             $leave_credit_balance = $this->Leave_credits_model->get_balance(array(
                 "user_id" => $user_id
             ));
             $payslip['leave_credit'] = $leave_credit_balance;
 
             //To create a payslip for that user in a list.
-            $this->Payslips_model->save( $payslip );
+            $payslip_id = $this->Payslips_model->save( $payslip );
+
+            foreach($earnings as $earn) {
+                set_payslip_item($payslip_id, $earn['item_key'], $earn, "earnings");
+            }
+
+            foreach($deductions as $deduct) {
+                set_payslip_item($payslip_id, $deduct['item_key'], $deduct, "deductions");
+            }
         }
 
         $payroll_data["status"] = "ongoing";
         if ($this->Payrolls_model->save($payroll_data, $payroll_id)) {
-            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+            echo json_encode(array("success" => true, "data" => $this->_row_data($payroll_id), "id" => $payroll_id, 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
@@ -733,23 +727,16 @@ class Payrolls extends MY_Controller {
         $payroll_data["expense_id"] = $expense_id;
         $payroll_data["status"] = "completed";
         if ($this->Payrolls_model->save($payroll_data, $payroll_id)) {
-            echo json_encode(array(
-                "success" => true, 
-                'message' => lang('record_saved'), 
-            ));
+            echo json_encode(array("success" => true, "data" => $this->_row_data($id), "id" => $id, 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
     }
 
-    function mark_as_cancelled( $id ) {
-
-        $data = array(
-            "status" => 'cancelled',
-        );
-
-        if ($this->Payrolls_model->save($data, $id)) {
-            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+    function mark_as_cancelled( $payroll_id ) {
+        $payroll_data["status"] = "cancelled";
+        if ($this->Payrolls_model->save($payroll_data, $payroll_id)) {
+            echo json_encode(array("success" => true, "data" => $this->_row_data($payroll_id), "id" => $payroll_id, 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
