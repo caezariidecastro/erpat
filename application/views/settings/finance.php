@@ -97,10 +97,10 @@
                         <div class="col-md-10">
                             <?php
                             echo form_dropdown(
-                                    "basic_pay_calculation", array(
-                                "hourly_based" => "Base on Work Hour",
+                                "basic_pay_calculation", array(
+                                "hourly_based" => "Base on Worked hour",
                                 "scheduled_based" => "Base on Schedule",
-                                    ), get_setting('basic_pay_calculation', 'hourly_based'), "class='select2 mini'"
+                            ), get_setting('basic_pay_calculation', 'hourly_based'), "class='select2 mini'"
                             );
                             ?>
                         </div>

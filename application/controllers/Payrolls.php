@@ -915,7 +915,9 @@ class Payrolls extends MY_Controller {
             "payslip_id" => $data->id
         ))->result();
 
+        $basicpay_calculation = get_setting('basic_pay_calculation', 'hourly_based');
         $instance = (new PayHP()) 
+            ->setCalculationMode($basicpay_calculation)
             ->setMonthlySalary( get_monthly_salary($data->user, false) )
             ->setHourlyRate($data->hourly_rate)
             ->setTaxTable("term", $tax_table)
@@ -1004,6 +1006,11 @@ class Payrolls extends MY_Controller {
                 "key" => "pto",
                 "value" => $data->pto
             ),
+            array(
+                "key" => "leave_credit",
+                "value" => convert_number_to_decimal($data->leave_credit),
+                "type" => "number",
+            ),
         ];
 
         $view_data["overtime"] = [
@@ -1043,11 +1050,7 @@ class Payrolls extends MY_Controller {
                 "type" => "text",
                 "class" => "disabled",
             ),
-            array(
-                "key" => "leave_credit",
-                "value" => convert_number_to_decimal($data->leave_credit),
-                "type" => "number",
-            ),
+            
         ];
 
         $view_data["additionals"] = [

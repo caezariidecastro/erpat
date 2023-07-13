@@ -1,6 +1,7 @@
 <?php
     $payslip = array(
         "fullname" => $payslip->fullname,
+        "monthly_salary_title" => $summary['monthly_salary_title'],
         "monthly_salary" => $summary['monthly_salary'],
         "leave_credit" => convert_number_to_decimal($payslip->leave_credit),
 
@@ -160,7 +161,7 @@
                         Full Name: <span style="color: #454545;"><?= $payslip['fullname'] ?></span>
                     </li>
                     <li style="line-height: 25px;">
-                        Monthly Salary: <span style="color: #454545;"><?= $payslip['monthly_salary'] ?></span>
+                        <?= $payslip['monthly_salary_title'] ?>: <span style="color: #454545;"><?= $payslip['monthly_salary'] ?></span>
                     </li>
                     <li style="line-height: 25px;">
                         Leave Credits: <span style="color: #454545;"><?= $payslip['leave_credit'] ?></span>

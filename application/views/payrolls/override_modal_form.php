@@ -72,7 +72,7 @@
                 </div> 
 
                 <div class="col-md-4"> 
-                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">Holidays (hrs)</h6>
+                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">HD (hrs) / PTO (days)</h6>
                     <?php foreach($holiday as $addt) { ?>
                         <div class="form-group">
                             <label for="<?= $addt['key'] ?>" class=" col-md-4"><?php echo lang( $addt['key'] ); ?></label>

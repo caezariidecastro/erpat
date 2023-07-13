@@ -4,6 +4,7 @@ class PayHP {
 
     protected $term = 'biweekly';
     protected $annual_workdays = 261;
+    protected $calculation = 'hourly_based'; //or scheduled_based
 
     //CONSTANTS VARIABLES
     protected $overtime_rate = 1.25;
@@ -66,6 +67,20 @@ class PayHP {
      * @var array overtime_rate, restday_rate, legalhd_rate, spclhd_rate.
      */
     function __construct() {
+        return $this;
+    }
+
+    /**
+     * Set the calculation mode where to base either on worked hour on unwork.
+     * @var value decimal(1,2) in decimal.
+     * @var array overtime_rate, restday_rate, legalhd_rate, spclhd_rate.
+     */
+    function setCalculationMode($mode = "hourly_based") {
+        if($mode == "scheduled_based") {
+            $this->calculation = "scheduled_based";
+        } else {
+            $this->calculation = "hourly_based"; //default
+        }
         return $this;
     }
 
@@ -230,7 +245,10 @@ class PayHP {
     //REQUIRED TO EXEC.
     function calculate() {
         return array(
-            "monthly_salary" => to_currency($this->monthly_salary()),
+            "monthly_salary_title" => $this->calculation=="hourly_based"?
+                "Hourly Rate":"Monthly Salary",
+            "monthly_salary" => $this->calculation=="hourly_based"?
+                to_currency($this->hourly_rate):to_currency($this->monthly_salary()),
             "basic_pay" => $this->basicPay(),
             "unwork_deduction" => $this->unworkedDeductions(),
 
@@ -344,8 +362,7 @@ class PayHP {
      * like the paid timeoff, overtime, nightdiff, and special pay.
      */
     function hoursPaid() {
-        $basicpay_calculation = get_setting('basic_pay_calculation', 'hourly_based');
-        if($basicpay_calculation == 'hourly_based') {
+        if($this->calculation == 'hourly_based') {
             $regular_pay = $this->worked_hour * $this->hourly_rate;
         } else { //scheduled_based
             $regular_pay = $this->basicPay() - $this->unworkedDeductions();
@@ -358,12 +375,20 @@ class PayHP {
      * This deduction is a product of unworked hours x the hourly rate.
      */
     function unworkedDeductions() {
-        return num_limit($this->unworkedHours()) * $this->hourly_rate;
+        if($this->calculation == 'hourly_based') {
+            return 0;
+        }
+
+        return num_limit($this->unworkedHours()) * $this->hourly_rate; //scheduled_based
     }
 
     function unworkedHours() {
+        if($this->calculation == 'hourly_based') {
+            return $this->absent;
+        }
+
+        //scheduled_based
         $sched_unwork = $this->sched_hour - $this->worked_hour;
-        //$this->absent - compilation of idle time. still has a value.
         return num_limit($sched_unwork-$this->pto_hour);
     }
     
@@ -373,7 +398,7 @@ class PayHP {
     function nonTaxableAdditional() {
         $sub_total = 0;
         foreach($this->earnings as $earn) {
-            if(isset($earn['taxable']) && $earn['taxable'] == false) {
+            if(!isset($earn['taxable']) || (isset($earn['taxable']) && $earn['taxable'] == false)) {
                 $sub_total += $earn['amount'];
             }
         }
@@ -414,7 +439,7 @@ class PayHP {
      * Get the total taxample earnings which includeds hours paid and taxable additional.
      */
     function netTaxable() {
-        return num_limit( ($this->paidHours()+$this->taxableAdditional())-$this->nonTaxablesDeductions() );
+        return num_limit( ($this->paidHours()+$this->taxableAdditional()) );
     }
 
     /**
@@ -441,7 +466,7 @@ class PayHP {
     function taxDue() {
 
         $tax_due = 0;
-        $current_compensation = $this->netTaxable();
+        $current_compensation = num_limit($this->netTaxable()-$this->nonTaxablesDeductions());
 
         //get the current tax table for this payroll.
         $tax_table = false;
