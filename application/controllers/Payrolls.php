@@ -841,7 +841,7 @@ class Payrolls extends MY_Controller {
         
         $list_data = $this->Payslips_model->get_details(array(
             'payroll_id' => $payroll_id,
-            'user_id' => $this->input->post('user_select2_filter')
+            'status' => $this->input->post('status')
         ))->result();
 
         $result = array();
@@ -854,9 +854,9 @@ class Payrolls extends MY_Controller {
     private function get_payslip_status($data){
         $labeled_status = "";
 
-        if($data->cancelled_by){
+        if($data->status == "rejected"){
             $labeled_status = "<span class='label label-danger'>CANCELLED</span>";
-        } else if($data->signed_by && !$data->cancelled_by){
+        } else if($data->status == "approved"){
             $labeled_status = "<span class='label label-success'>APPROVED</span>";
         } else {
             $labeled_status = "<span class='label label-default'>DRAFT</span>";
@@ -872,27 +872,24 @@ class Payrolls extends MY_Controller {
         $summary = $this->processPayHP( $data, $payroll->tax_table )->calculate();
 
         $preview = modal_anchor(get_uri("payrolls/preview/".$data->id), get_payslip_id($data->id, $data->payroll), array( "title" => lang('preview_payslip'), "data-post-payroll_id" => $data->id));
-
-        $check = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/attendance_modal_form"), "<i class='fa fa-calendar'></i> " . lang('check_logs'), array("title" => lang('check_logs'), "data-post-user_id" => $data->user, "data-post-start_date" => "$payroll->start_date", "data-post-end_date" => "$payroll->end_date" )) . '</li>';
         
         $view = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/preview_modal_form/".$data->id), "<i class='fa fa-eye'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "data-post-view" => "details")) . '</li>';
-
-        $pdf = ""; //todo
-
-        $cancel = "";
-        $signe = "";
-        $override = "";
-        $delete = "";
         
-        if($data->signed_by && $data->status == "draft") {
-            $pdf = "<li role='presentation'>" . anchor(get_uri("fas/payrolls/download_pdf/".$data->id), "<i class='fa fa-download'></i>  &nbsp" . lang('download_pdf'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
+        if($data->status == "draft") {
 
-            $cancel = '<li role="presentation">' . js_anchor("<i class='fa fa-exclamation fa-fw'></i>" . lang('cancel'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "class" => "update", "data-action-url" => get_uri("fas/payrolls/cancel_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
-        } else if(!$data->signed_by && $data->status == "draft") {
-            $signe = '<li role="presentation">' . js_anchor("<i class='fa fa-paw fa-fw'></i>" . lang('approve'), array("class" => "update", "style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "data-action-url" => get_uri("fas/payrolls/approve_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
-
+            $check = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/attendance_modal_form"), "<i class='fa fa-calendar'></i> " . lang('check_logs'), array("title" => lang('check_logs'), "data-post-user_id" => $data->user, "data-post-start_date" => "$payroll->start_date", "data-post-end_date" => "$payroll->end_date" )) . '</li>';
+            
             $override = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/override_modal_form/".$data->id), "<i class='fa fa-check'></i> " . lang('override'), array("title" => lang('override'), "data-post-view" => "details")) . '</li>';
-        }
+
+            $signe = '<li role="presentation">' . js_anchor("<i class='fa fa-paw fa-fw'></i>" . lang('approve'), array("class" => "update", "style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "data-action-url" => get_uri("fas/payrolls/approve_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
+            
+        } else if($data->status == "approved") {
+
+            $pdf = "<li role='presentation'>" . anchor(get_uri("fas/payrolls/download_pdf/".$data->id), "<i class='fa fa-download'></i>  &nbsp" . lang('download_pdf'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
+            
+            $cancel = '<li role="presentation">' . js_anchor("<i class='fa fa-exclamation fa-fw'></i>" . lang('cancel'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "class" => "update", "data-action-url" => get_uri("fas/payrolls/cancel_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
+
+        } 
         
         $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => "  &nbsp".lang('delete'), "class" => "delete", "style"=>"border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "data-id" => $data->id, "data-action-url" => get_uri("fas/payrolls/delete_payslip"), "data-action" => "delete-confirmation")) . '</li>';
         
@@ -917,7 +914,7 @@ class Payrolls extends MY_Controller {
             "<strong ".($summary['net_pay']<=0?"style='color: red;'":"").">".to_currency( $summary['net_pay'] )."</strong>", 
 
             $this->get_payslip_status($data), //net_pay
-            $actions
+            $payroll->status=="ongoing"?$actions:""
         );
     }
 
@@ -1356,8 +1353,9 @@ class Payrolls extends MY_Controller {
     function cancel_payslip( $id ) {
 
         $data = array(
-            "cancelled_by" => $this->login_user->id,
-            "cancelled_at" => get_current_utc_time(),
+            "signed_by" => $this->login_user->id,
+            "signed_at" => get_current_utc_time(),
+            "status" => "rejected"
         );
 
         if ($this->Payslips_model->save($data, $id)) {
@@ -1372,6 +1370,7 @@ class Payrolls extends MY_Controller {
         $data = array(
             "signed_by" => $this->login_user->id,
             "signed_at" => get_current_utc_time(),
+            "status" => "approved"
         );
 
         if ($this->Payslips_model->save($data, $id)) {
@@ -1487,5 +1486,64 @@ class Payrolls extends MY_Controller {
         $view_data['start_date'] = $this->input->post("start_date");
         $view_data['end_date'] = $this->input->post("end_date");
         $this->load->view('payrolls/attendance_modal_form', $view_data);
+    }
+
+    function download_approved_payslip($payroll_id = 0) {
+
+        $this->load->library('pdf');
+        $this->pdf->setPrintHeader(false);
+        $this->pdf->setPrintFooter(false);
+        $this->pdf->SetCellPadding(0.7);
+        $this->pdf->setImageScale(2.0);
+        $this->pdf->SetFontSize(9);
+
+        $payroll = $this->Payrolls_model->get_details(array(
+            "id" => $payroll_id
+        ))->row();
+
+        $list_data = $this->Payslips_model->get_details(array(
+            'payroll_id' => $payroll_id,
+            //'status' => "approved"
+        ))->result();
+
+        foreach($list_data as $payslip) {
+            if($payslip->status != "approved")
+                continue;
+
+            $this->pdf->AddPage();
+
+            $payslip->pay_date = convert_date_format($payroll->pay_date, "F d, Y");
+            $payslip->pay_period= convert_date_format($payroll->start_date, "F d-").convert_date_format($payroll->end_date, "d Y");
+    
+            $user = $this->Users_model->get_details(array(
+                "id" => $payslip->user
+            ))->row();
+            $payslip->fullname = $user->first_name." ".$user->last_name;
+            $payslip->job_title = $user->job_title;
+    
+            $team = $this->Team_model->get_teams($payslip->user)->row();//todo
+            $payslip->department = $team?$team->title:"None";
+    
+            $job_info = $this->Users_model->get_job_info($payslip->user);
+            $payslip->salary = $job_info->salary;
+            $payslip->bank_name = $job_info->bank_name;
+            $payslip->bank_account = $job_info->bank_account;
+            $payslip->bank_number = $job_info->bank_number;
+    
+            $accountant = $this->Users_model->get_baseinfo($payroll->accountant_id);
+            $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
+            $payslip->accountant_title = $accountant->job_title;
+    
+            $view_data["payslip"] = $payslip;
+            $view_data["summary"] = $this->processPayHP( $payslip, $payroll->tax_table )->calculate();
+    
+            $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
+
+            $html = $this->load->view("payrolls/preview_modal_form", $view_data, true);
+            $this->pdf->writeHTML($html, true, false, true, false, '');
+        }
+
+        $file_name =  "DepartStartEnd.pdf";
+        $this->pdf->Output($file_name, "I");
     }
 }

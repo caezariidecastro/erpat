@@ -17,12 +17,24 @@
             <h1>
                 <?= get_payroll_id($payroll_info->id); ?> - <?= $status ?>
             </h1>
+            <?php if( $payroll_info->status == "ongoing" ) { ?>
             <div class="title-button-group mr15">
-                <?php if( $payroll_info->status == "ongoing" ) { ?>
-                <?php echo ajax_anchor(get_uri("payrolls/recalculate/" . $payroll_info->id), "<i class='fa fa-calculator'></i> " . lang('recalculate'), array("data-reload-on-success" => "1", "class"=>"btn btn-default")); ?> 
-                <?php echo modal_anchor(get_uri("payrolls/lock_payment/".$payroll_info->id), "<i class='fa fa-money'></i> " . lang('lock_payment'), array("class" => "btn btn-default", "title" => lang('payslip_preview'), "data-post-payroll_id" => $payroll_info->id)); ?>
-                <?php } ?>
+                <?php echo ajax_anchor(get_uri("payrolls/recalculate/" . $payroll_info->id), "<i class='fa fa-calculator'></i> " . lang('recalculate'), array("data-reload-on-success" => "1", "class"=>"btn btn-danger")); ?> 
             </div>
+            <div class="title-button-group">
+                <span class="dropdown inline-block mt10">
+                    <button class="btn btn-info dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                        <i class='fa fa-cogs'></i> <?php echo lang('actions'); ?>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li role="presentation"> <?php echo anchor(get_uri("payrolls/download_approved_payslip/" . $payroll_info->id . "/view"), "<i class='fa fa-file-pdf-o'></i> " . lang('export_pdf'), array("title" => lang('export_pdf'), "target" => "_blank")); ?> </li>
+                        <li role="presentation"> <?php echo modal_anchor(get_uri("payrolls/lock_payment/".$payroll_info->id), "<i class='fa fa-money'></i> " . lang('lock_payment'), array( "title" => lang('lock_payment'), "data-post-payroll_id" => $payroll_info->id)); ?> </li>
+                        <li role="presentation"> <?php echo modal_anchor(get_uri("payrolls/mark_as_cancelled/".$payroll_info->id), "<i class='fa fa-times'></i> " . lang('cancel'), array( "title" => lang('cancel'), "data-post-payroll_id" => $payroll_info->id)); ?> </li>
+                    </ul>
+                </span>
+            </div>
+            <?php } ?>
         </div>
     </div>
 
@@ -106,6 +118,15 @@
         $("#payslip-table").appTable({
             source: '<?php echo_uri("payrolls/payslip_list_data/" . $payroll_info->id . "/") ?>',
             order: [[0, "asc"]],
+            filterDropdown: [
+                {   name: "status", class: "w150", options: <?= json_encode(array(
+                        array('id' => '', 'text'  => '- Status -'),
+                        array('id' => 'draft', 'text'  => '- Draft -'),
+                        array('id' => 'approved', 'text'  => '- Approved -'),
+                        array('id' => 'rejected', 'text'  => '- Rejected -')
+                    )); ?> 
+                },
+            ],
             columns: [
                 {title: '<?php echo lang("payslip_id") ?>', "class": "w10p"},
                 {title: '<?php echo lang("employee") ?>', "class": "w15p", "iDataSort": 1},

@@ -15,6 +15,7 @@ class Payslips_model extends Crud_model {
         $payroll_id = get_array_value($options, "payroll_id");
         $user_id = get_array_value($options, "user_id");
         $department_id = get_array_value($options, "department_id");
+        $status = get_array_value($options, "status");
 
         if ($id) {
             $where .= " AND {$this->table}.id=$id";
@@ -26,6 +27,10 @@ class Payslips_model extends Crud_model {
 
         if($user_id){
             $where .= " AND {$this->table}.user = $user_id";
+        }
+
+        if($status){
+            $where .= " AND {$this->table}.status='$status'";
         }
 
         if($department_id){

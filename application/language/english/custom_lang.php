@@ -1141,7 +1141,6 @@ $lang["resOverPay"] = "Restday OT";
 
 $lang["other_loan"] = "Other Loan";
 
-
 $lang["deduct_adjust_name"] = "Adjustment Name";
 $lang["deduct_other_name"] = "Other Name";
 
@@ -1159,3 +1158,5 @@ $lang["leave_credit"] = "Leave Credit";
 $lang["pto_pay"] = "PTO Covered";
 $lang["allowances"] = "Allowance";
 $lang["bonuses"] = "Bonus";
+
+$lang["export_pdf"] = "Export PDF";
