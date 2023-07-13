@@ -186,7 +186,7 @@ class PayHP {
                 $this->absent_hour += is_numeric($value)?$value:0;
                 break;
             case $type == "pto":
-                $this->pto_hour += is_numeric($value)?$value:0;
+                $this->pto_hour += is_numeric($value)?8*$value:0;
                 break;
             default:
                 break;
@@ -291,16 +291,20 @@ class PayHP {
      */
     function basicPay() {
 
-        if($this->term == 'daily') {
-            $regular = floatval($this->hourly_rate) * 8;
-        } else if($this->term == 'weekly') {
-            $regular = $this->monthly_salary() / 4;
-        } else if($this->term == 'biweekly') {
-            $regular = $this->monthly_salary() / 2;
-        } else if($this->term == 'monthly') {
-            $regular = $this->monthly_salary();
+        if($this->calculation == 'hourly_based') {
+            $regular = ($this->worked_hour+$this->pto_hour) * $this->hourly_rate;
+        } else { //scheduled_based
+            if($this->term == 'daily') {
+                $regular = floatval($this->hourly_rate) * 8;
+            } else if($this->term == 'weekly') {
+                $regular = $this->monthly_salary() / 4;
+            } else if($this->term == 'biweekly') {
+                $regular = $this->monthly_salary() / 2;
+            } else if($this->term == 'monthly') {
+                $regular = $this->monthly_salary();
+            }
         }
-        
+
         return convert_number_to_decimal($regular);
     }
 
@@ -362,13 +366,7 @@ class PayHP {
      * like the paid timeoff, overtime, nightdiff, and special pay.
      */
     function hoursPaid() {
-        if($this->calculation == 'hourly_based') {
-            $regular_pay = $this->worked_hour * $this->hourly_rate;
-        } else { //scheduled_based
-            $regular_pay = $this->basicPay() - $this->unworkedDeductions();
-        }
-        
-        return $regular_pay;
+        return $this->basicPay() - $this->unworkedDeductions();
     }
 
     /**
