@@ -356,10 +356,6 @@
                 dataType: "json",
                 success: function (result) {
                     appLoader.hide();
-                    // const pageName = 'Override <?= lang('payslip'); ?>';
-                    // $("#payslip-section-head").html(pageName);
-                    // $("#payslip-section").html(result);
-                    // $("[data-target=#tab-summary]").trigger("click");
                 }
             });
         });
@@ -375,6 +371,22 @@
                 method: "POST",
                 dataType: "json",
                 success: function (result) {
+                    console.log(result.data);
+
+                    $('#gross_pay').val(result.data.gross_pay);
+                    $('#holidayPay').val(result.data.holiday_pay);
+                    $('#net_pay').val(result.data.net_pay);
+
+                    $('#net_taxable').val(result.data.net_taxable);
+                    $('#nightdiffPay').val(result.data.nightdiff_pay);
+                    $('#overtimePay').val(result.data.overtime_pay);
+
+                    $('#pto_pay').val(result.data.pto_pay);
+                    $('#taxDue').val(result.data.tax_due);
+                    $('#unwork_deductions').val(result.data.unwork_deductions);
+
+                    $('#bonusPay').val(result.data.bonus_pay);
+
                     appLoader.hide();
                     appAlert.success(result.message, {duration: 2000});
                     $('#payslip-table').dataTable()._fnAjaxUpdate();

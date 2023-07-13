@@ -1323,8 +1323,34 @@ class Payrolls extends MY_Controller {
                 ), "deductions", "");
             };
         }
-        
-        echo json_encode(array("success"=>true, "message"=>lang('record_saved')));
+
+        $data = $this->Payslips_model->get_details(array(
+            "id" => $payslip_id
+        ))->row();
+
+        $payroll = $this->Payrolls_model->get_details(array(
+            "id" => $data->payroll
+        ))->row();
+
+        $summary = $this->processPayHP( $data, $payroll->tax_table )->calculate();
+
+        $view_data = array(
+            "overtime_pay" => to_currency($summary['overtime_pay']),
+            "holiday_pay" => to_currency($summary['holiday_pay']),
+            "nightdiff_pay" => to_currency($summary['nightdiff_pay']),
+
+            "unwork_deductions" => to_currency($summary['unwork_deduction']),
+            "pto_pay" => to_currency($summary['pto_pay']),
+            "tax_due" => to_currency($summary['tax_due']),
+
+            "net_taxable" => to_currency($summary['net_taxable']),
+            "gross_pay" => to_currency($summary['gross_pay']),
+            "net_pay" => to_currency($summary['net_pay']),
+
+            "bonus_pay" => to_currency($summary['bonus_pay']),
+        );
+
+        echo json_encode(array("success"=>true, "data" => $view_data, "message"=>lang('record_saved')));
     }
 
     function cancel_payslip( $id ) {
