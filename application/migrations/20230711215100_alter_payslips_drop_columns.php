@@ -65,6 +65,14 @@ class Migration_Alter_payslips_drop_columns extends CI_Migration {
                 $this->dbforge->drop_column('payslips_deductions', 'status');
                 $this->dbforge->drop_column('payslips_deductions', 'timestamp');
                 $this->dbforge->drop_column('payslips_deductions', 'created_by');
+
+                $this->db->query("ALTER TABLE `payslips_earnings` CHANGE `amount` `amount` DECIMAL(10,2) NULL DEFAULT '0.00';");
+                $this->db->query("ALTER TABLE `payslips_deductions` CHANGE `amount` `amount` DECIMAL(10,2) NULL DEFAULT '0.00';");
+
+                $fields = array(
+                        "`log_type` enum('schedule','overtime') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'schedule' after id"
+                );
+                $this->dbforge->add_column('attendance', $fields);
         }
 
         public function down()
