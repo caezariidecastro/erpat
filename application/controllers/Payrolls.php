@@ -537,10 +537,6 @@ class Payrolls extends MY_Controller {
             $payslip_id = $payslip->id;
         }
 
-        $leave_credit_balance = $this->Leave_credits_model->get_balance(array(
-            "user_id" => $user_id
-        ));
-
         //TODO: Generate from Data
         $earnings = [
             array( "payslip_id" => $payslip_id, "item_key" => "allowances", "title"=>"Allowance", 
@@ -598,7 +594,7 @@ class Payrolls extends MY_Controller {
             "payroll" => $payroll_info->id,
             "user" => $user_id,
             "hourly_rate" => $job_info->rate_per_hour,
-            "leave_credit" => $leave_credit_balance, //hourly_rate
+            "leave_credit" => $payslip->leave_credit, 
 
             "schedule" => $payroll_info->sched_hours,//$attd->getTotalSchedule(), //schedule
             "worked" => $attd->getTotalWork(), //work
@@ -692,8 +688,13 @@ class Payrolls extends MY_Controller {
             }
             unset($payslip['deductions']);
 
+            $leave_credit_balance = $this->Leave_credits_model->get_balance(array(
+                "user_id" => $user_id
+            ));
+            $payslip['leave_credit'] = $leave_credit_balance;
+
             //To create a payslip for that user in a list.
-            $this->Payslips_model->save( $payslip, $payslip->id );
+            $this->Payslips_model->save( $payslip );
         }
 
         $payroll_data["status"] = "ongoing";
@@ -775,7 +776,7 @@ class Payrolls extends MY_Controller {
         $this->pdf->SetFontSize(9);
 
         if( $data ) {
-            $html = $this->load->view("payrolls/preview", $data, true);
+            $html = $this->load->view("payrolls/preview_modal_form", $data, true);
             $this->pdf->writeHTML($html, true, false, true, false, '');
 
             $fullname = $data['payslip']->employee_name;
@@ -872,7 +873,7 @@ class Payrolls extends MY_Controller {
 
         $preview = modal_anchor(get_uri("payrolls/preview/".$data->id), get_payslip_id($data->id, $data->payroll), array( "title" => lang('preview_payslip'), "data-post-payroll_id" => $data->id));
 
-        $check = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/attendance_modal_form"), "<i class='fa fa-calendar'></i> " . lang('check_logs'), array("title" => lang('check_logs'), "data-post-user_id" => $data->id, "data-post-start_date" => "$payroll->start_date", "data-post-end_date" => "$payroll->end_date" )) . '</li>';
+        $check = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/attendance_modal_form"), "<i class='fa fa-calendar'></i> " . lang('check_logs'), array("title" => lang('check_logs'), "data-post-user_id" => $data->user, "data-post-start_date" => "$payroll->start_date", "data-post-end_date" => "$payroll->end_date" )) . '</li>';
         
         $view = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/preview_modal_form/".$data->id), "<i class='fa fa-eye'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "data-post-view" => "details")) . '</li>';
 
@@ -1397,6 +1398,7 @@ class Payrolls extends MY_Controller {
 
         $accountant = $this->Users_model->get_baseinfo($payroll->accountant_id);
         $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
+        $payslip->accountant_title = $accountant->job_title;
 
         $view_data["payslip"] = $payslip;
         $view_data["summary"] = $this->processPayHP( $payslip, $payroll->tax_table )->calculate();
@@ -1409,12 +1411,13 @@ class Payrolls extends MY_Controller {
     function download_pdf($id = 0, $mode = "download") {
         if ($id) {
             $payslip = $this->Payslips_model->get_details(array(
-                "id" => $id
+                "id" => $payslip_id
             ))->row();
     
             $payroll = $this->Payrolls_model->get_details(array(
                 "id" => $payslip->payroll
             ))->row();
+    
             $payslip->pay_date = convert_date_format($payroll->pay_date, "F d, Y");
             $payslip->pay_period= convert_date_format($payroll->start_date, "F d-").convert_date_format($payroll->end_date, "d Y");
     
@@ -1423,11 +1426,6 @@ class Payrolls extends MY_Controller {
             ))->row();
             $payslip->fullname = $user->first_name." ".$user->last_name;
             $payslip->job_title = $user->job_title;
-    
-            $leave_credit_balance = $this->Leave_credits_model->get_balance(array(
-                "user_id" => $payslip->user
-            ));
-            $payslip->leave_credit = $leave_credit_balance;
     
             $team = $this->Team_model->get_teams($payslip->user)->row();//todo
             $payslip->department = $team?$team->title:"None";
@@ -1440,21 +1438,11 @@ class Payrolls extends MY_Controller {
     
             $accountant = $this->Users_model->get_baseinfo($payroll->accountant_id);
             $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
-            //TODO: Get the signiture
-
-            $payslip->unworked_deductions = max($payslip->absent, 0);
+            $payslip->accountant_title = $accountant->job_title;
     
             $view_data["payslip"] = $payslip;
             $view_data["summary"] = $this->processPayHP( $payslip, $payroll->tax_table )->calculate();
-
-            $view_data["earnings"] = $this->Payslip_earnings_model->get_details(array(
-                "payslip_id" => $payslip->id,
-            ))->result();
     
-            $view_data["deductions"] = $this->Payslip_deductions_model->get_details(array(
-                "payslip_id" => $payslip->id
-            ))->result();
-
             $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
 
             $this->prepare_payslip_pdf($view_data);

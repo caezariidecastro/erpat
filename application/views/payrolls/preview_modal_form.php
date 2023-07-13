@@ -74,6 +74,7 @@
 
         "accountant_sign" => "",
         "accountant_name" => $payslip->accountant_name,
+        "accountant_title" => $payslip->accountant_title,
     );
     
     foreach($summary['earnings'] as $earn) {
@@ -245,10 +246,10 @@
                         <th width="49.5%" style="border: none;"></th>
                     </tr>
                     <tr style="background-color: <?= $footer_color ?>;">
-                        <td style="border: none; text-align: right; font-size: 14px;">
+                        <td style="border: none; text-align: right; font-size: medium;">
                             <strong>NET PAY: </strong>
                         </td>
-                        <td style="border: none; text-align: left; font-size: 14px;">
+                        <td style="border: none; text-align: left; font-size: medium;">
                             <strong><?= $payslip['net_pay'] ?></strong>
                         </td>
                     </tr>
@@ -257,7 +258,7 @@
                     <tr>
                         <th width="100%" style="border: none;">
                             <p style="text-align: center; font-size: 10px; line-height: 7px; font-style: italic; font-weight: 100;">
-                                <span style="color: #454545;"><?= $payslip['amount_in_words'] ?></span>
+                                <span style="color: #454545; line-height: 15px; font-size: small;"><?= $payslip['amount_in_words'] ?></span>
                             </p>
                         </th>
                     </tr>
@@ -265,18 +266,18 @@
                 <table >
                     <tr>
                         <th width="49.5%" style="border: none;">
-                            <p style="text-align: center; font-size: 12px; line-height: 12px;">
+                            <p style="text-align: center; font-size: small; line-height: 12px;">
                                 <span style="color: #454545; font-weight: 100;"><?= $payslip['pay_period'] ?></span>
                             </p>
-                            <p style="text-align: center; font-size: 10px; line-height: 0;">
+                            <p style="text-align: center; font-size: 12px; line-height: 0;">
                                 Pay Period
                             </p>
                         </th>
                         <th width="49.5%" style="border: none;">
-                            <p style="text-align: center; font-size: 12px; line-height: 12px;">
+                            <p style="text-align: center; font-size: small; line-height: 12px;">
                                 <span style="color: #454545; font-weight: 100;"><?= $payslip['payment_date'] ?></span>
                             </p>
-                            <p style="text-align: center; font-size: 10px; line-height: 0;">
+                            <p style="text-align: center; font-size: 12px; line-height: 0;">
                                 Payment Date
                             </p>
                         </th>
@@ -304,7 +305,7 @@
                     <?= $payslip['accountant_name'] ?>
                 </p>
                 <p style="text-align: center; font-size: 12px; line-height: 18px; font-weight: 200; border-top: 1px solid grey;">
-                    Head, HR/Accounting   
+                <?= $payslip['accountant_title'] ?>
                 </p>
             </th>
         </tr>
