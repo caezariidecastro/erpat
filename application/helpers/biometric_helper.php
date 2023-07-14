@@ -455,7 +455,6 @@ class BioMeet {
 
             $second_start_date = null;
             $second_end_date = null;
-            $need_adjust = false;
 
             $current_day = convert_date_utc_to_local($data->in_time);
             //Override the date in and out to the previous to conpensate with the next day.
@@ -480,40 +479,34 @@ class BioMeet {
             $day_name = convert_date_format($sched_day_in, 'D');  //local
             if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
                 $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
+                $sched_in = $sched_day_in .' '. $sched_time; //local
+                $current_schedin = $today_sched;
 
                 // Check if time start local is 00:00:00 to 00:03:00 then last day.
                 // TODO: Have the start and end check to settings and also reconsider.
-                $current_time = strtotime($sched_time); 
+                $current_time = strtotime( convert_date_utc_to_local($data->in_time, "H:i") ); //this should be in time
                 $start_time = strtotime('00:00'); // 12 AM (midnight)
                 $end_time = strtotime('03:00'); // 3 AM
                 if ($current_time >= $start_time && $current_time <= $end_time) {
-                    $shift = convert_date_utc_to_local($data->in_time, 'A');
+                    $shift = convert_date_format($sched_in, 'A');
                     if($shift === "PM") { //if in is pm then
-                        $sched_day_in = add_period_to_date($sched_day_in, 1);
-                        $need_adjust = true;
+                        $sched_in = sub_day_to_datetime($sched_in, 1);
                     }
                 }
-
-                $sched_in = $sched_day_in .' '. $sched_time; //local
-                $current_schedin = $today_sched;
             }
 
             //First! If no schedule make sure to have an actual in and out as official schedule.
-            $sched_day_out = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
-            $sched_out = convert_date_utc_to_local($data->in_time);
+            $sched_day_out = convert_date_format($sched_in, 'Y-m-d'); //local
+            $sched_out = $sched_in;
 
             //Second! Get the current day schedule instance based on in time.
             if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
                 $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
                 if( strpos($today_sched['in'], "PM") !== false && strpos($today_sched['out'], "AM") !== false) {
-                    $sched_day_out = add_day_to_datetime(convert_date_utc_to_local($data->in_time), 1, "Y-m-d");
+                    $sched_day_out = add_day_to_datetime($sched_in, 1, "Y-m-d");
                 }
                 $sched_out = $sched_day_out .' '. $sched_time; //local
                 $current_schedout = $today_sched;
-
-                if($need_adjust) {
-                    $sched_out = add_day_to_datetime( $sched_out, 1);
-                }
             }
 
             if($current_schedin && $current_schedout) {
@@ -724,14 +717,16 @@ class BioMeet {
                     //Stable
                     $pre_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
                     $post_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
-                                        
+
                     //Stable
                     $bonuspay_trigger = number_with_decimal( get_setting('bonuspay_trigger', 0) );
                     if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger) {
                         $bonus += num_limit($pre_excess, $bonuspay_trigger);
+                        $bonus_pre_val = $bonuspay_trigger;
                     }
                     if( $bonuspay_trigger && $post_excess > $bonuspay_trigger ) {
                         $bonus += num_limit($post_excess, $bonuspay_trigger);
+                        $bonus_post_val = $bonuspay_trigger;
                     }
 
                     //Stable
@@ -739,7 +734,7 @@ class BioMeet {
                     if( $overtime_trigger && $pre_excess > $overtime_trigger ) {
                         $overtime += $pre_excess;
                         if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger) {
-                            $overtime = num_limit($overtime-$bonuspay_trigger, $bonuspay_trigger);
+                            //$overtime = num_limit($overtime-$bonuspay_trigger, $bonuspay_trigger);
                         }
                         
                         $pre_night = get_night_differential(
@@ -750,7 +745,7 @@ class BioMeet {
                     if( $overtime_trigger && $post_excess > $overtime_trigger ) {
                         $overtime += $post_excess;
                         if( $bonuspay_trigger && $post_excess > $bonuspay_trigger) {
-                            $overtime = num_limit($overtime-$bonuspay_trigger, $bonuspay_trigger);
+                            //$overtime = num_limit($overtime-$bonuspay_trigger, $bonuspay_trigger);
                         }
                         
                         $post_night += get_night_differential(
@@ -766,17 +761,22 @@ class BioMeet {
                         $over = 0;
                         $under = 0;
                         $nonworked = $lunch_sched + $lates + $over + $under;
+                        
+                        $worked = 0;
+                        $bonus = 0;
+                        $overtime = num_limit( convert_seconds_to_hour_decimal( $to_time-$from_time ) - $lunch_sched);
                     } else {
                         //Note: If the worked duration greater than zero 
                         // make sure that worked hour is 8h before having the overtime.
-                        $max_work_hour = 8;
-                        $worked = num_limit($worked+$overtime, $max_work_hour);
-                        $overtime = num_limit(($worked+$overtime)- $max_work_hour);
+                        $total_worked = $worked + $overtime;
+                        $worked = num_limit($total_worked, $payable);
+                        $bonus = num_limit($bonus_pre_val + $bonus_post_val);
+                        $overtime = num_limit($total_worked - ($worked+$bonus));
                     }
                     
                     $this->attd_data[] = array(
                         "duration" => $actual_duration,
-                        "schedule" => $sched_duration,
+                        "schedule" => $payable,
                         "worked" => $worked,
                         "absent" => $nonworked,
                         "overtime" => $overtime,
@@ -807,7 +807,7 @@ class BioMeet {
 
                     $this->attd_data[] = array(
                         "duration" => $actual_duration,
-                        "schedule" => $sched_duration,
+                        "schedule" => $payable,
                         "worked" => $worked,
                         "absent" => $nonworked,
                         "overtime" => $overtime,
