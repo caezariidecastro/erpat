@@ -457,19 +457,6 @@ class BioMeet {
             $second_end_date = null;
 
             $current_day = convert_date_utc_to_local($data->in_time);
-            //Override the date in and out to the previous to conpensate with the next day.
-            //This will only affect the overnight schedule on saturday.
-            if( is_within_range( $current_day ) && convert_date_format($current_day, 'N') == 6 ) {
-                $data->in_time = convert_date_local_to_utc( 
-                    sub_day_to_datetime(
-                        convert_date_utc_to_local($data->in_time), 1
-                ));
-
-                $data->out_time = convert_date_local_to_utc( 
-                    sub_day_to_datetime(
-                        convert_date_utc_to_local($data->out_time), 1
-                ));
-            }
 
             //First! If no schedule make sure to have an actual in and out as official schedule.
             $sched_day_in = convert_date_utc_to_local($data->in_time, 'Y-m-d'); //local
@@ -482,16 +469,22 @@ class BioMeet {
                 $sched_in = $sched_day_in .' '. $sched_time; //local
                 $current_schedin = $today_sched;
 
+                // Get the current time of the time in.
+                $current_time = strtotime( convert_date_utc_to_local($data->in_time, "H:i") ); //this should be in time
+                $expected_timein = convert_date_format($sched_in, 'A');
+
                 // Check if time start local is 00:00:00 to 00:03:00 then last day.
                 // TODO: Have the start and end check to settings and also reconsider.
-                $current_time = strtotime( convert_date_utc_to_local($data->in_time, "H:i") ); //this should be in time
                 $start_time = strtotime('00:00'); // 12 AM (midnight)
                 $end_time = strtotime('03:00'); // 3 AM
-                if ($current_time >= $start_time && $current_time <= $end_time) {
-                    $shift = convert_date_format($sched_in, 'A');
-                    if($shift === "PM") { //if in is pm then
-                        $sched_in = sub_day_to_datetime($sched_in, 1);
-                    }
+                if ($current_time >= $start_time && $current_time <= $end_time && $expected_timein === "PM") {
+                    $sched_in = sub_day_to_datetime($sched_in, 1);
+                } 
+
+                $start_time = strtotime('21:00'); // 9 PM 
+                $end_time = strtotime('24:00'); // 12 AM (midnight)
+                if($current_time >= $start_time && $current_time <= $end_time && $expected_timein === "AM") {
+                    $sched_in = add_day_to_datetime($sched_in, 1);
                 }
             }
 
