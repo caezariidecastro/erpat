@@ -620,7 +620,8 @@ class Payrolls extends MY_Controller {
         ))->row();
 
         $payslips = $this->Payslips_model->get_details(array(
-            "payroll_id" => $payroll_id
+            "payroll_id" => $payroll_id,
+            "status" => "draft"
         ))->result();
             
         foreach($payslips as $current) {
