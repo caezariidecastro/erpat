@@ -710,25 +710,37 @@ class BioMeet {
                         $schedobj["end_time"]
                     ); //Get overlap of schedule and attendance.
                     $worked = num_limit( convert_seconds_to_hour_decimal($work_duration)-$lunch_sched );
-
+                    
                     //Stable
                     $night_diff_schedule = get_night_differential( //TODO
                         $schedobj["start_time"], 
                         $schedobj["end_time"]
                     );
                     $night = num_limit( 
-                        convert_seconds_to_hour_decimal($night_diff_schedule)-($nonworked), 
+                        convert_seconds_to_hour_decimal($night_diff_schedule)-$nonworked, 
                         8 //TODO: 8, Get from config.
                     ); //add if may overtime overlap pre and post.
 
                     //Stable
                     $pre_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
                     $post_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
-                    
+                                        
+                    //Stable
+                    $bonuspay_trigger = number_with_decimal( get_setting('bonuspay_trigger', 0) );
+                    if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger) {
+                        $bonus += num_limit($pre_excess, $bonuspay_trigger);
+                    }
+                    if( $bonuspay_trigger && $post_excess > $bonuspay_trigger ) {
+                        $bonus += num_limit($post_excess, $bonuspay_trigger);
+                    }
+
                     //Stable
                     $overtime_trigger = number_with_decimal( get_setting('overtime_trigger', 0) );
                     if( $overtime_trigger && $pre_excess > $overtime_trigger ) {
                         $overtime += $pre_excess;
+                        if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger) {
+                            $overtime = num_limit($overtime-$bonuspay_trigger, $bonuspay_trigger);
+                        }
                         
                         $pre_night = get_night_differential(
                             convert_date_utc_to_local($data->in_time), $schedobj["start_time"]
@@ -737,21 +749,30 @@ class BioMeet {
                     }
                     if( $overtime_trigger && $post_excess > $overtime_trigger ) {
                         $overtime += $post_excess;
+                        if( $bonuspay_trigger && $post_excess > $bonuspay_trigger) {
+                            $overtime = num_limit($overtime-$bonuspay_trigger, $bonuspay_trigger);
+                        }
                         
                         $post_night += get_night_differential(
                             $schedobj["end_time"], convert_date_utc_to_local($data->out_time)
                         );
                         $night += convert_seconds_to_hour_decimal( $post_night );
                     }
-                    
-                    //Stable
-                    $bonuspay_trigger = number_with_decimal( get_setting('bonuspay_trigger', 0) );
-                    if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger ) {
-                        $bonus += $pre_excess;
+
+                    if( $worked == 0 ) { 
+                        //Note: This is make sure if no overlapping of work and schedule 
+                        // these following variable should be zero.
+                        $lates = 0;
+                        $over = 0;
+                        $under = 0;
+                        $nonworked = $lunch_sched + $lates + $over + $under;
+                    } else {
+                        //Note: If the worked duration greater than zero 
+                        // make sure that worked hour is 8h before having the overtime.
+                        $max_work_hour = 8;
+                        $worked = num_limit($worked+$overtime, $max_work_hour);
+                        $overtime = num_limit(($worked+$overtime)- $max_work_hour);
                     }
-                    if( $bonuspay_trigger && $post_excess > $bonuspay_trigger ) {
-                        $bonus += $post_excess;
-                    }          
                     
                     $this->attd_data[] = array(
                         "duration" => $actual_duration,
