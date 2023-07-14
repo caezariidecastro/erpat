@@ -705,16 +705,6 @@ class BioMeet {
                     $worked = num_limit( convert_seconds_to_hour_decimal($work_duration)-$lunch_sched );
                     
                     //Stable
-                    $night_diff_schedule = get_night_differential( //TODO
-                        $schedobj["start_time"], 
-                        $schedobj["end_time"]
-                    );
-                    $night = num_limit( 
-                        convert_seconds_to_hour_decimal($night_diff_schedule)-$nonworked, 
-                        8 //TODO: 8, Get from config.
-                    ); //add if may overtime overlap pre and post.
-
-                    //Stable
                     $pre_excess = convert_seconds_to_hour_decimal( num_limit(strtotime($schedobj["start_time"])-$from_time) );
                     $post_excess = convert_seconds_to_hour_decimal( num_limit($to_time-strtotime($schedobj["end_time"])) );
 
@@ -773,6 +763,16 @@ class BioMeet {
                         $bonus = num_limit($bonus_pre_val + $bonus_post_val);
                         $overtime = num_limit($total_worked - ($worked+$bonus));
                     }
+
+                    //Stable
+                    $night_diff_schedule = get_night_differential( //TODO
+                        $schedobj["start_time"], 
+                        $schedobj["end_time"]
+                    );
+                    $night = num_limit( 
+                        convert_seconds_to_hour_decimal($night_diff_schedule)-$nonworked, 
+                        max($worked, $overtime)
+                    ); //add if may overtime overlap pre and post.
                     
                     $this->attd_data[] = array(
                         "duration" => $actual_duration,
