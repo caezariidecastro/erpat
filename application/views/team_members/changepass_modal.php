@@ -4,7 +4,7 @@
     <div role="tabpanel" class="tab-pane">
         <div class="form-group">
             <label for="new_password" class=" col-md-2"><?php echo lang('new_password'); ?></label>
-            <div class=" col-md-10">
+            <div class=" col-md-8">
                 <?php
                 echo form_password(array(
                     "id" => "new_password",
@@ -16,6 +16,12 @@
                     "data-msg-minlength" => lang("enter_minimum_6_characters"),
                 ));
                 ?>
+            </div>
+            <div class="col-md-1 p0">
+                <a href="#" id="generate_password" class="btn btn-default" title="<?php echo lang('generate'); ?>"><span class="fa fa-refresh"></span></a>
+            </div>
+            <div class="col-md-1 p0">
+                <a href="#" id="show_hide_password" class="btn btn-default" title="<?php echo lang('show_text'); ?>"><span class="fa fa-eye"></span></a>
             </div>
         </div>
         <div class="form-group">
@@ -51,6 +57,38 @@
                 } else {
                     appAlert.error(result.message);
                 }
+            }
+        });
+
+        $("#generate_password").click(function () {
+            const gen_pass = getRndomString(8);
+            $("#new_password").val( gen_pass );
+            $("#confirm_password").val( gen_pass );
+        });
+
+        $("#show_hide_password").click(function () {
+            var $target = $("#new_password"),
+                    type = $target.attr("type");
+            if (type === "password") {
+                $(this).attr("title", "<?php echo lang("hide_text"); ?>");
+                $(this).html("<span class='fa fa-eye-slash'></span>");
+                $target.attr("type", "text");
+            } else if (type === "text") {
+                $(this).attr("title", "<?php echo lang("show_text"); ?>");
+                $(this).html("<span class='fa fa-eye'></span>");
+                $target.attr("type", "password");
+            }
+
+            var $target = $("#confirm_password"),
+                    type = $target.attr("type");
+            if (type === "password") {
+                $(this).attr("title", "<?php echo lang("hide_text"); ?>");
+                $(this).html("<span class='fa fa-eye-slash'></span>");
+                $target.attr("type", "text");
+            } else if (type === "text") {
+                $(this).attr("title", "<?php echo lang("show_text"); ?>");
+                $(this).html("<span class='fa fa-eye'></span>");
+                $target.attr("type", "password");
             }
         });
 
