@@ -613,6 +613,49 @@ class Team_members extends MY_Controller {
         $this->load->view('team_members/changepass_modal', $view_data);
     }
 
+    function send_password_reset($user_id) {
+
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
+        $user_info = $this->Users_model->get_one($user_id);
+
+        //send reset password email if found account with this email
+        if ( isset($user_info->email) ) {
+            $email_template = $this->Email_templates_model->get_final_template("reset_password");
+
+            $parser_data["ACCOUNT_HOLDER_NAME"] = $user_info->first_name . " " . $user_info->last_name;
+            $parser_data["SIGNATURE"] = $email_template->signature;
+            $parser_data["LOGO_URL"] = get_logo_url();
+            $parser_data["SITE_URL"] = get_uri();
+
+            $verification_data = array(
+                "type" => "reset_password",
+                "code" => make_random_string(),
+                "params" => serialize(array(
+                    "email" => $user_info->email,
+                    "expire_time" => time() + (24 * 60 * 60)
+                ))
+            );
+
+            $save_id = $this->Verification_model->save($verification_data);
+
+            $verification_info = $this->Verification_model->get_one($save_id);
+
+            $parser_data['RESET_PASSWORD_URL'] = get_uri("signin/new_password/" . $verification_info->code);
+
+            $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
+            if (send_app_mail($user_info->email, $email_template->subject, $message)) {
+                echo json_encode(array('success' => true, 'message' => lang("reset_info_send")." Email: ".$user_info->email));
+            } else {
+                echo json_encode(array('success' => false, 'message' => lang('error_occurred')));
+            }
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang("no_acount_found_with_this_email")));
+        }
+    }
+
     function update_user_password() {
         validate_submitted_data(array(
             "user_id" => "required",

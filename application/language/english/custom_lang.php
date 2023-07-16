@@ -1163,3 +1163,5 @@ $lang["export_pdf"] = "Export PDF";
 
 $lang["new_password"] = "New Password";
 $lang["confirm_password"] = "Confirm Password";
+
+$lang["send_email"] = "Send Email";

@@ -43,6 +43,7 @@
     </div>
 </div>
 <div class="modal-footer">
+    <button type="button" id="send_email" class="btn btn-warning"><span class="fa fa-email"></span> <?php echo lang('send_email'); ?></button>
     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
 </div>
 <?php echo form_close(); ?>
@@ -58,6 +59,28 @@
                     appAlert.error(result.message);
                 }
             }
+        });
+
+        $("#send_email").click(function () {
+            appLoader.show();
+            $("#send_email").prop('disabled', true);
+            $.ajax({
+                url: "<?= get_uri("hrs/team_members/send_password_reset/".$model_info->id) ?>", 
+                dataType: 'json',
+                success: function(result){
+                    if(result.success) {
+                        appAlert.success(result.message);
+                    } else {
+                        appAlert.error(result.message);
+                    }
+                    appLoader.hide();
+                    $("#send_email").prop('disabled', false);
+                }, 
+                function (request, status, error) {
+                    appLoader.hide();
+                    $("#send_email").prop('disabled', false);
+                }
+            })
         });
 
         $("#generate_password").click(function () {
