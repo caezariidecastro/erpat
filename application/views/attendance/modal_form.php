@@ -85,8 +85,8 @@
     <?php foreach ($model_info->break_time as $index => $break_log) { ?>
 
         <div class="clearfix">
-            <label for="break_1st_start" class=" col-md-4 col-12"><?= lang(($index+1)."-rank").' '.lang('break_log'); ?></label>
-            <div class=" col-md-4 col-6 form-group">
+            <label for="break_1st_start" class=" col-md-3 col-12"><?= lang(($index+1)."-rank").' '.lang('break_log'); ?></label>
+            <div class=" col-md-4 col-12 form-group">
                 <?php
                 $first_start = is_date_exists($break_log) ? convert_date_utc_to_local($break_log) : "";
 
@@ -109,7 +109,7 @@
                 ));
                 ?>
             </div>
-            <div class=" col-md-4 col-6 form-group">
+            <div class="col-md-3 col-12 form-group">
                 <?php
                 echo form_input(array(
                     "id" => ($index+1)."-time",
@@ -120,6 +120,9 @@
                     "placeholder" => lang('time'),
                 ));
                 ?>
+            </div>
+            <div class=" col-md-2 col-12 form-group" style="margin: 8px auto 0;">
+                <label id="<?= $index+1 ?>-span"></label>
             </div>
         </div>
         
@@ -168,6 +171,13 @@
     </div>
 
     <div class="form-group">
+        <label class="col-md-3"><?php echo lang('duration'); ?></label>
+        <label id="duration" class="col-md-3">-</label>
+        <label class="col-md-3"><?php echo lang('total_break'); ?>-</label>
+        <label id="total_break" class="col-md-3">-</label>
+    </div>
+
+    <div class="form-group">
         <label for="note" class=" col-md-3"><?php echo lang('note'); ?></label>
         <div class=" col-md-9">
             <?php
@@ -201,8 +211,107 @@
             $("#attendance_user_id").select2();
         }
         setDatePicker("#in_date, #out_date, #1-date, #2-date, #3-date, #4-date, #5-date, #6-date, #7-date, #8-date");
-
         setTimePicker("#in_time, #out_time, #1-time, #2-time, #3-time, #4-time, #5-time, #6-time, #7-time, #8-time");
+
+        <?php foreach ([1,3,5,7] as $index) { $succeding = $index+1;?>
+
+        function part_<?= $index.$succeding ?>_break() {
+            if( $('#<?= $index ?>-date').val() != "" && $('#<?= $index ?>-time').val() != "" && $('#<?= $succeding ?>-date').val() != "" && $('#<?= $succeding ?>-time').val() != "" ) {
+                let tspan = "0h 0m";
+
+                const start = new moment($('#<?= $index ?>-date').val() + ' ' + $('#<?= $index ?>-time').val());
+                const end = new moment($('#<?= $succeding ?>-date').val() + ' ' + $('#<?= $succeding ?>-time').val());
+
+                tspan = end.diff(start)/1000;
+                
+                let hours = '';
+                if(tspan >= 3600) {
+                    hours = parseInt(tspan/60/60) + 'h ';
+                }
+                let minutes = '';
+                if(tspan > 60) {
+                    minutes = (parseInt(tspan/60) % 60) + 'm';
+                }
+
+                if(hours || minutes) {
+                    $('#<?= $index ?>-span').html( 'DURATION' );
+                    $('#<?= $succeding ?>-span').html( hours + minutes );
+                } else {
+                    $('#<?= $index ?>-span').html( '-' );
+                    $('#<?= $succeding ?>-span').html( '-' );
+                }
+            } else {
+                $('#<?= $index ?>-span').html( '-' );
+                $('#<?= $succeding ?>-span').html( '-' );
+            }
+
+            work_duration();
+        } part_<?= $index.$succeding ?>_break();
+
+        $('#<?= $index ?>-date, #<?= $index ?>-time, #<?= $succeding ?>-date, #<?= $succeding ?>-time').on('change', () => {
+            part_<?= $index.$succeding ?>_break();
+        });
+
+        <?php } ?>
+
+        function work_duration() {
+            if( $('#in_date').val() != "" && $('#in_time').val() != "" && $('#out_date').val() != "" && $('#out_time').val() != "" ) {
+                let tspan = "0h 0m";
+
+                const start = new moment($('#in_date').val() + ' ' + $('#in_time').val());
+                const end = new moment($('#out_date').val() + ' ' + $('#out_time').val());
+
+                tspan = end.diff(start)/1000;
+                
+                let hours = '';
+                if(tspan >= 3600) {
+                    hours = parseInt(tspan/60/60) + 'h ';
+                }
+                let minutes = '';
+                if(tspan > 60) {
+                    minutes = (parseInt(tspan/60) % 60) + 'm';
+                }
+
+                if(hours || minutes) {
+                    $('#duration').html( hours + minutes );
+                } else {
+                    $('#duration').html( '-' );
+                }
+            } else {
+                $('#duration').html( '-' );
+            }
+
+            let total_minutes = 0;
+
+            <?php foreach ([1,3,5,7] as $index) { $succeding = $index+1;?>
+
+                if( $('#<?= $index ?>-date').val() != "" && $('#<?= $index ?>-time').val() != "" && $('#<?= $succeding ?>-date').val() != "" && $('#<?= $succeding ?>-time').val() != "" ) {
+                    const start = new moment($('#<?= $index ?>-date').val() + ' ' + $('#<?= $index ?>-time').val());
+                    const end = new moment($('#<?= $succeding ?>-date').val() + ' ' + $('#<?= $succeding ?>-time').val());
+
+                    let cur_minutes = end.diff(start)/1000;
+                    if(cur_minutes) {
+                        total_minutes += cur_minutes/60;
+                    }
+                }
+
+            <?php } ?>
+
+            let hours = '';
+            if(total_minutes >= 60) {
+                hours = parseInt(total_minutes/60) + 'h ';
+            }
+            let minutes = '';
+            if(total_minutes > 0) {
+                minutes = (parseInt(total_minutes) % 60) + 'm';
+            }
+
+            $('#total_break').html( hours + minutes );
+        } work_duration();
+
+        $('#in_date, #in_time, #out_date, #out_time').on('change', () => {
+            work_duration();
+        });
 
         $("#log_type").val('<?= $model_info->log_type?$model_info->log_type:"overtime" ?>');    
         $("#attendance-form .select2").select2();

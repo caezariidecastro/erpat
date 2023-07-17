@@ -1168,3 +1168,5 @@ $lang["send_email"] = "Send Email";
 
 $lang["set_user_access"] = "Set User Access";
 $lang["syntry_site_link"] = "Syntry App Link";
+
+$lang["total_break"] = "Total Breaks";
