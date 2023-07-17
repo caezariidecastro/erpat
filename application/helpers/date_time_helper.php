@@ -570,7 +570,7 @@ if (!function_exists('convert_seconds_to_hour_decimal')) {
 
 }
 
-if (!function_exists('add_to_datetime')) {
+if (!function_exists('add_day_to_datetime')) {
 
     function add_day_to_datetime($datetime, $days = 0, $format = "Y-m-d H:i:s") {
         $date = new DateTime($datetime);
