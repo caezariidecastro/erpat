@@ -703,18 +703,18 @@ class BioMeet {
 
                     //Stable
                     $bonuspay_trigger = number_with_decimal( get_setting('bonuspay_trigger', 0) );
-                    if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger) {
+                    if( $bonuspay_trigger && $pre_excess >= $bonuspay_trigger) {
                         $bonus += num_limit($pre_excess, $bonuspay_trigger);
                         $bonus_pre_val = $bonuspay_trigger;
                     }
-                    if( $bonuspay_trigger && $post_excess > $bonuspay_trigger ) {
+                    if( $bonuspay_trigger && $post_excess >= $bonuspay_trigger ) {
                         $bonus += num_limit($post_excess, $bonuspay_trigger);
                         $bonus_post_val = $bonuspay_trigger;
                     }
 
                     //Stable
                     $overtime_trigger = number_with_decimal( get_setting('overtime_trigger', 0) );
-                    if( $overtime_trigger && $pre_excess > $overtime_trigger ) {
+                    if( $overtime_trigger && $pre_excess >= $overtime_trigger ) {
                         $overtime += $pre_excess;
                         if( $bonuspay_trigger && $pre_excess > $bonuspay_trigger) {
                             //$overtime = num_limit($overtime-$bonuspay_trigger, $bonuspay_trigger);
@@ -725,7 +725,7 @@ class BioMeet {
                         );
                         $night += convert_seconds_to_hour_decimal( $pre_night );
                     }
-                    if( $overtime_trigger && $post_excess > $overtime_trigger ) {
+                    if( $overtime_trigger && $post_excess >= $overtime_trigger ) {
                         $overtime += $post_excess;
                         if( $bonuspay_trigger && $post_excess > $bonuspay_trigger) {
                             //$overtime = num_limit($overtime-$bonuspay_trigger, $bonuspay_trigger);
