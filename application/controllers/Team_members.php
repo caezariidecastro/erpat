@@ -673,7 +673,7 @@ class Team_members extends MY_Controller {
         $confirm = $this->input->post("confirm_password");
 
         if( $new != $confirm ) {
-            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            echo json_encode(array("success" => false, 'message' => lang('password_not_match')));
             exit;
         }
 
@@ -685,6 +685,47 @@ class Team_members extends MY_Controller {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
     }
+
+    /* set access */
+    function setaccess_modal_form() {
+        $this->with_permission("staff_update", "no_permission");
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        
+        $id = $this->input->post('id');
+        $options = array(
+            "id" => $id,
+        );
+
+        $view_data['model_info'] = $this->Users_model->get_details($options)->row();
+        $this->load->view('team_members/setaccess_modal', $view_data);
+    }
+
+    function update_user_access() {
+        validate_submitted_data(array(
+            "user_id" => "required",
+            //"access_erpat" => "required",
+            //"access_syntry" => "required"
+        ));
+        $user_id = $this->input->post('user_id');
+
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
+
+        $account_data['access_erpat'] = $this->input->post("access_erpat");
+        $account_data['access_syntry'] = $this->input->post("access_syntry");
+
+        if ($this->Users_model->save($account_data, $user_id)) {
+            echo json_encode(array("success" => true, 'message' => lang('record_updated')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
 
     function update_user_form($user_id) {
         $this->with_permission("staff_update", "no_permission");
@@ -907,6 +948,8 @@ class Team_members extends MY_Controller {
             
             $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/edit_modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit_employee'), array("title" => lang('edit_employee'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
 
+            $access = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/setaccess_modal_form"), "<i class='fa fa-user-secret'></i> " . lang('set_user_access'), array("title" => lang('set_user_access'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
+
             $pass = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/changepass_modal_form"), "<i class='fa fa-lock'></i> " . lang('reset_password'), array("title" => lang('reset_password'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
 
             $rfid = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/rfid_modal"), "<i class='fa fa-barcode'></i> " . lang('set_rfid'), array("class" => "edit", "title" => lang('set_rfid'), "data-post-id" => $data->id)). '</li>';
@@ -930,7 +973,7 @@ class Team_members extends MY_Controller {
                     <i class="fa fa-cogs"></i>&nbsp;
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu pull-right" role="menu">' . $edit . $pass  . $sched . $rfid . $delete . '</ul>
+                <ul class="dropdown-menu pull-right" role="menu">' . $edit . $access . $pass  . $sched . $rfid . $delete . '</ul>
             </span>';
         }
 

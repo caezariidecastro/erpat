@@ -1165,3 +1165,5 @@ $lang["new_password"] = "New Password";
 $lang["confirm_password"] = "Confirm Password";
 
 $lang["send_email"] = "Send Email";
+
+$lang["set_user_access"] = "Set User Access";
