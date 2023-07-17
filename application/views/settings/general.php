@@ -116,6 +116,22 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="syntry_site_link" class=" col-md-2"><?php echo lang('syntry_site_link'); ?></label>
+                        <div class=" col-md-10">
+                            <?php
+                            echo form_input(array(
+                                "id" => "syntry_site_link",
+                                "name" => "syntry_site_link",
+                                "value" => get_setting('syntry_site_link'),
+                                "class" => "form-control",
+                                "placeholder" => lang('syntry_site_link'),
+                                "data-rule-required" => true,
+                                "data-msg-required" => lang("field_required"),
+                            ));
+                            ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="language" class=" col-md-2"><?php echo lang('language'); ?></label>
                         <div class="col-md-10">
                             <?php
