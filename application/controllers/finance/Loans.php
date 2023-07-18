@@ -351,28 +351,37 @@ class Loans extends MY_Controller {
 
         $current_balance = ($data->principal_amount+$data->fees)-$data->payments;
 
+
+        $edit_loan = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_minimumpay"), "<i class='fa fa-pencil fa-fw'></i> ".lang('edit_loan'), array("class" => "edit", "data-post-id" => $data->id)) . '</li>';
+
+        $update_status = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i> ".lang('update_status'), array("class" => "edit", "data-post-id" => $data->id)) . '</li>';
+
+        $add_payment = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money fa-fw'></i> ".lang('add_payment'), array("class" => "edit")) . '</li>';
+
+        $add_fee = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-tag fa-fw'></i> ".lang('add_fee'), array("class" => "edit")) . '</li>';
+
+        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i> ".lang('delete'), array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete"), "data-action" => "delete")) . '</li>';
+
+        $option_links = '<span class="dropdown inline-block">
+                        <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                            <i class="fa fa-cogs"></i>&nbsp;
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $edit_loan . $update_status . $add_payment . $add_fee . $delete . '</ul>
+                    </span>';
+
         return array(
             $loan_detail,
             $data->category_name ?$data->category_name:"-",
             format_to_date($data->date_applied, true),
             get_team_member_profile_link($data->borrower_id, $data->borrower_name, array("target" => "_blank")),
+            $fees_detail,
             to_currency($data->principal_amount),
-            $data->interest_rate."%",
-            $data->months_topay,
+            $data->months_topay." ".lang("month")."(s) @ ".$data->interest_rate."%",
             to_currency($data->min_payment),
             $payment_detail,
             to_currency($current_balance),
-            $fees_detail,
-            $data->days_before_due,
-            $data->penalty_rate."%",
-            format_to_date($data->start_payment, true),
-            $data->remarks ? $data->remarks : "-",
-            get_team_member_profile_link($data->cosigner_id, $data->cosigner_name, array("target" => "_blank")),
-            modal_anchor(get_uri("finance/Loans/modal_form_minimumpay"), "<i class='fa fa-pencil fa-fw'></i>", array("class" => "edit", "title" => lang('update_status'), "data-post-id" => $data->id)).
-            modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i>", array("class" => "edit", "title" => lang('update_status'), "data-post-id" => $data->id)).
-            modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money fa-fw'></i>", array("class" => "edit", "title" => lang('add_payment'))).
-            modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-tag fa-fw'></i>", array("class" => "edit", "title" => lang('add_fee')))
-            .js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete"), "data-action" => "delete"))
+            $option_links
         );
     }
 

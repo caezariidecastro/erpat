@@ -19,24 +19,18 @@
             columns: [
                 {title: '<?php echo lang("loan") ?>', "class": "w10p"},
                 {title: '<?php echo lang("categories") ?>', "class": "w10p"},
-                {title: '<?php echo lang("date_applied") ?>', "class": "w20p"},
+                {title: '<?php echo lang("date_applied") ?>', "class": "w10p"},
                 {title: '<?php echo lang("borrower") ?>', "class": "w20p"},
-                {title: '<?php echo lang("principal") ?>', "class": "w20p"},
-                {title: '<?php echo lang("interest_rate") ?>', "class": "w15p"},
+                {title: '<?php echo lang("fees") ?>', "class": "w15p"},
+                {title: '<?php echo lang("principal") ?>', "class": "w15p"},
                 {title: '<?php echo lang("months_to_pay") ?>', "class": "w15p"},
                 {title: '<?php echo lang("minimum_payment") ?>', "class": "w15p"},
                 {title: '<?php echo lang("payments") ?>', "class": "w15p"},
                 {title: '<?php echo lang("balance") ?>', "class": "w15p"},
-                {title: '<?php echo lang("fees") ?>', "class": "w15p"},
-                {title: '<?php echo lang("days_before_due") ?>', "class": "w15p"},
-                {title: '<?php echo lang("penalty_rate") ?>', "class": "w15p"},
-                {title: '<?php echo lang("start_payment") ?>', "class": "w15p"},
-                {title: '<?php echo lang("remarks") ?>', "class": "w15p"},
-                {title: '<?php echo lang("cosigner") ?>', "class": "w15p"},
-                {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
+                {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option w100"}
             ],
-            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            xlsColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
 
         });
     });
