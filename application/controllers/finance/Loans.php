@@ -287,6 +287,30 @@ class Loans extends MY_Controller {
         }
     }
 
+    //delete/undo a leve type
+    function delete_payments() {
+        $this->with_permission("loan_delete", "no_permission");
+        
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+        if ($this->input->post('undo')) {
+            if ($this->Loan_payments_model->delete($id, true)) {
+                echo json_encode(array("success" => true, "data" => $this->_row_data_payment($id), "message" => lang('record_undone')));
+            } else {
+                echo json_encode(array("success" => false, lang('error_occurred')));
+            }
+        } else {
+            if ($this->Loan_payments_model->delete($id)) {
+                echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+            }
+        }
+    }
+
     function delete_category() {
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -328,6 +352,23 @@ class Loans extends MY_Controller {
         $options = array("id" => $id);
         $data = $this->Loans_model->get_details($options)->row();
         return $this->_make_row($data);
+    }
+
+    //get a row of loan row
+    private function _row_data_payment($id) {
+        $options = array("id" => $id);
+        $data = $this->Loan_payments_model->get_details($options)->row();
+        return array(
+            get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-L', 4),
+            format_to_date($data->date_paid),
+            $data->borrower_name,
+            to_currency($data->amount),
+            $data->remarks,
+            $data->executer_name,
+            format_to_date($data->updated_at),
+            modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-pencil fa-fw'></i>", array("title" => lang("edit"), "class" => "edit", "data-post-id" => $data->id, "data-post-loan_id" => $data->loan_id))
+            .js_anchor("<i class='fa fa-times fa-fw'></i>", array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete_payments"), "data-action" => "delete"))
+        );
     }
 
     protected function _make_row_category($data) {
@@ -399,7 +440,7 @@ class Loans extends MY_Controller {
 
     function view_payments() {
         $view_data['loan_info'] = $this->Loans_model->get_details(array("id"=>$this->input->post('id')))->row();
-        $payments_detail = $this->Loan_payments_model->get_details(array("loan_id"=>$this->input->post('id')));
+        $payments_detail = $this->Loan_payments_model->get_details(array("loan_id"=>$this->input->post('id')))->result();
         foreach($payments_detail as $detail) {
             $detail_id_name = get_id_name($detail->id, date("Y", strtotime($detail->date_paid)).'-P', 4);
             $detail->title_link = modal_anchor(get_uri("finance/Loans/modal_form_payment"), $detail_id_name, array("class" => "edit", "title" => lang('edit_payment'), "data-post-id" => $detail->id));
@@ -441,7 +482,42 @@ class Loans extends MY_Controller {
                 $data->stage_name,
                 $data->remarks,
                 $data->executer_name,
-                format_to_date($data->timestamp)
+                format_to_date($data->timestamp),
+
+            );
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    function view_payments_tab() {
+        $this->load->view("loans/payments_tab");
+    }
+
+    function list_payments() {
+        $start_date = $this->input->post('start_date');
+        $end_date = $this->input->post('end_date');
+        $user_id = $this->input->post('user_id');
+        
+        $options = array(
+            "loan_id" => $loan_id,
+            "start_date" => $start_date,
+            "end_date" => $end_date,
+            "borrower_id" => $user_id,
+        );
+
+        $list_data = $this->Loan_payments_model->get_details($options)->result();
+        $result = array();
+        foreach ($list_data as $data) {
+            $result[] = array(
+                get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-L', 4),
+                format_to_date($data->date_paid),
+                $data->borrower_name,
+                to_currency($data->amount),
+                $data->remarks,
+                $data->executer_name,
+                format_to_date($data->updated_at),
+                modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-pencil fa-fw'></i>", array("title" => lang("edit"), "class" => "edit", "data-post-id" => $data->id, "data-post-loan_id" => $data->loan_id))
+                .js_anchor("<i class='fa fa-times fa-fw'></i>", array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete_payments"), "data-action" => "delete"))
             );
         }
         echo json_encode(array("data" => $result));

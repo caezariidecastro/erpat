@@ -1176,3 +1176,5 @@ $lang["days_locked_attendance"] = "Days to Lock Attendance";
 $lang["attendance_locked"] = "Attendance Locked";
 
 $lang["edit_loan"] = "Edit Loan";
+
+$lang["date_paid"] = "Date Paid";
