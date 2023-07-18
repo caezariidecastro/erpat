@@ -1,4 +1,8 @@
-
+<div class="page-title clearfix">
+    <div class="title-button-group">
+        <?php echo modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money'></i> " . lang('add_payment'), array("class" => "btn btn-default", "title" => lang('add_payment'))); ?>
+    </div>
+</div>
 <div class="table-responsive">
     <table id="list-payments-table" class="display" cellspacing="0" width="100%">            
     </table>

@@ -2,7 +2,6 @@
 <div class="page-title clearfix">
     <div class="title-button-group">
         <?php echo modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-tag'></i> " . lang('add_fee'), array("class" => "btn btn-default", "title" => lang('add_fee'))); ?>
-        <?php echo modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money'></i> " . lang('add_payment'), array("class" => "btn btn-default", "title" => lang('add_payment'))); ?>
         <?php echo modal_anchor(get_uri("finance/Loans/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('create_loan'), array("class" => "btn btn-default", "title" => lang('create_loan'))); ?>
     </div>
 </div>
