@@ -23,7 +23,8 @@ class Loans extends MY_Controller {
     }
 
     function entries() {
-        $this->load->view("loans/entries");
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $this->load->view("loans/entries", $view_data);
     }
 
     //load loan add/edit form
