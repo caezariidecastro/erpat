@@ -1170,3 +1170,7 @@ $lang["set_user_access"] = "Set User Access";
 $lang["syntry_site_link"] = "Syntry App Link";
 
 $lang["total_break"] = "Total Breaks";
+
+$lang["days_locked_attendance"] = "Days to Lock Attendance";
+
+$lang["attendance_locked"] = "Attendance Locked";

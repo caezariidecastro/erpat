@@ -100,7 +100,7 @@ class Settings extends MY_Controller {
     }
 
     function save_calendar_settings() {
-        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "overtime_trigger", "bonuspay_trigger", "nightpay_start_trigger", "nightpay_end_trigger", "yearly_paid_time_off", "days_per_year");
+        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "overtime_trigger", "bonuspay_trigger", "nightpay_start_trigger", "nightpay_end_trigger", "yearly_paid_time_off", "days_per_year", "days_locked_attendance");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);

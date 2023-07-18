@@ -523,12 +523,20 @@ class Attendance extends MY_Controller {
             }
         }
 
+        if(!$this->login_user->is_admin && get_date_difference_in_days($data->in_time, get_my_local_time("Y-m-d")) >= get_setting("days_locked_attendance", 7)) {
+            $info = "";
+            $note = "";
+            $edit = "";
+            $delete = "";
+            $locked = '<li role="presentation" style="padding: 5px; text-align: center;"><i class="fa fa-lock" aria-hidden="true"></i> <label>' . lang("attendance_locked") . '</label></li>';
+        }
+
         $option_links = '<span class="dropdown inline-block">
                         <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
                             <i class="fa fa-cogs"></i>&nbsp;
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu pull-right" role="menu">' . $info . $note . $edit . $delete . '</ul>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $locked . $info . $note . $edit . $delete . '</ul>
                     </span>';
             
         $response = array_merge($response, array(

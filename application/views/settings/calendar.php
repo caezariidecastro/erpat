@@ -196,6 +196,22 @@
                         </div>
                         <label class=" col-md-2"><?php echo lang('days'); ?></label>
                     </div>
+                    <div class="form-group">
+                        <label for="days_locked_attendance" class=" col-md-2"><?= lang("days_locked_attendance")  ?></label>
+                        <div class="col-md-2">
+                            <?php
+                                $days_locked_attendance = get_setting('days_locked_attendance', 7);
+                                echo form_input(array(
+                                    "id" => "days_locked_attendance",
+                                    "name" => "days_locked_attendance",
+                                    "value" => $days_locked_attendance,
+                                    "class" => "form-control",
+                                    "placeholder" => lang('days_locked_attendance'),
+                                ));
+                            ?>
+                        </div>
+                        <label class=" col-md-2"><?php echo lang('days'); ?></label>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
