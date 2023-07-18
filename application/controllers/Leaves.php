@@ -66,8 +66,10 @@ class Leaves extends MY_Controller {
         $leave_data['checked_at'] = "0000:00:00";
         $leave_data['status'] = "pending";
 
-        if(is_leave_credit_required($leave_type_id) && get_total_leave_credit_balance($leave_data['applicant_id'], $leave_data['leave_type_id']) < $leave_data['total_days'] ) {
-            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient') ) );
+        $cur_bal = get_total_leave_credit_balance($leave_data['applicant_id'], $leave_data['leave_type_id']);
+        $cur_bal = number_with_decimal($cur_bal);
+        if(is_leave_credit_required( $leave_data['leave_type_id'] ) && $cur_bal < $leave_data['total_days'] ) {
+            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient')." ".lang("balance").": ".$cur_bal ) );
             return;
         }
 
@@ -89,8 +91,10 @@ class Leaves extends MY_Controller {
         $leave_data['checked_at'] = "0000:00:00";
         $leave_data['status'] = "pending";
 
-        if(is_leave_credit_required($leave_type_id) && get_total_leave_credit_balance($leave_data['applicant_id'], $leave_data['leave_type_id']) < $leave_data['total_days'] ) {
-            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient') ) );
+        $cur_bal = get_total_leave_credit_balance($leave_data['applicant_id'], $leave_data['leave_type_id']);
+        $cur_bal = number_with_decimal($cur_bal);
+        if(is_leave_credit_required( $leave_data['leave_type_id'] ) && $cur_bal < $leave_data['total_days'] ) {
+            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient')." ".lang("balance").": ".$cur_bal ) );
             return;
         }
 
