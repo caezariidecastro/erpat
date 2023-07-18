@@ -1,12 +1,16 @@
 <?php echo form_open(get_uri("finance/Loans/save_payment"), array("id" => "save-payment-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
+    <?php if($loan_id) { $disabled = "disabled"; $loan_id_name = "";?>
+        <input type="hidden" name="loan_id" value="<?php echo $loan_id; ?>" />
+    <?php } else { $loan_id_name = "loan_id"; }?>
+
 
     <div class="form-group">
         <label for="loan_id" class=" col-md-2"><?php echo lang('loan'); ?></label>
         <div class=" col-md-10">
             <?php
-                echo form_dropdown("loan_id", $loan_dropdowns, $model_info ? $model_info->loan_id : "", "class='select2 validate-hidden' id='loan_id'");
+                echo form_dropdown($loan_id_name, $loan_dropdowns, $loan_id, "class='select2 validate-hidden' $disabled");
             ?>
         </div>
     </div>
@@ -55,7 +59,7 @@
             echo form_textarea(array(
                 "id" => "remarks",
                 "name" => "remarks",
-                "value" => $model_info->amount,
+                "value" => $model_info->remarks,
                 "class" => "form-control",
                 "placeholder" => lang('remarks')
             ));

@@ -49,12 +49,14 @@ class Loans extends MY_Controller {
 
     function modal_form_fee() {
         $view_data['loan_dropdowns'] = array("" => "- Select -") + $this->Loans_model->get_dropdown_list(array("id"), "id", array("deleted" => 0), "loan");
+        $view_data['loan_id'] = $this->input->post('loan_id');
         $view_data['model_info'] = $this->Loan_fees_model->get_one($this->input->post('id'));
         $this->load->view('loans/modal_form_fee', $view_data);
     }
 
     function modal_form_payment() {
         $view_data['loan_dropdowns'] = array("" => "- Select -") + $this->Loans_model->get_dropdown_list(array("id"), "id", array("deleted" => 0), "loan");
+        $view_data['loan_id'] = $this->input->post('loan_id');
         $id = $this->input->post('id');
         $view_data['model_info'] = $this->Loan_payments_model->get_one($id);
         $this->load->view('loans/modal_form_payment', $view_data);
@@ -165,7 +167,7 @@ class Loans extends MY_Controller {
 
         $data = array(
             "loan_id" => $loan_id,
-            "date_paid" => $this->input->post('date_paid'),
+            "date_paid" => get_current_utc_time(),
             "amount" => $this->input->post('amount'),
             "remarks" => $this->input->post('remarks'),
         );
@@ -352,13 +354,13 @@ class Loans extends MY_Controller {
         $current_balance = ($data->principal_amount+$data->fees)-$data->payments;
 
 
-        $edit_loan = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_minimumpay"), "<i class='fa fa-pencil fa-fw'></i> ".lang('edit_loan'), array("class" => "edit", "data-post-id" => $data->id)) . '</li>';
+        $edit_loan = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_minimumpay"), "<i class='fa fa-pencil fa-fw'></i> ".lang('edit_loan'), array("title" => lang("edit_loan"), "class" => "edit", "data-post-id" => $data->id)) . '</li>';
 
-        $update_status = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i> ".lang('update_status'), array("class" => "edit", "data-post-id" => $data->id)) . '</li>';
+        $update_status = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i> ".lang('update_status'), array("title" => lang("update_status"), "class" => "edit", "data-post-id" => $data->id)) . '</li>';
 
-        $add_payment = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money fa-fw'></i> ".lang('add_payment'), array("class" => "edit")) . '</li>';
+        $add_payment = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money fa-fw'></i> ".lang('add_payment'), array("title" => lang("add_payment"), "class" => "edit", "data-post-loan_id" => $data->id)) . '</li>';
 
-        $add_fee = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-tag fa-fw'></i> ".lang('add_fee'), array("class" => "edit")) . '</li>';
+        $add_fee = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-tag fa-fw'></i> ".lang('add_fee'), array("title" => lang("add_fee"), "class" => "edit", "data-post-loan_id" => $data->id)) . '</li>';
 
         $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i> ".lang('delete'), array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete"), "data-action" => "delete")) . '</li>';
 

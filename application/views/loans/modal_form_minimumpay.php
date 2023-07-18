@@ -56,7 +56,7 @@
     <div class="form-group">
         <div class=" col-md-12">
             <div class="alert alert-danger" role="alert">
-                Change of Monthly Minimum Payment will affect the paylip deductions including the months to apy estimation reports.
+                Change of Monthly Minimum Payment will affect the any paylip deductions including the months to pay reports.
             </div>
         </div>
     </div>
