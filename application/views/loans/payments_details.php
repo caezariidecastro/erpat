@@ -23,10 +23,7 @@
                     $penalty = 0;
                     foreach($payments_detail as $payment) { 
                         $total += $payment->amount;
-                        $penalty = 0;
-                        if($payment->late_interest) {
-                            $penalty += $payment->amount*($payment->late_interest/100);
-                        }
+                        $penalty = $payment->late_interest;
                 ?>
                     <tr>
                         <td> <?= $payment->title_link ?></td>

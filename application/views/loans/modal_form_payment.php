@@ -22,7 +22,7 @@
             echo form_input(array(
                 "id" => "date_paid",
                 "name" => "date_paid",
-                "value" => convert_date_format($model_info->date_paid, "d/m/Y"),
+                "value" => $model_info->date_paid ? convert_date_utc_to_local($model_info->date_paid, "Y-m-d") : "",
                 "class" => "form-control",
                 "placeholder" => lang('date'),
                 "autocomplete" => "off",
@@ -53,6 +53,22 @@
     </div>
 
     <div class="form-group">
+        <label for="penalty" class=" col-md-2"><?php echo lang('penalty'); ?></label>
+        <div class=" col-md-10">
+            <?php
+            echo form_input(array(
+                "id" => "penalty",
+                "name" => "penalty",
+                "value" => $model_info->late_interest,
+                "class" => "form-control",
+                "type" => "number",
+                "placeholder" => lang('penalty')
+            ));
+            ?>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="remarks" class=" col-md-2"><?php echo lang('remarks'); ?></label>
         <div class=" col-md-10">
             <?php
@@ -69,7 +85,6 @@
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> <?php echo lang('close'); ?></button>
     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
 </div>
 <?php echo form_close(); ?>
@@ -78,7 +93,7 @@
     $(document).ready(function () {
         $("#save-payment-form").appForm({
             onSuccess: function (result) {
-                location.reload();
+                $(".dataTable:visible").appTable({reload: true});
             }
         });
 

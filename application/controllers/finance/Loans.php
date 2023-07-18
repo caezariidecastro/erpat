@@ -137,6 +137,7 @@ class Loans extends MY_Controller {
         ));
 
         $loan_id = $this->input->post('loan_id');
+        $id = $this->input->post('id');
 
         $data = array(
             "loan_id" => $loan_id,
@@ -149,9 +150,9 @@ class Loans extends MY_Controller {
             $data["created_by"] = $this->login_user->id;
         }
 
-        $save_id = $this->Loan_fees_model->save($data);
+        $save_id = $this->Loan_fees_model->save($data, $id);
         if ($save_id) {
-            echo json_encode(array("success" => true, "id" => $loan_id, "data" => $this->_row_data($loan_id), 'message' => lang('record_saved')));
+            echo json_encode(array("success" => true, "id" => $save_id, "data" => $this->_row_data($save_id), 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
@@ -165,11 +166,19 @@ class Loans extends MY_Controller {
         ));
 
         $loan_id = $this->input->post('loan_id');
+        $id = $this->input->post('id');
+
+        $loan = $this->Loans_model->get_details(array("id"=>$id))->row();
+        if( isset($loan->min_payment) && $this->input->post('amount') < $loan->min_payment) {
+            echo json_encode(array("success" => false, 'message' => lang('min_payment_not_met').to_currency($loan->min_payment)));
+            exit;
+        }
 
         $data = array(
             "loan_id" => $loan_id,
-            "date_paid" => get_current_utc_time(),
+            "date_paid" => convert_date_local_to_utc($this->input->post('date_paid')),
             "amount" => $this->input->post('amount'),
+            "late_interest" => $this->input->post('penalty'),
             "remarks" => $this->input->post('remarks'),
         );
 
@@ -177,9 +186,9 @@ class Loans extends MY_Controller {
             $data["created_by"] = $this->login_user->id;
         }
 
-        $save_id = $this->Loan_payments_model->save($data);
+        $save_id = $this->Loan_payments_model->save($data, $id);
         if ($save_id) {
-            echo json_encode(array("success" => true, "id" => $loan_id, "data" => $this->_row_data($loan_id), 'message' => lang('record_saved')));
+            echo json_encode(array("success" => true, "id" => $save_id, "data" => $this->_row_data_payment($save_id), 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }
@@ -430,9 +439,9 @@ class Loans extends MY_Controller {
 
         $loan_detail = modal_anchor(get_uri("finance/Loans/view_stages"), get_id_name($data->id, date("Y", strtotime($data->date_applied)).'-L', 4), array("class" => "edit", "title" => lang('loan')." ".lang('stages'), "data-post-id" => $data->id));
 
-        $payment_detail = modal_anchor(get_uri("finance/Loans/view_payments"), to_currency($data->payments), array("class" => "edit", "title" => lang('loan')." ".lang('payments'), "data-post-id" => $data->id));
+        $payment_detail = modal_anchor(get_uri("finance/Loans/view_payments"), to_currency($data->payments), array("class" => "edit", "title" => lang('loan')." ".lang('payments'), "data-post-loan_id" => $data->id));
 
-        $fees_detail = modal_anchor(get_uri("finance/Loans/view_fees"), to_currency($data->fees), array("class" => "edit", "title" => lang('loan')." ".lang('fees'), "data-post-id" => $data->id));
+        $fees_detail = modal_anchor(get_uri("finance/Loans/view_fees"), to_currency($data->fees), array("class" => "edit", "title" => lang('loan')." ".lang('fees'), "data-post-loan_id" => $data->id));
 
         $current_balance = ($data->principal_amount+$data->fees)-$data->payments;
 
@@ -472,7 +481,7 @@ class Loans extends MY_Controller {
 
     function view_fees() {
         $view_data['loan_info'] = $this->Loans_model->get_details(array("id"=>$this->input->post('id')))->row();
-        $fees_detail = $this->Loan_fees_model->get_details(array("loan_id"=>$this->input->post('id')));
+        $fees_detail = $this->Loan_fees_model->get_details(array("loan_id"=>$this->input->post('loan_id')))->result();
         foreach($fees_detail as $detail) {
             $detail->title_link = modal_anchor(get_uri("finance/Loans/modal_form_fee"), $detail->title, array("class" => "edit", "title" => lang('edit_fee'), "data-post-id" => $detail->id));
         }
@@ -482,7 +491,7 @@ class Loans extends MY_Controller {
 
     function view_payments() {
         $view_data['loan_info'] = $this->Loans_model->get_details(array("id"=>$this->input->post('id')))->row();
-        $payments_detail = $this->Loan_payments_model->get_details(array("loan_id"=>$this->input->post('id')))->result();
+        $payments_detail = $this->Loan_payments_model->get_details(array("loan_id"=>$this->input->post('loan_id')))->result();
         foreach($payments_detail as $detail) {
             $detail_id_name = get_id_name($detail->id, date("Y", strtotime($detail->date_paid)).'-P', 4);
             $detail->title_link = modal_anchor(get_uri("finance/Loans/modal_form_payment"), $detail_id_name, array("class" => "edit", "title" => lang('edit_payment'), "data-post-id" => $detail->id));
@@ -555,7 +564,7 @@ class Loans extends MY_Controller {
         $result = array();
         foreach ($list_data as $data) {
             $result[] = array(
-                get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-L', 4),
+                get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-L', 4).get_id_name($data->id, "-", 4),
                 format_to_date($data->date_paid),
                 $data->borrower_name,
                 to_currency($data->amount),
@@ -591,7 +600,7 @@ class Loans extends MY_Controller {
         $result = array();
         foreach ($list_data as $data) {
             $result[] = array(
-                get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-L', 4),
+                get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-L', 4).get_id_name($data->id, "-", 4),
                 $data->borrower_name,
                 $data->title,
                 to_currency($data->amount),
