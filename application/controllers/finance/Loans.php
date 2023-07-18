@@ -30,7 +30,7 @@ class Loans extends MY_Controller {
     function modal_form() {
         $this->with_permission("loan_create", "no_permission");
         $view_data['model_info'] = $this->Loans_model->get_one($this->input->post('id'));
-        $view_data['team_members_dropdown'] = array("" => "- Select -") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        $view_data['team_members_dropdown'] = $this->get_users_select2_filter();
         $view_data['loan_categories_dropdown'] = array("" => "- Select -") + $this->Loan_categories_model->get_dropdown_list(array("name"), "id", array("deleted" => 0, "status" => 1));
         $this->load->view('loans/modal_form', $view_data);
     }
@@ -65,7 +65,7 @@ class Loans extends MY_Controller {
     function modal_form_minimumpay() {
         $id = $this->input->post('id');
         $view_data['loan_dropdowns'] = array("" => "- Select -") + $this->Loans_model->get_dropdown_list(array("id"), "id", array("deleted" => 0), "loan");
-        $view_data['team_members_dropdown'] = array("" => "- Select -") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
+        $view_data['team_members_dropdown'] = $this->get_users_select2_filter();
         $view_data['model_info'] = $this->Loans_model->get_one($id);
         $this->load->view('loans/modal_form_minimumpay', $view_data);
     }
@@ -458,7 +458,8 @@ class Loans extends MY_Controller {
     }
 
     function view_transactions() {
-        $this->load->view("loans/transactions");
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $this->load->view("loans/transactions", $view_data);
     }
 
     function list_transactions() {
@@ -468,6 +469,7 @@ class Loans extends MY_Controller {
         
         $options = array(
             "loan_id" => $loan_id,
+            "user_id" => $user_id,
             "start_date" => $start_date,
             "end_date" => $end_date,
             "borrower_id" => $user_id,
