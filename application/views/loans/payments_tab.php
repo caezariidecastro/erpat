@@ -8,6 +8,9 @@
     $(document).ready(function() {
         $("#list-payments-table").appTable({
             source: '<?php echo_uri("finance/Loans/list_payments") ?>',
+            filterDropdown: [
+                {name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>},
+            ],
             dateRangeType: "monthly",
             columns: [
                 {title: '<?php echo lang("loan") ?>', "class": "w10p"},

@@ -493,7 +493,8 @@ class Loans extends MY_Controller {
     }
 
     function view_payments_tab() {
-        $this->load->view("loans/payments_tab");
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $this->load->view("loans/payments_tab", $view_data);
     }
 
     function list_payments() {
@@ -503,6 +504,7 @@ class Loans extends MY_Controller {
         
         $options = array(
             "loan_id" => $loan_id,
+            "user_id" => $user_id,
             "start_date" => $start_date,
             "end_date" => $end_date,
             "borrower_id" => $user_id,

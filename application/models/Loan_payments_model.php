@@ -17,6 +17,10 @@ class Loan_payments_model extends Crud_model {
 
         $where = "";
 
+        $user_id = get_array_value($options, "user_id");
+        if ($user_id) {
+            $borrower = " AND loans_table.borrower_id=$user_id ";
+        }
         $loan_id = get_array_value($options, "loan_id");
         if ($loan_id) {
             $where .= " AND $payments_table.loan_id=$loan_id";
@@ -34,7 +38,7 @@ class Loan_payments_model extends Crud_model {
         CONCAT(borrower_table.first_name, ' ',borrower_table.last_name) AS borrower_name, 
         CONCAT(executer_table.first_name, ' ',executer_table.last_name) AS executer_name            
         FROM $payments_table 
-            INNER JOIN $loans_table AS loans_table ON loans_table.id=$payments_table.loan_id
+            INNER JOIN $loans_table AS loans_table ON loans_table.id=$payments_table.loan_id $borrower 
             LEFT JOIN $users_table AS borrower_table ON borrower_table.id=loans_table.borrower_id 
             LEFT JOIN $users_table AS executer_table ON executer_table.id=$payments_table.created_by
         WHERE $payments_table.deleted=0 $where";
