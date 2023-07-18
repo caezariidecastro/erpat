@@ -288,7 +288,7 @@ class Loans extends MY_Controller {
         }
     }
 
-    //delete/undo a leve type
+    //delete/undo a 
     function delete_payments() {
         $this->with_permission("loan_delete", "no_permission");
         
@@ -305,6 +305,30 @@ class Loans extends MY_Controller {
             }
         } else {
             if ($this->Loan_payments_model->delete($id)) {
+                echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+            }
+        }
+    }
+
+     //delete/undo a 
+     function delete_fees() {
+        $this->with_permission("loan_delete", "no_permission");
+        
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+        if ($this->input->post('undo')) {
+            if ($this->Loan_fees_model->delete($id, true)) {
+                echo json_encode(array("success" => true, "data" => $this->_row_data_fee($id), "message" => lang('record_undone')));
+            } else {
+                echo json_encode(array("success" => false, lang('error_occurred')));
+            }
+        } else {
+            if ($this->Loan_fees_model->delete($id)) {
                 echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
             } else {
                 echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -369,6 +393,23 @@ class Loans extends MY_Controller {
             format_to_date($data->updated_at),
             modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-pencil fa-fw'></i>", array("title" => lang("edit"), "class" => "edit", "data-post-id" => $data->id, "data-post-loan_id" => $data->loan_id))
             .js_anchor("<i class='fa fa-times fa-fw'></i>", array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete_payments"), "data-action" => "delete"))
+        );
+    }
+
+    //get a row of loan row
+    private function _row_data_fee($id) {
+        $options = array("id" => $id);
+        $data = $this->Loan_fees_model->get_details($options)->row();
+        return array(
+            get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-L', 4),
+            $data->borrower_name,
+            $data->title,
+            to_currency($data->amount),
+            $data->remarks,
+            $data->executer_name,
+            format_to_date($data->updated_at),
+            modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-pencil fa-fw'></i>", array("title" => lang("edit"), "class" => "edit", "data-post-id" => $data->id, "data-post-loan_id" => $data->loan_id))
+            .js_anchor("<i class='fa fa-times fa-fw'></i>", array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete_fees"), "data-action" => "delete"))
         );
     }
 
@@ -523,6 +564,42 @@ class Loans extends MY_Controller {
                 format_to_date($data->updated_at),
                 modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-pencil fa-fw'></i>", array("title" => lang("edit"), "class" => "edit", "data-post-id" => $data->id, "data-post-loan_id" => $data->loan_id))
                 .js_anchor("<i class='fa fa-times fa-fw'></i>", array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete_payments"), "data-action" => "delete"))
+            );
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    function view_fees_tab() {
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $this->load->view("loans/fees_tab", $view_data);
+    }
+
+    function list_fees() {
+        $start_date = $this->input->post('start_date');
+        $end_date = $this->input->post('end_date');
+        $user_id = $this->input->post('user_id');
+        
+        $options = array(
+            "loan_id" => $loan_id,
+            "user_id" => $user_id,
+            "start_date" => $start_date,
+            "end_date" => $end_date,
+            "borrower_id" => $user_id,
+        );
+
+        $list_data = $this->Loan_fees_model->get_details($options)->result();
+        $result = array();
+        foreach ($list_data as $data) {
+            $result[] = array(
+                get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-L', 4),
+                $data->borrower_name,
+                $data->title,
+                to_currency($data->amount),
+                $data->remarks,
+                $data->executer_name,
+                format_to_date($data->updated_at),
+                modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-pencil fa-fw'></i>", array("title" => lang("edit"), "class" => "edit", "data-post-id" => $data->id, "data-post-loan_id" => $data->loan_id))
+                .js_anchor("<i class='fa fa-times fa-fw'></i>", array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete_fees"), "data-action" => "delete"))
             );
         }
         echo json_encode(array("data" => $result));
