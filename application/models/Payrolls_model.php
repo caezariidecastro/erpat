@@ -7,6 +7,7 @@ class Payrolls_model extends Crud_model {
     function __construct() {
         $this->table = $this->db->dbprefix('payrolls');
         parent::__construct($this->table);
+        $this->load->model('Email_templates_model');
     }
 
     function get_details($options = array()) {
@@ -64,4 +65,20 @@ class Payrolls_model extends Crud_model {
         return $this->db->query($sql)->result();
     }
 
+    function restore_payslip_email() {
+        $content = '<div style="background-color: #eeeeef; padding: 50px 0; ">    <div style="max-width:640px; margin:0 auto; ">  <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>SYSTEM GENERATED</h1> </div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p style=""><span style="font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="font-size: 14px; line-height: 20px;">Hello {FIRST_NAME} {LAST_NAME},</span></p><p style=""><span style="font-size: 14px; line-height: 20px;"><br></span></p><p style="text-align: justify; "><font face="Arial">&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 14px;">We hope this email finds you well. As part of our commitment to transparency and efficiency, we are pleased to provide you with your payslip for</span><span style="font-size: 14px;">&nbsp;{PAY_PERIOD}.&nbsp;</span></font><span style="font-family: Arial; font-size: 14px;">You will find a detailed breakdown of your earnings and deductions for the specified period to the PDF attached in this email.&nbsp;</span><span style="font-family: Arial; font-size: 14px;">Hope you find everything in order.</span></p><p style="text-align: justify; "><font face="Arial">&nbsp;&nbsp;&nbsp;Thank you for your dedication and hard work. We value your contribution to the company and look forward to your continued success.</font></p><p style="text-align: justify; "><font face="Arial">&nbsp;&nbsp;&nbsp;&nbsp;{REMARKS}</font></p><p style="text-align: justify;"><br></p><p><font color="#555555" face="Arial, Helvetica, sans-serif"><span style="font-size: 14px;">Regards,</span></font></p><p><font color="#555555"><span style="font-size: 14px;">HR / Accounting</span><br><span style="font-size: 14px;">ABC Company Inc.<br></span></font><a href="https://abc.company" target="_blank">https://abc.company</a><font color="#555555"><span style="font-size: 14px;"><br></span></font></p><p><br></p>            <p style="text-align: center; color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>';
+
+        $template_name = 'payslips';
+        $email_subject = 'ERPat - Generated Payslip';
+
+        //Try to get the id and just update.
+        $template = $this->Email_templates_model->get_one_where(array(
+            "template_name" => $template_name 
+        ));
+
+        //If the id is null, create new one.
+        if(!$template->id) {
+            return $this->Email_templates_model->new_template($template_name, $email_subject, $content);
+        }
+    }
 }

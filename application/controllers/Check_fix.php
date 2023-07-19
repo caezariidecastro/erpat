@@ -13,6 +13,7 @@ class Check_fix extends MY_Controller
         $this->load->model("Expense_categories_model");
         $this->load->model("EventPass_model");
         $this->load->model("Raffle_draw_model");
+        $this->load->model("Payrolls_model");
     }
 
     public function index()
@@ -79,6 +80,9 @@ class Check_fix extends MY_Controller
             $total += 1;
         }
         if($this->Raffle_draw_model->template_join_raffle()) {
+            $total += 1;
+        }
+        if($this->Payrolls_model->restore_payslip_email()) {
             $total += 1;
         }
         return $total;

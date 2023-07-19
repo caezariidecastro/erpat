@@ -23,6 +23,9 @@ class Email_templates extends MY_Controller {
                 "verify_email" => array("VERIFY_EMAIL_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
                 
             ),
+            "payrolls" => array(
+                "payslips" => array("PAYSLIP_ID", "PAY_PERIOD", "FIRST_NAME", "LAST_NAME", "REMARKS", "SIGNATURE"),
+            ),
             "events" => array(
                 "event_pass" => array("REFERENCE_ID", "GROUP_NAME", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "TOTAL_SEATS", "REMARKS", "SIGNATURE"),
                 "epass_confirm" => array("REFERENCE_ID", "GROUP_NAME", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "TOTAL_SEATS", "REMARKS", "COMPANION_LINK", "SIGNATURE"),
