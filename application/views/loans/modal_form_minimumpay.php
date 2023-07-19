@@ -40,6 +40,21 @@
     </div>
 
     <div class="form-group">
+        <label for="title" class=" col-md-2"><?php echo lang('payroll_binding'); ?></label>
+        <div class=" col-md-10">
+            <?php
+            echo form_dropdown("payroll_binding", array(
+                "none" => "No Payroll Bindings",
+                "daily" => "Daily Payout",
+                "weekly" => "Weekly Payout",
+                "bi-weekly" => "Bi-Weekly Payout",
+                "monthly" => "Monthly Payout"
+                ), $model_info->payroll_binding, "class='select2 validate-hidden' id='payroll_binding' ");
+            ?>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="remarks" class=" col-md-2"><?php echo lang('remarks'); ?></label>
         <div class=" col-md-10">
             <?php
@@ -71,7 +86,7 @@
     $(document).ready(function () {
         $("#save-minimumpay-form").appForm({
             onSuccess: function (result) {
-                location.reload();
+                $(".dataTable:visible").appTable({reload: true});
             }
         });
 

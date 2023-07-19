@@ -76,7 +76,7 @@
     $(document).ready(function () {
         $("#update-loan-form").appForm({
             onSuccess: function (result) {
-                location.reload();
+                $(".dataTable:visible").appTable({reload: true});
             }
         });
 

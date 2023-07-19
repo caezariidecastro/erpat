@@ -54,7 +54,7 @@
     $(document).ready(function () {
         $("#loan-categories-form").appForm({
             onSuccess: function (result) {
-                location.reload();
+                $(".dataTable:visible").appTable({reload: true});
             }
         });
         $('#active').select2();

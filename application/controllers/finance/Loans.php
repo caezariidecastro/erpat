@@ -262,8 +262,10 @@ class Loans extends MY_Controller {
         ));
         $id = $this->input->post('id');
 
+        $payroll_binding = $this->input->post('payroll_binding');
         $data = array(
             "min_payment" => $this->input->post('minimum_payment'),
+            "payroll_binding" => $payroll_binding,
         );
 
         $old_minpay = $this->input->post('old_minpay');
@@ -272,15 +274,16 @@ class Loans extends MY_Controller {
         $save_id = $this->Loans_model->save($data, $id);
         if ($save_id) {
             $loan = $this->Loans_model->get_details(array("id"=>$save_id))->row();
+
             $data = array(
                 "loan_id" => $id,
-                "stage_name" => strtoupper( get_loan_stage($loan->status, "pending") ) . " - Change of monthly minimum payment from ".$old_minpay." to ".$new_minpay,
+                "stage_name" => strtoupper( get_loan_stage($loan->status, "pending") ) . " - Updated! Payroll binding to ".strtoupper($payroll_binding)." and min payment from ".$old_minpay." to ".$new_minpay,
                 "remarks" => $this->input->post('remarks'),
                 "timestamp" => get_current_utc_time(),
                 "executed_by" => $this->login_user->id,
                 "serial_data" => null
             );
-            $save_id = $this->Loan_transactions_model->save($data);
+            $this->Loan_transactions_model->save($data);
 
             echo json_encode(array("success" => true, "id" => $id, "data" => $this->_row_data($id), 'message' => lang('record_saved')));
         } else {

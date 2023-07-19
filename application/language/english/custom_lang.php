@@ -1183,3 +1183,7 @@ $lang["penalty"] = "Penalty";
 $lang["min_payment_not_met"] = "Minimum payment should be atleast: ";
 
 $lang["loan_detail"] = "Loan Detail";
+
+$lang["no_changes_made"] = "No changes was made.";
+
+$lang["payroll_binding"] = "Payslip Binding";
