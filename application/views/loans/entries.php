@@ -16,6 +16,10 @@
             filterDropdown: [
                 {name: "user_id", class: "w200", options: <?php echo $team_members_dropdown; ?>},
             ],
+            radioButtons: [
+                {text: '<?php echo lang("active") ?>', name: "status", value: "active", isChecked: true}, 
+                {text: '<?php echo lang("paid") ?>', name: "status", value: "paid", isChecked: false}, 
+            ],
             dateRangeType: "yearly",
             columns: [
                 {title: '<?php echo lang("loan") ?>', "class": "w10p"},

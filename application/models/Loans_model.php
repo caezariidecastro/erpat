@@ -19,6 +19,9 @@ class Loans_model extends Crud_model {
 
         $offset = convert_seconds_to_time_format(get_timezone_offset());
 
+        $total_payments = "(SELECT SUM($payments_table.amount) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0)";
+        $total_fees = "(SELECT SUM($fees_table.amount) FROM $fees_table WHERE $fees_table.loan_id=$loans_table.id AND $fees_table.deleted=0)";
+
         $where = "";
 
         $id = get_array_value($options, "id");
@@ -37,14 +40,20 @@ class Loans_model extends Crud_model {
         if ($end_date) {
             $where .= " AND DATE(ADDTIME($loans_table.date_applied,'$offset'))<='$end_date'";
         }
+        $status = get_array_value($options, "status");
+        if ($status == "active") {
+            $where .= " AND IF($total_payments, $total_payments, 0) < $loans_table.principal_amount";
+        } else if ($status == "paid") {
+            $where .= " AND IF($total_payments, $total_payments, 0) >= $loans_table.principal_amount";
+        }
 
         $sql = "SELECT $loans_table.*, category_table.name as category_name, 
             (SELECT stage_name FROM $stage_table WHERE $stage_table.deleted=0 AND $stage_table.loan_id=$loans_table.id ORDER BY timestamp DESC LIMIT 1) as status,
             CONCAT(borrower_table.first_name, ' ',borrower_table.last_name) AS borrower_name, 
             CONCAT(cosigner_table.first_name, ' ',cosigner_table.last_name) AS cosigner_name,
             CONCAT(creator_table.first_name, ' ',creator_table.last_name) AS creator_name,
-            IF((SELECT SUM($fees_table.amount) FROM $fees_table WHERE $fees_table.loan_id=$loans_table.id AND $fees_table.deleted=0), (SELECT SUM($fees_table.amount) FROM $fees_table WHERE $fees_table.loan_id=$loans_table.id AND $fees_table.deleted=0), 0) as fees,
-            IF((SELECT SUM($payments_table.amount) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0), (SELECT SUM($payments_table.amount) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0), 0) as payments,
+            IF($total_fees, $total_fees, 0) as fees,
+            IF($total_payments, $total_payments, 0) as payments,
             (SELECT COUNT(*) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0) as months_paid
         FROM $loans_table 
             LEFT JOIN $categories_table AS category_table ON category_table.id=$loans_table.category_id 

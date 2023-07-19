@@ -474,11 +474,13 @@ class Loans extends MY_Controller {
         $start_date = $this->input->post('start_date');
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
+        $status = $this->input->post('status');
         
         $options = array(
             "start_date" => $start_date,
             "end_date" => $end_date,
             "borrower_id" => $user_id,
+            "status" => $status,
         );
 
         $list_data = $this->Loans_model->get_details($options)->result();
