@@ -122,8 +122,7 @@ class Loans extends MY_Controller {
         validate_submitted_data(array(
             "loan_id" => "numeric|required",
             "status" => "required",
-            "stage_name" => "required",
-            "remarks" => "required"
+            "stage_name" => "required"
         ));
 
         $loan_id = $this->input->post('loan_id');
