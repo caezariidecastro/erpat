@@ -17,6 +17,10 @@ class Loan_payments_model extends Crud_model {
 
         $where = "";
 
+        $id = get_array_value($options, "id");
+        if ($id) {
+            $where .= " AND $payments_table.id=$id ";
+        }
         $user_id = get_array_value($options, "user_id");
         if ($user_id) {
             $borrower = " AND loans_table.borrower_id=$user_id ";

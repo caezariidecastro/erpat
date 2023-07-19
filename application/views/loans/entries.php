@@ -1,7 +1,6 @@
 
 <div class="page-title clearfix">
     <div class="title-button-group">
-        <?php echo modal_anchor(get_uri("finance/Loans/modal_form_fee"), "<i class='fa fa-tag'></i> " . lang('add_fee'), array("class" => "btn btn-default", "title" => lang('add_fee'))); ?>
         <?php echo modal_anchor(get_uri("finance/Loans/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('create_loan'), array("class" => "btn btn-default", "title" => lang('create_loan'))); ?>
     </div>
 </div>
@@ -29,6 +28,7 @@
                 {title: '<?php echo lang("minimum_payment") ?>', "class": "w15p"},
                 {title: '<?php echo lang("payments") ?>', "class": "w15p"},
                 {title: '<?php echo lang("balance") ?>', "class": "w15p"},
+                {title: '<?php echo lang("status") ?>', "class": "w15p"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option w100"}
             ],
             printColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],

@@ -61,3 +61,14 @@
             return $number;
         }
     }
+
+    if (!function_exists('get_loan_stage')) {
+        function get_loan_stage($stage_name) {
+            $list = explode(" - ", $stage_name);
+            if( count($list) > 0 ) {
+                return strtolower($list[0]);
+            }
+
+            return "draft";
+        }
+    }

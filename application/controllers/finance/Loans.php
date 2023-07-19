@@ -13,8 +13,10 @@ class Loans extends MY_Controller {
         $this->load->model("Loans_model");
         $this->load->model("Loan_categories_model");
         $this->load->model("Loan_fees_model");
-        $this->load->model("Loan_payments_model");
         $this->load->model("Loan_transactions_model");
+        $this->load->model("Loan_payments_model");
+
+        $this->load->helper("utility");
     }
 
     //load loan list view
@@ -38,7 +40,11 @@ class Loans extends MY_Controller {
 
     function modal_form_update() {
         $this->with_permission("loan_update", "no_permission");
-        $view_data['model_info'] = $this->Loans_model->get_one($this->input->post('id'));
+        $view_data['loan_dropdowns'] = array("" => "- Select -") + $this->Loans_model->get_dropdown_list(array("id"), "id", array("deleted" => 0), "loan");
+        $view_data['loan_id'] = $this->input->post('loan_id');
+        $model_info = $this->Loan_transactions_model->get_one($this->input->post('id'));
+        $view_data['model_info'] = $model_info;
+        $view_data['loan_stage'] = get_loan_stage($model_info->stage_name);
         $this->load->view('loans/modal_form_update', $view_data);
     }
 
@@ -48,7 +54,17 @@ class Loans extends MY_Controller {
         $this->load->view('loans/modal_form_category', $view_data);
     }
 
+    function modal_form_transactions() {
+        $this->with_permission("loan_update", "no_permission");
+        $view_data['loan_dropdowns'] = array("" => "- Select -") + $this->Loans_model->get_dropdown_list(array("id"), "id", array("deleted" => 0), "loan");
+        $view_data['loan_id'] = $this->input->post('loan_id');
+        $id = $this->input->post('id');
+        $view_data['model_info'] = $this->Loan_transactions_model->get_one($id);
+        $this->load->view('loans/modal_form_update', $view_data);
+    }
+
     function modal_form_fee() {
+        $this->with_permission("loan_update", "no_permission");
         $view_data['loan_dropdowns'] = array("" => "- Select -") + $this->Loans_model->get_dropdown_list(array("id"), "id", array("deleted" => 0), "loan");
         $view_data['loan_id'] = $this->input->post('loan_id');
         $view_data['model_info'] = $this->Loan_fees_model->get_one($this->input->post('id'));
@@ -64,6 +80,7 @@ class Loans extends MY_Controller {
     }
 
     function modal_form_minimumpay() {
+        $this->with_permission("loan_update", "no_permission");
         $id = $this->input->post('id');
         $view_data['loan_dropdowns'] = array("" => "- Select -") + $this->Loans_model->get_dropdown_list(array("id"), "id", array("deleted" => 0), "loan");
         $view_data['team_members_dropdown'] = $this->get_users_select2_filter();
@@ -100,6 +117,8 @@ class Loans extends MY_Controller {
     }
 
     function save_update() {
+        $this->with_permission("loan_update", "no_permission");
+
         validate_submitted_data(array(
             "loan_id" => "numeric|required",
             "status" => "required",
@@ -130,6 +149,8 @@ class Loans extends MY_Controller {
     }
 
     function save_fee() {
+        $this->with_permission("loan_update", "no_permission");
+
         validate_submitted_data(array(
             "loan_id" => "numeric|required",
             "title" => "required",
@@ -194,7 +215,47 @@ class Loans extends MY_Controller {
         }
     }
 
+    function save_transaction() {
+        $this->with_permission("loan_update", "no_permission");
+
+        validate_submitted_data(array(
+            "loan_id" => "numeric|required",
+            "date_paid" => "required",
+            "amount" => "numeric|required"
+        ));
+
+        $loan_id = $this->input->post('loan_id');
+        $id = $this->input->post('id');
+
+        $loan = $this->Loans_model->get_details(array("id"=>$id))->row();
+        if( isset($loan->min_transaction) && $this->input->post('amount') < $loan->min_transaction) {
+            echo json_encode(array("success" => false, 'message' => lang('min_transaction_not_met').to_currency($loan->min_transaction)));
+            exit;
+        }
+
+        $data = array(
+            "loan_id" => $loan_id,
+            "date_paid" => convert_date_local_to_utc($this->input->post('date_paid')),
+            "amount" => $this->input->post('amount'),
+            "late_interest" => $this->input->post('penalty'),
+            "remarks" => $this->input->post('remarks'),
+        );
+
+        if(!$id){
+            $data["created_by"] = $this->login_user->id;
+        }
+
+        $save_id = $this->Loan_transactions_model->save($data, $id);
+        if ($save_id) {
+            echo json_encode(array("success" => true, "id" => $save_id, "data" => $this->_row_data_transaction($save_id), 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     function save_minimumpay() {
+        $this->with_permission("loan_update", "no_permission");
+
         validate_submitted_data(array(
             "id" => "numeric|required",
             "minimum_payment" => "numeric|required"
@@ -228,8 +289,6 @@ class Loans extends MY_Controller {
 
     //save loan
     function save() {
-        $this->with_permission("loan_create", "no_permission");
-
         validate_submitted_data(array(
             "category_id" => "numeric|required",
             "borrower_id" => "numeric|required",
@@ -263,6 +322,9 @@ class Loans extends MY_Controller {
         if(!$id){
             $data["date_applied"] = get_current_utc_time();
             $data["created_by"] = $this->login_user->id;
+            $this->with_permission("loan_create", "no_permission");
+        } else {
+            $this->with_permission("loan_update", "no_permission");
         }
 
         $save_id = $this->Loans_model->save($data, $id);
@@ -290,6 +352,30 @@ class Loans extends MY_Controller {
             }
         } else {
             if ($this->Loans_model->delete($id)) {
+                echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+            }
+        }
+    }
+
+    //delete/undo a 
+    function delete_transactions() {
+        $this->with_permission("loan_delete", "no_permission");
+        
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+        if ($this->input->post('undo')) {
+            if ($this->Loan_transactions_model->delete($id, true)) {
+                echo json_encode(array("success" => true, "data" => $this->_row_data_transaction($id), "message" => lang('record_undone')));
+            } else {
+                echo json_encode(array("success" => false, lang('error_occurred')));
+            }
+        } else {
+            if ($this->Loan_transactions_model->delete($id)) {
                 echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
             } else {
                 echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -389,6 +475,22 @@ class Loans extends MY_Controller {
     }
 
     //get a row of loan row
+    private function _row_data_transaction($id) {
+        $options = array("id" => $id);
+        $data = $this->Loan_transactions_model->get_details($options)->row();
+        return array(
+            get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-T', 4),
+            $data->borrower_name,
+            $data->stage_name,
+            $data->remarks,
+            $data->executer_name,
+            format_to_date($data->timestamp),
+            modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-pencil fa-fw'></i>", array("title" => lang("edit"), "class" => "edit", "data-post-id" => $data->id, "data-post-loan_id" => $data->loan_id))
+            .js_anchor("<i class='fa fa-times fa-fw'></i>", array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete_transactions"), "data-action" => "delete"))
+        );
+    }
+
+    //get a row of loan row
     private function _row_data_payment($id) {
         $options = array("id" => $id);
         $data = $this->Loan_payments_model->get_details($options)->row();
@@ -437,7 +539,7 @@ class Loans extends MY_Controller {
     //make a row of loan row
     private function _make_row($data, $balance = false) {
 
-        $loan_detail = modal_anchor(get_uri("finance/Loans/view_stages"), get_id_name($data->id, date("Y", strtotime($data->date_applied)).'-L', 4), array("class" => "edit", "title" => lang('loan')." ".lang('stages'), "data-post-id" => $data->id));
+        $loan_detail = modal_anchor(get_uri("finance/Loans/view_details"), get_id_name($data->id, date("Y", strtotime($data->date_applied)).'-L', 4), array("class" => "edit", "title" => lang('loan_detail'), "data-post-id" => $data->id));
 
         $payment_detail = modal_anchor(get_uri("finance/Loans/view_payments"), to_currency($data->payments), array("class" => "edit", "title" => lang('loan')." ".lang('payments'), "data-post-loan_id" => $data->id));
 
@@ -445,10 +547,16 @@ class Loans extends MY_Controller {
 
         $current_balance = ($data->principal_amount+$data->fees)-$data->payments;
 
+        $status_detail = modal_anchor(get_uri("finance/Loans/view_stages"), strtoupper( get_loan_stage($data->status) ), array("class" => "edit", "title" => lang('loan')." ".lang('stages'), "data-post-id" => $data->id));
+
+        $interest = num_limit($data->interest_rate)/100;
+        $interest_amt = $data->principal_amount * $interest;
+        $min_payment = ($data->principal_amount+$interest_amt)/$data->months_topay;
+        $minpay_detail = to_currency($data->min_payment) . " (".to_currency($min_payment).")";
 
         $edit_loan = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_minimumpay"), "<i class='fa fa-pencil fa-fw'></i> ".lang('edit_loan'), array("title" => lang("edit_loan"), "class" => "edit", "data-post-id" => $data->id)) . '</li>';
 
-        $update_status = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i> ".lang('update_status'), array("title" => lang("update_status"), "class" => "edit", "data-post-id" => $data->id)) . '</li>';
+        $update_status = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-bolt fa-fw'></i> ".lang('update_status'), array("title" => lang("update_status"), "class" => "edit", "data-post-loan_id" => $data->id)) . '</li>';
 
         $add_payment = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_payment"), "<i class='fa fa-money fa-fw'></i> ".lang('add_payment'), array("title" => lang("add_payment"), "class" => "edit", "data-post-loan_id" => $data->id)) . '</li>';
 
@@ -472,18 +580,21 @@ class Loans extends MY_Controller {
             $fees_detail,
             to_currency($data->principal_amount),
             $data->months_topay." ".lang("month")."(s) @ ".$data->interest_rate."%",
-            to_currency($data->min_payment),
+            $minpay_detail,
             $payment_detail,
             to_currency($current_balance),
+            $status_detail,
             $option_links
         );
     }
 
     function view_fees() {
-        $view_data['loan_info'] = $this->Loans_model->get_details(array("id"=>$this->input->post('id')))->row();
+        $loan_info = $this->Loans_model->get_details(array("id"=>$this->input->post('id')))->row();
+        $view_data['loan_id_name'] = get_id_name($loan_info->id, date("Y", strtotime($loan_info->date_applied)).'-L', 4);
+        $view_data['loan_info'] = $loan_info;
         $fees_detail = $this->Loan_fees_model->get_details(array("loan_id"=>$this->input->post('loan_id')))->result();
         foreach($fees_detail as $detail) {
-            $detail->title_link = modal_anchor(get_uri("finance/Loans/modal_form_fee"), $detail->title, array("class" => "edit", "title" => lang('edit_fee'), "data-post-id" => $detail->id));
+            $detail->title_link = modal_anchor(get_uri("finance/Loans/modal_form_fee"), $detail->title, array("class" => "edit", "title" => lang('edit_fee'), "data-post-id" => $detail->id, "data-post-loan_id" => $detail->loan_id));
         }
         $view_data['fees_detail'] = $fees_detail;
         $this->load->view('loans/fees_details', $view_data);
@@ -494,17 +605,24 @@ class Loans extends MY_Controller {
         $payments_detail = $this->Loan_payments_model->get_details(array("loan_id"=>$this->input->post('loan_id')))->result();
         foreach($payments_detail as $detail) {
             $detail_id_name = get_id_name($detail->id, date("Y", strtotime($detail->date_paid)).'-P', 4);
-            $detail->title_link = modal_anchor(get_uri("finance/Loans/modal_form_payment"), $detail_id_name, array("class" => "edit", "title" => lang('edit_payment'), "data-post-id" => $detail->id));
+            $detail->title_link = modal_anchor(get_uri("finance/Loans/modal_form_payment"), $detail_id_name, array("class" => "edit", "title" => lang('edit_payment'), "data-post-id" => $detail->id, "data-post-loan_id" => $detail->loan_id));
         }
         $view_data['payments_detail'] = $payments_detail;
         $this->load->view('loans/payments_details', $view_data);
     }
 
+    function view_details() {
+        $loan_info = $this->Loans_model->get_details(array("id"=>$this->input->post('id')))->row();
+        $view_data['loan_id_name'] = get_id_name($loan_info->id, date("Y", strtotime($loan_info->date_applied)).'-L', 4);
+        $view_data['loan_info'] = $loan_info;
+        $this->load->view('loans/loan_detail', $view_data);
+    }
+
     function view_stages() {
         $loan_info = $this->Loans_model->get_details(array("id"=>$this->input->post('id')))->row();
-        $view_data['loan_id_name'] = get_id_name($loan_info->id, date("Y", strtotime($loan_info->date_applied)).'-S', 4);
+        $view_data['loan_id_name'] = get_id_name($loan_info->id, date("Y", strtotime($loan_info->date_applied)).'-L', 4);
         $view_data['loan_info'] = $loan_info;
-        $view_data['stages_detail'] = $this->Loan_transactions_model->get_details(array("loan_id"=>$this->input->post('id')));
+        $view_data['stages_detail'] = $this->Loan_transactions_model->get_details(array("loan_id"=>$this->input->post('id')))->result();
         $this->load->view('loans/stages_detail', $view_data);
     }
 
@@ -526,17 +644,18 @@ class Loans extends MY_Controller {
             "borrower_id" => $user_id,
         );
 
-        $list_data = $this->Loan_transactions_model->get_details($options);
+        $list_data = $this->Loan_transactions_model->get_details($options)->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = array(
-                get_id_name($data->loan_id, date("Y", strtotime($data->timestamp)).'-T', 4),
+                get_id_name($data->id, date("Y", strtotime($data->timestamp)).'-T', 4),
                 $data->borrower_name,
                 $data->stage_name,
                 $data->remarks,
                 $data->executer_name,
                 format_to_date($data->timestamp),
-
+                modal_anchor(get_uri("finance/Loans/modal_form_update"), "<i class='fa fa-pencil fa-fw'></i>", array("title" => lang("edit"), "class" => "edit", "data-post-id" => $data->id, "data-post-loan_id" => $data->loan_id))
+                .js_anchor("<i class='fa fa-times fa-fw'></i>", array("class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("finance/Loans/delete_transactions"), "data-action" => "delete"))
             );
         }
         echo json_encode(array("data" => $result));

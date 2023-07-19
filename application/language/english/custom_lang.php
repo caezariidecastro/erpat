@@ -1181,3 +1181,5 @@ $lang["date_paid"] = "Date Paid";
 $lang["penalty"] = "Penalty";
 
 $lang["min_payment_not_met"] = "Minimum payment should be atleast: ";
+
+$lang["loan_detail"] = "Loan Detail";

@@ -1,6 +1,18 @@
 <?php echo form_open(get_uri("finance/Loans/save_update"), array("id" => "update-loan-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
-    <input type="hidden" name="loan_id" value="<?php echo $model_info->id; ?>" />
+<input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
+    <?php if($loan_id) { $disabled = "disabled"; $loan_id_name = "";?>
+        <input type="hidden" name="loan_id" value="<?php echo $loan_id; ?>" />
+    <?php } else { $loan_id_name = "loan_id"; }?>
+
+    <div class="form-group">
+        <label for="loan_id" class=" col-md-2"><?php echo lang('loan'); ?></label>
+        <div class=" col-md-10">
+            <?php
+                echo form_dropdown($loan_id_name, $loan_dropdowns, $loan_id, "class='select2 validate-hidden' $disabled");
+            ?>
+        </div>
+    </div>
     
     <div class="form-group">
         <label for="title" class=" col-md-2"><?php echo lang('status'); ?></label>
@@ -16,7 +28,7 @@
                 "suspended" => "Suspended",
                 "completed" => "Completed",
                 "delinquency" => "Delinquency",
-                ), "", "class='select2 validate-hidden' id='status' data-rule-required='true', data-msg-required='" . lang('field_required') . "'");
+                ), $loan_stage, "class='select2 validate-hidden' id='status' data-rule-required='true', data-msg-required='" . lang('field_required') . "'");
             ?>
         </div>
     </div>

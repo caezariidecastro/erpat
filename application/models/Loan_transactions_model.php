@@ -17,6 +17,10 @@ class Loan_transactions_model extends Crud_model {
 
         $where = "";
 
+        $id = get_array_value($options, "id");
+        if ($id) {
+            $where .= " AND $stage_table.id=$id ";
+        }
         $user_id = get_array_value($options, "user_id");
         if ($user_id) {
             $borrower = " AND loans_table.borrower_id=$user_id ";
@@ -43,6 +47,6 @@ class Loan_transactions_model extends Crud_model {
             LEFT JOIN $users_table AS executer_table ON executer_table.id=$stage_table.executed_by
         WHERE $stage_table.deleted=0 $where";
         
-        return $this->db->query($sql)->result();
+        return $this->db->query($sql);
     }
 }

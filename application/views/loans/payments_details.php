@@ -3,8 +3,11 @@
         <div class="p10 clearfix">
             <div class="media m0 bg-white">
                 <div class="media-body w100p pt5">
-                    <div class="media-heading mb20">
+                    <div class="media-heading mb10">
                         Borrower Name: <?php echo $loan_info->borrower_name; ?>
+                    </div>
+                    <div class="media-heading mb20">
+                        Loan ID: <?php echo $loan_id_name; ?>
                     </div>
                 </div>
             </div>
