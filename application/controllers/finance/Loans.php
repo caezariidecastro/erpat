@@ -271,9 +271,10 @@ class Loans extends MY_Controller {
 
         $save_id = $this->Loans_model->save($data, $id);
         if ($save_id) {
+            $loan = $this->Loans_model->get_details(array("id"=>$save_id))->row();
             $data = array(
                 "loan_id" => $id,
-                "stage_name" => "Change of monthly minimum payment from ".$old_minpay." to ".$new_minpay,
+                "stage_name" => strtoupper( get_loan_stage($loan->status, "pending") ) . " - Change of monthly minimum payment from ".$old_minpay." to ".$new_minpay,
                 "remarks" => $this->input->post('remarks'),
                 "timestamp" => get_current_utc_time(),
                 "executed_by" => $this->login_user->id,

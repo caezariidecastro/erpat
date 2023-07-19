@@ -63,12 +63,12 @@
     }
 
     if (!function_exists('get_loan_stage')) {
-        function get_loan_stage($stage_name) {
+        function get_loan_stage($stage_name, $default = "draft") {
             $list = explode(" - ", $stage_name);
-            if( count($list) > 0 ) {
+            if( count($list) > 0 && in_array(strtolower($list[0]), ["draft", "pending", "processing", "approved", "ongoing", "cancelled", "suspended", "completed", "delinquency"])) {
                 return strtolower($list[0]);
             }
 
-            return "draft";
+            return $default;
         }
     }
