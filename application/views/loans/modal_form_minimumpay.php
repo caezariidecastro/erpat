@@ -91,5 +91,19 @@
         });
 
         $("#save-minimumpay-form .select2").select2();
+
+        $('#payroll_binding').on('change', () => {
+            const old_minpay = <?= $orig_min_payment ?>;
+            console.log(old_minpay);
+            if( $('#payroll_binding').val() == "daily" ) {
+                $('#minimum_payment').val(old_minpay/24);
+            } else if( $('#payroll_binding').val() == "weekly" ) {
+                $('#minimum_payment').val(old_minpay/4);
+            } else if( $('#payroll_binding').val() == "bi-weekly" ) {
+                $('#minimum_payment').val(old_minpay/2);
+            } else {
+                $('#minimum_payment').val(old_minpay);
+            }
+        });
     });
 </script>

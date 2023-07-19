@@ -76,6 +76,10 @@ class Loans extends MY_Controller {
         $view_data['loan_id'] = $this->input->post('loan_id');
         $id = $this->input->post('id');
         $view_data['model_info'] = $this->Loan_payments_model->get_one($id);
+
+        $data = $this->Loans_model->get_one($view_data['loan_id']);
+        $view_data['orig_min_payment'] = $data->min_payment;
+
         $this->load->view('loans/modal_form_payment', $view_data);
     }
 
@@ -84,7 +88,15 @@ class Loans extends MY_Controller {
         $id = $this->input->post('id');
         $view_data['loan_dropdowns'] = array("" => "- Select -") + $this->Loans_model->get_dropdown_list(array("id"), "id", array("deleted" => 0), "loan");
         $view_data['team_members_dropdown'] = $this->get_users_select2_filter();
-        $view_data['model_info'] = $this->Loans_model->get_one($id);
+
+        $data = $this->Loans_model->get_one($id);
+        $view_data['model_info'] = $data;
+
+        $interest = num_limit($data->interest_rate)/100;
+        $interest_amt = $data->principal_amount * $interest;
+        $min_payment = ($data->principal_amount+$interest_amt)/$data->months_topay;
+        $view_data['orig_min_payment'] = $min_payment;
+
         $this->load->view('loans/modal_form_minimumpay', $view_data);
     }
 
@@ -188,7 +200,7 @@ class Loans extends MY_Controller {
         $loan_id = $this->input->post('loan_id');
         $id = $this->input->post('id');
 
-        $loan = $this->Loans_model->get_details(array("id"=>$id))->row();
+        $loan = $this->Loans_model->get_details(array("id"=>$loan_id))->row();
         if( isset($loan->min_payment) && $this->input->post('amount') < $loan->min_payment) {
             echo json_encode(array("success" => false, 'message' => lang('min_payment_not_met').to_currency($loan->min_payment)));
             exit;
@@ -206,11 +218,23 @@ class Loans extends MY_Controller {
             $data["created_by"] = $this->login_user->id;
         }
 
-        $save_id = $this->Loan_payments_model->save($data, $id);
-        if ($save_id) {
-            echo json_encode(array("success" => true, "id" => $save_id, "data" => $this->_row_data_payment($save_id), 'message' => lang('record_saved')));
+        $clones = $this->input->post('replicate');
+        if($clones > 0) {
+            for($i=1; $i<=$clones; $i++) {
+                $last_id = $this->Loan_payments_model->save($data, $id);
+            }
+            if ($last_id) {
+                echo json_encode(array("success" => true, "id" => $last_id, "data" => $this->_row_data_payment($last_id), 'message' => lang('record_saved')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            }
         } else {
-            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            $save_id = $this->Loan_payments_model->save($data, $id);
+            if ($save_id) {
+                echo json_encode(array("success" => true, "id" => $save_id, "data" => $this->_row_data_payment($save_id), 'message' => lang('record_saved')));
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+            }
         }
     }
 
@@ -302,10 +326,8 @@ class Loans extends MY_Controller {
         $months_to_pay = $this->input->post('months_to_pay');
         $interest_rate = $this->input->post('interest_rate');
 
-        $interest_rate = $interest_rate?$interest_rate:0;
-        $interest = (max($interest_rate, 100)/100);
+        $interest = num_limit($interest_rate)/100;
         $interest_amt = $principal_amount * $interest;
-
         $min_payment = ($principal_amount+$interest_amt)/$months_to_pay;
 
         $id = $this->input->post('id');
@@ -548,14 +570,29 @@ class Loans extends MY_Controller {
 
         $fees_detail = modal_anchor(get_uri("finance/Loans/view_fees"), to_currency($data->fees), array("class" => "edit", "title" => lang('loan')." ".lang('fees'), "data-post-loan_id" => $data->id));
 
+        $category_detail = $data->category_name ?$data->category_name:"-";
+        if($data->payroll_binding != "none") {
+            $category_detail .= " (".strtoupper($data->payroll_binding).")";
+        }
+
+        $term_detail = $data->months_paid."/".$data->months_topay." ".lang("month")."(s)";
+        if($data->interest_rate > 0) {
+            $term_detail .= " @ ".$data->interest_rate."%";
+        }
+
         $current_balance = ($data->principal_amount+$data->fees)-$data->payments;
 
         $status_detail = modal_anchor(get_uri("finance/Loans/view_stages"), strtoupper( get_loan_stage($data->status) ), array("class" => "edit", "title" => lang('loan')." ".lang('stages'), "data-post-id" => $data->id));
+
+        $principal_detail = to_currency($data->principal_amount);
 
         $interest = num_limit($data->interest_rate)/100;
         $interest_amt = $data->principal_amount * $interest;
         $min_payment = ($data->principal_amount+$interest_amt)/$data->months_topay;
         $minpay_detail = to_currency($data->min_payment) . " (".to_currency($min_payment).")";
+        if($data->min_payment == $min_payment) {
+            $minpay_detail = to_currency($data->min_payment);
+        }
 
         $edit_loan = '<li role="presentation">' . modal_anchor(get_uri("finance/Loans/modal_form_minimumpay"), "<i class='fa fa-pencil fa-fw'></i> ".lang('edit_loan'), array("title" => lang("edit_loan"), "class" => "edit", "data-post-id" => $data->id)) . '</li>';
 
@@ -577,12 +614,12 @@ class Loans extends MY_Controller {
 
         return array(
             $loan_detail,
-            $data->category_name ?$data->category_name:"-",
+            $category_detail,
             format_to_date($data->date_applied, true),
             get_team_member_profile_link($data->borrower_id, $data->borrower_name, array("target" => "_blank")),
             $fees_detail,
-            to_currency($data->principal_amount),
-            $data->months_topay." ".lang("month")."(s) @ ".$data->interest_rate."%",
+            $principal_detail,
+            $term_detail,
             $minpay_detail,
             $payment_detail,
             to_currency($current_balance),

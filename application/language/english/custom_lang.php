@@ -1187,3 +1187,5 @@ $lang["loan_detail"] = "Loan Detail";
 $lang["no_changes_made"] = "No changes was made.";
 
 $lang["payroll_binding"] = "Payslip Binding";
+
+$lang["replicate"] = "Replicate";

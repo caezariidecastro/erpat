@@ -44,7 +44,8 @@ class Loans_model extends Crud_model {
             CONCAT(cosigner_table.first_name, ' ',cosigner_table.last_name) AS cosigner_name,
             CONCAT(creator_table.first_name, ' ',creator_table.last_name) AS creator_name,
             IF((SELECT SUM($fees_table.amount) FROM $fees_table WHERE $fees_table.loan_id=$loans_table.id AND $fees_table.deleted=0), (SELECT SUM($fees_table.amount) FROM $fees_table WHERE $fees_table.loan_id=$loans_table.id AND $fees_table.deleted=0), 0) as fees,
-            IF((SELECT SUM($payments_table.amount) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0), (SELECT SUM($payments_table.amount) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0), 0) as payments
+            IF((SELECT SUM($payments_table.amount) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0), (SELECT SUM($payments_table.amount) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0), 0) as payments,
+            (SELECT COUNT(*) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0) as months_paid
         FROM $loans_table 
             LEFT JOIN $categories_table AS category_table ON category_table.id=$loans_table.category_id 
             LEFT JOIN $users_table AS borrower_table ON borrower_table.id=$loans_table.borrower_id 

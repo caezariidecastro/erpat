@@ -17,7 +17,7 @@
 
     <div id="single_day_section"  class="form-group date_section">
         <label id="date_label" for="date_paid" class=" col-md-2"><?php echo lang('date'); ?></label>
-        <div class="col-md-10">
+        <div class="col-md-7">
             <?php
             echo form_input(array(
                 "id" => "date_paid",
@@ -31,6 +31,20 @@
             ));
             ?>
         </div>
+        <div class=" col-md-3">
+            <?php
+            echo form_input(array(
+                "id" => "replicate",
+                "name" => "replicate",
+                "value" => 0,
+                "class" => "form-control",
+                "type" => "number",
+                "min" => 0,
+                "step" => "1",
+                "placeholder" => lang('replicate')
+            ));
+            ?>
+        </div>
     </div>
 
     <div class="form-group">
@@ -40,7 +54,7 @@
             echo form_input(array(
                 "id" => "amount",
                 "name" => "amount",
-                "value" => $model_info->amount,
+                "value" => $model_info->amount?$model_info->amount:$orig_min_payment,
                 "class" => "form-control",
                 "type" => "number",
                 "placeholder" => lang('amount'),
