@@ -27,6 +27,11 @@ class Payslip_deductions_model extends Crud_model {
             $where .= " AND {$this->table}.item_key = '$item_key'";
         }
 
+        $item_key_like = get_array_value($options, "item_key_like");
+        if($item_key_like){
+            $where .= " AND {$this->table}.item_key LIKE '$item_key_like%'";
+        }
+
         $sql = "SELECT {$this->table}.*
         FROM {$this->table}
         WHERE {$this->table}.deleted=0 $where";

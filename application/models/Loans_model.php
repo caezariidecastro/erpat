@@ -63,4 +63,25 @@ class Loans_model extends Crud_model {
         WHERE $loans_table.deleted=0 $where";
         return $this->db->query($sql);
     }
+
+    function get_loans($borrower_id, $binding = "monthly") {
+        $stage_table = $this->db->dbprefix('loan_stages');
+        $loans_table = $this->db->dbprefix('loans');
+        $categories_table = $this->db->dbprefix('loan_categories');
+        $payments_table = $this->db->dbprefix('loan_payments');
+
+        $total_payments = "(SELECT SUM($payments_table.amount) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0)";
+        $stage_name = "(SELECT stage_name FROM $stage_table WHERE $stage_table.deleted=0 AND $stage_table.loan_id=$loans_table.id ORDER BY timestamp DESC LIMIT 1)";
+
+        $sql = "SELECT $loans_table.*, category_table.name as category_name, 
+            IF($total_payments, $total_payments, 0) as payments,
+            (SELECT COUNT(*) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0) as months_paid
+        FROM $loans_table 
+            LEFT JOIN $categories_table AS category_table ON category_table.id=$loans_table.category_id 
+        WHERE $loans_table.deleted=0 AND $loans_table.payroll_binding='$binding' 
+            AND $loans_table.borrower_id=$borrower_id 
+            AND IF($total_payments, $total_payments, 0) < $loans_table.principal_amount 
+            AND $stage_name LIKE 'ONGOING%'";
+        return $this->db->query($sql);
+    }
 }

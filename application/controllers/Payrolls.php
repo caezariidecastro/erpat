@@ -26,6 +26,8 @@ class Payrolls extends MY_Controller {
         $this->load->model("Payment_methods_model");
         $this->load->model("Leave_credits_model");
 
+        $this->load->model("Loans_model");
+
         $this->load->model("Expenses_model");
         $this->load->model("Expense_categories_model");
     } 
@@ -343,6 +345,23 @@ class Payrolls extends MY_Controller {
         echo json_encode(array("data"=>$lists));
     }
 
+    function update_deductions() {
+        $this->with_permission("staff_update", "no_permission");
+
+        validate_submitted_data(array(
+            "payslip_id" => "required",
+            "item_key" => "required",
+            "amount" => "required"
+        ));
+        
+        $payslip_id = $this->input->post('payslip_id');
+        $item_key = $this->input->post('item_key');
+        $amount = $this->input->post('amount');
+
+        set_payslip_item($payslip_id, $item_key, array("amount" => $amount), "deductions");
+        echo json_encode(array("success" => true, 'message' => lang('record_saved')));       
+    }
+
     function save_earning() {
         $this->with_permission("staff_update", "no_permission");
         
@@ -404,8 +423,7 @@ class Payrolls extends MY_Controller {
     
             $total = 0;
             foreach(array(
-                "sss_contri", "pagibig_contri", "philhealth_contri", "hmo_contri",
-                "company_loan", "sss_loan", "hdmf_loan", "others"
+                "sss_contri", "pagibig_contri", "philhealth_contri", "hmo_contri", "others"
             ) as $item) {
                 $meta_key = "user_".$filter."_".$item."_".$user->id."_deductions";
                 $meta_val = $this->Settings_model->get_setting($meta_key, "user");
@@ -437,8 +455,7 @@ class Payrolls extends MY_Controller {
 
         $total = 0;
         foreach(array(
-            "sss_contri", "pagibig_contri", "philhealth_contri", "hmo_contri",
-            "company_loan", "sss_loan", "hdmf_loan", "others"
+            "sss_contri", "pagibig_contri", "philhealth_contri", "hmo_contri", "others"
         ) as $item) {
             $meta_key = "user_".$filter."_".$item."_".$user_id."_deductions";
             $meta_val = $this->input->post( $item );
@@ -562,13 +579,13 @@ class Payrolls extends MY_Controller {
                 "amount" => get_user_option($payslip->user, "pagibig_contri", "deductions", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
             array( "payslip_id" => $payslip_id, "item_key" => "hmo", "title"=>"HMO Contribution", 
                 "amount" => get_user_option($payslip->user, "hmo_contri", "deductions", $payroll_info->tax_table), "remarks" => false ),
-            array( "payslip_id" => $payslip_id, "item_key" => "com_loan", "title"=>"Company Loan", 
-                "amount" => get_user_option($payslip->user, "company_loan", "deductions", $payroll_info->tax_table), "remarks" => false ),
-            array( "payslip_id" => $payslip_id, "item_key" => "sss_loan", "title"=>"SSS Loan", 
-                "amount" => get_user_option($payslip->user, "sss_loan", "deductions", $payroll_info->tax_table), "remarks" => false ),
-            array( "payslip_id" => $payslip_id, "item_key" => "hdmf_loan", "title"=>"HDMF Loan", 
-                "amount" => get_user_option($payslip->user, "hdmf_loan", "deductions", $payroll_info->tax_table), "remarks" => false )
         ];
+
+        $loans = $this->Loans_model->get_loans($payslip->user, $payroll_info->tax_table)->result();
+        foreach($loans as $item) {
+            $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "custom_loan_".$item->id, "title"=>$item->category_name, 
+                "amount" => $item->min_payment, "remarks" => $item->remarks );
+        }
 
         $deduct_adjust_title = get_user_option($payslip->user, "adjust", "deductions", "title", true);
         $deduct_adjust_amount = get_user_option($payslip->user, "adjust", "deductions", $payroll_info->tax_table);
@@ -581,6 +598,9 @@ class Payrolls extends MY_Controller {
         if($deduct_other_title && $deduct_other_amount) {
             $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "other", "title" => $deduct_other_title, "amount" => $deduct_other_amount, "remarks" => false );
         }
+
+        $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "others", "title"=>"Others", 
+            "amount" => get_user_option($payslip->user, "others", "deductions", $payroll_info->tax_table), "remarks" => false );
 
         return array(
             "id" => $payslip_id,
@@ -1113,24 +1133,18 @@ class Payrolls extends MY_Controller {
             )
         ];
 
-        $view_data["non_tax_loans"] = [
-            array(
-                "key" => "com_loan",
-                "value" => get_payslip_item($payslip_id, 'com_loan', "deductions")->amount
-            ),
-            array(
-                "key" => "hdmf_loan",
-                "value" => get_payslip_item($payslip_id, 'hdmf_loan', "deductions")->amount
-            ),
-            array(
-                "key" => "sss_loan",
-                "value" => get_payslip_item($payslip_id, 'sss_loan', "deductions")->amount
-            ),
-            array(
-                "key" => "other_loan",
-                "value" => get_payslip_item($payslip_id, 'other_loan', "deductions")->amount
-            )
-        ];
+        $view_data["non_tax_loans"] = [];
+        $loans = $this->Payslip_deductions_model->get_details(array(
+            "payslip_id" => $payslip_id,
+            "item_key_like" => "custom_loan_"
+        ))->result();
+        foreach($loans as $item) {
+            $view_data["non_tax_loans"][] = array(
+                "key" => $item->item_key,
+                "title" => $item->title,
+                "value" => $item->amount
+            );
+        }
 
         $deduct_adjust = get_payslip_item($payslip_id, 'deduct_adjust', "deductions");
         $deduct_other = get_payslip_item($payslip_id, 'deduct_other', "deductions");
@@ -1278,21 +1292,6 @@ class Payrolls extends MY_Controller {
                 set_payslip_item($payslip_id, "hmo", array(
                     "title" => "HMO Contribution",
                     "amount" => $this->input->post('hmo')
-                ), "deductions", "");
-
-                set_payslip_item($payslip_id, "com_loan", array(
-                    "title" => "Company Loan",
-                    "amount" => $this->input->post('com_loan')
-                ), "deductions", "");
-
-                set_payslip_item($payslip_id, "sss_loan", array(
-                    "title" => "SSS Loan",
-                    "amount" => $this->input->post('sss_loan')
-                ), "deductions", "");
-
-                set_payslip_item($payslip_id, "hdmf_loan", array(
-                    "title" => "HDMF Loan",
-                    "amount" => $this->input->post('hdmf_loan')
                 ), "deductions", "");
 
                 set_payslip_item($payslip_id, "other_loan", array(

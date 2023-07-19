@@ -35,9 +35,6 @@
                 {title: "<?php echo lang('pagibig') ?>", "class": "text-right w100"},
                 {title: "<?php echo lang('phealth') ?>", "class": "text-right w100"},
                 {title: "<?php echo lang('hmo') ?>", "class": "text-right w100"},
-                {title: "<?= lang('company')." ".lang('loan') ?>", "class": "text-right w100"},
-                {title: "<?= lang('sss')." ".lang('loan') ?>", "class": "text-right w100"},
-                {title: "<?= lang('hdmf')." ".lang('loan') ?>", "class": "text-right w100"},
                 {title: "<?php echo lang('others') ?>", "class": "text-right w100"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}
             ],
@@ -75,9 +72,6 @@
                             'pagibig_contri': $('#pagibig_contri_'+id).val(),
                             'philhealth_contri': $('#philhealth_contri_'+id).val(),
                             'hmo_contri': $('#hmo_contri_'+id).val(),
-                            'company_loan': $('#company_loan_'+id).val(),
-                            'sss_loan': $('#sss_loan_'+id).val(),
-                            'hdmf_loan': $('#hdmf_loan_'+id).val(),
                             'others': $('#others_'+id).val(),
                         };
                         

@@ -9,6 +9,13 @@
         background-color: white;
         padding: 5px;
     }
+
+    .cell-style {
+        padding: 3px; 
+        border-radius: 50%; 
+        background-color: #eaeaea; 
+        border: 1px solid;
+    }
 </style>
 
 <?php echo form_open(get_uri("fas/payrolls/save"), array("id" => "payslip-form", "class" => "general-form", "role" => "form")); ?>
@@ -215,11 +222,18 @@
                     <?php } ?>
                 </div>
                 <div class="col-md-4"> 
-                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">LOANS</h6>
+                    <h6 class="b-info" style="text-align: left; margin-bottom: 20px; font-weight: bold;">LOANS (auto)</h6>
+                    <?php if( count($non_tax_loans) == 0 ) { ?>
+                        <div class="form-group">
+                            <div class="col-md-12 alert alert-info" role="alert">
+                                - <?= lang('no_active_loan') ?>
+                            </div>
+                        </div>
+                    <?php } ?>
                     <?php foreach($non_tax_loans as $loans) { ?>
                         <div class="form-group">
-                            <label for="<?= $loans['key'] ?>" class=" col-md-4"><?php echo lang( $loans['key'] ); ?></label>
-                            <div class="col-md-8">
+                            <label for="<?= $loans['title'] ?>" class="col-md-4"><?= $loans['title'] ?></label>
+                            <div class="col-md-6">
                                 <?= form_input(array(
                                     "id" => $loans['key'],
                                     "name" => $loans['key'],
@@ -230,6 +244,10 @@
                                     "placeholder" => "0.00",
                                     "autocomplete" => "off",
                                 )); ?>
+                            </div>
+                            <div class="col-md-2">
+                                <?= js_anchor("<i class='fa fa-save fa-fw'></i>", array('key' => $loans['key'],
+                                    'value' => $loans['value'], 'title' => lang('save'), "class" => "cell-style cell-save")) ?>
                             </div>
                         </div>
                     <?php } ?>
@@ -327,7 +345,7 @@
     </div>
     <div class="row mt15" style="text-align: center;">
         <button type="button" class="calculate btn btn-info mr15" disabled><span class="fa fa-calculator"></span> <?php echo lang('calculate'); ?></button>
-        <button type="button" class="save_data btn btn-danger"><span class="fa fa-check-circle"></span> <?php echo lang('overwrite'); ?></button>
+        <button id="overwrite" type="button" class="save_data btn btn-danger"><span class="fa fa-check-circle"></span> <?php echo lang('overwrite'); ?></button>
     </div>
 </div>
 
@@ -371,7 +389,6 @@
                 method: "POST",
                 dataType: "json",
                 success: function (result) {
-                    console.log(result.data);
 
                     $('#gross_pay').val(result.data.gross_pay);
                     $('#holidayPay').val(result.data.holiday_pay);
@@ -394,10 +411,41 @@
             });
         });
 
+        $('.cell-save').on( 'click', function () {
+            var key = $( this ).attr('key');
+            var val = $( '#'+key ).val();
+            
+            appLoader.show();
+
+            //Get the data
+            const data = {
+                'payslip_id': <?= $payslip_id ?>,
+                'item_key': key,
+                'amount': val
+            };
+            
+            $.ajax({
+                url: "<?= base_url() ?>/payrolls/update_deductions",
+                method: "POST",
+                data: data,
+                dataType: "json",
+                success: function(response){
+                    if(response.success){
+                        appAlert.success(response.message);
+                        $('#overwrite').click();
+                    } else {
+                        appAlert.error(response.message);
+                    }
+
+                    appLoader.hide();
+                }
+            })
+        } );
+
         setTimeout(function () {
             $("[data-target=#tab-biometric-logs]").trigger("click");
         }, 210);
-    });
 
-    $(".modal-dialog").addClass("modal-lg");
+        $(".modal-dialog").addClass("modal-lg");
+    });
 </script>

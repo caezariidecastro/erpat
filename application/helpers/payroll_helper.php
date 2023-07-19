@@ -231,9 +231,6 @@ if (!function_exists('get_user_deductions')) {
                 array(lang("pagibig_contri"), 0.00, 0.00, 0.00, 0.00),
                 array(lang("philhealth_contri"), 0.00, 0.00, 0.00, 0.00),
                 array(lang("hmo_contri"), 0.00, 0.00, 0.00, 0.00),
-                array(lang("company_loan"), 0.00, 0.00, 0.00, 0.00),
-                array(lang("sss_loan"), 0.00, 0.00, 0.00, 0.00),
-                array(lang("hdmf_loan"), 0.00, 0.00, 0.00, 0.00),
             ];
         }
 
@@ -407,7 +404,7 @@ if (!function_exists('set_payslip_item')) {
 
         $find = $ci->{"Payslip_".$item_type."_model"}
             ->get_one_where(
-                array( "payslip_id"=>$payslip_id, "item_key"=>$item_key)
+                array( "payslip_id"=>$payslip_id, "item_key"=>$item_key, "deleted"=>0)
             );
         $id = isset($find->id)?$find->id:0;
         return $ci->{"Payslip_".$item_type."_model"}->save($object, $id);

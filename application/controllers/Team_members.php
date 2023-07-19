@@ -1108,7 +1108,7 @@ class Team_members extends MY_Controller {
         $prefix = "user_".$user_id."_";
 
         $result = array();
-        $lists = ["sss_contri","pagibig_contri","philhealth_contri","hmo_contri","company_loan","sss_loan","hdmf_loan"];
+        $lists = ["sss_contri","pagibig_contri","philhealth_contri","hmo_contri","others"];
         foreach($lists as $item) {
             $result[] = array(
                 $item, 
