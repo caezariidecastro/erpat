@@ -122,13 +122,6 @@ class EventPass_model extends Crud_model {
         if(!$template->id) {
             return $this->Email_templates_model->new_template($template_name, $email_subject, $content);
         }
-
-        $data = array(
-            "email_subject" => $email_subject,
-            "default_message" => $content,
-        );
-
-        return $this->Email_templates_model->save($data, $template->id);
     }
 
     function event_confirm() {
@@ -146,13 +139,6 @@ class EventPass_model extends Crud_model {
         if(!$template->id) {
             return $this->Email_templates_model->new_template($template_name, $email_subject, $content);
         }
-
-        $data = array(
-            "email_subject" => $email_subject,
-            "default_message" => $content,
-        );
-
-        return $this->Email_templates_model->save($data, $template->id);
     }
 
     function unassign_all_approved() {
