@@ -26,7 +26,7 @@
                         $total += $fee->amount;
                 ?>
                     <tr>
-                        <td> <?= convert_date_format($fee->updated_at, "d M Y") ?></td>
+                        <td> <?= convert_date_format($fee->updated_at, "d M Y h:i A") ?></td>
                         <td> <?= $fee->title_link ?></td>
                         <td><?= $fee->remarks; ?></td>
                         <td><?= to_currency($fee->amount); ?></td>

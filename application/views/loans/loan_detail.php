@@ -20,7 +20,7 @@
                     </tr>
                     <tr>
                         <td>Date Applied</td>
-                        <td><?= $loan_info->date_applied ?></td>
+                        <td><?= convert_date_utc_to_local($loan_info->date_applied, "d M Y h:i A") ?></td>
                     </tr>
                     <tr>
                         <td>Start Payment</td>

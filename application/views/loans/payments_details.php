@@ -30,7 +30,7 @@
                 ?>
                     <tr>
                         <td> <?= $payment->title_link ?></td>
-                        <td> <?= convert_date_format($payment->date_paid, "d M Y") ?> </td>
+                        <td> <?= convert_date_utc_to_local($payment->date_paid, "d M Y h:i A") ?> </td>
                         <td><?= to_currency($payment->amount); ?></td>
                         <td><?= to_currency($penalty); ?></td>
                         <td><?= to_currency($payment->amount+$penalty); ?></td>

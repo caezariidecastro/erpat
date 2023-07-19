@@ -24,7 +24,7 @@
                     foreach($stages_detail as $stage) { 
                 ?>
                     <tr>
-                        <td> <?= convert_date_format($stage->timestamp, "d M Y") ?></td>
+                        <td> <?= convert_date_utc_to_local($stage->timestamp, "d M Y h:i A") ?></td>
                         <td> <?= $stage->stage_name ?></td>
                         <td><?= $stage->executer_name ?></td>
                         <td><?= $stage->remarks ?></td>
