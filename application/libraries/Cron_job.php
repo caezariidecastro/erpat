@@ -27,51 +27,21 @@ class Cron_job {
         $this->call_monthly_jobs();
         $this->call_quarterly_jobs();
         $this->call_yearly_jobs();
-
-        try {
-            if($this->is_enable("imaps")) {
-                $this->run_imap();
-            }
-        } catch (Exception $e) {
-            echo $e;
-        }
-
-        try {
-            if($this->is_enable("calendars")) {
-                $this->get_google_calendar_events();
-            }
-        } catch (Exception $e) {
-            echo $e;
-        }
-
-        try {
-            if($this->is_enable("tickets")) {
-                $this->close_inactive_tickets();
-            }
-        } catch (Exception $e) {
-            echo $e;
-        }
-
-        try {
-            if($this->is_enable("leaves")) {
-                $this->leave_credit_auto_casting();
-            }
-        } catch (Exception $e) {
-            echo $e;
-        }
     }
 
     function override() {
         $this->ci = get_instance();
         $this->current_time = strtotime(get_current_utc_time());
 
-        $this->ci->Settings_model->save_setting("last_minutely_job_time", $this->current_time-60);
-        $this->ci->Settings_model->save_setting("last_hourly_job_time", $this->current_time-3600);
-        $this->ci->Settings_model->save_setting("last_daily_job_time", (int)get_current_utc_time("Ymd")-1);
-        $this->ci->Settings_model->save_setting("last_weekly_job_time", (int)get_current_utc_time("Ymd")-7);
-        $this->ci->Settings_model->save_setting("last_monthly_job_time", (int)get_current_utc_time("Ym")-1);
-        $this->ci->Settings_model->save_setting("last_quarterly_job_time", (int)get_current_utc_time("Ym")-4);
-        $this->ci->Settings_model->save_setting("last_yearly_job_time", (int)get_current_utc_time("Y")-1);
+        $this->ci->Settings_model->save_setting("last_minutely_job_time", "");//$this->current_time-60);
+        $this->ci->Settings_model->save_setting("last_hourly_job_time", "");//$this->current_time-3600);
+        $this->ci->Settings_model->save_setting("last_daily_job_time", "");//(int)get_current_utc_time("Ymd")-1);
+        $this->ci->Settings_model->save_setting("last_weekly_job_time", "");//(int)get_current_utc_time("Ymd")-7);
+        $this->ci->Settings_model->save_setting("last_monthly_job_time", "");//(int)get_current_utc_time("Ym")-1);
+        $this->ci->Settings_model->save_setting("last_quarterly_job_time", "");//(int)get_current_utc_time("Ym")-4);
+        $this->ci->Settings_model->save_setting("last_yearly_job_time", "");//(int)get_current_utc_time("Y")-1);
+
+        $this->run();
     }
 
     private function is_enable($cron_name) {
@@ -94,6 +64,22 @@ class Cron_job {
         if ( $this->_is_minutely_job_runnable() ) {
             if($this->is_enable("attendances")) {
                 $this->attendance_auto_clockin_and_out();
+            }
+
+            try {
+                if($this->is_enable("imaps")) {
+                    $this->run_imap();
+                }
+            } catch (Exception $e) {
+                echo $e;
+            }
+
+            try {
+                if($this->is_enable("calendars")) {
+                    $this->get_google_calendar_events();
+                }
+            } catch (Exception $e) {
+                echo $e;
             }
 
             $this->ci->Settings_model->save_setting("last_minutely_job_time", $this->current_time);
@@ -183,7 +169,22 @@ class Cron_job {
 
     private function call_daily_jobs() {
         if ($this->_is_daily_job_runnable()) {
-            // DO SOMETHING HERE
+
+            try {
+                if($this->is_enable("leaves")) {
+                    $this->leave_credit_auto_casting();
+                }
+            } catch (Exception $e) {
+                echo $e;
+            }
+
+            try {
+                if($this->is_enable("tickets")) {
+                    $this->close_inactive_tickets();
+                }
+            } catch (Exception $e) {
+                echo $e;
+            }
 
             $this->ci->Settings_model->save_setting("last_daily_job_time", get_current_utc_time("Ymd"));
         }
@@ -507,7 +508,7 @@ class Cron_job {
             "project_id" => $task->project_id,
             "milestone_id" => $task->milestone_id,
             "points" => $task->points,
-            "status_id" => $task->status_id,
+            "status_id" => 1,
             "labels" => $task->labels,
             "points" => $task->points,
             "start_date" => $start_date,
