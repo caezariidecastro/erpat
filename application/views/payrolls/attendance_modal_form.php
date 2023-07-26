@@ -14,6 +14,10 @@
                 start_date: "<?= $start_date ?>",
                 end_date: "<?= $end_date ?>",
             },
+            radioButtons: [
+                {text: '<?php echo lang("approved") ?>', name: "status", value: "approved", isChecked: true}, 
+                {text: '<?php echo lang("pending") ?>', name: "status", value: "", isChecked: false}, 
+            ],
             columns: [
                 {title: "<?php echo lang("employee"); ?>", "class": "w10p"},
                 {title: "<?php echo lang("department"); ?>", "class": "w5p text-center"},
