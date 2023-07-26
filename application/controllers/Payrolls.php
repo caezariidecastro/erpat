@@ -529,6 +529,7 @@ class Payrolls extends MY_Controller {
             "user_id" => $user_id,
             "start_date" => $payroll_info->start_date,
             "end_date" => $payroll_info->end_date,
+            "status" => "approved",
             "access_type" => "all",
         ))->result();
         
@@ -636,7 +637,7 @@ class Payrolls extends MY_Controller {
         );
     }
 
-    function recalculate( $payroll_id = 0 ) {
+    function recalculate( $payroll_id = 0, $silent = false ) {
 
         //Get payroll instance
         $payroll_info = $this->Payrolls_model->get_details(array(
@@ -660,7 +661,9 @@ class Payrolls extends MY_Controller {
             $this->Payslips_model->update_where( $payslip, array("id"=>$current->id) );
         }
 
-        echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        if(!$silent) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        }
     }
 
     function mark_as_ongoing( $payroll_id = 0 ) {
@@ -689,6 +692,7 @@ class Payrolls extends MY_Controller {
                 "user_id" => $user_id,
                 "start_date" => $payroll_info->start_date,
                 "end_date" => $payroll_info->end_date,
+                "status" => "approved",
                 "access_type" => "all",
             ))->result();
             
@@ -726,7 +730,7 @@ class Payrolls extends MY_Controller {
             //To create a payslip for that user in a list.
             $payslip_id = $this->Payslips_model->save( $new_payslip );
         }
-        //$this->recalculate($payroll_info->id);
+        $this->recalculate($payroll_info->id, true);
 
         $payroll_data["status"] = "ongoing";
         if ($this->Payrolls_model->save($payroll_data, $payroll_id)) {
