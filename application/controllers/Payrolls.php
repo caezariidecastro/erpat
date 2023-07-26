@@ -543,12 +543,13 @@ class Payrolls extends MY_Controller {
             'user' => $user_id,
             'payroll' => $payroll_info->id,
         ));
-        $payslip_id = 0;
-        if($payslip) {
-            $payslip_id = $payslip->id;
+        
+        if( !isset($payslip->id) ) {
+            return false;
         }
+        $payslip_id = $payslip->id;
 
-        //TODO: Generate from Data
+        // EARNINGS START
         $earnings = [
             array( "payslip_id" => $payslip_id, "item_key" => "allowances", "title"=>"Allowance", 
                 "amount" => get_user_option($payslip->user, "allowances", "earnings", $payroll_info->tax_table), "remarks" => false ),
@@ -570,7 +571,12 @@ class Payrolls extends MY_Controller {
             $earnings[] = array( "payslip_id" => $payslip_id, "item_key" => "other", "title" => $earn_other_title, "amount" => $earn_other_amount, "remarks" => false );
         }
 
-        //TODO: Generate from Data
+        foreach($earnings as $earn) {
+            set_payslip_item($payslip_id, $earn['item_key'], $earn, "earnings");
+        }
+        // EARNINGS END
+
+        // DEDUCTIONS START
         $deductions = [
             array( "payslip_id" => $payslip_id, "item_key" => "sss_contri", "title"=>"SSS Contribution", 
                 "amount" => get_user_option($payslip->user, "sss_contri", "deductions", $payroll_info->tax_table), "remarks" => "tax_excess=true" ),
@@ -603,6 +609,11 @@ class Payrolls extends MY_Controller {
         $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "others", "title"=>"Others", 
             "amount" => get_user_option($payslip->user, "others", "deductions", $payroll_info->tax_table), "remarks" => false );
 
+        foreach($deductions as $deduct) {
+            set_payslip_item($payslip_id, $deduct['item_key'], $deduct, "deductions");
+        }
+        // DEDUCTIONS END
+
         return array(
             "id" => $payslip_id,
             "payroll" => $payroll_info->id,
@@ -622,9 +633,6 @@ class Payrolls extends MY_Controller {
 
             "special_hd" => $attd->getTotalSpecialHD(), //overtime
             "legal_hd" => $attd->getTotalLegalHD(), //overtime
-
-            "earnings" => $earnings,
-            "deductions" => $deductions,
         );
     }
 
@@ -643,23 +651,12 @@ class Payrolls extends MY_Controller {
         $payslips = $this->Payslips_model->get_details(array(
             "payroll_id" => $payroll_id,
             "status" => "draft"
-        ))->result();
+        ))->result(); //ONGOING
             
         foreach($payslips as $current) {
             $payslip = $this->generate_payslip($payroll_info, $current->user);
-
-            $earnings = $payslip['earnings'];
-            foreach($earnings as $earn) {
-                set_payslip_item($current->id, $earn['item_key'], $earn, "earnings");
-            }
             unset($payslip['earnings']);
-            
-            $deductions = $payslip['deductions'];
-            foreach($deductions as $deduct) {
-                set_payslip_item($current->id, $deduct['item_key'], $deduct, "deductions");
-            }
             unset($payslip['deductions']);
-
             $this->Payslips_model->update_where( $payslip, array("id"=>$current->id) );
         }
 
@@ -688,30 +685,48 @@ class Payrolls extends MY_Controller {
                 continue;
             }
 
-            $payslip = $this->generate_payslip($payroll_info, $user_id);
-
-            $earnings = $payslip['earnings'];
-            unset($payslip['earnings']);
-
-            $deductions = $payslip['deductions'];
-            unset($payslip['deductions']);
+            $attendance = $this->Attendance_model->get_details(array(
+                "user_id" => $user_id,
+                "start_date" => $payroll_info->start_date,
+                "end_date" => $payroll_info->end_date,
+                "access_type" => "all",
+            ))->result();
             
+            $attd = (new BioMeet($this, array(), true))
+                ->setSchedHour($payroll_info->sched_hours)
+                ->setAttendance($attendance)
+                ->calculate();
+            
+            $job_info = $this->Users_model->get_job_info($user_id);
+
             $leave_credit_balance = $this->Leave_credits_model->get_balance(array(
                 "user_id" => $user_id
             ));
-            $payslip['leave_credit'] = $leave_credit_balance;
-
+    
+            $new_payslip = array(
+                "payroll" => $payroll_info->id,
+                "user" => $user_id,
+                "hourly_rate" => $job_info->rate_per_hour,
+                "leave_credit" => $leave_credit_balance,
+                    
+                "schedule" => $payroll_info->sched_hours,//$attd->getTotalSchedule(), //schedule
+                "worked" => $attd->getTotalWork(), //work
+                "absent" => $attd->getTotalAbsent(), //absent
+                "bonus" => $attd->getTotalBonus(), //bonus
+                "pto" => $attd->getTotalPto(), //pto
+    
+                "reg_ot" => $attd->getTotalRegularOvertime(), //Regular OT
+                "rest_ot" => $attd->getTotalRestdayOvertime(), //Restday OT
+                "reg_nd" => $attd->getTotalNightDiff(), //Nightpay
+    
+                "special_hd" => $attd->getTotalSpecialHD(), //overtime
+                "legal_hd" => $attd->getTotalLegalHD(), //overtime
+            );
+            
             //To create a payslip for that user in a list.
-            $payslip_id = $this->Payslips_model->save( $payslip );
-
-            foreach($earnings as $earn) {
-                set_payslip_item($payslip_id, $earn['item_key'], $earn, "earnings");
-            }
-
-            foreach($deductions as $deduct) {
-                set_payslip_item($payslip_id, $deduct['item_key'], $deduct, "deductions");
-            }
+            $payslip_id = $this->Payslips_model->save( $new_payslip );
         }
+        //$this->recalculate($payroll_info->id);
 
         $payroll_data["status"] = "ongoing";
         if ($this->Payrolls_model->save($payroll_data, $payroll_id)) {
