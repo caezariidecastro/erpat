@@ -656,8 +656,6 @@ class Payrolls extends MY_Controller {
             
         foreach($payslips as $current) {
             $payslip = $this->generate_payslip($payroll_info, $current->user);
-            unset($payslip['earnings']);
-            unset($payslip['deductions']);
             $this->Payslips_model->update_where( $payslip, array("id"=>$current->id) );
         }
 

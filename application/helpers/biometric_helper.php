@@ -712,6 +712,8 @@ class BioMeet {
                         $bonus_post_val = $bonuspay_trigger;
                     }
 
+                    $overtime = 0; //Zero the value of the overtime. Important!
+
                     //Stable
                     $overtime_trigger = number_with_decimal( get_setting('overtime_trigger', 0) );
                     if( $overtime_trigger && $pre_excess >= $overtime_trigger ) {
