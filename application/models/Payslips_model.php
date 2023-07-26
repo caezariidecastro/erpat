@@ -37,18 +37,27 @@ class Payslips_model extends Crud_model {
             $where .= " AND instance.department = $department_id";
         }
 
+        $sent_query = "(SELECT COUNT(*) FROM payslips_sents sents WHERE sents.deleted=0 AND sents.payslip_id = {$this->table}.id)";
+
         $sql = "SELECT {$this->table}.*, 
         TRIM(CONCAT(employee.first_name, ' ', employee.last_name)) AS employee_name, 
         TRIM(CONCAT(signee.first_name, ' ', signee.last_name)) AS signee_name, 
-        employee.job_title, department.title AS department_name
+        TRIM(CONCAT(accountant.first_name, ' ', accountant.last_name)) AS accountant_name, 
+        employee.first_name as first_name, employee.last_name as last_name,
+        employee.job_title, department.title AS department_name, 
+        employee.email as employee_email,
+        officer.email as officer_email,
+        instance.start_date as start_date,
+        instance.end_date as end_date,
+        IF($sent_query, $sent_query, 0) as sents
         FROM {$this->table}
         LEFT JOIN payrolls instance ON instance.id = {$this->table}.payroll
         LEFT JOIN team department ON department.id = instance.department
+        LEFT JOIN users accountant ON accountant.id = instance.accountant_id   
         LEFT JOIN users employee ON employee.id = {$this->table}.user
-        LEFT JOIN users signee ON signee.id = {$this->table}.signed_by
-
+        LEFT JOIN users signee ON signee.id = {$this->table}.signed_by  
+        LEFT JOIN users officer ON officer.id = instance.created_by 
         WHERE {$this->table}.deleted=0 $where";
         return $this->db->query($sql);
     }
-
 }

@@ -827,6 +827,7 @@ $lang["event_pass"] = "Event Ticket";
 $lang["test_email"] = "Test Email";
 
 $lang["test_email_sent"] = "The template preview was sent to the email: ";
+$lang["email_sent"] = "The payslip sent to the email: ";
 
 $lang["epass"] = "Event Pass";
 $lang["reference_id"] = "Reference ID";
@@ -1191,3 +1192,5 @@ $lang["payroll_binding"] = "Payslip Binding";
 $lang["replicate"] = "Replicate";
 
 $lang["no_active_loan"] = "No Active Loan";
+
+$lang["payroll_reply_to"] = "Payroll Reply-To";

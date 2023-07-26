@@ -27,7 +27,7 @@
                     </div>
                     <div class="form-group">
                         <label for="currency_symbol" class=" col-md-2"><?php echo lang('currency_symbol'); ?></label>
-                        <div class=" col-md-10">
+                        <div class=" col-md-2">
                             <?php
                             echo form_input(array(
                                 "id" => "currency_symbol",
@@ -102,6 +102,23 @@
                                 "scheduled_based" => "Base on Schedule",
                             ), get_setting('basic_pay_calculation', 'hourly_based'), "class='select2 mini'"
                             );
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="payroll_reply_to" class=" col-md-2"><?php echo lang('payroll_reply_to'); ?></label>
+                        <div class=" col-md-4">
+                            <?php
+                            echo form_input(array(
+                                "id" => "payroll_reply_to",
+                                "name" => "payroll_reply_to",
+                                "value" => get_setting('payroll_reply_to'),
+                                "class" => "form-control",
+                                "placeholder" => lang('payroll_reply_to'),
+                                "data-rule-required" => true,
+                                "data-msg-required" => lang("field_required"),
+                            ));
                             ?>
                         </div>
                     </div>

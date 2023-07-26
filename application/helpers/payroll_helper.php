@@ -410,3 +410,25 @@ if (!function_exists('set_payslip_item')) {
         return $ci->{"Payslip_".$item_type."_model"}->save($object, $id);
     }
 }
+
+/**
+ * Set payslip item by user id, filter, and item name
+ */
+if (!function_exists('save_payslip_mail')) {
+    function save_payslip_mail($payslip_id, $object, $remarks = "") {
+        if($payslip_id && $object ) {
+            return false;
+        }
+        
+        $ci = get_instance();
+        $ci->load->model("Payslip_sents_model");
+
+        $data['payslip_id'] = $payslip_id;
+        $data['serialized'] = serialize($object);
+        $data['remarks'] = $remarks;
+        $data['created_by'] = $ci->login_user->id;
+        $data['timestamp'] = get_current_utc_time();
+
+        return $ci->Payslip_sents_model->save($data);
+    }
+}

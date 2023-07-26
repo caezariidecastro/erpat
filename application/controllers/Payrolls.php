@@ -20,6 +20,7 @@ class Payrolls extends MY_Controller {
         $this->load->model("Payslips_model");
         $this->load->model("Payslip_earnings_model");
         $this->load->model("Payslip_deductions_model");
+        $this->load->model("Payslip_sents_model");
         $this->load->model("Leave_credits_model");
         $this->load->model("Accounts_model");
         $this->load->model("Attendance_model");
@@ -774,7 +775,7 @@ class Payrolls extends MY_Controller {
         $this->load->view('payrolls/payment_modal_form', $view_data);
     }
 
-    protected function prepare_payslip_pdf( $data ) {
+    protected function prepare_payslip_pdf( $data, $mode) { //download, send_email, view, html
         $this->load->library('pdf');
         $this->pdf->setPrintHeader(false);
         $this->pdf->setPrintFooter(false);
@@ -790,7 +791,18 @@ class Payrolls extends MY_Controller {
             $fullname = $data['payslip']->employee_name;
             $file_name =  str_replace(" ", "-", $fullname).".pdf";
 
-            $this->pdf->Output($file_name, "I");
+            if ($mode === "download") {
+                $this->pdf->Output($file_name, "D");
+            } else if ($mode === "send_email") {
+                $file_name = $this->uuid->v4()."-".$file_name;
+                $temp_download_path = getcwd() . "/" . get_setting("temp_file_path") . $file_name;
+                $this->pdf->Output($temp_download_path, "F");
+                return $temp_download_path;
+            } else if ($mode === "view") {
+                $this->pdf->Output($file_name, "I");
+            } else if ($mode === "html") {
+                return $html;
+            }
         }
     }
 
@@ -893,6 +905,8 @@ class Payrolls extends MY_Controller {
             
         } else if($data->status == "approved") {
 
+            $send = '<li role="presentation">' . modal_anchor(get_uri("fas/payrolls/send_payslip_modal_form"), "<i class='fa fa-envelope'></i> " . lang('send_email'), array("title" => lang('send_email'), "data-post-id" => $data->id )) . '</li>';
+
             $pdf = "<li role='presentation'>" . anchor(get_uri("fas/payrolls/download_pdf/".$data->id), "<i class='fa fa-download'></i>  &nbsp" . lang('download_pdf'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "title" => lang('view_pdf'), "target" => "_blank")) . "</li>";
             
             $cancel = '<li role="presentation">' . js_anchor("<i class='fa fa-exclamation fa-fw'></i>" . lang('cancel'), array("style" => "border-radius: 0; width: -webkit-fill-available; border: none; text-align: left;", "class" => "update", "data-action-url" => get_uri("fas/payrolls/cancel_payslip/".$data->id), "data-action" => "update", "data-reload-on-success" => "1")) . '</li>';
@@ -906,7 +920,7 @@ class Payrolls extends MY_Controller {
                             <i class="fa fa-cogs"></i>&nbsp;
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu pull-right" role="menu">' . $override . $check . $view . $pdf . $signe . $cancel . $delete . '</ul>
+                        <ul class="dropdown-menu pull-right" role="menu">' . $override . $send . $check . $view . $pdf . $signe . $cancel . $delete . '</ul>
                     </span>';
 
         return array(
@@ -921,7 +935,8 @@ class Payrolls extends MY_Controller {
             to_currency( $summary['tax_due'] ),  
             "<strong ".($summary['net_pay']<=0?"style='color: red;'":"").">".to_currency( $summary['net_pay'] )."</strong>", 
 
-            $this->get_payslip_status($data), //net_pay
+            $this->get_payslip_status($data),
+            intval($data->sents),
             $payroll->status=="ongoing"?$actions:""
         );
     }
@@ -1423,10 +1438,10 @@ class Payrolls extends MY_Controller {
         $this->load->view('payrolls/preview_modal_form', $view_data);
     }
 
-    function download_pdf($id = 0, $mode = "download") {
+    function download_pdf($id = 0) {
         if ($id) {
             $payslip = $this->Payslips_model->get_details(array(
-                "id" => $payslip_id
+                "id" => $id
             ))->row();
     
             $payroll = $this->Payrolls_model->get_details(array(
@@ -1450,17 +1465,17 @@ class Payrolls extends MY_Controller {
             $payslip->bank_name = $job_info->bank_name;
             $payslip->bank_account = $job_info->bank_account;
             $payslip->bank_number = $job_info->bank_number;
-    
+
             $accountant = $this->Users_model->get_baseinfo($payroll->accountant_id);
             $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
             $payslip->accountant_title = $accountant->job_title;
-    
+
             $view_data["payslip"] = $payslip;
             $view_data["summary"] = $this->processPayHP( $payslip, $payroll->tax_table )->calculate();
     
             $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
 
-            $this->prepare_payslip_pdf($view_data);
+            $this->prepare_payslip_pdf($view_data, "view");
         } else {
             show_404();
         }
@@ -1533,7 +1548,122 @@ class Payrolls extends MY_Controller {
             $this->pdf->writeHTML($html, true, false, true, false, '');
         }
 
-        $file_name =  "DepartStartEnd.pdf";
+        $file_name =  $accountant->first_name.$accountant->last_name.".pdf";
         $this->pdf->Output($file_name, "I");
+    }
+
+    function send_payslip(){
+        validate_submitted_data(array(
+            "payslip_id" => "numeric"
+        ));
+
+        $email_template = $this->Email_templates_model->get_final_template("payslips");
+
+        $payslip_id = $this->input->post('payslip_id');
+        $remarks = $this->input->post('remarks');
+
+        $payslip = $this->Payslips_model->get_details(array(
+            "id" => $payslip_id
+        ))->row();
+
+        $payroll = $this->Payrolls_model->get_details(array(
+            "id" => $payslip->payroll
+        ))->row();
+
+        $payslip->pay_date = convert_date_format($payroll->pay_date, "F d, Y");
+        $payslip->pay_period= convert_date_format($payroll->start_date, "F d-").convert_date_format($payroll->end_date, "d Y");
+
+        $user = $this->Users_model->get_details(array(
+            "id" => $payslip->user
+        ))->row();
+        $payslip->fullname = $user->first_name." ".$user->last_name;
+        $payslip->job_title = $user->job_title;
+
+        $team = $this->Team_model->get_teams($payslip->user)->row();//todo
+        $payslip->department = $team?$team->title:"None";
+
+        $job_info = $this->Users_model->get_job_info($payslip->user);
+        $payslip->salary = $job_info->salary;
+        $payslip->bank_name = $job_info->bank_name;
+        $payslip->bank_account = $job_info->bank_account;
+        $payslip->bank_number = $job_info->bank_number;
+
+        $accountant = $this->Users_model->get_baseinfo($payroll->accountant_id);
+        $payslip->accountant_name = $accountant->first_name." ".$accountant->last_name;
+        $payslip->accountant_title = $accountant->job_title;
+
+        $view_data["payslip"] = $payslip;
+        $view_data["summary"] = $this->processPayHP( $payslip, $payroll->tax_table )->calculate();
+
+        $payslip->amount_in_words = (new Amount_In_Words())->convertNumber( $view_data['summary']['net_pay'] );
+
+        $payslip_url = $this->prepare_payslip_pdf($view_data, "send_email");
+
+        //add uploaded files
+        $target_path = get_setting("timeline_file_path");
+        $files_data = move_files_from_temp_dir_to_permanent_dir($target_path, "payslip");
+        $attachments = prepare_attachment_of_files(get_setting("timeline_file_path"), $files_data);
+        array_unshift($attachments, array("file_path" => $payslip_url));
+
+        $parser_data["PAYSLIP_ID"] =  $payslip->id;
+        $parser_data["PAY_PERIOD"] = convert_date_format($payslip->start_date, 'F j-')
+            .convert_date_format($payslip->end_date, 'j, Y'); 
+
+        $parser_data["FIRST_NAME"] = $payslip->first_name;
+        $parser_data["LAST_NAME"] = $payslip->last_name;
+        
+        $parser_data["REMARKS"] = $remarks?"Remarks: ".$remarks:"";
+        $parser_data["SIGNATURE"] = $email_template->signature;
+
+        $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
+        $email_options = array(
+            "attachments" => $attachments
+        );
+
+        if( filter_var( $payslip->officer_email, FILTER_VALIDATE_EMAIL) ) {
+            $email_options['cc'] = $payslip->officer_email;
+        }
+
+        if( filter_var( get_setting("payroll_reply_to", FILTER_VALIDATE_EMAIL)) ) {
+            $email_options['reply_to'] = get_setting("payroll_reply_to"); //TODO
+        }
+
+        if ( $success = send_app_mail($payslip->employee_email, $email_template->subject, $message, $email_options) ) {
+            save_payslip_mail($payslip->id, array_merge($payslip, $email_options), $remarks);
+            echo json_encode(array("success" => true, 'message' => lang('email_sent').$payslip->employee_email, "parser_data"=>$parser_data, "email_options"=>$email_options));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+
+        //delete attachments
+        if ($files_data) {
+            $files = unserialize($files_data);
+            foreach ($files as $file) {
+                delete_app_files($target_path, array($file));
+            }
+        }
+    }
+
+    function send_payslip_modal_form() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $payslip_id = $this->input->post('id');
+
+        $model_info = $this->Payslip_sents_model->get_details(array(
+            "payslip_id" => $payslip_id
+        ))->result();
+
+        $sents_objects = array();
+        foreach($model_info as $item) {
+            $item->object = unserialize($item->serialized);
+            $sents_objects[] = $item;
+        }
+
+        $view_data['payslip_id'] = $payslip_id;
+        $view_data['sents'] = $sents_objects;
+
+        $this->load->view('payrolls/send_payslip_modal_form', $view_data);
     }
 }

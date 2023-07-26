@@ -138,6 +138,7 @@
                 {title: '<?php echo lang("tax_due") ?>', "class": "text-right w10p"},
                 {title: '<?php echo lang("net_pay") ?>', "class": "text-right w10p"},
                 {title: '<?php echo lang("status") ?>', "class": "text-right w10p"},
+                {title: '<?php echo lang("sent") ?>', "class": "text-right w10p"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option w10p", visible: optionVisibility}
             ],
             summation: [
