@@ -212,6 +212,19 @@
                         </div>
                         <label class=" col-md-2"><?php echo lang('days'); ?></label>
                     </div>
+                    <div class="form-group">
+                        <label for="disable_hourly_leave" class=" col-md-2"><?php echo lang('disable_hourly_leave'); ?></label>
+                        <div class="col-md-10">
+                            <?php
+                            echo form_dropdown(
+                                "disable_hourly_leave", array(
+                                    "" => "Enabled",
+                                    "disabled" => "Disabled",
+                                ), get_setting('disable_hourly_leave'), "class='select2 mini'"
+                            );
+                            ?>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>

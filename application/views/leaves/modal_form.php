@@ -49,6 +49,7 @@
             ?>
             <label for="duration_mulitple_days" class="mr15" ><?php echo lang('mulitple_days'); ?></label>
 
+            <?php if( get_setting("disable_hourly_leave", false) == false ) { ?>
             <?php
             echo form_radio(array(
                 "id" => "duration_hours",
@@ -57,6 +58,7 @@
                     ), "hours", false);
             ?>
             <label for="duration_hours" ><?php echo lang('hours'); ?></label>
+            <?php } ?>
         </div>
     </div>
 
