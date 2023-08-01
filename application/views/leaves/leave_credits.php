@@ -1,10 +1,12 @@
 
 <div class="page-title clearfix">
+    <?php if( $can_manage_credit ) { ?>
     <div class="title-button-group">
         <?php echo modal_anchor(get_uri("hrs/leaves/modal_form_add_credit"), "<i class='fa fa-plus-circle'></i> " . lang('add_leave_credits'), array("class" => "btn btn-default", "title" => lang('leave_credit_add_form'))); ?>
         <?php echo modal_anchor(get_uri("hrs/leaves/modal_form_convert_credit"), "<i class='fa fa-exchange'></i> " . lang('convert_leave_credits'), array("class" => "btn btn-default", "title" => lang('leave_credit_convert_form'))); ?>
         <?php echo modal_anchor(get_uri("hrs/leaves/modal_form_deduct_credit"), "<i class='fa fa-minus-circle'></i> " . lang('remove_leave_credits'), array("class" => "btn btn-default", "title" => lang('leave_credit_deduct_form'))); ?>
     </div>
+    <?php } ?>
 </div>
 <div class="table-responsive">
     <table id="leave-credit-table" class="display" cellspacing="0" width="100%">            

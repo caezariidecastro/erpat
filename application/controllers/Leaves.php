@@ -473,6 +473,7 @@ class Leaves extends MY_Controller {
         $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $view_data['department_select2'] = $this->_get_team_select2_data();
         $view_data['leave_types_dropdown'] = $this->_get_leave_types_select2_data();
+        $view_data['can_manage_credit'] = $this->with_permission("leave_manage");
         $this->load->view("leaves/leave_credits", $view_data);
     }
 

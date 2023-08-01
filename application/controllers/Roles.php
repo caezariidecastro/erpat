@@ -38,6 +38,7 @@ class Roles extends MY_Controller {
             array("department", "Coming Soon", "Department: Module", "Access", "dropdown", true),
             array("attendance", "Coming Soon", "Attendance: Module", "Access", "dropdown", true),
             array("leave", "Coming Soon", "Leave: Module", "Access", "dropdown", true),
+            array("leave_manage", "Coming Soon", "Leave: Manage", "Manage", null),
             array("holiday", "Coming Soon", "Staffing: Holiday", "Enabled", null, true),
             array("deciplinary", "Coming Soon", "Staffing: Deciplinary", "Enabled", null, true),
 

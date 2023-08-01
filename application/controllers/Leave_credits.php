@@ -28,6 +28,7 @@ class Leave_credits extends MY_Controller {
 
     //save leave type
     function save() {
+        $this->with_permission("leave_manage", "redirect");
 
         validate_submitted_data(array(
             "counts" => "numeric",
@@ -63,6 +64,8 @@ class Leave_credits extends MY_Controller {
     }
 
     function convert() {
+        $this->with_permission("leave_manage", "redirect");
+
         validate_submitted_data(array(
             "counts" => "numeric",
             "user_id" => "required",
@@ -119,6 +122,7 @@ class Leave_credits extends MY_Controller {
 
     //delete/undo a leve type
     function delete() {
+        $this->with_permission("leave_manage", "redirect");
         
         validate_submitted_data(array(
             "id" => "required|numeric"
