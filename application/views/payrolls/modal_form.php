@@ -19,9 +19,7 @@
     <div class="form-group">
         <label for="department_id" class="col-md-3"><?php echo lang('department'); ?></label>
         <div class="col-md-9">
-            <?php
-            echo form_dropdown("department_id", $department_dropdown, $model_info ? $model_info->department : "", "class='select2 validate-hidden' id='department_id' data-rule-required='true' data-msg-required='".lang("field_required")."'");
-            ?>
+            <input type="text" value="<?= $model_info->department ?>" placeholder="Select Multiple" name="department_id" id="department_lists" class="w100p validate-hidden"  placeholder="<?php echo lang('departments'); ?>"  />   
         </div>
     </div>
     <?php if( isset($model_info) && isset($model_info->signed_by) && ($this->login_user->is_admin || $model_info->signed_by == $this->login_user->id) ) { ?>
@@ -146,6 +144,11 @@
         });
 
         $('.select2').select2();
+
+        $('#department_lists').select2({
+            multiple: true,
+            data: <?php echo ($department_dropdown); ?>
+        });
 
         <?php if( $model_info ) { ?>
             $("#account_id").prop('disabled', true);

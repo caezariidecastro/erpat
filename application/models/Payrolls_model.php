@@ -36,19 +36,21 @@ class Payrolls_model extends Crud_model {
         }
 
         if($department_id){
-            $where .= " AND {$this->table}.department = $department_id";
+            $where .= " AND FIND_IN_SET($department_id, {$this->table}.department)";
         }
+
+        $teams_lists = " ( SELECT GROUP_CONCAT(team.title) 
+            FROM team 
+            WHERE team.deleted='0' AND FIND_IN_SET(team.id, {$this->table}.department) ) as team_list";
 
         $sql = "SELECT {$this->table}.*, 
         TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, 
         TRIM(CONCAT(signee.first_name, ' ', signee.last_name)) AS signee_name, 
-        TRIM(CONCAT(accountant.first_name, ' ', accountant.last_name)) AS accountant_name, 
-        department.title AS department_name, 
+        TRIM(CONCAT(accountant.first_name, ' ', accountant.last_name)) AS accountant_name, $teams_lists,
         (SELECT count(id) FROM payslips WHERE payslips.payroll = {$this->table}.id AND deleted=0) AS total_payslip,
         acct.name AS account_name 
         FROM {$this->table}
         LEFT JOIN accounts acct ON acct.id = {$this->table}.account_id
-        LEFT JOIN team department ON department.id = {$this->table}.department
         LEFT JOIN users creator ON creator.id = {$this->table}.created_by
         LEFT JOIN users accountant ON accountant.id = {$this->table}.accountant_id
         LEFT JOIN users signee ON signee.id = {$this->table}.signed_by

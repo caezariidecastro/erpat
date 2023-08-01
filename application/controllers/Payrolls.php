@@ -110,7 +110,7 @@ class Payrolls extends MY_Controller {
         return array(
             $data->id,
             get_payroll_id($data->id),
-            $data->department_name,
+            $data->team_list,
             $data->start_date,
             $data->end_date,
             $data->pay_date,
@@ -169,7 +169,7 @@ class Payrolls extends MY_Controller {
         $id = $this->input->post('id');
 
         $view_data['account_dropdown'] = array("" => "-") + $this->Accounts_model->get_dropdown_list(array("name"), "id", array("deleted" => 0));
-        $view_data['department_dropdown'] = array("" => "-") + $this->Team_model->get_dropdown_list(array("title"), "id", array("deleted" => 0));
+        $view_data['department_dropdown'] = json_encode($this->_get_team_select2_data());
         $view_data['model_info'] = $id ? $this->Payrolls_model->get_details(array("id" => $id))->row() : "";
         $view_data['user_dropdown'] = array("" => "- ".lang("accountant")." -") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"), "- ".lang("accountant")." -");
 
@@ -272,8 +272,7 @@ class Payrolls extends MY_Controller {
             $view_data["status"] = $this->get_labeled_status( $payroll_info->status );
             $view_data["can_edit_payrolls"] = ($this->login_user->is_admin || $this->login_user->id == $payroll_info->signed_by)?true:false;
 
-            $department = $this->Team_model->get_one($payroll_info->department);
-            $view_data["department"] = $department->title;
+            $view_data["department"] = $payroll_info->team_list;
 
             $this->template->rander('payrolls/view', $view_data);
         } else {
@@ -644,11 +643,6 @@ class Payrolls extends MY_Controller {
             "id" => $payroll_id
         ))->row();
 
-        //Get all the users within a department id ng payroll 
-        $department = $this->Team_model->get_details(array(
-            "id" => $payroll_info->department
-        ))->row();
-
         $payslips = $this->Payslips_model->get_details(array(
             "payroll_id" => $payroll_id,
             "status" => "draft"
@@ -670,13 +664,18 @@ class Payrolls extends MY_Controller {
             "id" => $payroll_id
         ))->row();
 
-        //Get all the users within a department id ng payroll 
-        $department = $this->Team_model->get_details(array(
-            "id" => $payroll_info->department
-        ))->row();
+        $users = [];
+        $teams = explode(",", $payroll_info->department);
 
-        //get all users unique within the department heads or members.
-        $users = get_team_all_unique($department->heads, $department->members);
+        foreach($teams as $team) {
+            //Get all the users within a dept id ng payroll 
+            $dept = $this->Team_model->get_details(array(
+                "id" => $team
+            ))->row();
+
+            //get all users unique within the dept heads or members.
+            $users = array_merge($users, get_team_all_unique($dept->heads, $dept->members) );
+        }
         
         //schedule hours for this date.
         //absent, late, overbreak, undertime
