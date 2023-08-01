@@ -313,18 +313,7 @@ class Leaves extends MY_Controller {
 
     // prepare a row of leave application list table
     private function _make_row_for_summary($data) {
-        $meta_info = $this->_prepare_leave_info($data);
 
-        return array(
-            get_team_member_profile_link($data->applicant_id, $meta_info->applicant_meta),
-            $meta_info->leave_type_meta,
-            $meta_info->duration_meta,
-            $meta_info->balance_meta
-        );
-    }
-
-    //return required style/format for a application
-    private function _prepare_leave_info($data) {
         $image_url = get_avatar($data->applicant_avatar);
         $data->applicant_meta = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span>" . $data->applicant_name;
 
@@ -340,6 +329,59 @@ class Leaves extends MY_Controller {
         $balance = $balance_day . " (" . ($data->balance*8) . " " . lang("hour") . ")";
         $data->balance_meta = $balance;
         
+        return array(
+            get_team_member_profile_link($data->applicant_id, $data->applicant_meta),
+            $data->leave_type_meta,
+            $data->duration_meta,
+            $data->balance_meta
+        );
+    }
+
+    //return required style/format for a application
+    private function _prepare_leave_info($data) {
+        $image_url = get_avatar($data->applicant_avatar);
+        $data->applicant_meta = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span>" . $data->applicant_name;
+
+        if (isset($data->status)) {
+            if ($data->status === "pending") {
+                $status_class = "label-warning";
+            } else if ($data->status === "approved") {
+                $status_class = "label-success";
+            } else if ($data->status === "rejected") {
+                $status_class = "label-danger";
+            } else {
+                $status_class = "label-default";
+            }
+            $data->status_meta = "<span class='label $status_class'>" . lang($data->status) . "</span>";
+        }
+
+        if (isset($data->start_date)) {
+            $date = format_to_date($data->start_date, FALSE);
+            if ($data->start_date != $data->end_date) {
+                $date = sprintf(lang('start_date_to_end_date_format'), format_to_date($data->start_date, FALSE), format_to_date($data->end_date, FALSE));
+            }
+            $data->date_meta = $date;
+        }
+        if ($data->total_days > 1) {
+            $duration = $data->total_days . " " . lang("days");
+        } else {
+            $duration = $data->total_days . " " . lang("day");
+        }
+
+        if ($data->total_hours > 1) {
+            $duration = $duration . " (" . $data->total_hours . " " . lang("hours") . ")";
+        } else {
+            $duration = $duration . " (" . $data->total_hours . " " . lang("hour") . ")";
+        }
+        $data->duration_meta = $duration;
+        
+        $data->leave_type_meta = "<span style='background-color:" . $data->leave_type_color . "' class='color-tag pull-left'></span>" . $data->leave_type_title . ", " . ($data->required_credits?"Deducted":"Not Deducted"). ", " . ($data->paid?"w/ Pay":"Not Paid");
+        
+        $balance_day = $data->balance . " " . lang("days");
+        $balance = $balance_day . " (" . ($data->balance*8) . " " . lang("hour") . ")";
+        $data->balance_meta = $balance;
+        
+        $data->checked_date = convert_date_utc_to_local($data->checked_at, "d/m/Y");
         return $data;
     }
 
