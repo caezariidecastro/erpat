@@ -84,7 +84,7 @@ class Payrolls extends MY_Controller {
             $generate = '<li role="presentation">'. js_anchor("<i class='fa fa-wrench'></i> " . lang('mark_as_ongoing'), array('title' => lang('update'), "data-action-url" => get_uri("fas/payrolls/mark_as_ongoing/$data->id"), "data-action" => "update")). '</li>';
         }
 
-        if($data->status == "cancelled"){
+        if($data->status == "draft" || $data->status == "cancelled"){
             $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/payrolls/delete"), "data-action" => "delete-confirmation")) . '</li>';
         }
 
