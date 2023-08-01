@@ -113,6 +113,18 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="earnings_included" class="col-md-3"><?php echo lang('earnings'); ?></label>
+        <div class="col-md-9">
+            <input type="text" value="<?= $model_info->earnings ?>" placeholder="Select Multiple" name="earnings_included" id="earnings_included" class="w100p validate-hidden"  placeholder="<?php echo lang('earnings'); ?>"  />   
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="deductions_included" class="col-md-3"><?php echo lang('deductions'); ?></label>
+        <div class="col-md-9">
+            <input type="text" value="<?= $model_info->deductions ?>" placeholder="Select Multiple" name="deductions_included" id="deductions_included" class="w100p validate-hidden"  placeholder="<?php echo lang('deductions'); ?>"  />   
+        </div>
+    </div>
+    <div class="form-group">
         <label for="note" class="col-md-3"><?php echo lang('note'); ?></label>
         <div class=" col-md-9">
             <?php
@@ -148,6 +160,16 @@
         $('#department_lists').select2({
             multiple: true,
             data: <?php echo ($department_dropdown); ?>
+        });
+
+        $('#earnings_included').select2({
+            multiple: true,
+            data: <?php echo ($earning_dropdown); ?>
+        });
+
+        $('#deductions_included').select2({
+            multiple: true,
+            data: <?php echo ($deduction_dropdown); ?>
         });
 
         <?php if( $model_info ) { ?>

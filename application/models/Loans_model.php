@@ -73,7 +73,7 @@ class Loans_model extends Crud_model {
         $total_payments = "(SELECT SUM($payments_table.amount) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0)";
         $stage_name = "(SELECT stage_name FROM $stage_table WHERE $stage_table.deleted=0 AND $stage_table.loan_id=$loans_table.id ORDER BY timestamp DESC LIMIT 1)";
 
-        $sql = "SELECT $loans_table.*, category_table.name as category_name, 
+        $sql = "SELECT $loans_table.*, category_table.name as category_name, category_table.id as cat_id,
             IF($total_payments, $total_payments, 0) as payments,
             (SELECT COUNT(*) FROM $payments_table WHERE $payments_table.loan_id=$loans_table.id AND $payments_table.deleted=0) as months_paid
         FROM $loans_table 

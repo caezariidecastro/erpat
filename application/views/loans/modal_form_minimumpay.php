@@ -47,7 +47,7 @@
                 "none" => "No Payroll Bindings",
                 "daily" => "Daily Payout",
                 "weekly" => "Weekly Payout",
-                "bi-weekly" => "Bi-Weekly Payout",
+                "biweekly" => "Bi-Weekly Payout",
                 "monthly" => "Monthly Payout"
                 ), $model_info->payroll_binding, "class='select2 validate-hidden' id='payroll_binding' ");
             ?>
