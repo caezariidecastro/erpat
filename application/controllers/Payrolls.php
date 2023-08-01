@@ -29,6 +29,7 @@ class Payrolls extends MY_Controller {
 
         $this->load->model("Loans_model");
         $this->load->model("Loan_categories_model");
+        $this->load->model("Loan_payments_model");
 
         $this->load->model("Expenses_model");
         $this->load->model("Expense_categories_model");
@@ -1430,12 +1431,37 @@ class Payrolls extends MY_Controller {
 
     function approve_payslip( $id ) {
 
+        //TODO: Get loan deductions attached to this payslip and add payment.
+        $payslip = $this->Payslips_model->get_details(array(
+            "id" => $id
+        ))->row(); //ONGOING
+
+        //Get payroll instance
+        $payroll_info = $this->Payrolls_model->get_details(array(
+            "id" => $payslip->payroll
+        ))->row();
+        
+        $loans = $this->Loans_model->get_loans($payslip->user, $payroll_info->tax_table)->result();
+        foreach($loans as $item) {
+            log_message("error", "loan:".$item->cat_id);
+            if( contain_str($payroll_info->deductions, "loan:".$item->cat_id) ) {
+                $data = array(
+                    "loan_id" => $item->id,
+                    "date_paid" => convert_date_local_to_utc($payroll_info->pay_date),
+                    "amount" => $item->min_payment,
+                    "late_interest" => 0,
+                    "remarks" => lang("payslip_generated_payment").get_payroll_id($payroll_info->id),
+                    "created_by" => $this->login_user->id
+                );
+                $last_id = $this->Loan_payments_model->save($data);
+            }
+        }
+
         $data = array(
             "signed_by" => $this->login_user->id,
             "signed_at" => get_current_utc_time(),
             "status" => "approved"
         );
-
         if ($this->Payslips_model->save($data, $id)) {
             echo json_encode(array("success" => true, 'message' => lang('record_saved')));
         } else {

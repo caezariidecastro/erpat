@@ -1196,3 +1196,5 @@ $lang["no_active_loan"] = "No Active Loan";
 $lang["payroll_reply_to"] = "Payroll Reply-To";
 
 $lang["disable_hourly_leave"] = "Disable Hourly Leave";
+
+$lang["payslip_generated_payment"] = "Payslip generated payment from Payroll: ";
