@@ -20,7 +20,6 @@
                 {id: "department_select2_filter", name: "department_select2_filter", class: "w150", options: <?php echo json_encode($department_select2); ?>},
                 {name: "action", class: "w10", options: <?= json_encode(array(
                         array('id' => '', 'text'  => '- Transactions -'),
-                        array('id' => 'balance', 'text'  => '- Balance -'),
                         array('id' => 'debit', 'text'  => '- Debit Only -'),
                         array('id' => 'credit', 'text'  => '- Credit Only -')
                     )); ?> 

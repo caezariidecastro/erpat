@@ -42,16 +42,9 @@ class Leave_credits_model extends Crud_model {
             $where .= " AND FIND_IN_SET('$department_id', $teams_ids) ";
         }
 
-        $query = "";
         $action = get_array_value($options, "action");
         if ($action) {
-            if($action == 'balance') {
-                $query = " (SUM(IF($leave_credits_table.action='debit',$leave_credits_table.counts,0)) 
-                - SUM(IF($leave_credits_table.action='credit',$leave_credits_table.counts,0))) as balance,";
-                $where .= " GROUP BY user_id";
-            } else {
-                $where .= " AND $leave_credits_table.action='$action'";
-            }
+            $where .= " AND $leave_credits_table.action='$action'";
         }
 
         $access_type = get_array_value($options, "access_type");
@@ -70,7 +63,7 @@ class Leave_credits_model extends Crud_model {
             $where .= " AND $leave_credits_table.user_id IN($allowed_members)";
         }
 
-        $sql = "SELECT $leave_credits_table.*, $query
+        $sql = "SELECT $leave_credits_table.*, 
             CONCAT(users_table.first_name, ' ',users_table.last_name) AS fullname, 
             CONCAT(creator_table.first_name, ' ',creator_table.last_name) AS creator
         FROM $leave_credits_table 
