@@ -54,8 +54,6 @@ class Schedule_model extends Crud_model {
             WHERE $users.deleted=0 AND 
                 $users.status='active' AND 
                 $users.disable_login=0 AND 
-                $users.resigned=0 AND 
-                $users.terminated=0 AND 
                 sched.id IS NULL ";
 
         $query = $this->db->query($sql);

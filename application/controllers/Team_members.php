@@ -44,16 +44,16 @@ class Team_members extends MY_Controller {
     function get_all_usertypes($with_delete = true) {
         
         if($with_delete) {
-            $usertypes_dropdown = array(array("id" => "active", "text" => lang("active") ));
+            $usertypes_dropdown[] = array("id" => "active", "text" => lang("active") );
             $usertypes_dropdown[] = array("id" => "inactive", "text" => lang("inactive") );
-            $usertypes_dropdown[] = array("id" => "applicant", "text" => "Applicant");
-            $usertypes_dropdown[] = array("id" => "resigned", "text" => "Resigned");
-            $usertypes_dropdown[] = array("id" => "terminated", "text" => "Terminated");
             $usertypes_dropdown[] = array("id" => "deleted", "text" => lang("deleted") );
+            $usertypes_dropdown[] = array("id" => "applicant", "text" => "Applicant");
+            $usertypes_dropdown[] = array("id" => "resigned", "text" => "Resigned" );
+            $usertypes_dropdown[] = array("id" => "terminated", "text" => "Terminated" );
         } else {
             $usertypes_dropdown = array(
-                "employee" => "Employee",
                 "applicant" => "Applicant",
+                "employee" => "Employee",
                 "resigned" => "Resigned",
                 "terminated" => "Terminated"
             );
@@ -768,10 +768,12 @@ class Team_members extends MY_Controller {
         $status_dropdown = $this->input->post('status_dropdown');
         if($status_dropdown == "employee") {
             $user_data["user_type"] = "staff";
+            $user_data["status"] = "active";
             $user_data["resigned"] = "0";
             $user_data["terminated"] = "0";
         } else if($status_dropdown == "applicant" ) {
             $user_data["user_type"] = "applicant";
+            $user_data["status"] = "inactive";
             $user_data["resigned"] = "0";
             $user_data["terminated"] = "0";
         } else if($status_dropdown == "terminated" ) {
@@ -905,6 +907,14 @@ class Team_members extends MY_Controller {
         return $this->_make_row($data, $custom_fields);
     }
 
+    private function is_active($data) {
+        if($data->deleted == 0 && $data->status='active' && $data->resigned == 0 && $data->terminated == 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     //prepare team member list row
     private function _make_row($data, $custom_fields, $options = NULL) {
         $image_url = get_avatar($data->image);
@@ -942,12 +952,12 @@ class Team_members extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $action_btn = "";
-
-        if ( $this->with_permission("staff_update") && get_array_value($options, "status") != "deleted") {
-            
+        if( $data->deleted == 0 ) {
             $edit = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/edit_modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit_employee'), array("title" => lang('edit_employee'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
+        }
 
+        if ( $this->with_permission("staff_update") && $this->is_active($data)) {
+            
             $access = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/setaccess_modal_form"), "<i class='fa fa-user-secret'></i> " . lang('set_user_access'), array("title" => lang('set_user_access'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
 
             $pass = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/changepass_modal_form"), "<i class='fa fa-lock'></i> " . lang('reset_password'), array("title" => lang('reset_password'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
@@ -955,7 +965,7 @@ class Team_members extends MY_Controller {
             $rfid = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/rfid_modal"), "<i class='fa fa-barcode'></i> " . lang('set_rfid'), array("class" => "edit", "title" => lang('set_rfid'), "data-post-id" => $data->id)). '</li>';
         }
 
-        if( $this->with_permission("staff_update_schedule") ) {
+        if( $this->is_active($data) && $this->with_permission("staff_update_schedule") ) {
             $sched = '<li role="presentation">' . modal_anchor(get_uri("hrs/team_members/sched_modal_form"), "<i class='fa fa-clock-o'></i> " . lang('update_schedule'), array("title" => lang('update_schedule'), "data-post-view" => "details", "data-post-id" => $data->id)) . '</li>';
         }
 

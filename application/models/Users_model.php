@@ -141,22 +141,17 @@ class Users_model extends Crud_model {
         } else if ($status === "inactive") {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.status='inactive'";
-        }
-
-        if ($status === "resigned") {
+        } else if ($status === "deleted") {
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.deleted='1'";
+        } else if ($status === "resigned") {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.resigned='1'";
-        }
-
-        if ($status === "terminated") {
+        } else if ($status === "terminated") {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.terminated='1'";
-        }
-        
-        $where .= empty($where) ? " " : " AND";
-        if ($status === "deleted") {
-            $where .= " $users_table.deleted='1'";
         } else {
+            $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.deleted='0'";
         }
 
@@ -216,7 +211,6 @@ class Users_model extends Crud_model {
         $where_in = get_array_value($options, "where_in");
         if ($where_in) {
             $list_user = implode(",", $where_in);
-            log_message("error", $where_in);
             $where .= " AND FIND_IN_SET($users_table.id, '$list_user')";
         }
         
@@ -539,8 +533,6 @@ class Users_model extends Crud_model {
         $sql = "SELECT {$users}.id, $fullname $fields
         FROM $users $from
         WHERE {$users}.deleted=0 
-            AND {$users}.terminated=0 
-            AND {$users}.resigned=0 
             AND {$users}.status='active' 
             AND {$users}.user_type='staff' ";
         return $this->db->query($sql)->result();
