@@ -21,12 +21,14 @@
             columns: [
                 {visible: false, searchable: false},
                 {title: "<?php echo lang("id") ?>", "class": "w10p"},
-                {title: "<?php echo lang("first_name") ?>", "class": "w15p"},
-                {title: "<?php echo lang("last_name") ?>", "class": "w10p"},
+                {title: "<?php echo lang("first_name") ?>", "class": "w20"},
+                {title: "<?php echo lang("last_name") ?>", "class": "w20"},
 
-                {title: "<?php echo lang("bank_name") ?>", "class": "w10p"},
-                {title: "<?php echo lang("bank_account") ?>", "class": "w10p"},
-                {title: "<?php echo lang("bank_number") ?>", "class": "w10p"},
+                {title: "<?php echo lang("bank_name") ?>", "class": "w10"},
+                {title: "<?php echo lang("bank_account") ?>", "class": "w15"},
+                {title: "<?php echo lang("bank_number") ?>", "class": "w20"},
+
+                {title: '<i class="fa fa-bars"></i>', "class": "text-center option w10p"}
             ],
             printColumns: [0, 1, 2, 3, 4],
             xlsColumns: [0, 1, 2, 3, 4],

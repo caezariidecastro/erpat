@@ -273,18 +273,73 @@ class Team_members extends MY_Controller {
         $list_data = $this->Users_model->get_details($options)->result();
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = array(
-                $data->id,
-                get_team_member_profile_link($data->id, $data->job_idnum?$data->job_idnum:"NO ID"),
-                $data->first_name,
-                $data->last_name,
-
-                $data->bank_name,
-                $data->bank_account,
-                $data->bank_number,
-            );
+            $result[] = $this->make_row_bank($data);
         }
         echo json_encode(array("data" => $result));
+    }
+
+    private function make_row_bank($data) {
+        $row_data = array(
+            $data->id,
+            get_team_member_profile_link($data->id, $data->job_idnum?$data->job_idnum:"NO ID"),
+            $data->first_name,
+            $data->last_name,
+
+            $data->bank_name,
+            $data->bank_account,
+            $data->bank_number,
+        );
+
+        if ( $this->with_permission("staff_update") && $this->is_active($data)) {
+            $row_data[] = modal_anchor(get_uri("hrs/team_members/bank_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "update", "title" => lang('update'), "data-post-id" => $data->id));
+        }
+
+        return $row_data;
+    }
+
+    function bank_modal_form() {
+        $this->with_permission("staff_update", "no_permission");
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+        
+        $user_id = $this->input->post('id');
+        $view_data['model_info'] = $this->Users_model->get_job_info($user_id);
+        $this->load->view('team_members/bank_modal_form', $view_data);
+    }
+
+    function update_bank_detail() {
+        validate_submitted_data(array(
+            "user_id" => "required",
+            "bank_name" => "required",
+            "bank_account" => "required",
+            "bank_number" => "required"
+        ));
+        $user_id = $this->input->post('user_id');
+
+        if(!$this->can_manage_user($user_id) && !$this->with_permission("staff_update")) {
+            echo json_encode(array("success" => false, 'message' => lang('no_permission')));
+            exit;
+        }
+
+        $account_data = array(
+            "user_id" => $user_id,
+            "bank_name" => $this->input->post("bank_name"),
+            "bank_account" => $this->input->post("bank_account"),
+            "bank_number" => $this->input->post("bank_number")
+        );
+
+        $this->Users_model->save_job_info($job_data);
+        if ($this->Users_model->save_job_info($account_data, $user_id)) {
+            $user_data = $this->Users_model->get_details(array(
+                "id" => $user_id
+            ))->row();
+
+            echo json_encode(array("success" => true, 'id' => $user_data->id, 'data' => $this->make_row_bank($user_data), 'message' => lang('record_updated')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
     }
 
     public function contribution_view() {
@@ -1212,9 +1267,6 @@ class Team_members extends MY_Controller {
             "contact_address" => $this->input->post('contact_address'),
             "contact_phone" => $this->input->post('contact_phone'),
             "signiture_url" => $this->input->post('signiture_url'),
-            "bank_name" => $this->input->post('bank_name'),
-            "bank_account" => $this->input->post('bank_account'),
-            "bank_number" => $this->input->post('bank_number')
         );
 
         if($this->input->post('rfid_num')) {
