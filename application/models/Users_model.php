@@ -140,7 +140,7 @@ class Users_model extends Crud_model {
             $where .= " $users_table.status='active'";
         } else if ($status === "inactive") {
             $where .= empty($where) ? " " : " AND";
-            $where .= " $users_table.status='inactive'";
+            $where .= " $users_table.status='inactive' AND $users_table.resigned='0' AND $users_table.terminated='1' ";
         } else if ($status === "deleted") {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.deleted='1'";
