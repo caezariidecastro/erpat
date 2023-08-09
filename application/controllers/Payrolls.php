@@ -173,17 +173,25 @@ class Payrolls extends MY_Controller {
         $id = $this->input->post('id');
 
         $view_data['earning_dropdown'] = json_encode( array(
-            array("id"=>"allowance", "text"=>"Allowance"),
-            array("id"=>"incentive", "text"=>"Incentive"),
-            array("id"=>"bonus", "text"=>"Bonus")
+            array("id"=>"allowance", "text"=>"Allowance: Tax Table"),
+            array("id"=>"allowance_monthly", "text"=>"Allowance: Monthly"),
+            array("id"=>"incentive", "text"=>"Incentive: Tax Table"),
+            array("id"=>"incentive_monthly", "text"=>"Incentive: Monthly"),
+            array("id"=>"bonus", "text"=>"Bonus: Tax Table"),
+            array("id"=>"bonus_monthly", "text"=>"Bonus: Monthly")
         ) );
         
         $deduction_dropdown = array(
-            array("id"=>"sss_contri", "text"=>"SSS Contribution"),
-            array("id"=>"pagibig_contri", "text"=>"HDMF Contribution"),
-            array("id"=>"phealth_contri", "text"=>"Phealth Contribution"),
-            array("id"=>"hmo_contri", "text"=>"HMO Contribution"),
-            array("id"=>"other", "text"=>"Other Deduction")
+            array("id"=>"sss_contri", "text"=>"SSS Contribution: Tax Table"),
+            array("id"=>"sss_contri_monthly", "text"=>"SSS Contribution: Monthly"),
+            array("id"=>"pagibig_contri", "text"=>"HDMF Contribution: Tax Table"),
+            array("id"=>"pagibig_contri_monthly", "text"=>"HDMF Contribution: Monthly"),
+            array("id"=>"phealth_contri", "text"=>"Phealth Contribution: Tax Table"),
+            array("id"=>"phealth_contri_monthly", "text"=>"Phealth Contribution: Monthly"),
+            array("id"=>"hmo_contri", "text"=>"HMO Contribution: Tax Table"),
+            array("id"=>"hmo_contri_monthly", "text"=>"HMO Contribution: Monthly"),
+            array("id"=>"others", "text"=>"Other Deduction: Tax Table"),
+            array("id"=>"others_monthly", "text"=>"Other Deduction: Monthly"),
         );
         $loans = $this->Loan_categories_model->get_details(array())->result();
         foreach($loans as $loan) {
@@ -586,6 +594,18 @@ class Payrolls extends MY_Controller {
             $earnings[] = array( "payslip_id" => $payslip_id, "item_key" => "bonuses", "title"=>"Bonus", 
                 "amount" => get_user_option($payslip->user, "others", "earnings", $payroll_info->tax_table), "remarks" => false );
         }
+        if( contain_str($payroll_info->earnings, "allowance_monthly") ) {
+            $earnings[] = array( "payslip_id" => $payslip_id, "item_key" => "allowances", "title"=>"Allowance", 
+                "amount" => get_user_option($payslip->user, "allowances", "earnings", "monthly"), "remarks" => false );
+        }
+        if( contain_str($payroll_info->earnings, "incentive_monthly") ) {
+            $earnings[] = array( "payslip_id" => $payslip_id, "item_key" => "incentives", "title"=>"Incentive", 
+                "amount" => get_user_option($payslip->user, "incentives", "earnings", "monthly"), "remarks" => false );
+        }
+        if( contain_str($payroll_info->earnings, "bonus_monthly") ) {
+            $earnings[] = array( "payslip_id" => $payslip_id, "item_key" => "bonuses", "title"=>"Bonus", 
+                "amount" => get_user_option($payslip->user, "others", "earnings", "monthly"), "remarks" => false );
+        }
 
         $earn_adjust_title = get_user_option($payslip->user, "adjust", "earnings", "title", true);
         $earn_adjust_amount = get_user_option($payslip->user, "adjust", "earnings", $payroll_info->tax_table);
@@ -611,25 +631,42 @@ class Payrolls extends MY_Controller {
             $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "sss_contri", "title"=>"SSS Contribution", 
             "amount" => get_user_option($payslip->user, "sss_contri", "deductions", $payroll_info->tax_table), "remarks" => "tax_excess=true" );
         }
-
         if( contain_str($payroll_info->deductions, "phealth_contri") ) {
             $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "phealth_contri", "title"=>"Philhealth Contribution", 
             "amount" => get_user_option($payslip->user, "philhealth_contri", "deductions", $payroll_info->tax_table), "remarks" => "tax_excess=true" );
         }
-
         if( contain_str($payroll_info->deductions, "pagibig_contri") ) {
             $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "pagibig_contri", "title"=>"Pagibig Contribution", 
             "amount" => get_user_option($payslip->user, "pagibig_contri", "deductions", $payroll_info->tax_table), "remarks" => "tax_excess=true" );
         }
-
         if( contain_str($payroll_info->deductions, "hmo_contri") ) {
             $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "hmo", "title"=>"HMO Contribution", 
             "amount" => get_user_option($payslip->user, "hmo_contri", "deductions", $payroll_info->tax_table), "remarks" => false );
         }
-
         if( contain_str($payroll_info->deductions, "others") ) {
             $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "others", "title"=>"Others", 
             "amount" => get_user_option($payslip->user, "others", "deductions", $payroll_info->tax_table), "remarks" => false );
+        }
+
+        if( contain_str($payroll_info->deductions, "sss_contri_monthly") ) {
+            $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "sss_contri", "title"=>"SSS Contribution", 
+            "amount" => get_user_option($payslip->user, "sss_contri", "deductions", "monthly"), "remarks" => "tax_excess=true" );
+        }
+        if( contain_str($payroll_info->deductions, "phealth_contri_monthly") ) {
+            $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "phealth_contri", "title"=>"Philhealth Contribution", 
+            "amount" => get_user_option($payslip->user, "philhealth_contri", "deductions", "monthly"), "remarks" => "tax_excess=true" );
+        }
+        if( contain_str($payroll_info->deductions, "pagibig_contri_monthly") ) {
+            $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "pagibig_contri", "title"=>"Pagibig Contribution", 
+            "amount" => get_user_option($payslip->user, "pagibig_contri", "deductions", "monthly"), "remarks" => "tax_excess=true" );
+        }
+        if( contain_str($payroll_info->deductions, "hmo_contri_monthly") ) {
+            $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "hmo", "title"=>"HMO Contribution", 
+            "amount" => get_user_option($payslip->user, "hmo_contri", "deductions", "monthly"), "remarks" => false );
+        }
+        if( contain_str($payroll_info->deductions, "others_monthly") ) {
+            $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "others", "title"=>"Others", 
+            "amount" => get_user_option($payslip->user, "others", "deductions", "monthly"), "remarks" => false );
         }
 
         $loans = $this->Loans_model->get_loans($payslip->user, $payroll_info->tax_table)->result();
