@@ -176,8 +176,39 @@ if (!function_exists('get_sss_contribution')) {
                 $current = 1102.5;
                 break;
 
-            case $monthly_salary >= 24750:
+            case $monthly_salary >= 24750 && $monthly_salary < 25250:
                 $current = 1125.0;
+                break;
+            case $monthly_salary >= 25250 && $monthly_salary < 25750:
+                $current = 1147.5;
+                break;
+            case $monthly_salary >= 25750 && $monthly_salary < 26250:
+                $current = 1170.0;
+                break;
+            case $monthly_salary >= 26250 && $monthly_salary < 26750:
+                $current = 1192.5;
+                break;
+            case $monthly_salary >= 26750 && $monthly_salary < 27250:
+                $current = 1215;
+                break;
+            case $monthly_salary >= 27250 && $monthly_salary < 27750:
+                $current = 1237.5;
+                break;
+            case $monthly_salary >= 27750 && $monthly_salary < 28250:
+                $current = 1260.0;
+                break;
+            case $monthly_salary >= 28250 && $monthly_salary < 28750:
+                $current = 1282.5;
+                break;
+            case $monthly_salary >= 28750 && $monthly_salary < 29250:
+                $current = 1305.0;
+                break;
+            case $monthly_salary >= 29250 && $monthly_salary < 29750:
+                $current = 1327.5;
+                break;
+
+            case $monthly_salary >= 29750:
+                $current = 1350.0;
                 break;
 
             default:
@@ -196,10 +227,10 @@ if (!function_exists('get_sss_contribution')) {
 if (!function_exists('get_phealth_contribution')) {
     function get_phealth_contribution($monthly_salary, $to_currency = true) {
         
-        $current = $monthly_salary * 0.04;
+        $current = ($monthly_salary * 0.04) / 2; //employee share only
 
         if($to_currency) {
-            return to_currency($current);
+            return to_currency($current); 
         }
             
         return $current;
@@ -209,10 +240,10 @@ if (!function_exists('get_phealth_contribution')) {
 if (!function_exists('get_pagibig_contribution')) {
     function get_pagibig_contribution($monthly_salary, $to_currency = true) {
         
-        $current = 200;
+        $current = 200 / 2; //employee share only
 
         if($to_currency) {
-            return to_currency($current);
+            return to_currency($current); 
         }
             
         return $current;
