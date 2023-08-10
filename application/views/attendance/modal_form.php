@@ -38,6 +38,16 @@
                     ?>
                 </div>
             </div>
+            <div id="overtime_display" class="col-md-5 col-sm-5">
+                <div class="form-group">
+                    <?= form_dropdown(
+                            "ot_type", 
+                            array("regular"=>"Regular", "restday"=>"Restday"), 
+                            array($model_info->sched_id?"regular":"restday"), 
+                            "class='select2' id='log_type'"
+                    ); ?>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -312,8 +322,22 @@
         $('#in_date, #in_time, #out_date, #out_time').on('change', () => {
             work_duration();
         });
+        
+        function checkLogtype(log_type) {            
+            if(log_type === 'overtime') {
+                $("#schedule_display").hide();
+                $("#overtime_display").show();
+            } else {
+                $("#overtime_display").hide();
+                $("#schedule_display").show();
+            }
+        }
+        checkLogtype('<?= $model_info->log_type?$model_info->log_type:"schedule" ?>');
+        $("#log_type").on('change', function () {
+            checkLogtype($("#log_type").val());
+        });    
 
-        $("#log_type").val('<?= $model_info->log_type?$model_info->log_type:"overtime" ?>');    
+        $("#log_type").val('<?= $model_info->log_type?$model_info->log_type:"schedule" ?>'); 
         $("#attendance-form .select2").select2();
     });
 </script>

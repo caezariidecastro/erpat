@@ -460,10 +460,19 @@ class Attendance extends MY_Controller {
         }
         $data->status_meta = "<span class='label $status_class'>" . lang($data->status) . "</span>";
 
-        $sched_url = $data->sched_id ? get_uri("hrs/schedule/modal_form/display") : get_uri("modal/notify");
-        $sched_name = $data->sched_id ? $data->schedule_name : ' - ';
-        $sched_info = $data->sched_id ? $data->schedule_info : lang("no_schedule");
-        $sched_meta = '<li role="presentation" style="list-style: none;">' . modal_anchor($sched_url, $sched_name, array("class" => "", "title" => "", "data-modal-title" => lang("schedule_detail"), "data-toggle" => "tooltip", "data-placement" => "top", "title"=>$sched_info, "data-post-id" => $data->sched_id)) . '</li>';
+        $sched_meta = '<li role="presentation" style="list-style: none;">' . modal_anchor(get_uri("hrs/schedule/modal_form/display"), $data->schedule_name, array("class" => "", "title" => "", "data-modal-title" => lang("schedule_detail"), "data-toggle" => "tooltip", "data-placement" => "top", "title"=>$data->schedule_info, "data-post-id" => $data->sched_id)) . '</li>';
+        
+        if($data->log_type == "schedule" && !$data->sched_id) {
+            $sched_meta = "Invalid";
+        }
+
+        if($data->log_type == "overtime") {
+            if($data->sched_id) {
+                $sched_meta = "Regular OT (Override)";
+            } else {
+                $sched_meta = "Restday OT (Override)";
+            }
+        }
 
         $response = array(
             get_team_member_profile_link($data->user_id, $user),
@@ -478,7 +487,7 @@ class Attendance extends MY_Controller {
             $data->out_time ? $data->out_time : 0,
             $data->out_time ? format_to_date( $data->out_time ) : "-",
             $data->out_time ? format_to_time( $data->out_time ) : "-",
-            $attd->getTotalDuration($data->out_time?null:$data->in_time),
+            $attd->getTotalDuration(),
         ));
 
         $response = array_merge($response, array(
@@ -540,7 +549,6 @@ class Attendance extends MY_Controller {
                     </span>';
             
         $response = array_merge($response, array(
-            $data->log_type==="schedule"?"Scheduled":"Overtime",
             $data->status_meta,
             $option_links
         ));

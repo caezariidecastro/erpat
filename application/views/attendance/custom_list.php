@@ -46,7 +46,6 @@
                 {title: "<?php echo lang("lates"); ?>", "class": "text-right"},
                 {title: "<?php echo lang("overbreak"); ?>", "class": "text-right"},
                 {title: "<?php echo lang("undertime"); ?>", "class": "ext-right"},
-                {title: "<?php echo lang("log_type"); ?>", class: "w5p"},
                 {title: "<?php echo lang("status"); ?>", class: "w5p"},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option"}
             ],

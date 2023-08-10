@@ -11,7 +11,6 @@
                 {title: "<?php echo lang("user"); ?>", "class": "w15p"},
                 {title: "<?php echo lang("department"); ?>", "class": "w20p"},
                 {visible: false, searchable: false},
-                {title: "<?php echo lang("log_type"); ?>", class: "w100"},
                 {title: "<?php echo lang("status"); ?>", class: "w100"},
                 {title: "<?php echo lang("in_date"); ?>", "class": "w15p", iDataSort: 1},
                 {title: "<?php echo lang("in_time"); ?>", "class": "w15p"},
