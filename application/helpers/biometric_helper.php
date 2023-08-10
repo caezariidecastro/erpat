@@ -682,7 +682,7 @@ class BioMeet {
                     }
                     
                     //Stable
-                    $nonworked = $lunch_sched + $lates + $over + $under;
+                    $nonworked = $lates + $over + $under;
                     $work_duration = get_time_overlap_seconds(
                         convert_date_utc_to_local($data->in_time), 
                         convert_date_utc_to_local($data->out_time), 
@@ -739,7 +739,7 @@ class BioMeet {
                         $lates = 0;
                         $over = 0;
                         $under = 0;
-                        $nonworked = $lunch_sched + $lates + $over + $under;
+                        $nonworked = $lates + $over + $under;
                         
                         $worked = 0;
                         $bonus = 0;
@@ -759,7 +759,7 @@ class BioMeet {
                         $schedobj["end_time"]
                     );
                     $night = num_limit( 
-                        convert_seconds_to_hour_decimal($night_diff_schedule)-$nonworked, 
+                        convert_seconds_to_hour_decimal($night_diff_schedule) - convert_seconds_to_hour_decimal($lunch_sched + $nonworked), 
                         max($worked, $overtime)
                     ); //add if may overtime overlap pre and post.
                     
