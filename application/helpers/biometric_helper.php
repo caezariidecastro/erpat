@@ -251,6 +251,7 @@ class BioMeet {
     protected $second_break = 0.25;
     protected $attendance = [];
     protected $attd_data = [];
+    protected $holiday = [];
 
     protected $break_data = null;
 
@@ -289,11 +290,7 @@ class BioMeet {
         return convert_number_to_decimal($this->sched_hours);
     }
 
-    public function getTotalDuration($in_time = null) {
-        if( isset($in_time) ) {
-            $duration = strtotime(get_current_utc_time())-strtotime($in_time);
-            return convert_seconds_to_time_format($duration);
-        }
+    public function getTotalDuration() {
         $total = 0;
         foreach($this->attd_data as $data) {
             if( is_numeric($data['duration']) ) {
@@ -403,15 +400,28 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
+    public function setHoliday( $list ) {
+        $this->holiday = $list;
+        return $this;
+    }
+
     public function getTotalSpecialHD() {
         $total = 0;
-       //TODO: Process Holiday per day
+        foreach($this->attd_data as $data) {
+            if( is_numeric($data['spc_hd']) ) {
+                $total += $data['spc_hd'];
+            }
+        }
         return convert_number_to_decimal($total);
     }
 
     public function getTotalLegalHD() {
         $total = 0;
-        //TODO: Process Holiday per day
+        foreach($this->attd_data as $data) {
+            if( is_numeric($data['reg_hd']) ) {
+                $total += $data['reg_hd'];
+            }
+        }
         return convert_number_to_decimal($total);
     }
 
@@ -585,10 +595,78 @@ class BioMeet {
         return false;
     }
 
+    private function append_zero_attd($data) {
+        $from_time = strtotime( convert_date_utc_to_local($data->in_time) );
+        if( is_date_exists($data->out_time) ) {
+            $to_time = strtotime( convert_date_utc_to_local($data->out_time) );
+        } else {
+            $to_time = strtotime( get_my_local_time() );
+        }
+        $actual_duration = num_limit($to_time-$from_time);
+
+        $this->attd_data[] = array(
+            "duration" => $actual_duration,
+            "schedule" => 0,
+            "worked" => 0,
+            "absent" => 0,
+            "overtime" => 0,
+            "reg_ot" => 0,
+            "res_ot" => 0,
+            "spc_hd" => 0,
+            "reg_hd" => 0,
+            "bonus" => 0,
+            "night" => 0,
+            "lates" => 0,
+            "over" => 0,
+            "under" => 0
+        );
+    }
+
+    private function compute_holiday_attd($data, $nonworked = 0) {
+        $regular = 0;
+        $special = 0;
+        foreach($this->holiday as $hds) {
+            if($hds->type == "regular") {
+                $duration = get_time_overlap_seconds(
+                    $hds->date_from." 00:00:00", $hds->date_to." 23:59:59",
+                    convert_date_utc_to_local($data->in_time), 
+                    convert_date_utc_to_local($data->out_time)
+                );
+                $regular += convert_seconds_to_hour_decimal($duration)-$nonworked;
+            } else if($hds->type == "special") {
+                $duration = get_time_overlap_seconds(
+                    $hds->date_from." 00:00:00", $hds->date_to." 23:59:59",
+                    convert_date_utc_to_local($data->in_time), 
+                    convert_date_utc_to_local($data->out_time)
+                );
+                $special += convert_seconds_to_hour_decimal($duration)-$nonworked;
+            }
+        }
+
+        return array(
+            "regular" => $regular,
+            "special" > $special
+        );
+    }
+
     public function calculate() {
 
         foreach($this->attendance as $data) {
-            if(is_date_exists($data->out_time)) {
+
+            if( !is_date_exists($data->out_time) ) {
+                $this->append_zero_attd($data);
+                continue;
+            }
+
+            if( is_date_exists($data->out_time) && $data->status != "pending" && $data->status != "approved") {
+                $this->append_zero_attd($data);
+                continue;
+            }
+
+            if( is_date_exists($data->out_time) ) {
+                $from_time = strtotime( convert_date_utc_to_local($data->in_time) );
+                $to_time = strtotime( convert_date_utc_to_local($data->out_time) );
+                $actual_duration = num_limit($to_time-$from_time);
 
                 $current_day = convert_date_utc_to_local($data->in_time);
                 //Override the date in and out to the previous to conpensate with the next day.
@@ -605,30 +683,8 @@ class BioMeet {
                     ));
                 }
 
-                $from_time = strtotime( convert_date_utc_to_local($data->in_time) );
-                $to_time = strtotime( convert_date_utc_to_local($data->out_time) );
-                $actual_duration = num_limit($to_time-$from_time);
-
                 //We now require schedule for attendance.
                 $schedobj = $this->getScheduleObj($data);
-
-                if( $data->status == "rejected" || $data->status == "clockout" ) {
-                    $this->attd_data[] = array(
-                        "duration" => $actual_duration,
-                        "schedule" => 0,
-                        "worked" => 0,
-                        "absent" => 0,
-                        "overtime" => 0,
-                        "reg_ot" => 0,
-                        "res_ot" => 0,
-                        "bonus" => 0,
-                        "night" => 0,
-                        "lates" => 0,
-                        "over" => 0,
-                        "under" => 0
-                    );
-                    continue;
-                } //we required schedule in order to compute for attendance.
 
                 if( $data->log_type === "overtime" ) {
                     
@@ -642,11 +698,13 @@ class BioMeet {
                         $lunch = $break;
                         $over = num_limit($break-$over_trigger);
                     }
+
+                    $holiday = $this->compute_holiday_attd($data, ($lunch+$over));
                     
                     $night_diff_secs = get_night_differential( convert_date_utc_to_local($data->in_time), convert_date_utc_to_local($data->out_time) );
-                    $night = num_limit(convert_seconds_to_hour_decimal( $night_diff_secs ) - $lunch, 8); 
+                    $night = num_limit(convert_seconds_to_hour_decimal( $night_diff_secs ) - ($lunch+$over), 8); 
 
-                    $overtime = convert_seconds_to_hour_decimal( num_limit(($to_time-$from_time)-$lunch, $actual_duration) );
+                    $overtime = convert_seconds_to_hour_decimal( num_limit(($to_time-$from_time)-($lunch+$over), $actual_duration) );
 
                     $this->attd_data[] = array(
                         "duration" => $actual_duration,
@@ -656,6 +714,8 @@ class BioMeet {
                         "overtime" => $overtime,
                         "reg_ot" => $schedobj == true ? $overtime : 0,
                         "res_ot" => $schedobj == false ? $overtime : 0,
+                        "spc_hd" => $holiday["special"],
+                        "reg_hd" => $holiday["regular"],
                         "bonus" => 0,
                         "night" => $night,
                         "lates" => 0,
@@ -753,6 +813,8 @@ class BioMeet {
                         $overtime = num_limit($total_worked - ($worked+$bonus));
                     }
 
+                    $holiday = $this->compute_holiday_attd($data, $nonworked);
+
                     //Stable
                     $night_diff_schedule = get_night_differential( //TODO
                         $schedobj["start_time"], 
@@ -771,6 +833,8 @@ class BioMeet {
                         "overtime" => $overtime,
                         "reg_ot" => $overtime,
                         "res_ot" => 0,
+                        "spc_hd" => $holiday["special"],
+                        "reg_hd" => $holiday["regular"],
                         "night" => $night,
                         "bonus" => $bonus,
                         "lates" => $lates,
@@ -778,11 +842,13 @@ class BioMeet {
                         "under" => $under
                     ); //TODO: Process overbreak for personal.
 
-                } else { 
+                } else { //Restday OT for scheduled: //date where employee dont have assigned worked sched.
 
                     //Stable
                     $overtime = convert_seconds_to_hour_decimal( num_limit($to_time-$from_time) );
-                    $overtime = $overtime-$lunch_log;      
+                    $overtime = $overtime-$lunch_log;
+                
+                    $holiday = $this->compute_holiday_attd($data, $lunch_log);
 
                     //Stable
                     $night_diff_secs = get_night_differential( //TODO
@@ -790,25 +856,26 @@ class BioMeet {
                         convert_date_utc_to_local($data->out_time)  
                     );
                     $night = num_limit( 
-                        convert_seconds_to_hour_decimal($night_diff_secs) - $nonworked, 
+                        convert_seconds_to_hour_decimal($night_diff_secs) - $lunch_log, 
                         8 //TODO: 8, Get from config.
                     ); 
 
                     $this->attd_data[] = array(
                         "duration" => $actual_duration,
-                        "schedule" => $payable,
-                        "worked" => $worked,
-                        "absent" => $nonworked,
+                        "schedule" => 0,
+                        "worked" => 0,
+                        "absent" => 0,
                         "overtime" => $overtime,
                         "reg_ot" => 0,
                         "res_ot" => $overtime,
+                        "spc_hd" => $holiday["special"],
+                        "reg_hd" => $holiday["regular"],
                         "bonus" => 0,
                         "night" => $night,
                         "lates" => 0,
                         "over" => 0,
                         "under" => 0
-                    ); //date where employee dont have assigned worked sched.
-
+                    ); 
                 }
 
             }

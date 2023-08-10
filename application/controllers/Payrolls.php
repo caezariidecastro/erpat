@@ -554,6 +554,27 @@ class Payrolls extends MY_Controller {
         echo json_encode(array("success" => true, 'message' => lang('record_saved').". Total: $total"));
     }
 
+    private function get_paid_holidays($user_id, $start_date, $end_date, $type = "regular") { //special
+        $this->load->model("Holidays_model");
+
+        $options = array(
+            "start" => $start_date,
+            "end" => $end_date,
+        );
+
+        $query = $this->Holidays_model->get_details($options);
+
+        $list = array();
+
+        if($query->num_rows() > 0) {
+            foreach($query->result() as $item) {
+                $list[] = $item;
+            }
+        }
+
+        return $list;
+    }
+
     private function get_paid_leave($user_id, $start_date, $end_date) {
         $this->load->model("Leave_applications_model");
 
@@ -587,6 +608,7 @@ class Payrolls extends MY_Controller {
         $attd = (new BioMeet($this, array(), true))
             ->setSchedHour($payroll_info->sched_hours)
             ->setAttendance($attendance)
+            ->setHoliday( $this->get_paid_holidays( $user_id, $payroll_info->start_date, $payroll_info->end_date ) )
             ->calculate();
         
         $job_info = $this->Users_model->get_job_info($user_id);
@@ -797,6 +819,7 @@ class Payrolls extends MY_Controller {
             $attd = (new BioMeet($this, array(), true))
                 ->setSchedHour($payroll_info->sched_hours)
                 ->setAttendance($attendance)
+                ->setHoliday( $this->get_paid_holidays( $user_id, $payroll_info->start_date, $payroll_info->end_date ) )
                 ->calculate();
             
             $job_info = $this->Users_model->get_job_info($user_id);

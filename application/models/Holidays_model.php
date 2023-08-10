@@ -22,7 +22,7 @@ class Holidays_model extends Crud_model {
         }
 
         if ($type) {
-            $where .= " AND $holidays_table.type=$type";
+            $where .= " AND $holidays_table.type='$type'";
         }
 
         if($start){
@@ -35,7 +35,7 @@ class Holidays_model extends Crud_model {
 
         $sql = "SELECT $holidays_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name
         FROM $holidays_table
-        LEFT JOIN users ON users.id = $holidays_table.created_by
+            LEFT JOIN users ON users.id = $holidays_table.created_by
         WHERE $holidays_table.deleted=0 $where";
         return $this->db->query($sql);
     }

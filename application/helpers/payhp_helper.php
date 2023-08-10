@@ -10,8 +10,8 @@ class PayHP {
     protected $overtime_rate = 1.25;
     protected $nightdiff_rate = 0.10;
     protected $restday_rate = 1.30;
-    protected $legalhd_rate = 2.00;
-    protected $spclhd_rate = 1.44;
+    protected $legalhd_rate = 1.00;
+    protected $spclhd_rate = 0.44;
 
     //DYNAMIC VARIABLES
     protected $hourly_rate = 0.0;
