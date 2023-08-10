@@ -415,12 +415,6 @@ class BioMeet {
         return convert_number_to_decimal($total);
     }
 
-    public function getTotalPto() {
-        $total = 0;
-        //TODO: Process Holiday per day
-        return convert_number_to_decimal($total);
-    }
-
     protected function get_lunch_nightdiff_overlap($btime) {
         $break_lunch_start = isset($btime[2])?strtotime($btime[2]):null;
         $break_lunch_end = isset($btime[3])?strtotime($btime[3]):null;

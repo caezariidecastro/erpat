@@ -554,6 +554,27 @@ class Payrolls extends MY_Controller {
         echo json_encode(array("success" => true, 'message' => lang('record_saved').". Total: $total"));
     }
 
+    private function get_paid_leave($user_id, $start_date, $end_date) {
+        $this->load->model("Leave_applications_model");
+
+        $options = array(
+            "access_type" => "all",
+            "applicant_id" => $user_id,
+            "status" => "approved",
+            "leave_type_paid_filter" => true,
+            "start_date" => $start_date,
+            "end_date" => $end_date,
+        );
+        $result = $this->Leave_applications_model->get_list($options)->result();
+
+        $total_days = 0;
+        foreach($result as $item) {
+            $total_days += $item->total_days;
+        }
+
+        return convert_number_to_decimal($total_days);
+    }
+
     protected function generate_payslip($payroll_info, $user_id = 0) {
         $attendance = $this->Attendance_model->get_details(array(
             "user_id" => $user_id,
@@ -705,7 +726,7 @@ class Payrolls extends MY_Controller {
             "worked" => $attd->getTotalWork(), //work
             "absent" => $attd->getTotalAbsent(), //absent
             "bonus" => $attd->getTotalBonus(), //bonus
-            "pto" => $attd->getTotalPto(), //pto
+            "pto" => $this->get_paid_leave($user_id, $payroll_info->start_date, $payroll_info->end_date), //pto
 
             "reg_ot" => $attd->getTotalRegularOvertime(), //Regular OT
             "rest_ot" => $attd->getTotalRestdayOvertime(), //Restday OT
@@ -794,7 +815,7 @@ class Payrolls extends MY_Controller {
                 "worked" => $attd->getTotalWork(), //work
                 "absent" => $attd->getTotalAbsent(), //absent
                 "bonus" => $attd->getTotalBonus(), //bonus
-                "pto" => $attd->getTotalPto(), //pto
+                "pto" => $this->get_paid_leave($user_id, $payroll_info->start_date, $payroll_info->end_date), //pto
     
                 "reg_ot" => $attd->getTotalRegularOvertime(), //Regular OT
                 "rest_ot" => $attd->getTotalRestdayOvertime(), //Restday OT
