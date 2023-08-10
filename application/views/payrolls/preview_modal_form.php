@@ -41,6 +41,11 @@
                 "prefix" => "(".convert_number_to_decimal($summary['nightdiff_hour'])." hrs)"
             ),
             array(
+                "name" => "Paid Time Off",
+                "value" => $summary['pto_pay'],
+                "prefix" => "(".convert_number_to_decimal($summary['pto_hour'])." hrs)"
+            ),
+            array(
                 "name" => "Bonus Pay",
                 "value" => $summary['bonus_pay'],
                 "prefix" => "(".convert_number_to_decimal($summary['bonus_hour'])." hrs)"
@@ -123,6 +128,10 @@
 
     .body-color {
         background-color: #edf5fa;
+    }
+
+    .modal-md {
+        width: 720px;
     }
 </style>
 
@@ -316,3 +325,9 @@
 <?php if ($payroll_info->note) { ?>
     <div style="border-top: 2px solid #f2f2f2; color:#444; padding:0 0 20px 0;"><br /><?php echo nl2br($payroll_info->note); ?></div>
 <?php }?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".modal-dialog").addClass("modal-md");
+    });
+</script>

@@ -1107,9 +1107,6 @@ class Payrolls extends MY_Controller {
 
             ->setOvertime('regular', $data->reg_ot)
             ->setOvertime('restday', $data->rest_ot)
-            // TODO: Generate holiday
-            // ->setHoliday('legalhd', $data->legal_ot)
-            // ->setHoliday('specialhd', $data->spcl_ot)
 
             ->setNightdiff($data->reg_nd)
 

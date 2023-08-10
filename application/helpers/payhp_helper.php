@@ -261,6 +261,7 @@ class PayHP {
             "overtime_hour" => $this->regular_ot+$this->restday_ot,
             "bonus_hour" => $this->bonus_hour,
             "holiday_hour" => $this->special_hd+$this->legal_hd,
+            "pto_hour" => $this->pto_hour,
 
             "regular_ot" => $this->regOverPay(),
             "restday_ot" => $this->resOverPay(),
@@ -292,7 +293,7 @@ class PayHP {
     function basicPay() {
 
         if($this->calculation == 'hourly_based') {
-            $regular = ($this->worked_hour+$this->pto_hour) * $this->hourly_rate;
+            $regular = $this->worked_hour * $this->hourly_rate;
         } else { //scheduled_based
             if($this->term == 'daily') {
                 $regular = floatval($this->hourly_rate) * 8;
@@ -387,7 +388,7 @@ class PayHP {
 
         //scheduled_based
         $sched_unwork = $this->sched_hour - $this->worked_hour;
-        return num_limit($sched_unwork-$this->pto_hour);
+        return num_limit($sched_unwork);
     }
     
     /**
@@ -430,7 +431,7 @@ class PayHP {
     }
 
     function paidHours() {
-        return $this->basicPay() + $this->overtimePay() + $this->nightdiffPay() + $this->holidayPay();
+        return $this->basicPay() + $this->overtimePay() + $this->nightdiffPay() + $this->holidayPay() + $this->ptoPay();
     }
 
     /**
