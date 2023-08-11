@@ -716,7 +716,7 @@ class Payrolls extends MY_Controller {
         foreach($loans as $item) {
             if( contain_str($payroll_info->deductions, "loan:".$item->cat_id) ) {
                 $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "custom_loan_".$item->id, "title"=>$item->category_name, 
-                    "amount" => $item->min_payment, "remarks" => "loan_term=( ".$item->months_paid."/".$item->months_topay." )" );
+                    "amount" => $item->min_payment, "remarks" => "loan_term=( ".(intval($item->months_paid)+1)."/".$item->months_topay." )" );
             }
         }
 
