@@ -344,7 +344,7 @@
         </div>
     </div>
     <div class="row mt15" style="text-align: center;">
-        <button type="button" class="calculate btn btn-info mr15" disabled><span class="fa fa-calculator"></span> <?php echo lang('calculate'); ?></button>
+        <button id="compute" type="button" class="calculate btn btn-warning mr15"><span class="fa fa-calculator"></span> <?php echo lang('recalculate'); ?></button>
         <button id="overwrite" type="button" class="save_data btn btn-danger"><span class="fa fa-check-circle"></span> <?php echo lang('overwrite'); ?></button>
     </div>
 </div>
@@ -365,15 +365,60 @@
         }
 
         $('.calculate').on('click', function() {
-            
+            appLoader.show();
             var jsonData = getFormData( $("#payslip-form") );
+                jsonData.action = 'recalculate';
+
             $.ajax({
                 url: "<?php echo get_uri("payrolls/override_calculate/".$payslip_id); ?>",
                 data: jsonData,
                 method: "POST",
                 dataType: "json",
                 success: function (result) {
+                    $('#schedule').val(result.data.schedule);
+                    $('#worked').val(result.data.worked);
+                    $('#absent').val(result.data.absent);
+                    $('#bonus').val(result.data.bonus);
+
+                    $('#regular_ot').val(result.data.reg_ot);
+                    $('#restday_ot').val(result.data.rest_ot);
+                    $('#pto').val(result.data.pto);
+                    $('#leave_credit').val(result.data.leave);
+
+                    $('#legal_hd').val(result.data.reg_hd);
+                    $('#special_hd').val(result.data.spc_hd);
+                    $('#regular_nd').val(result.data.night);
+
+                    $('#basic_pay').val(result.data.basic_pay);
+                    $('#hourly_rate').val(result.data.hourly_rate);
+
+                    //TODO: Update the value
+                    // $('#not_set').val(result.data.allowances);
+                    // $('#not_set').val(result.data.incentives);
+                    // $('#not_set').val(result.data.bonuses);
+
+                    // $('#not_set').val(result.data.sss);
+                    // $('#not_set').val(result.data.pagibig);
+                    // $('#not_set').val(result.data.phealth);
+                    // $('#not_set').val(result.data.hmo);
+
+                    $('#gross_pay').val(result.data.gross_pay);
+                    $('#holidayPay').val(result.data.holiday_pay);
+                    $('#net_pay').val(result.data.net_pay);
+
+                    $('#net_taxable').val(result.data.net_taxable);
+                    $('#nightdiffPay').val(result.data.nightdiff_pay);
+                    $('#overtimePay').val(result.data.overtime_pay);
+
+                    $('#pto_pay').val(result.data.pto_pay);
+                    $('#taxDue').val(result.data.tax_due);
+                    $('#unwork_deductions').val(result.data.unwork_deductions);
+
+                    $('#bonusPay').val(result.data.bonus_pay);
+
                     appLoader.hide();
+                    appAlert.success(result.message, {duration: 2000});
+                    $('#payslip-table').dataTable()._fnAjaxUpdate();
                 }
             });
         });
@@ -381,7 +426,7 @@
         $('.save_data').on('click', function() {
             appLoader.show();
             var jsonData = getFormData( $("#payslip-form") );
-                jsonData.action = 'save';
+                jsonData.action = 'overwrite';
 
             $.ajax({
                 url: "<?php echo get_uri("payrolls/override_calculate/".$payslip_id); ?>",

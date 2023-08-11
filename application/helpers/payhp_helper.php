@@ -250,6 +250,7 @@ class PayHP {
                 "Hourly Rate":"Monthly Salary",
             "monthly_salary" => $this->calculation=="hourly_based"?
                 to_currency($this->hourly_rate):to_currency($this->monthly_salary()),
+            "hourly_rate" => $this->hourly_rate,
             "basic_pay" => $this->basicPay(),
             "unwork_deduction" => $this->unworkedDeductions(),
 

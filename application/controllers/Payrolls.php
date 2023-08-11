@@ -1382,7 +1382,7 @@ class Payrolls extends MY_Controller {
         $action = $this->input->post('action');
 
         //TODO: Save here and calculate
-        if($action === "save") {
+        if($action === "overwrite") {
             $payslip_data = array(
                 "pto" => $this->input->post('pto'),
 
@@ -1464,6 +1464,19 @@ class Payrolls extends MY_Controller {
                     "amount" => $this->input->post('deduct_other')
                 ), "deductions", "");
             };
+        } else if($action === "recalculate") {
+            $payslip_detail = $this->Payslips_model->get_details(array(
+                "id" => $payslip_id,
+                "status" => "draft"
+            ))->row(); 
+
+            //Get payroll instance
+            $payroll_info = $this->Payrolls_model->get_details(array(
+                "id" => $payslip_detail->payroll
+            ))->row();
+
+            $payslip = $this->generate_payslip($payroll_info, $payslip_detail->user);
+            $this->Payslips_model->update_where( $payslip, array("id"=>$payslip_detail->id) );
         }
 
         $data = $this->Payslips_model->get_details(array(
@@ -1477,6 +1490,33 @@ class Payrolls extends MY_Controller {
         $summary = $this->processPayHP( $data, $payroll->tax_table )->calculate();
 
         $view_data = array(
+            "schedule" => $data->schedule,
+            "worked" => $data->worked,
+            "absent" => $data->absent,
+            "bonus" => $data->bonus,
+
+            "reg_ot" => $data->reg_ot,
+            "rest_ot" => $data->rest_ot,
+            "pto" => $data->pto,
+            "leave" => $data->leave_credit,
+
+            "reg_hd" => $data->legal_hd,
+            "spc_hd" => $data->special_hd,
+            "night" => $data->reg_nd,
+
+            "basic_pay" => $data->basic_pay,
+            "hourly_rate" => $data->hourly_rate,
+
+            //TODO: Get the value
+            // "allowances" => $data->not_set,
+            // "incentives" => $data->not_set,
+            // "bonuses" => $data->not_set,
+
+            // "sss" => $data->not_set,
+            // "pagibig" => $data->not_set,
+            // "phealth" => $data->not_set,
+            // "hmo" => $data->not_set,
+
             "overtime_pay" => to_currency($summary['overtime_pay']),
             "holiday_pay" => to_currency($summary['holiday_pay']),
             "nightdiff_pay" => to_currency($summary['nightdiff_pay']),
