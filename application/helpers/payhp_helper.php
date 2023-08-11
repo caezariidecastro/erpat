@@ -161,7 +161,8 @@ class PayHP {
         $this->deductions[] = array(
             "title" => $title,
             "amount" => is_numeric($amount)?$amount:0,
-            "tax_excess" => $tax_excess
+            "tax_excess" => $tax_excess,
+            "prefix" => $remark,
         );
         return $this;
     }

@@ -90,10 +90,11 @@
         );
     }
 
-    foreach($summary['deductions'] as $earn) {
+    foreach($summary['deductions'] as $deduct) {
         $payslip['deductions'][] = array(
-            "name" => $earn['title'],
-            "value" => $earn['amount']
+            "name" => $deduct['title'],
+            "value" => $deduct['amount'],
+            "prefix" => $deduct['prefix']
         );
     }
 

@@ -716,7 +716,7 @@ class Payrolls extends MY_Controller {
         foreach($loans as $item) {
             if( contain_str($payroll_info->deductions, "loan:".$item->cat_id) ) {
                 $deductions[] = array( "payslip_id" => $payslip_id, "item_key" => "custom_loan_".$item->id, "title"=>$item->category_name, 
-                    "amount" => $item->min_payment, "remarks" => $item->remarks );
+                    "amount" => $item->min_payment, "remarks" => "loan_term=( ".$item->months_paid."/".$item->months_topay." )" );
             }
         }
 
@@ -1121,7 +1121,10 @@ class Payrolls extends MY_Controller {
         
         if( is_array($data->deductions) ) {
             foreach($data->deductions as $deduct) {
-                $instance = $instance->addDeductions($deduct->title, $deduct->amount, $deduct->remarks=="tax_excess=true"?true:false);
+                if( contain_str($deduct->remarks, "loan_term=") ) {
+                    $remarks = str_replace("loan_term=", "", $deduct->remarks);
+                }
+                $instance = $instance->addDeductions($deduct->title, $deduct->amount, $deduct->remarks=="tax_excess=true"?true:false, $remarks);
             }
         }
 
