@@ -130,10 +130,6 @@
     .body-color {
         background-color: #edf5fa;
     }
-
-    .modal-md {
-        width: 720px;
-    }
 </style>
 
 <div class="background-color" style="border: 2px solid grey; padding: 20px;">
@@ -329,6 +325,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $(".modal-dialog").removeClass("modal-xxl");
+        $(".modal-dialog").removeClass("modal-xl");
+        $(".modal-dialog").removeClass("modal-lg");
         $(".modal-dialog").addClass("modal-md");
     });
 </script>

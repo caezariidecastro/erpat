@@ -1,1 +1,17 @@
 /*Write your custom css in this file.*/
+
+.modal-md {
+    width: 720px;
+}
+
+.modal-lg {
+    width: 840px;
+}
+
+.modal-xl {
+    width: 1080px;
+}
+
+.modal-xxl {
+    width: 95%;
+}

@@ -491,6 +491,9 @@
             $("[data-target=#tab-biometric-logs]").trigger("click");
         }, 210);
 
+        $(".modal-dialog").removeClass("modal-xxl");
+        $(".modal-dialog").removeClass("modal-xl");
+        $(".modal-dialog").removeClass("modal-md");
         $(".modal-dialog").addClass("modal-lg");
     });
 </script>

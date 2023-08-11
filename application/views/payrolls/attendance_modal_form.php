@@ -16,7 +16,7 @@
             },
             radioButtons: [
                 {text: '<?php echo lang("approved") ?>', name: "status", value: "approved", isChecked: true}, 
-                {text: '<?php echo lang("pending") ?>', name: "status", value: "", isChecked: false}, 
+                {text: '<?php echo lang("pending") ?>', name: "status", value: "pending", isChecked: false}, 
             ],
             columns: [
                 {title: "<?php echo lang("employee"); ?>", "class": "w10p"},
@@ -56,6 +56,9 @@
             tableRefreshButton: true,
         });
 
-        $(".modal-dialog").addClass("modal-lg");
+        $(".modal-dialog").removeClass("modal-md");
+        $(".modal-dialog").removeClass("modal-xl");
+        $(".modal-dialog").removeClass("modal-lg");
+        $(".modal-dialog").addClass("modal-xxl");
     });
 </script>    
