@@ -37,6 +37,8 @@
                     $clock_out['disabled'] = true;
                 }
                 echo modal_anchor(get_uri("hrs/attendance/note_modal_form"), "<i class='fa fa-sign-out'></i> " . lang('exit'), $clock_out );
+
+                echo isset($message) ? "<div class='text-danger' style='padding-top: 5px;' >" . $message . "</div>" : "";
             } else {
                 echo "<div class='mb15'>" . lang('you_are_currently_clocked_out') . "</div>";
                 echo ajax_anchor(get_uri("hrs/attendance/log_time"), "<i class='fa fa-sign-in'></i> " . lang('clock_in'), array("class" => "btn btn-default no-border", "title" => lang('clock_in'), "data-inline-loader" => "1", "data-closest-target" => "#js-clock-in-out"));

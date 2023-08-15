@@ -1198,3 +1198,5 @@ $lang["payroll_reply_to"] = "Payroll Reply-To";
 $lang["disable_hourly_leave"] = "Disable Hourly Leave";
 
 $lang["payslip_generated_payment"] = "Payslip generated payment from Payroll: ";
+
+$lang["all_breaktime_consumed"] = "All breaktime consumed!";

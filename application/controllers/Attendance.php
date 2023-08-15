@@ -254,14 +254,17 @@ class Attendance extends MY_Controller {
             //check if the login user has permission to clock in/out this user
         }
 
-        $this->Attendance_model->log_break($user_id ? $user_id : $this->login_user->id);
+        $success = $this->Attendance_model->log_break($user_id ? $user_id : $this->login_user->id);
 
         if ($user_id) {
             echo json_encode(array("success" => true, "data" => $this->_clock_in_out_row_data($user_id), 'id' => $user_id, 'message' => lang('record_saved'), "isUpdate" => true));
         } else if ($this->input->post("clock_out")) {
             echo json_encode(array("success" => true, "clock_widget" => clock_widget(true)));
         } else {
-            clock_widget();
+            if(!$success) {
+                $break_error = lang("all_breaktime_consumed");
+            }
+            clock_widget(false, $break_error);
         }
     }
 

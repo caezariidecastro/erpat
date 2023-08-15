@@ -7,7 +7,7 @@
  */
 if (!function_exists('clock_widget')) {
 
-    function clock_widget($return_as_data = false) {
+    function clock_widget($return_as_data = false, $message = "") {
         $ci = get_instance();
         $ci->load->model("Attendance_model");
         $clock_status = $ci->Attendance_model->current_clock_in_record($ci->login_user->id); 
@@ -23,6 +23,7 @@ if (!function_exists('clock_widget')) {
                 $break_time = format_to_time( $break_time );
             }
         }
+        $view_data["message"] = $message;
         $view_data["break_time"] = $break_time;
         $view_data["on_break"] = $on_break;
         $view_data["clock_status"] = $clock_status;
