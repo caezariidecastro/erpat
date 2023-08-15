@@ -236,21 +236,25 @@ class Attendance_model extends Crud_model {
     function log_break($user_id) {
 
         $current_clock_record = $this->current_clock_in_record($user_id);
-        $sched_id = $this->Schedule_model->getUserSchedId($user_id);
-
         $now = get_current_utc_time();
 
         if ($current_clock_record && $current_clock_record->id) {
             $breaks = isset($current_clock_record->break_time)?unserialize($current_clock_record->break_time):[];
-            if( count($breaks) >= 6) {
-                return false;
+
+            $logs = array();
+            foreach($breaks as $item) {
+                if( is_date_exists($item) ) {
+                    $logs[] = $item;
+                }
             }
 
-            $breaks[] = $now;
-            $data = array(
-                "break_time" => serialize($breaks)
-            );
-            return $this->save($data, $current_clock_record->id);          
+            if( count( $logs ) < 6) {
+                $logs[] = $now;
+                $data = array(
+                    "break_time" => serialize($logs)
+                );
+                return $this->save($data, $current_clock_record->id);   
+            }      
         }
 
         return false;
