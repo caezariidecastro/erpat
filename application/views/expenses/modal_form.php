@@ -3,7 +3,7 @@
     <div class="modal-body clearfix">
         <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
         <div class=" form-group">
-            <label for="expense_date" class=" col-md-3"><?php echo lang('date_of_expense'); ?></label>
+            <label for="expense_date" class=" col-md-3"><?php echo lang('bill_date'); ?></label>
             <div class="col-md-9">
                 <?php
                 echo form_input(array(
@@ -13,6 +13,25 @@
                     "class" => "form-control recurring_element",
                     "data-rule-required" => true,
                     "data-msg-required" => lang("field_required"),
+                ));
+                ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="due_date" class=" col-md-3"><?php echo lang('due_date'); ?></label>
+            <div class="col-md-9">
+                <?php
+                echo form_input(array(
+                    "id" => "due_date",
+                    "name" => "due_date",
+                    "value" => $model_info->due_date,
+                    "class" => "form-control",
+                    "placeholder" => lang('due_date'),
+                    "autocomplete" => "off",
+                    "data-rule-required" => true,
+                    "data-msg-required" => lang("field_required"),
+                    "data-rule-greaterThanOrEqual" => "#expense_date",
+                    "data-msg-greaterThanOrEqual" => lang("end_date_must_be_equal_or_greater_than_start_date")
                 ));
                 ?>
             </div>
@@ -271,6 +290,7 @@
         });
 
         setDatePicker("#expense_date");
+        setDatePicker("#due_date");
 
         $("#expense-form .select2").select2();
         

@@ -5,57 +5,284 @@ class Attendance_model extends Crud_model {
     private $table = null;
 
     function __construct() {
+        $this->load->model("Schedule_model");
         $this->table = 'attendance';
         parent::__construct($this->table);
+    }
+
+    protected function get_attendance_for_clockout() {
+        $now = get_current_utc_time();
+
+        // Auto clouckout greater than number of clocked hours.
+        $trigger = floatval(get_setting('autoclockout_trigger_hour', 12.00));
+
+        //List of user to exclude.
+        $whitelisted = get_setting('whitelisted_autoclockout');
+
+        $sql = "SELECT * FROM attendance WHERE out_time IS NULL AND deleted=0 
+            AND TIME_TO_SEC(TIMEDIFF('$now', in_time)) / 3600 > $trigger";
+        if( !empty($whitelisted) ) {
+            $sql .= " AND user_id NOT IN (".$whitelisted.")";
+        }
+        return $this->db->query($sql);
+    }
+
+    function auto_clockout() {
+        if($query = $this->get_attendance_for_clockout()) {
+            $attds = $query->result();
+            
+            foreach($attds as $item) {
+                $cur_id = $item->id;
+
+                //Find the last tap in.
+                $clockout = $item->in_time;
+                $breaktimes = isset($item->break_time)?unserialize($item->break_time):[];
+                for($i=0; $i<count($breaktimes); $i++) {
+                    if( isset($breaktimes[$i]) ) {
+                        $clockout = $breaktimes[$i];
+                    }
+                }
+
+                $sql = "UPDATE attendance SET out_time='$clockout', status='clockout', note='System Clockout' WHERE id=$cur_id";
+                $this->db->query($sql);
+            }
+        }
+
+        // AUTOCLOCKIN MECHANISM.
+        $autoclockout_list = get_setting("auto_clockin_employee");
+
+        //get list of user in autoclocked out.
+        $lists = explode(",",  $autoclockout_list);
+
+        //loop and clock in who has 1m > greated thant schedule
+        foreach($lists as $user_id) {
+            $this->clock_out_by_schedule($user_id);
+        }
+    }
+
+    function auto_clocked_in() {
+        //get list of user in autoclocked in.
+        $autoclockin_list = get_setting("auto_clockin_employee");
+        $lists = explode(",",  $autoclockin_list);
+
+        //loop and clock in who has 1m > greated thant schedule
+        foreach($lists as $user_id) {
+            // check if user have attendance today. will not work if detected in out greater than 1 sec.
+
+            if( !$this->current_clock_in_record($user_id) && $this->get_today_clocked_duration($user_id) == 0  ) {
+                $this->clock_in_by_schedule($user_id);
+            }
+        }
+    }
+
+    protected function clock_in_by_schedule($user_id) {
+        // get the current sched id.
+        if(!$sched_id = $this->Schedule_model->getUserSchedId($user_id)) {
+            return;
+        }
+
+        // get the local time and day name.
+        $current_local_time = get_my_local_time();
+        $day_name = convert_date_format($current_local_time, 'D');
+        $sched_date_in = convert_date_format($current_local_time, 'Y-m-d');
+
+        // get the current user schedule by id.
+        $cur_sched = $this->Schedule_model->get_details(array(
+            "id" => $sched_id,
+            "deleted" => true
+        ))->row();
+        
+        //check if there is a schedule for today. get the schedule day name object.
+        if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
+            $sched_time = convert_time_to_24hours_format( $today_sched['in'] ); //local
+            $scheduled_clocked_in = $sched_date_in .' '. $sched_time; //local
+            $scheduled_clocked_in = convert_date_local_to_utc($scheduled_clocked_in); //utc
+
+            $count_start = strtotime($scheduled_clocked_in);
+            $count_end = strtotime(get_current_utc_time());
+
+            //check if user is clocked in.
+            if( max(($count_end-$count_start), 0) > 0 ) { 
+                $data = array(
+                    "sched_id" => $sched_id,
+                    "in_time" => $scheduled_clocked_in,
+                    "status" => "pending",
+                    "user_id" => $user_id
+                );
+
+                $this->save($data);
+            }
+        }
+    }
+
+    protected function clock_out_by_schedule($user_id) {
+        $attendance = $this->current_clock_in_record($user_id);
+        if(!isset($attendance->id)) {
+            return;
+        }
+        
+        // get the local time and day name.
+        $current_local_time = get_my_local_time();
+        $day_name = convert_date_format($current_local_time, 'D');
+        $sched_date_out = convert_date_format($current_local_time, 'Y-m-d');
+
+        // get the current sched id.
+        $sched_id = $attendance->sched_id;
+
+        // get the current user schedule by id.
+        $cur_sched = $this->Schedule_model->get_details(array(
+            "id" => $sched_id,
+            "deleted" => true
+        ))->row();
+        
+        //check if there is a schedule for today. get the schedule day name object.
+        if( isset( $cur_sched->{strtolower($day_name)} ) && $today_sched = unserialize($cur_sched->{strtolower($day_name)}) ) {
+            $sched_time = convert_time_to_24hours_format( $today_sched['out'] ); //local
+            $scheduled_clocked_out = $sched_date_out .' '. $sched_time; //local
+
+            //Actual time attendance.
+            $in_time = convert_date_utc_to_local($attendance->in_time);
+
+            //Add 1 day if in_time is PM and Current is AM
+            $from_time = convert_date_format($in_time, 'a');
+            $to_time = convert_date_format($scheduled_clocked_out, 'a');
+            if($from_time == "pm" && $to_time == "am") {
+                $in_date = convert_date_format($in_time, 'Y-m-d');
+                $sched_date_out = add_period_to_date($in_date, 1); //add one day
+                $scheduled_clocked_out = $sched_date_out .' '. $sched_time; //local
+            }
+
+            $count_start = strtotime($scheduled_clocked_out);
+            $count_end = strtotime($current_local_time);
+            $time_diff_sec = max(($count_end-$count_start), 0);
+
+            if($time_diff_sec > 0) { 
+                $data = array(
+                    "out_time" => convert_date_local_to_utc($scheduled_clocked_out),
+                    "status" => "pending",
+                );
+                $this->save($data, $attendance->id);
+            }
+        }
     }
 
     function current_clock_in_record($user_id) {
         $attendnace_table = $this->db->dbprefix('attendance');
         $sql = "SELECT $attendnace_table.*
         FROM $attendnace_table
-        WHERE $attendnace_table.deleted=0 AND $attendnace_table.user_id=$user_id AND $attendnace_table.status='incomplete'";
+        WHERE $attendnace_table.deleted=0 AND $attendnace_table.user_id=$user_id AND $attendnace_table.out_time IS NULL";
         $result = $this->db->query($sql);
-        if ($result->num_rows()) {
+        if($result->num_rows()) {
             return $result->row();
         } else {
             return false;
         }
     }
 
-    function log_time($user_id, $note = "") {
+    function get_today_clocked_duration($user_id) {
+        $attendnace_table = $this->db->dbprefix('attendance');
+        $now_utc = get_current_utc_time();
+        $date_utc = get_current_utc_time('Y-m-d');
+        $sql = "SELECT TIME_TO_SEC(
+                IF($attendnace_table.out_time, 
+                    TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time),
+                    TIMEDIFF('$now_utc',$attendnace_table.in_time)
+                )
+            ) total_sec
+        FROM $attendnace_table 
+        WHERE $attendnace_table.deleted=0 
+            AND $attendnace_table.user_id=$user_id
+            AND DATE($attendnace_table.in_time) = '$date_utc'";
+        $result = $this->db->query($sql);
+
+        if ($result->num_rows()) {
+            return $result->row()->total_sec;
+        } else {
+            return 0;
+        }
+    }
+
+    function log_time($user_id, $note = "", $returning = false) {
 
         $current_clock_record = $this->current_clock_in_record($user_id);
+        $sched_id = $this->Schedule_model->getUserSchedId($user_id);
 
         $now = get_current_utc_time();
+        $data = array();
 
         if ($current_clock_record && $current_clock_record->id) {
             $data = array(
                 "out_time" => $now,
                 "status" => "pending",
                 "note" => $note
-            );
-            return $this->save($data, $current_clock_record->id);
+            );            
         } else {
             $data = array(
+                "sched_id" => $sched_id,
                 "in_time" => $now,
                 "status" => "incomplete",
                 "user_id" => $user_id
             );
-            return $this->save($data);
         }
+
+        if($returning) {
+            $this->save($data, $current_clock_record->id);
+            return is_object($current_clock_record);
+        } else {
+            return $this->save($data, $current_clock_record->id);
+        }
+    }
+
+    function log_break($user_id) {
+
+        $current_clock_record = $this->current_clock_in_record($user_id);
+        $now = get_current_utc_time();
+
+        if ($current_clock_record && $current_clock_record->id) {
+            $breaks = isset($current_clock_record->break_time)?unserialize($current_clock_record->break_time):[];
+
+            $logs = array();
+            foreach($breaks as $item) {
+                if( is_date_exists($item) ) {
+                    $logs[] = $item;
+                }
+            }
+
+            if( count( $logs ) < 6) {
+                $logs[] = $now;
+                $data = array(
+                    "break_time" => serialize($logs)
+                );
+                return $this->save($data, $current_clock_record->id);   
+            }      
+        }
+
+        return false;
     }
 
     function get_details($options = array()) {
         $attendnace_table = $this->db->dbprefix('attendance');
         $users_table = $this->db->dbprefix('users');
+        $schedule_table = $this->db->dbprefix('schedule');
+        $team_table = $this->db->dbprefix('team');
 
         $where = "";
         $id = get_array_value($options, "id");
         if ($id) {
             $where .= " AND $attendnace_table.id=$id";
         }
-        $offset = convert_seconds_to_time_format(get_timezone_offset());
 
+        $log_type = get_array_value($options, "log_type");
+        if ($log_type) {
+            $where .= " AND $attendnace_table.log_type='$log_type' ";
+        }
+
+        $status = get_array_value($options, "status");
+        if ($status) {
+            $where .= " AND $attendnace_table.status='$status' ";
+        }
+
+        $offset = convert_seconds_to_time_format(get_timezone_offset());
         $start_date = get_array_value($options, "start_date");
         if ($start_date) {
             $where .= " AND DATE(ADDTIME($attendnace_table.in_time,'$offset'))>='$start_date'";
@@ -68,6 +295,16 @@ class Attendance_model extends Crud_model {
         $user_id = get_array_value($options, "user_id");
         if ($user_id) {
             $where .= " AND $attendnace_table.user_id=$user_id";
+        }
+
+        $department_id = get_array_value($options, "department_id");
+        if ($department_id) {
+            $where .= " AND $team_table.id=$department_id";
+        }
+
+        $active_only = get_array_value($options, "active_only");
+        if ($active_only) {
+            $where .= " AND $users_table.status='active'";
         }
 
         $access_type = get_array_value($options, "access_type");
@@ -89,15 +326,38 @@ class Attendance_model extends Crud_model {
 
         $only_clocked_in_members = get_array_value($options, "only_clocked_in_members");
         if ($only_clocked_in_members) {
-            $where .= " AND $attendnace_table.status = 'incomplete'";
+            $where .= " AND $attendnace_table.out_time IS NULL";
         }
 
-        $sql = "SELECT $attendnace_table.*,  CONCAT($users_table.first_name, ' ',$users_table.last_name) AS created_by_user, $users_table.image as created_by_avatar, $users_table.id as user_id, $users_table.job_title as user_job_title
+        $teams_lists = ", (SELECT GROUP_CONCAT($team_table.title) FROM $team_table WHERE deleted='0' AND (FIND_IN_SET($attendnace_table.user_id, $team_table.heads) OR FIND_IN_SET($attendnace_table.user_id, $team_table.members)) ) as team_list";
+
+        $created_by_user = "CONCAT($users_table.first_name, ' ',$users_table.last_name) AS created_by_user";
+        if(get_setting('name_format') == "lastfirst") {
+            $created_by_user = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS created_by_user";
+        }
+
+        $sql = "SELECT DISTINCT $attendnace_table.id, $attendnace_table.*, $created_by_user, $schedule_table.title as schedule_name, $schedule_table.desc as schedule_info, $users_table.image as created_by_avatar, $users_table.id as user_id, $users_table.job_title as user_job_title $teams_lists 
         FROM $attendnace_table
         LEFT JOIN $users_table ON $users_table.id = $attendnace_table.user_id
+        LEFT JOIN $schedule_table ON $schedule_table.id = $attendnace_table.sched_id
+        LEFT JOIN $team_table ON $team_table.deleted='0' AND (FIND_IN_SET($attendnace_table.user_id, $team_table.heads) OR FIND_IN_SET($attendnace_table.user_id, $team_table.members))
         WHERE $attendnace_table.deleted=0 $where
         ORDER BY $attendnace_table.in_time DESC";
         return $this->db->query($sql);
+    }
+
+    function get_details_info($id = 0) {
+        $attendance = $this->db->dbprefix('attendance');
+        $users_table = $this->db->dbprefix('users');
+
+        $sql = "SELECT $attendance.*, 
+                CONCAT(applicant_table.first_name, ' ',applicant_table.last_name) AS applicant_name, applicant_table.image as applicant_avatar, applicant_table.job_title,
+                CONCAT(checker_table.first_name, ' ',checker_table.last_name) AS checker_name, checker_table.image as checker_avatar
+            FROM $attendance
+            LEFT JOIN $users_table AS applicant_table ON applicant_table.id= $attendance.user_id
+            LEFT JOIN $users_table AS checker_table ON checker_table.id= $attendance.checked_by
+            WHERE $attendance.deleted=0 AND $attendance.id=$id";
+        return $this->db->query($sql)->row();
     }
 
     function get_summary_details($options = array()) {
@@ -171,7 +431,7 @@ class Attendance_model extends Crud_model {
 
         $clocked_in = "SELECT $attendnace_table.user_id
         FROM $attendnace_table
-        WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='incomplete'
+        WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NULL
         GROUP BY $attendnace_table.user_id";
         $clocked_in_result = $this->db->query($clocked_in);
 
@@ -211,7 +471,7 @@ class Attendance_model extends Crud_model {
 
         $sql = "SELECT DATE_FORMAT($attendnace_table.in_time,'%d') AS day, SUM(TIME_TO_SEC(TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time))) total_sec
                 FROM $attendnace_table 
-                WHERE $attendnace_table.deleted=0 AND $attendnace_table.status!='incomplete' $where
+                WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NOT NULL $where
                 GROUP BY DATE($attendnace_table.in_time)";
         return $this->db->query($sql);
     }
@@ -244,7 +504,7 @@ class Attendance_model extends Crud_model {
 
         $attendance_sql = "SELECT  SUM(TIME_TO_SEC(TIMEDIFF($attendnace_table.out_time,$attendnace_table.in_time))) total_sec
                 FROM $attendnace_table 
-                WHERE $attendnace_table.deleted=0 AND $attendnace_table.status!='incomplete' $attendance_where";
+                WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NOT NULL $attendance_where";
         $info->timecard_total = $this->db->query($attendance_sql)->row()->total_sec;
 
         $timesheet_sql = "SELECT (SUM(TIME_TO_SEC(TIMEDIFF($timesheet_table.end_time,$timesheet_table.start_time))) + SUM((ROUND(($timesheet_table.hours * 60), 0)) * 60)) total_sec
@@ -277,9 +537,14 @@ class Attendance_model extends Crud_model {
             $where .= " AND $users_table.id IN ($allowed_members)";
         }
 
-        $sql = "SELECT CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name, $users_table.last_online, $users_table.image, $users_table.id, $users_table.job_title
+        $member_name = "CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name";
+        if(get_setting('name_format') == "lastfirst") {
+            $member_name = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS member_name";
+        }
+
+        $sql = "SELECT $member_name, $users_table.last_online, $users_table.image, $users_table.id, $users_table.job_title
         FROM $users_table
-        WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' AND $users_table.id NOT IN (SELECT user_id from $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='incomplete') $where
+        WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' AND $users_table.id NOT IN (SELECT $attendnace_table.user_id FROM $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.out_time IS NULL) $where
         ORDER BY $users_table.first_name DESC";
         return $this->db->query($sql);
     }
@@ -301,9 +566,19 @@ class Attendance_model extends Crud_model {
             $where .= " AND $users_table.id IN($where_in_implode)";
         }
 
-        $sql = "SELECT CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name, $users_table.image, $users_table.id, attendance_table.id AS attendance_id, attendance_table.in_time
+        $member_name = "CONCAT($users_table.first_name, ' ',$users_table.last_name) AS member_name";
+        if(get_setting('name_format') == "lastfirst") {
+            $member_name = "CONCAT($users_table.last_name, ', ', $users_table.first_name) AS member_name";
+        }
+
+        $sql = "SELECT $member_name, $users_table.image, $users_table.id, attendance_table.id AS attendance_id, attendance_table.log_type, attendance_table.in_time
         FROM $users_table
-        LEFT JOIN (SELECT user_id, id, in_time FROM $attendnace_table WHERE $attendnace_table.deleted=0 AND $attendnace_table.status='incomplete') AS attendance_table ON attendance_table.user_id=$users_table.id
+            LEFT JOIN (
+                SELECT user_id, id, in_time, log_type
+                FROM $attendnace_table 
+                WHERE $attendnace_table.deleted=0 
+                    AND $attendnace_table.out_time IS NULL
+            ) AS attendance_table ON attendance_table.user_id=$users_table.id
         WHERE $users_table.deleted=0 AND $users_table.status='active' AND $users_table.user_type='staff' $where";
         return $this->db->query($sql);
     }

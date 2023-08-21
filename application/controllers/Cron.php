@@ -17,7 +17,7 @@ class Cron extends CI_Controller {
 
         $current_time = strtotime(get_current_utc_time());
 		
-        if ($last_cron_job_time == "" || ($current_time > ($last_cron_job_time*1 + 300))) {
+        if ($last_cron_job_time == "" || ($current_time > ($last_cron_job_time + 60))) {
             $this->cron_job->run();
             $this->Settings_model->save_setting("last_cron_job_time", $current_time);
         }

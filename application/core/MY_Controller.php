@@ -10,7 +10,9 @@ class MY_Controller extends CI_Controller {
     protected $is_user_a_project_member = false;
     protected $is_clients_project = false; //check if loged in user's client's project
 
-    function __construct() {
+    protected $specifics = array("leave", "attendance", "timesheet_manage_permission", "message_permission", "ticket_staff", "staff");
+
+    function __construct($initialize = true) {
         parent::__construct();
 
         //check user's login status, if not logged in redirect to signin page
@@ -28,6 +30,11 @@ class MY_Controller extends CI_Controller {
         //initialize login users required information
         $this->login_user = $this->Users_model->get_access_info($login_user_id);
 
+        if(in_array($this->login_user->user_type, array("", "system"))) {
+            $this->Users_model->sign_out();
+            redirect('forbidden');
+        }
+
         //initialize login users access permissions
         if ($this->login_user->permissions) {
             $permissions = unserialize($this->login_user->permissions);
@@ -35,21 +42,127 @@ class MY_Controller extends CI_Controller {
         } else {
             $this->login_user->permissions = array();
         }
+
+        //we can set ip restiction to access this module. validate user access
+        $this->check_allowed_ip();
     }
 
-    protected function validate_user_sub_module_permission($module) {
-        if(!is_user_has_module_permission($module)){
-            redirect("forbidden");
+    /**
+     * Check ip restriction for none admin users
+     */
+    private function check_allowed_ip() {
+        if (!$this->login_user->is_admin && $this->login_user->user_type === "staff") {
+            $ip = get_real_ip();
+            $allowed_ips = $this->Settings_model->get_setting("allowed_ip_addresses");
+            if ($allowed_ips) {
+                $user_whitelisted = $this->Settings_model->get_setting("whitelisted_user_ip_tracking");
+                $allowed_ip_array = array_map('trim', preg_split('/\R/', $allowed_ips));
+                if (!in_array($this->login_user->id, explode(",", $user_whitelisted)) && !in_array($ip, $allowed_ip_array)) {
+                    redirect("forbidden");
+                }
+            }
         }
     }
 
-    //initialize the login user's permissions with readable format
+    /**
+     * Check if the current user is with permission and return as bool, redirect, and json exit.
+     */
+    protected function with_permission($permission, $failReturnAs = "bool") {
+        $permission_lists = $this->login_user->permissions;
+        if( $this->login_user->is_admin || get_array_value($permission_lists, $permission) ){
+            return true;
+        }
+        
+        if($failReturnAs === "redirect") {
+            redirect("forbidden");
+        } else if($failReturnAs !== "bool" && $failReturnAs !== "redirect") {
+            echo json_encode( array("success" => false, "message" => lang($failReturnAs)) );
+            exit;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the module is enabled or not.
+     */
+    protected function with_module($module_name, $failReturnAs = "bool") {
+        if ( $this->Settings_model->get_setting("module_".$module_name) === "1" ) {
+            return true;
+        }
+
+        if($failReturnAs === "redirect") {
+            redirect("forbidden");
+        } else if($failReturnAs!== "bool" && $failReturnAs !== "redirect") {
+            echo json_encode( array("success" => false, "message" => lang($failReturnAs)) );
+            exit;
+        }
+
+        return false;
+    }
+
+    protected function get_my_team_users($users, $module = "staff") {
+        $user_list = $this->get_allowed_users_only($module);
+
+        $included = array();
+        foreach($users as $one) {
+            if(in_array($one, $user_list )) {
+                $included[] = $one;
+            }
+        }
+
+        return $included;
+    }
+
+    protected function can_manage_user($user_id, $access = "staff", $allow_self = false) {
+        if($this->login_user->is_admin) {
+            return true;
+        }
+        
+        $user_list = $this->get_allowed_users_only($access);
+        if(!$allow_self && $this->login_user->id == $user_id) {
+            return false;
+        }
+        
+        return in_array($user_id, $user_list);
+    }
+
+    /**
+     * Initialize the login user's permissions with readable format
+     */
     protected function init_permission_checker($module) {
         $info = $this->get_access_info($module);
         $this->access_type = $info->access_type;
         $this->allowed_members = $info->allowed_members;
         $this->allowed_ticket_types = $info->allowed_ticket_types;
+        if( !isset($this->allowed_departments) ) {
+            $this->allowed_departments = $info->allowed_departments;
+        }
         $this->module_group = $info->module_group;
+    }
+
+    protected function get_allowed_users_only($access, $emptyIfAll = false) {
+        $allowed_members = array();
+
+        $module_permission = get_array_value($this->login_user->permissions, $access);
+        if ($this->login_user->is_admin || $module_permission === "all") {
+            $list_users = $this->Users_model->get_all_active();
+            if(!$emptyIfAll) {
+                foreach($list_users as $user) {
+                    $allowed_members[] = $user->id; 
+                }
+            }
+        } else if ($module_permission === "specific") {
+            $module_permission = get_array_value($this->login_user->permissions, $access . "_specific");
+            $permissions = explode(",", $module_permission);
+
+            //check the accessable users list
+            if ( in_array($access, $this->specifics) ) {
+                $allowed_members = $this->prepare_allowed_members_array($permissions);
+            }
+        }
+
+        return $allowed_members;
     }
 
     //prepear the login user's permissions
@@ -79,19 +192,30 @@ class MY_Controller extends CI_Controller {
                 $permissions = explode(",", $module_permission);
 
                 //check the accessable users list
-                if ($group === "leave" || $group === "attendance" || $group === "team_member_update_permission" || $group === "timesheet_manage_permission" || $group == "message_permission") {
-                    $info->allowed_members = $this->prepare_allowed_members_array($permissions, $this->login_user->id);
+                if ( in_array($group, $this->specifics) ) {
+                    $info->allowed_members = $this->prepare_allowed_members_array($permissions);
                 } else if ($group === "ticket") {
                     //check the accessable ticket types
                     $info->allowed_ticket_types = $permissions;
+                } else if ($group === "department") {
+                    //check the accessable ticket types
+                    $info->allowed_departments = $permissions;
                 }
             }
         }
         return $info;
     }
 
-    protected function prepare_allowed_members_array($permissions, $user_id) {
-        $allowed_members = array($user_id);
+    protected function get_imploded_departments() {
+        if( isset($this->allowed_departments) ) {
+            return implode(",", $this->allowed_departments);
+        }
+
+        return "";
+    }
+
+    protected function prepare_allowed_members_array($permissions) {
+        $allowed_members = array();
         $allowed_teams = array();
         foreach ($permissions as $vlaue) {
             $permission_on = explode(":", $vlaue);
@@ -110,6 +234,8 @@ class MY_Controller extends CI_Controller {
 
             foreach ($team as $value) {
                 if ($value->members) {
+                    $heads_array = explode(",", $value->heads);
+                    $allowed_members = array_merge($allowed_members, $heads_array);
                     $members_array = explode(",", $value->members);
                     $allowed_members = array_merge($allowed_members, $members_array);
                 }
@@ -134,18 +260,37 @@ class MY_Controller extends CI_Controller {
     }
 
     //access only allowed team members
-    protected function access_only_allowed_members() {
+    protected function access_only_allowed_members($exit = true) {
         if ($this->access_type === "all") {
             return true; //can access if user has permission
         } else if ($this->module_group === "ticket" && $this->access_type === "specific") {
             return true; //can access if it's tickets module and user has a pertial access
         } else {
-            redirect("forbidden");
+            if($exit) {
+                redirect("forbidden");
+            } else {
+                return false;
+            }
+        }
+    }
+
+    //team_member_update_permission
+    protected function access_only_specific($specific_access, $specific_id = 0) {
+        $access_info = $this->get_access_info($specific_access);
+        if($access_info->access_type == "all") {
+            return true;
+        } else if(in_array($specific_id, $access_info->allowed_members)) {
+            return true;
+        } else {
+            return false;
         }
     }
 
     //access only allowed team members or client contacts 
     protected function access_only_allowed_members_or_client_contact($client_id) {
+        if ($this->login_user->is_admin) { //TODO: Fixed this permission issue.
+            return true;
+        }
 
         if ($this->access_type === "all") {
             return true; //can access if user has permission
@@ -179,13 +324,6 @@ class MY_Controller extends CI_Controller {
         }
     }
 
-    //check module is enabled or not
-    protected function check_module_availability($module_name) {
-        if (get_setting($module_name) != "1") {
-            redirect("forbidden");
-        }
-    }
-
     //check who has permission to create projects
     protected function can_create_projects() {
         if ($this->login_user->user_type == "staff") {
@@ -199,18 +337,6 @@ class MY_Controller extends CI_Controller {
                 return true;
             }
         }
-    }
-
-    //check who has permission to view team members list
-    protected function can_view_team_members_list() {
-        if ($this->login_user->user_type == "staff") {
-            if (get_array_value($this->login_user->permissions, "hide_team_members_list") == "1") {
-                return false;
-            } else {
-                return true; //all members can see team members except the selected roles
-            }
-        }
-        return false;
     }
 
     //get currency dropdown list
@@ -232,11 +358,13 @@ class MY_Controller extends CI_Controller {
     //When checking project permissions, to reduce db query we'll use this init function, where team members has to be access on the project
     protected function init_project_permission_checker($project_id = 0) {
         if ($this->login_user->user_type == "client") {
+            $this->load->model("Projects_model");
             $project_info = $this->Projects_model->get_one($project_id);
             if ($project_info->client_id == $this->login_user->client_id) {
                 $this->is_clients_project = true;
             }
         } else {
+            $this->load->model("Project_members_model");
             $this->is_user_a_project_member = $this->Project_members_model->is_user_a_project_member($project_id, $this->login_user->id);
         }
     }
@@ -275,6 +403,7 @@ class MY_Controller extends CI_Controller {
 
     //get currencies dropdown
     protected function _get_currencies_dropdown() {
+        $this->load->model("Invoices_model");
         $used_currencies = $this->Invoices_model->get_used_currencies_of_client()->result();
 
         if ($used_currencies) {
@@ -331,6 +460,7 @@ class MY_Controller extends CI_Controller {
 
     //get existing projects dropdown for income and expenses
     protected function _get_projects_dropdown_for_income_and_epxenses($type = "all") {
+        $this->load->model("Invoice_payments_model");
         $projects = $this->Invoice_payments_model->get_used_projects($type)->result();
 
         if ($projects) {
@@ -347,6 +477,7 @@ class MY_Controller extends CI_Controller {
     }
 
     protected function _get_groups_dropdown_select2_data($show_header = false) {
+        $this->load->model("Client_groups_model");
         $client_groups = $this->Client_groups_model->get_all()->result();
         $groups_dropdown = array();
 
@@ -363,6 +494,7 @@ class MY_Controller extends CI_Controller {
     protected function get_clients_and_leads_dropdown($return_json = false) {
         $clients_dropdown = array("" => "-");
         $clients_json_dropdown = array(array("id" => "", "text" => "-"));
+        $this->load->model("Clients_model");
         $clients = $this->Clients_model->get_all_where(array("deleted" => 0), 0, 0, "is_lead")->result();
 
         foreach ($clients as $client) {
@@ -527,7 +659,7 @@ class MY_Controller extends CI_Controller {
             $client_message_users = get_setting("client_message_users");
             $client_message_users_array = explode(",", $client_message_users);
 
-            if (!$this->login_user->is_admin && get_array_value($this->login_user->permissions, "message_permission") == "no" && !in_array($this->login_user->id, $client_message_users_array)) {
+            if (!$this->login_user->is_admin && get_array_value($this->login_user->permissions, "message_permission") == "" && !in_array($this->login_user->id, $client_message_users_array)) {
                 $accessable = false;
             }
         } else {
@@ -575,7 +707,7 @@ class MY_Controller extends CI_Controller {
         //so the sender could send message to the receiver
         //check if the receiver could also send message to the sender
         $to_user_info = $this->Users_model->get_one($to_user_id);
-        if ($to_user_info->user_type == "staff") {
+        if (!$to_user_info->is_admin && $to_user_info->user_type == "staff") {
             //receiver is a team member
             $permissions = array();
             $user_permissions = $this->Users_model->get_access_info($to_user_id)->permissions;
@@ -584,14 +716,14 @@ class MY_Controller extends CI_Controller {
                 $permissions = is_array($user_permissions) ? $user_permissions : array();
             }
 
-            if (get_array_value($permissions, "message_permission") == "no") {
+            if (get_array_value($permissions, "message_permission") == "") {
                 //user doesn't have permission to send any message
                 return false;
             } else if (get_array_value($permissions, "message_permission") == "specific") {
                 //user has access on specific members
                 $module_permission = get_array_value($permissions, "message_permission_specific");
                 $permissions = explode(",", $module_permission);
-                $allowed_members = $this->prepare_allowed_members_array($permissions, $to_user_id);
+                $allowed_members = $this->prepare_allowed_members_array($permissions);
                 if (!in_array($this->login_user->id, $allowed_members)) {
                     return false;
                 }
@@ -601,4 +733,116 @@ class MY_Controller extends CI_Controller {
         return true;
     }
 
+    protected function get_users_select2_dropdown($default_text = "users", $module = "staff", $where = array()) {
+        $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang($default_text) . " -"));
+
+        $assigned_to_list = $this->Users_model->get_dropdown_list(
+            array("first_name", "last_name"), "id", 
+            array_merge($where, 
+                array( "deleted" => 0, "status" => "active", "user_type" => "staff")
+            ),
+        );
+
+        foreach ($assigned_to_list as $key => $value) {
+            if( $this->login_user->is_admin || $this->access_type === "all") {
+                $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
+            } else {
+                $allowed_members = $this->get_allowed_users_only($module);
+                foreach ($allowed_members as $user) {
+                    if($key == $user) {
+                        $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
+                    }
+                }
+            }
+        }
+
+        return $assigned_to_dropdown;
+    }
+
+    protected function get_users_select2_filter($default_text = "users", $module = "staff", $where = array()) {
+        $assigned_to_filter = array("" => "- ".lang($default_text)." -");
+
+        $assigned_to_list = $this->Users_model->get_dropdown_list(
+            array("first_name", "last_name"), "id", 
+            array_merge($where, 
+                array( "deleted" => 0, "status" => "active", "user_type" => "staff")
+            ),
+        );
+
+        foreach ($assigned_to_list as $key => $value) {
+            if( $this->login_user->is_admin || $this->access_type === "all") {
+                $assigned_to_filter[$key] = $value;
+            } else {
+                $allowed_members = $this->get_allowed_users_only($module);
+                foreach ($allowed_members as $user) {
+                    if($key == $user) {
+                        $assigned_to_filter[$key] = $value;
+                    }
+                }
+            }
+        }
+
+        return $assigned_to_filter;
+    }
+
+    protected function _get_team_select2_data() {
+        $teams = $this->Team_model->get_details()->result();
+        $team_select2 = array(array('id' => '', 'text'  => '- Departments -'));
+
+        foreach($teams as $team){
+            $team_select2[] = array('id' => $team->id, 'text'  => $team->title);
+        }
+
+        return $team_select2;
+    }
+
+    protected function _get_ticket_types_select2_filter() {
+
+        $where = array();
+        if ($this->login_user->user_type === "staff" && $this->access_type !== "all" && !empty($this->allowed_ticket_types)) {
+            $where = array("where_in" => array("id" => $this->allowed_ticket_types));
+        }
+
+        $ticket_type = $this->Ticket_types_model->get_dropdown_list(array("title"), "id", $where);
+
+        $ticket_type_dropdown = array(array("id" => "", "text" => "- " . lang("ticket_type") . " -"));
+        foreach ($ticket_type as $id => $name) {
+            $ticket_type_dropdown[] = array("id" => $id, "text" => $name);
+        }
+        return $ticket_type_dropdown;
+    }
+
+    protected function _get_leave_types_dropdown() {
+
+        $leave_type = $this->Leave_types_model->get_dropdown_list(array("title"), "id", array("status" => "active"));
+
+        $leave_type_dropdown = array(array("id" => "", "text" => "- " . lang("leave_type") . " -"));
+        foreach ($leave_type as $id => $name) {
+            $leave_type_dropdown[] = array("id" => $id, "text" => $name);
+        }
+        return $leave_type_dropdown;
+    }
+
+    protected function _get_leave_types_select2_data() {
+
+        $option = array("status" => "active");
+        $leave_types = $this->Leave_types_model->get_details($option)->result();
+        $leave_type_select2 =  array(array("id" => "", "text" => "- " . lang("leave_type") . " -"));
+
+        foreach($leave_types as $leave_type){
+            $leave_type_select2[] = array('id' => $leave_type->id, 'text'  => $leave_type->title);
+        }
+
+        return $leave_type_select2;
+    }
+
+    protected function _get_account_select2_data() {
+        $Accounts = $this->Accounts_model->get_all()->result();
+        $account_select2 = array(array('id' => '', 'text'  => '- Accounts -'));
+
+        foreach ($Accounts as $account) {
+            $account_select2[] = array('id' => $account->id, 'text' => $account->name) ;
+        }
+        return $account_select2;
+    }
 }

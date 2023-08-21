@@ -21,7 +21,6 @@ class Discipline_categories extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_hrs");
         $view_data['category_select2'] = $this->_get_category_select2_data();
         $this->template->rander("discipline_categories/index", $view_data);
     }
@@ -43,7 +42,7 @@ class Discipline_categories extends MY_Controller {
             $data->created_on,
             get_team_member_profile_link($data->created_by, $data->full_name, array("target" => "_blank")),
             modal_anchor(get_uri("hrs/discipline_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_category'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_contribution'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/discipline_categories/delete"), "data-action" => "delete-confirmation"))
+            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/discipline_categories/delete"), "data-action" => "delete-confirmation"))
         );
     }
 
@@ -54,22 +53,22 @@ class Discipline_categories extends MY_Controller {
 
         $id = $this->input->post('id');
 
-        $contribution_data = array(
+        $data = array(
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
             "action" => $this->input->post('action'),
         );
 
         if(!$id){
-            $contribution_data["created_on"] = date('Y-m-d H:i:s');
-            $contribution_data["created_by"] = $this->login_user->id;
+            $data["created_on"] = get_current_utc_time();
+            $data["created_by"] = $this->login_user->id;
         }
 
-        $contribution_id = $this->Discipline_categories_model->save($contribution_data, $id);
-        if ($contribution_id) {
-            $options = array("id" => $contribution_id);
-            $contribution_info = $this->Discipline_categories_model->get_details($options)->row();
-            echo json_encode(array("success" => true, "id" => $contribution_info->id, "data" => $this->_make_row($contribution_info), 'message' => lang('record_saved')));
+        $data_id = $this->Discipline_categories_model->save($data, $id);
+        if ($data_id) {
+            $options = array("id" => $data_id);
+            $data_info = $this->Discipline_categories_model->get_details($options)->row();
+            echo json_encode(array("success" => true, "id" => $data_info->id, "data" => $this->_make_row($data_info), 'message' => lang('record_saved')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
         }

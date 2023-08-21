@@ -232,7 +232,7 @@ $lang["all_team_clients"] = "Alle teamrelaties";
 
 /* settings */
 $lang["app_settings"] = "Applicatie instellingen";
-$lang["app_title"] = "Applicatie titel";
+$lang["site_title"] = "Applicatie titel";
 $lang["site_logo"] = "Sitelogo";
 $lang["invoice_logo"] = "Factuurlogo";
 $lang["timezone"] = "Tijdzone";
@@ -242,7 +242,6 @@ $lang["first_day_of_week"] = "Eerste dag van de week";
 $lang["currency_symbol"] = "Valutasymbool";
 $lang["general"] = "Algemeen";
 $lang["general_settings"] = "Algemene instellingen";
-$lang["item_purchase_code"] = "Aankoopcode";
 $lang["company"] = "Bedrijf";
 $lang["company_settings"] = "Bedrijfsinstellingen";
 $lang["email_settings"] = "E-mailinstellingen";

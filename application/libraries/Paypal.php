@@ -16,6 +16,7 @@ class Paypal {
     public function __construct() {
         $this->ci = & get_instance();
         $this->ci->load->model("Paypal_ipn_model");
+        $this->ci->load->model("Payment_methods_model");
 
         $this->paypal_config = $this->ci->Payment_methods_model->get_oneline_payment_method("paypal_payments_standard");
 

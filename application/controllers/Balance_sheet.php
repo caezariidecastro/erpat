@@ -26,7 +26,7 @@ class Balance_sheet extends MY_Controller {
 
     private function _make_row($data) {
         return array(
-            $data->name,
+            "<a href='javascript:void(0)' id='account-{$data->id}'>$data->name</a>",
             $data->number,
             number_with_decimal($data->debit),
             number_with_decimal($data->credit),

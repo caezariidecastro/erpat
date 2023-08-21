@@ -232,7 +232,7 @@ $lang["all_team_clients"] = "All Clients";
 
 /* settings */
 $lang["app_settings"] = "Settings";
-$lang["app_title"] = "App Title";
+$lang["site_title"] = "App Title";
 $lang["site_logo"] = "Site Logo";
 $lang["invoice_logo"] = "Invoice Logo";
 $lang["timezone"] = "Timezone";
@@ -242,7 +242,6 @@ $lang["first_day_of_week"] = "First Day of Week";
 $lang["currency_symbol"] = "Currency Symbol";
 $lang["general"] = "General";
 $lang["general_settings"] = "General Settings";
-$lang["item_purchase_code"] = "Item Purchase Code";
 $lang["company"] = "Company";
 $lang["company_settings"] = "Company Settings";
 $lang["email_settings"] = "Email Settings";
@@ -335,7 +334,7 @@ $lang["invoice_id"] = "Invoice ID";
 $lang["payments"] = "Payments";
 $lang["invoice_sent_message"] = "The invoice has been sent!";
 $lang["attached"] = "Attached";
-$lang["vat_number"] = "VAT Number";
+$lang["vat_number"] = "TIN Number";
 $lang["invite_an_user"] = "Invite an user for %s"; // Invite an user for {company name}
 $lang["unit_type"] = "Unit type";
 
@@ -574,7 +573,7 @@ $lang["can_access_invoices"] = "Can access invoices?";
 $lang["can_access_expenses"] = "Can access expenses?";
 $lang["can_access_clients_information"] = "Can access client's information?";
 $lang["can_access_tickets"] = "Can access tickets?";
-$lang["can_manage_announcements"] = "Can manage announcements?";
+$lang["can_manage_announcements"] = "Manage announcements?";
 
 /* timeline */
 $lang["post_placeholder_text"] = "Share an idea or documents...";
@@ -916,7 +915,7 @@ $lang["empty_starred_clients"] = "To access your favorite clients quickly, pleas
 $lang["download_zip_name"] = "documents";
 $lang["invoice_prefix"] = "Invoice prefix";
 $lang["invoice_style"] = "Invoice style";
-$lang["delete_confirmation_message"] = " Are you sure? You won't be able to undo this action!";
+$lang["delete_confirmation_message"] = " Are you sure? In some cases, you won't be able to undo this action!";
 $lang["left"] = "Left";
 $lang["right"] = "Right";
 $lang["currency_position"] = "Currency Position";

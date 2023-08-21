@@ -28,7 +28,7 @@
 
 <table class="table-responsive" style="width: 100%; color: #444;">            
     <tr style="font-weight: bold; background-color: <?php echo $color; ?>; color: #fff;  ">
-        <th style="width: 45%; border-right: 1px solid #eee;"> <?php echo lang("service"); ?> </th>
+        <th style="width: 45%; border-right: 1px solid #eee;"> <?= lang("products").' & '.lang("services"); ?> </th>
         <th style="text-align: center;  width: 15%; border-right: 1px solid #eee;"> <?php echo lang("quantity"); ?></th>
         <th style="text-align: right;  width: 20%; border-right: 1px solid #eee;"> <?php echo lang("rate"); ?></th>
         <th style="text-align: right;  width: 20%; "> <?php echo lang("total"); ?></th>
@@ -112,3 +112,14 @@
     <?php echo get_setting("invoice_footer"); ?>
 </span>
 
+<?php if ($invoice_info->enable_terms) { ?>
+<span style="color:#444; line-height: 14px;">
+    <?php echo get_setting("invoice_terms"); ?>
+</span>
+<?php } ?>
+
+<?php if ($invoice_info->enable_warranty) { ?>
+<span style="color:#444; line-height: 14px;">
+    <?php echo get_setting("invoice_warranty"); ?>
+</span>
+<?php } ?>

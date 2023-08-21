@@ -232,7 +232,7 @@ $lang["all_team_clients"] = "Todos os clientes";
 
 /* settings */
 $lang["app_settings"] = "Configurações do Sistema";
-$lang["app_title"] = "Título do Sistema";
+$lang["site_title"] = "Título do Sistema";
 $lang["site_logo"] = "Logo do Site";
 $lang["invoice_logo"] = "Logo da Fatura";
 $lang["timezone"] = "Fuso horário";
@@ -242,7 +242,6 @@ $lang["first_day_of_week"] = "Primeiro dia da semana";
 $lang["currency_symbol"] = "Símbolo da Moeda";
 $lang["general"] = "Geral";
 $lang["general_settings"] = "Configurações Gerais";
-$lang["item_purchase_code"] = "Código de compra do sistema";
 $lang["company"] = "Empresa";
 $lang["company_settings"] = "Configurações da empresa";
 $lang["email_settings"] = "Configurações de e-mail";

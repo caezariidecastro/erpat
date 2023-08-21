@@ -10,6 +10,10 @@ class Invoice_payments extends MY_Controller {
         $this->init_permission_checker("invoice");
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
+        $this->load->model("Invoices_model");
+        $this->load->model("Invoice_payments_model");
+        $this->load->model("Clients_model");
+        $this->load->model("Payment_methods_model");
     }
 
     protected function _get_accounts_dropdown_data() {
@@ -25,7 +29,6 @@ class Invoice_payments extends MY_Controller {
     /* load invoice list view */
 
     function index() {
-        $this->validate_user_sub_module_permission("module_fas");
         if ($this->login_user->user_type === "staff") {
             $view_data['payment_method_dropdown'] = $this->get_payment_method_dropdown();
             $view_data["currencies_dropdown"] = $this->_get_currencies_dropdown();
@@ -242,9 +245,9 @@ class Invoice_payments extends MY_Controller {
         }
 
         if ($this->login_user->user_type == "staff") {
-            $invoice_url = anchor(get_uri("sms/invoices/view/" . $data->invoice_id), get_invoice_id($data->invoice_id));
+            $invoice_url = anchor(get_uri("sales/Invoices/view/" . $data->invoice_id), get_invoice_id($data->invoice_id));
         } else {
-            $invoice_url = anchor(get_uri("invoices/preview/" . $data->invoice_id), get_invoice_id($data->invoice_id));
+            $invoice_url = anchor(get_uri("sales/Invoices/preview/" . $data->invoice_id), get_invoice_id($data->invoice_id));
         }
         return array(
             $invoice_url,

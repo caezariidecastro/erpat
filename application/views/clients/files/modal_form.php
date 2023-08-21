@@ -1,10 +1,10 @@
-<?php echo form_open(get_uri("clients/save_file"), array("id" => "file-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Clients/save_file"), array("id" => "file-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="client_id" value="<?php echo $client_id; ?>" />
     <?php
     $this->load->view("includes/multi_file_uploader", array(
-        "upload_url" => get_uri("clients/upload_file"),
-        "validation_url" => get_uri("clients/validate_file"),
+        "upload_url" => get_uri("sales/Clients/upload_file"),
+        "validation_url" => get_uri("sales/Clients/validate_file"),
     ));
     ?>
 </div>

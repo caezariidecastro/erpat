@@ -847,7 +847,7 @@ if (!function_exists('get_language_list')) {
         if (is_dir($dir)) {
             if ($dh = opendir($dir)) {
                 while (($file = readdir($dh)) !== false) {
-                    if ($file && $file != "." && $file != ".." && $file != "index.html") {
+                    if ($file && $file != "." && $file != ".." && $file != "index.html" && $file === "english") {
                         $language_dropdown[$file] = ucfirst($file);
                     }
                 }
@@ -859,3 +859,32 @@ if (!function_exists('get_language_list')) {
 
 }
 
+if (!function_exists('save_base_64_image')) {
+
+    function save_base_64_image($base64, $path = "", $extention = ".png") {
+        //Remopved: data:image/png;base64,
+        $image_array_1 = explode(";", $base64);
+        $image_array_2 = explode(",", $image_array_1[1]);
+
+        //Save Image to WordPress
+        $imageData = base64_decode($image_array_2[1]);
+
+        //Make sure directory is existing.
+        $target_dir = $path;
+        if (!file_exists( $target_dir )) {
+            mkdir($target_dir, 0777, true);
+        }
+
+        //Generate name for this photo.
+        $fileName = sha1(date("Y-m-d~h:i:s")).$extention;
+        $imageDir = $target_dir ."/". $fileName;
+        $imageUrl = get_uri( $target_dir ."/". $fileName );
+
+        if( file_put_contents($imageDir, $imageData) === false ) {
+            return false;
+        } else {
+            return $imageUrl;
+        }
+    }
+
+}

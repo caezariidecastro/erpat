@@ -2,16 +2,6 @@
 
 $lang["example"] = "Example";
 
-$lang["module_hrs"] = "Human Resource";
-$lang["module_fas"] = "Finance & Accounting";
-$lang["module_mes"] = "Production & Inventory";
-$lang["module_mcs"] = "Marketing & Campaigns";
-$lang["module_lds"] = "Logistic & Distribution";
-$lang["module_sms"] = "Sales & Invoicing";
-$lang["module_ats"] = "Assets Management";
-$lang["module_pms"] = "Project Planning";
-$lang["module_css"] = "Help & Support";
-
 $lang["menu_hrs"] = "Human Resource";
 $lang["menu_fas"] = "Finance & Accounting";
 $lang["menu_mes"] = "Production & Inventory";
@@ -22,15 +12,19 @@ $lang["menu_ams"] = "Assets Management";
 $lang["menu_pms"] = "Project Planning";
 $lang["menu_css"] = "Help & Support";
 
+$lang["module_enable"] = "Enable this Module";
+
 $lang["submenu_hrm_employee"] = "Employees";
 $lang["submenu_hrm_department"] = "Department";
 $lang["submenu_hrm_attendance"] = "Attendance";
+$lang["submenu_hrm_overtime"] = "Overtime";
+$lang["submenu_hrm_schedule"] = "Schedule";
 $lang["submenu_hrm_disciplinary"] = "Disciplinary";
 $lang["submenu_hrm_leaves"] = "Leaves";
 $lang["submenu_hrm_holidays"] = "Holidays";
 
-$lang["submenu_pid_productions"] = "Manufacturing Order";
-$lang["submenu_pid_billofmaterials"] = "Bill of Materials";
+$lang["manufacturing_order"] = "Manufacturing Order";
+$lang["bill_of_materials"] = "Bill of Materials";
 $lang["submenu_pid_purchases"] = "Purchases";
 $lang["submenu_pid_returns"] = "Returns";
 $lang["submenu_pid_supplier"] = "Supplier";
@@ -47,22 +41,20 @@ $lang["submenu_fas_expenses"] = "Expenses";
 $lang["submenu_fas_accounts"] = "Accounts";
 $lang["submenu_fas_transfers"] = "Transfers";
 $lang["submenu_fas_balancesheet"] = "Balance Sheet";
-$lang["submenu_fas_incentives"] = "Incentives";
-$lang["submenu_fas_contributions"] = "Contributions";
 $lang["submenu_fas_payroll"] = "Payroll";
 
 $lang["submenu_pms_all_projects"] = "All Projects";
 $lang["submenu_pms_my_tasks"] = "My Tasks";
 $lang["submenu_pms_view_gantts"] = "View Gantts";
 $lang["submenu_pms_timesheets"] = "Timesheets";
-$lang["submenu_pms_clients"] = "Clients";
-$lang["submenu_pms_services"] = "Services";
+$lang["clients"] = "Clients";
+$lang["submenu_sms_services"] = "Services";
 
-$lang["submenu_ams_assets"] = "Assets";
-$lang["submenu_ams_category"] = "Category";
-$lang["submenu_ams_location"] = "Location";
-$lang["submenu_ams_vendors"] = "Vendors";
-$lang["submenu_ams_maker"] = "Brands";
+$lang["asset_entries"] = "Asset Entries";
+$lang["asset_categories"] = "Asset Category";
+$lang["asset_location"] = "Asset Location";
+$lang["asset_vendor"] = "Asset Vendors";
+$lang["asset_brand"] = "Asset Brands";
 
 $lang["submenu_sms_pointofsale"] = "Point of Sale - Soon!";
 $lang["submenu_sms_estimates"] = "Estimates";
@@ -71,13 +63,13 @@ $lang["submenu_sms_salesmatrix"] = "Sales Matrix";
 $lang["submenu_sms_customers"] = "Customers";
 $lang["submenu_sms_giftcard"] = "Gift Card - Todo!";
 $lang["submenu_sms_coupons"] = "Coupons - Todo!";
+$lang["stores"] = "Stores";
 
 $lang["submenu_lms_delivery"] = "Delivery";
-$lang["submenu_lms_warehouse"] = "Warehouse";
+$lang["submenu_lms_warehouse"] = "Warehouses";
 $lang["submenu_lms_transfers"] = "Transfer";
 $lang["submenu_lms_vehicles"] = "Vehicles";
 $lang["submenu_lms_drivers"] = "Drivers";
-$lang["submenu_lms_consumers"] = "Consumers";
 $lang["passengers"] = "Passengers";
 
 $lang["submenu_mcs_leads"] = "Leads";
@@ -137,9 +129,6 @@ $lang["action"] = "Action";
 $lang["date_occurred"] = "Date occurred";
 $lang["witness"] = "Witness";
 
-// Human Resource > Incentives
-$lang["incentives"] = "Incentives";
-$lang["incentive"] = "Incentive";
 $lang["signed_by"] = "Signed by";
 $lang["remarks"] = "Remarks";
 
@@ -237,7 +226,6 @@ $lang["duplicate_item_error"] = "Item is already at the selected warehouse";
 $lang["delivery"] = "Delivery";
 $lang["add_delivery"] = "Add delivery";
 $lang["edit_delivery"] = "Edit delivery";
-$lang["consumer"] = "Consumer";
 $lang["vehicle"] = "Vehicle";
 
 $lang["edit_team_member"] = "Edit user";
@@ -249,11 +237,11 @@ $lang["all_team_members"] = "All users";
 $lang["create_an_account_as_a_team_member"] = "Create an account as a user.";
 $lang["team_member_invitation"] = "user invitation";
 $lang["can_manage_team_members_leave"] = "Can manage user's leaves?";
-$lang["can_manage_team_members_timecards"] = "Can manage user's time cards?";
+$lang["can_manage_team_members_timecards"] = "Can manage employee's attendance?";
 $lang["set_team_members_permission"] = "Set users permissions";
-$lang["can_view_team_members_contact_info"] = "Can view user's contact info?";
+$lang["can_view_team_members_contact_info"] = "Can view employee's contact info?";
 $lang["can_view_team_members_social_links"] = "Can view user's social links?";
-$lang["can_update_team_members_general_info_and_social_links"] = "Can update user's general info and social links?";
+$lang["can_update_team_members_general_info_and_social_links"] = "Can update user's general info, social links, files, and account?";
 $lang["can_manage_team_members_project_timesheet"] = "Can manage user's project timesheet?";
 $lang["hide_team_members_list"] = "Hide users list?";
 $lang["clocked_in_team_members"] = "Clocked in users";
@@ -293,8 +281,7 @@ $lang["payroll"] = "Payroll";
 $lang["add_payroll"] = "Add payroll";
 $lang["edit_payroll"] = "Edit payroll";
 
-// Logistics & Distribution > Consumers
-$lang["consumers"] = "Consumers";
+// Logistics & Distribution
 $lang["add_consumer"] = "Add consumer";
 $lang["edit_consumer"] = "Edit consumer";
 $lang["first_name"] = "First name";
@@ -321,6 +308,8 @@ $lang["select_a_material"] = "Select a material to view";
 $lang["duplicate_material_error"] = "Material is already at the selected warehouse";
 
 // Production & Inventory > Bill of Materials
+$lang["rawmaterials"] = "Raw Materials";
+$lang["billofmaterials"] = "Bill of Materials";
 $lang["bill_of_material"] = "Bill of Material";
 $lang["bill_of_materials"] = "Bill of Materials";
 $lang["add_bill_of_material"] = "Add bill of material";
@@ -389,6 +378,7 @@ $lang["cost"] = "Cost";
 
 // Production & Inventory > Purchases
 $lang["purchases"] = "Purchases";
+$lang["purchase_order"] = "Purchase Order";
 $lang["purchase_orders"] = "Purchase Orders";
 $lang["purchase_returns"] = "Purchase Returns";
 $lang["add_purchase"] = "Add purchase";
@@ -402,7 +392,7 @@ $lang["budget_list"] = "Budget list";
 $lang["inactive_material_hidden"] = "Note: Inactive materials will not appear in drop down list";
 $lang["edit_material"] = "Edit material";
 $lang["edit_budget"] = "Edit budget";
-$lang["purchase"] = "PURCHASE";
+$lang["purchase"] = "Purchase";
 $lang["purchase_small_caps"] = "Purchase";
 $lang["send_purchase_request"] = "Send purchase request";
 $lang["purchase_sent_message"] = "The purchase request has been sent!";
@@ -460,3 +450,753 @@ $lang["groups"] = "Groups";
 $lang["email_title_smtp"] = "Setup SMTP";
 
 $lang["tickets_settings"] = "Ticket Settings";
+
+$lang["general_settings"] = "General Settings";
+
+$lang["invite"] = "Invite";
+
+$lang["deleted_employees"] = "Deleted";
+
+$lang["restore_team_member"] = "Restore employee";
+$lang["record_cannot_be_restored"] = "The record is in use, you can't restore the record!";
+$lang["record_restored"] = "The record has been restored.";
+
+$lang["edit_employee"] = "Edit User";
+$lang["update_schedule"] = "Update Sched";
+
+// Schedule
+$lang["add_sched"] = "Add Schedule";
+$lang["schedule"] = "Schedules";
+$lang["current_schedule"] = "Current Schedule";
+$lang["enable"] = "Enable";
+$lang["in"] = "IN";
+$lang["out"] = "OUT";
+
+$lang["sys_msg"] = "System Message";
+$lang["no_sched"] = "This attendance does'nt have schedule.";
+
+$lang['server_key'] = "Server Key";
+$lang['enable_chat_via_firebase'] = "Enable chat via Firebase";
+$lang['test_message_sent'] = "Test message sent!";
+$lang['test_message_fail'] = "Test message failed!";
+
+$lang['created_at'] = "Date Created";
+$lang['updated_at'] = "Last Updated";
+
+$lang['uuid'] = "Identification";
+$lang['maintainance'] = "Maintainance";
+$lang['database'] = "Database";
+$lang['update_database'] = "Update Database";
+$lang['current_version'] = "Current Version";
+$lang['target_version'] = "Target Version";
+$lang['latest_version'] = "Latest Version";
+
+$lang['time'] = "Time";
+$lang['decimal'] = "Decimal";
+$lang['info'] = "More Info";
+$lang['export'] = "Export";
+$lang['clocked_in'] = "Clocked in";
+$lang['override'] = "Override";
+
+$lang['migrate_database'] = "Migrate Database";
+$lang['check_fix'] = "Check and Fix";
+$lang['last_check'] = "Last Checked";
+$lang['comparison'] = "Comparison";
+$lang['income_statements'] = "Income Statements";
+$lang['cash_flows'] = "Cash Flows";
+
+$lang['excess_payment'] = "Not allowed to pay or received payment more than the amount request.";
+$lang['paid_expenses'] = "Paid Expenses";
+$lang['payables'] = "Payables";
+$lang['credited_transactions'] = "Credited Transactions";
+$lang['generated_by'] = "Generated by";
+$lang['error_occured'] = "Something went wrong.";
+
+$lang["is_sub_menu"] = "This is Child Menu";
+$lang["manage"] = "Manage";
+$lang["browse"] = "Browse";
+$lang["templates"] = "Templates";
+$lang["types"] = "Types";
+$lang["can_use_biometric"] = "Can use Syntry Biometrics";
+$lang["can_use_payhp"] = "Can use PayHP";
+
+$lang["emergency_contact"] = "Emergency Contact";
+$lang["contact_name"] = "Name";
+$lang["contact_address"] = "Address";
+$lang["contact_phone"] = "Phone";
+$lang["job_idnum"] = "ID Number";
+$lang["signiture_url"] = "Digital Signature";
+$lang["signiture_url_placeholder"] = "Upload the jpg or png image on employee file and paste the url here.";
+
+$lang["last_online"] = "Last Online";
+$lang["overtime"] = "Overtime";
+$lang["add_overtime"] = "Add Overtime";
+$lang["edit_overtime"] = "Edit Overtime";
+$lang["delete_overtime"] = "Delete Overtime";
+
+$lang["access_erpat"] = "Access on ERPat";
+$lang["access_syntry"] = "Access on Syntry";
+$lang["access_madage"] = "Access on MadAge";
+$lang["access_galyon"] = "Access on Galyon";
+$lang["access_payroll"] = "Access on PayHP";
+$lang["disable_access_help_message"] = "User will not be able to use the said module. This setting is overriden by Disable Login.";
+
+$lang["worked"] = "Worked";
+$lang["idle"] = "Idle";
+$lang["bonus_pay"] = "Bonus Pay";
+$lang["night"] = "Night";
+$lang["lates"] = "Lates";
+$lang["undertime"] = "Undertime";
+
+$lang["bill_to"] = "Bill to";
+$lang["balancesheet"] = "Balance Sheet";
+$lang["transfer"] = "Account Transfer";
+$lang["mytask"] = "My Task";
+$lang["allprojects"] = "All Projects";
+$lang["asset_category"] = "Asset Category";
+$lang["location"] = "Location";
+$lang["item_transfer"] = "Item Transfer";
+
+$lang["module_updated"] = "Module Updated";
+$lang["system"] = "System";
+$lang["calendar"] = "Calendar";
+$lang["site_title"] = "Site Title";
+$lang["customization"] = "Customization";
+$lang["display"] = "Display";
+$lang["apis"] = "API's";
+
+$lang["syntry"] = "Web App";
+$lang["makeid"] = "Windows";
+$lang["payhp"] = "Website";
+$lang["galyon_app"] = "Mobile App";
+$lang["galyon_web"] = "Website";
+
+$lang["manage_apis"] = "Manage API's";
+$lang["api_settings_instructions"] = "Select the api you want to enable/disable.";
+
+$lang["shipping_option"] = "Shipping Option";
+$lang["minimum_order"] = "Minimum Order";
+$lang["base_delivery_fee"] = "Base Delivery Fee";
+$lang["free_shipping_amount"] = "Free Shipping Amount";
+$lang["shipping_computation"] = "Shipping Computation";
+$lang["fixed"] = "Fixed Amount";
+$lang["distance"] = "Base on Distance";
+$lang["package"] = "Base on Package Attributes";
+
+$lang["fixed_amount"] = "Fixed Amount Fee";
+$lang["distance_rate"] = "Per Kilometer Rate";
+$lang["package_rate"] = "Per Atrribute Rate";
+$lang["tax_applied"] = "Tax Applied";
+$lang["delivery_verification"] = "Delivery Verification";
+$lang["optional"] = "Optional";
+
+$lang["add_brands"] = "Add Brand";
+$lang["can_access_payrolls"] = "Can Access Payrolls";
+$lang["payrolls"] = "Payrolls";
+
+$lang["role_permissions"] = "Role Permissions";
+$lang["changes"] = "Changes";
+$lang["save_permission"] = "Save Permission";
+$lang["payslips"] = "Payslips";
+
+$lang["sched_hour"] = "Schedule";
+$lang["work_hour"] = "Work Hour";
+$lang["idle_hour"] = "Idle Hour";
+
+$lang["view_payslip"] = "View Payslip";
+$lang["payslip_id"] = "Payslip ID";
+$lang["basic_pay"] = "Basic Pay";
+$lang["monthly_salary"] = "Monthly Salary";
+$lang["total_earn"] = "Total Earn";
+$lang["total_deduct"] = "Total Deduct";
+$lang["net_pay"] = "Net Pay";
+
+$lang["total_net_pay"] = "Total Net Pay";
+$lang["view_payroll"] = "View Payroll";
+$lang["pay_date"] = "Payment Date";
+
+$lang["mark_as_ongoing"] = "Mark as Ongoing";
+$lang["override"] = "Override";
+
+$lang["payslip_preview"] = "Payslip Preview";
+$lang["payroll_details"] = "Payroll Details";
+$lang["payslip"] = "Payslip";
+
+$lang["sss"] = "SSS";
+$lang["pagibig"] = "PAGIBIG";
+$lang["phealth"] = "PhilHealth";
+$lang["hmo"] = "HMO";
+
+$lang["com_loan"] = "Company";
+$lang["hdmf_loan"] = "HDMF";
+$lang["sss_loan"] = "SSS";
+
+$lang["deduct_adjust"] = "Adjustments";
+$lang["deduct_other"] = "Others";
+
+$lang["allowance"] = "Allowance";
+$lang["incentive"] = "Incentive";
+$lang["bonus"] = "Bonus";
+$lang["13th_month"] = "13th Month";
+$lang["earn_adjust"] = "Adjustments";
+$lang["earn_other"] = "Others";
+
+$lang["net_taxable"] = "Net Taxable";
+$lang["gross_pay"] = "Gross Pay";
+
+$lang["calculate"] = "Calculate";
+
+$lang["unwork_pay"] = "Unwork Pay";
+$lang["absent"] = "Absent";
+$lang["overbreak"] = "Overbreak";
+
+$lang["regular_nd"] = "Regular ND";
+$lang["restday_nd"] = "Restday ND";
+$lang["legal_hd_nd"] = "Legal HD ND";
+$lang["special_hd_nd"] = "Special HD ND";
+
+$lang["regular_ot"] = "Regular OT";
+$lang["restday_ot"] = "Restday OT";
+$lang["legal_hd_ot"] = "Legal HD OT";
+$lang["special_hd_ot"] = "Special HD OT";
+
+$lang["regular_ot_nd"] = "Regular OT ND";
+$lang["restday_ot_nd"] = "Restday OT ND";
+$lang["legal_hd_ot_nd"] = "Legal HD OT ND";
+$lang["special_hd_ot_nd"] = "Special HD OT ND";
+
+$lang["total_contributions"] = "Total Contribution";
+$lang["total_loans"] = "Total Loans";
+$lang["unwork_deductions"] = "Unwork Deductions";
+$lang["other_adjust"] = "Total Earning Adjustments";
+
+$lang["overtimePay"] = "Overtime Pay";
+$lang["nightdiffPay"] = "Night Diff Pay";
+$lang["specialPay"] = "Special Pay";
+$lang["hourly_rate"] = "Hourly Rate";
+
+$lang["compensation_tax"] = "Compensation Tax";
+$lang["paid_timeoff"] = "Paid Time Off";
+$lang["fullname"] = "Fullname";
+$lang["overwrite"] = "Overwrite";
+
+$lang["hours_paid"] = "Paid Hours";
+$lang["payroll_id"] = "Payroll ID";
+
+$lang["payslip_list"] = "Payslip List";
+$lang["tax_due"] = "Tax Due";
+
+$lang["update"] = "Update";
+
+$lang["total_payslips"] = "Total Payslips";
+$lang["assigned_to"] = "Assigned To";
+$lang["end_date"] = "End Date";
+$lang["pay_period"] = "Pay Period";
+
+$lang["lock_payment"] = "Lock Payment";
+$lang["expense_category"] = "Expense Category";
+
+$lang["accountant"] = "Accountant";
+
+$lang["export_qrcode"] = "Export QRCode";
+$lang["breaktime_tracking"] = "Breaktime Tracking";
+
+$lang["break_1st"] = "1ST Break";
+$lang["break_1st_start"] = "1ST Break Start";
+$lang["break_1st_end"] = "1ST Break End";
+
+$lang["break_lunch"] = "LUNCH Break";
+$lang["break_lunch_start"] = "LUNCH Break Start";
+$lang["break_lunch_end"] = "LUNCH Break End";
+
+$lang["break_2nd"] = "2ND Break";
+$lang["break_2nd_start"] = "2ND Break Start";
+$lang["break_2nd_end"] = "2ND Break End";
+
+$lang["clocked_in"] = "Clocked IN";
+$lang["clocked_out"] = "Clocked OUT";
+
+$lang["name_format"] = "Name Format";
+$lang["rfid_num"] = "RFID Number";
+$lang["set_rfid"] = "Set RFID";
+$lang["rfid_already_in_use"] = "Warning! RFID already in use, please use another one.";
+
+$lang["zone"] = "Zones";
+$lang["submenu_lms_zones"] = "Zones";
+$lang["zone_id"] = "Zone ID";
+$lang["add_zone"] = "Add Zone";
+
+$lang["qrcode"] = "QR Code";
+$lang["barcode"] = "Barcode";
+$lang["rfid"] = "RFID Num";
+
+$lang["rack"] = "Racks";
+$lang["submenu_lms_racks"] = "Racks";
+$lang["rack_id"] = "Rack ID";
+$lang["add_rack"] = "Add Rack";
+
+$lang["bay"] = "Bays";
+$lang["submenu_lms_bays"] = "Bays";
+$lang["bay_id"] = "Bay ID";
+$lang["add_bay"] = "Add Bay";
+
+$lang["level"] = "Levels";
+$lang["submenu_lms_levels"] = "Levels";
+$lang["level_id"] = "Level ID";
+$lang["add_level"] = "Add Level";
+
+$lang["position"] = "Positions";
+$lang["submenu_lms_positions"] = "Positions";
+$lang["position_id"] = "Position ID";
+$lang["add_position"] = "Add Position";
+
+$lang["pallet"] = "Pallets";
+$lang["submenu_lms_pallets"] = "Pallets";
+$lang["pallet_id"] = "Pallet ID";
+$lang["add_pallet"] = "Add Pallet";
+
+$lang["lists"] = "Lists";
+$lang["zones"] = "Zones";
+$lang["racks"] = "Racks";
+$lang["bays"] = "Bays";
+$lang["levels"] = "Levels";
+$lang["positions"] = "Positions";
+
+$lang["current_rack"] = "Current Rack";
+
+$lang["active_attendance_ongoing"] = "Forbidden! There is an active ongoing attendance for this employee.";
+
+$lang["start"] = "Start";
+$lang["end"] = "End";
+
+$lang["invoice_terms"] = "Invoice Terms";
+$lang["invoice_warranty"] = "Invoice Warranty";
+
+$lang["enable_terms"] = "Enable Terms";
+$lang["enable_warranty"] = "Enable Warranty";
+
+$lang["estimate_id"] = "Estimate ID";
+
+$lang["return_order"] = "Return Order";
+
+$lang["bulk_add"] = "Bulk Add";
+$lang["export_barcode"] = "Export Barcodes";
+$lang["schedule_hours"] = "Schedule Hours";
+$lang["tax_tables"] = "Tax Tables";
+$lang["starts_at"] = "Starts At";
+$lang["not_over"] = "Not Over";
+$lang["save_changes"] = "Save Changes";
+$lang["weekly_tax_table"] = "Weekly Tax Table";
+$lang["unique_id"] = "Unique ID";
+$lang["loans"] = "Loans";
+$lang["hdmf"] = "HDMF";
+
+$lang["deductions"] = "Deductions";
+$lang["biweekly"] = "Bi-Weekly";
+$lang["annually"] = "Annually";
+$lang["select"] = "Select";
+
+$lang["tax_table"] = "Tax Table";
+$lang["recalculate"] = "Recalculate";
+$lang["select_a_payslip"] = "Select a Payslip";
+$lang["employee_info"] = "Employee Info";
+$lang["biometric_logs"] = "Biometric Logs";
+$lang["earnings"] = "Earnings";
+$lang["preview_payslip"] = "Preview Payslip";
+$lang["total_adjustother"] = "Adjust / Other";
+
+$lang["daily_tax_table"] = "Daily Tax Table";
+$lang["biweekly_tax_table"] = "Biweekly Tax Table";
+$lang["monthly_tax_table"] = "Monthly Tax Table";
+$lang["loan"] = "Loan";
+$lang["add_autocontri_button"] = "Automate Contributions";
+$lang["execute"] = "Execute";
+
+$lang["no_permission"] = "You dont have permission on such action.";
+
+$lang["attendance_calc_mode"] = "Attd Calc. Mode";
+$lang["bank_details"] = "Bank Details";
+$lang["bank_name"] = "Bank Name";
+$lang["bank_account"] = "Account Name";
+$lang["bank_number"] = "Account Number";
+$lang["clients_only"] = "Clients Only";
+$lang["event_option"] = "Event Option";
+$lang["auto_clockout"] = "Auto Clockout";
+
+$lang["event_pass"] = "Event Ticket";
+$lang["test_email"] = "Test Email";
+
+$lang["test_email_sent"] = "The template preview was sent to the email: ";
+$lang["email_sent"] = "The payslip sent to the email: ";
+
+$lang["epass"] = "Event Pass";
+$lang["reference_id"] = "Reference ID";
+$lang["event_name"] = "Event Name";
+$lang["full_name"] = "Fullname";
+$lang["seats_requested"] = "Seat Requested";
+$lang["group_name"] = "Group Name";
+$lang["virtual_id"] = "Virtual ID";
+$lang["seats_assignment"] = "Seat Assignment";
+
+$lang["ticket_approval"] = "ePass Approval";
+
+$lang["record_approved"] = "The current record was approved.";
+$lang["record_cannot_be_approved"] = "The current record cannot be approve.";
+$lang["record_cancelled"] = "The current record was cancelled.";
+$lang["record_cannot_be_cancelled"] = "The current record cannot be cancel.";
+
+$lang["area"] = "Area";
+$lang["block"] = "Block";
+$lang["seat"] = "Seat";
+
+$lang["area_name"] = "Area Name";
+$lang["block_name"] = "Block Name";
+$lang["seat_name"] = "Seat Name";
+
+$lang["add_area"] = "Add Area";
+$lang["add_block"] = "Add Block";
+$lang["add_seat"] = "Add Seat";
+
+$lang["select_area"] = "Select Area";
+$lang["select_block"] = "Select Block";
+$lang["select_seat"] = "Select Seat";
+
+$lang["total_seats"] = "Total Seat";
+$lang["total_blocks"] = "Total Block";
+
+$lang["add_epass"] = "Add ePass";
+$lang["vcode"] = "Virtual ID";
+
+$lang["seats"] = "Seats Requested";
+$lang["select_seats"] = "Select Seats";
+
+$lang["module_access"] = "Access Module";
+$lang["access"] = "Access";
+$lang["logs"] = "Logs";
+$lang["devices"] = "Devices";
+$lang["device"] = "Device";
+$lang["add_device"] = "Add Device";
+$lang["device_name"] = "Device Name";
+$lang["device_category"] = "Device Category";
+$lang["timestamp"] = "Timestamp";
+$lang["door_access"] = "Door Access";
+$lang["access_logs"] = "Access Logs";
+$lang["generate_new_secret"] = "Generate new Secret";
+$lang["show_secret"] = "Show Secret";
+
+$lang["passes"] = "Passes";
+$lang["access_lists"] = "Access Lists";
+
+$lang["raffle"] = "Raffle Draw";
+$lang["raffle_draw"] = "Raffle Draw";
+$lang["ranking"] = "Ranking";
+$lang["draw_date"] = "Draw Date";
+$lang["number_of_winners"] = "Number of Winners";
+$lang["create_new_draw"] = "Create New Draw";
+$lang["update_Status"] = "Update Status";
+$lang["view_winners"] = "View Winners";
+$lang["winners"] = "Winners";
+$lang["view_participants"] = "View Participants";
+$lang["participants"] = "Participants";
+
+$lang["raffle_not_exist"] = "Raffle draw does not exist.";
+$lang["raffle_user_exist"] = "User is already a participant.";
+$lang["user_not_exist"] = "The user does not exist in the category.";
+$lang["winners_completed"] = "All winners had been declared.";
+$lang["test_draw"] = "Single Draw";
+$lang["no_participants"] = "There are no participants left.";
+
+$lang["vacant_seats"] = "Vacant Seats";
+$lang["clear_winners"] = "Clear Winners";
+$lang["random_join"] = "Random Join";
+$lang["clear_participants"] = "Clear All";
+
+$lang["personal_info"] = "Personal Info";
+$lang["alt_Addresss"] = "Alt. Address";
+$lang["draw_time"] = "Draw Time";
+$lang["crowd_type"] = "Crowd Type";
+$lang["raffle_type"] = "Raffle Type";
+$lang["epass_user_assignment"] = "ePass User Assignment";
+$lang["select_user"] = "Select User";
+
+$lang["allocate_seats"] = "Allocate Seats";
+$lang["epass_confirm"] = "ePass Confirmation";
+$lang["email_blast"] = "Email Blast";
+
+$lang["image_preview"] = "Image Preview";
+$lang["select_action"] = "Select Action";
+
+$lang["no_seats_available"] = "There is no seats available for this ePass's group.";
+$lang["seats_already_assigned"] = "Seats already assigned";
+
+$lang["guest_cant_found"] = "Guest cannot be found";
+$lang["companions"] = "Companions";
+
+$lang["add_override"] = "Add Override";
+$lang["enable_training"] = "Enable Training";
+
+$lang["kinds"] = "Kinds";
+$lang["members"] = "Members";
+$lang["consumer"] = "Customer";
+
+$lang["under_development"] = "This feature is currently under development.";
+
+$lang["system_account"] = "System Account";
+$lang["add_account"] = "Add Account";
+
+$lang["access_syntry_help_text"] = "Enable this to enable Biometric Access.";
+
+$lang["new_pass"] = "New Password";
+$lang["confirm_pass"] = "Confirm Password";
+$lang["password_not_match"] = "Password do not match.";
+$lang["daily_rate"] = "Daily Rate";
+
+$lang["suffix_name"] = "Name Suffix";
+$lang["middle_name"] = "Middle Name";
+
+$lang["overtime_trigger"] = "Overtime Trigger";
+$lang["bonuspay_trigger"] = "Bonuspay Trigger";
+
+$lang["nightpay_start_trigger"] = "Nightpay Start Trigger";
+$lang["nightpay_end_trigger"] = "Nightpay End Trigger";
+
+$lang["check_logs"] = "Check Logs";
+$lang["compensation_tax_table"] = "Compensation Tax Table";
+
+$lang["whitelisted"] = "Whitelisted";
+
+$lang["type_employee_name"] = "Type Employee Name";
+$lang["auto_clockin"] = "Auto Clock-IN";
+
+$lang["site_admin_email"] = "Site Admin Email";
+
+$lang["trigger_hour"] = "Trigger Hour";
+
+$lang["days_per_year"] = "Days Per Year";
+$lang["pto"] = "Paid Timeoff";
+
+$lang["basic_pay_calculation"] = "Basicpay Calculation";
+$lang["run_cron_command"] = "Run Cron Command";
+
+$lang["cron_cannot_be_executed_please_wait_1_min"] = "The cron command cannot be executed, please wait atleast 1 min and try to click this button again.";
+
+$lang["page"] = "Page";
+
+$lang["permission_denied"] = "Permission Denied! Contact your administrator to have access to this action.";
+
+$lang["sales_summary"] = "Sales Summary";
+$lang["accounting_summary"] = "Accounting Summary";
+
+$lang["yearly_paid_time_off"] = "Yearly Paid Timeoff";
+
+$lang["employment"] = "Employment";
+$lang["probationary"] = "Probationary";
+$lang["regular"] = "Regular";
+
+$lang["loan"] = "Loan";
+$lang["transaction"] = "Transaction";
+$lang["create_loan"] = "Create Loan";
+$lang["borrower"] = "Borrower";
+$lang["principal"] = "Principal";
+$lang["date_applied"] = "Date Applied";
+$lang["interest_rate"] = "Interest Rate";
+$lang["months_to_pay"] = "Months to Pay";
+$lang["minimum_payment"] = "Minimum Payment";
+$lang["days_before_due"] = "Days Before Due";
+$lang["penalty_rate"] = "Penalty Rate";
+$lang["start_payment"] = "Payment Start";
+$lang["cosigner"] = "Co-Maker";
+$lang["fees"] = "Fees";
+$lang["stages"] = "Stages";
+$lang["executed_by"] = "Executed By";
+$lang["loan_amount"] = "Loan Amount";
+$lang["stage_name"] = "Stage Name";
+$lang["add_payment"] = "Add Payment";
+$lang["add_fee"] = "Add Fees";
+$lang["update_status"] = "Update Status";
+
+$lang["assigned_to"] = "Assigned To";
+
+$lang["restore"] = "Restore";
+$lang["floating"] = "Floating";
+$lang["date_regularized"] = "Regularization Date";
+$lang["required_credits"] = "Require Credits";
+
+$lang["overall_leave_credits"] = "Overall Leave Credits";
+$lang["leave_type_credits"] = "Leave Type Credits";
+
+$lang["30min_break_employee"] = "30m Break Employees";
+$lang["edit_breaks"] = "Edit Breaks";
+
+$lang["approved_date"] = "Approved date";
+$lang["rejected_date"] = "Rejected date";
+
+$lang["ip_tracking_whitelisting"] = "IP Tracking Whitelisting";
+
+$lang["select_user"] = "Select User";
+
+$lang["sss_contri"] = "SSS CONTRIBUTION";
+$lang["pagibig_contri"] = "PAGIBIG CONTRIBUTION";
+$lang["philhealth_contri"] = "PHILHEALTH CONTRIBUTION";
+$lang["hmo_contri"] = "HMO PAYMENT";
+$lang["company_loan"] = "COMPANY LOAN";
+$lang["sss_loan"] = "SSS LOAN";
+$lang["hdmf_loan"] = "HDMF LOAN";
+
+$lang["no_schedules"] = "No Schedules";
+$lang["ananymous_subscribers"] = "Generate";
+
+$lang["raffle_entry"] = "Submit Entry";
+$lang["raffle_subscription"] = "Subscription";
+$lang["raffle_join"] = "Join Raffle";
+
+$lang["total_participants"] = "Total Participants";
+
+$lang["winner_draw"] = "Winner Draw";
+$lang["unset"] = "Not Set";
+
+$lang["prizes"] = "Prizes";
+$lang["add_prize"] = "Add Prize";
+
+$lang["image"] = "Image";
+
+$lang["create_prizes"] = "Create Prizes";
+$lang["crons"] = "Cron Jobs";
+$lang["manage_crons"] = "Manage Crons";
+$lang["attendances"] = "Attendances";
+$lang["calendars"] = "Calendars";
+$lang["imaps"] = "Ticket IMAP";
+
+$lang["cron_updated"] = "Cronjob Updated";
+$lang["staffs"] = "Staffs";
+
+$lang["convert_leave_credits"] = "Convert";
+$lang["leave_credit_convert_form"] = "Convert Credits";
+
+$lang["leave_type_credit_insufficient"] = "Insufficient transfer issue for the leave type origin: <br> Current Balance: ";
+$lang["same_leave_type_origin_and_target"] = "The origin and target leave type is the same.";
+
+$lang["leave_credit_balance"] = "Leave credit Balance";
+
+$lang["can_only_update_pending_leave"] = "Only pending leave, can be approve.";
+$lang["permission_denied"] = "Access Denied: You are not permitted to execute this action.";
+$lang["leave_balance_yearly"] = "Leave Balance (Yearly)";
+
+$lang["not_permitted_updating_leave_credits"] = "You are not permitted to update leave credits.";
+$lang["not_permitted_creating_leave_application"] = "You are not permitted to create leave application for other staff.";
+
+$lang["not_permitted_managing_leave_types"] = "You are not permitted to manage leave types.";
+
+$lang["take_a_break"] = "Pause";
+$lang["resume_work"] = "Resume";
+
+$lang["exit"] = "Exit";
+$lang["breaktime_starts_at"] = "Breaktime started at";
+
+$lang["account_type"] = "Account Type";
+
+$lang["log_type"] = "Log type";
+$lang["incomplete"] = "Incomplete";
+$lang["clockout"] = "Clockout";
+
+$lang["break_log"] = "Break Log";
+$lang["1-rank"] = "1st";
+$lang["2-rank"] = "2nd";
+$lang["3-rank"] = "3rd";
+$lang["4-rank"] = "4th";
+$lang["5-rank"] = "5th";
+$lang["6-rank"] = "6th";
+$lang["7-rank"] = "7th";
+$lang["8-rank"] = "8th";
+
+$lang["approval"] = "Approval";
+$lang["detail"] = "Detail";
+
+$lang["schedule_detail"] = "Schedule Detail";
+$lang["no_schedule"] = "No schedule assigned";
+
+$lang["mon"] = "Monday";
+$lang["tue"] = "Tuesday";
+$lang["wed"] = "Wednesday";
+$lang["thu"] = "Thursday";
+$lang["fri"] = "Friday";
+$lang["sat"] = "Saturday";
+$lang["sun"] = "Sunday";
+
+$lang["lunch_break"] = "Lunch Break";
+$lang["kiosk"] = "Kiosk";
+$lang["kiosk_config"] = "Kiosk Configuration";
+
+$lang["enable_selected_user_access"] = "Enable Selected User Access";
+$lang["whitelisted_selected_user_access"] = "Whitelisted User Access";
+
+$lang["since_last_break"] = "Waiting, since Last Break";
+$lang["since_last_clock_out"] = "Waiting, since Last Clockout";
+
+$lang["restday"] = "Restday";
+$lang["incentives"] = "Incentive";
+$lang["others"] = "Others";
+
+$lang["regOverPay"] = "Regular OT";
+$lang["resOverPay"] = "Restday OT";
+
+$lang["other_loan"] = "Other Loan";
+
+$lang["deduct_adjust_name"] = "Adjustment Name";
+$lang["deduct_other_name"] = "Other Name";
+
+$lang["earn_adjust_name"] = "Adjustment Name";
+$lang["earn_other_name"] = "Other Name";
+
+$lang["special_hd"] = "Special HD";
+$lang["legal_hd"] = "Legal HD";
+
+$lang["bonusPay"] = "Bonus Pay";
+$lang["holidayPay"] = "Holiday Pay";
+$lang["taxDue"] = "Tax Due";
+$lang["leave_credit"] = "Leave Credit";
+
+$lang["pto_pay"] = "PTO Covered";
+$lang["allowances"] = "Allowance";
+$lang["bonuses"] = "Bonus";
+
+$lang["export_pdf"] = "Export PDF";
+
+$lang["new_password"] = "New Password";
+$lang["confirm_password"] = "Confirm Password";
+
+$lang["send_email"] = "Send Email";
+
+$lang["set_user_access"] = "Set User Access";
+$lang["syntry_site_link"] = "Syntry App Link";
+
+$lang["total_break"] = "Total Breaks";
+
+$lang["days_locked_attendance"] = "Days to Lock Attendance";
+
+$lang["attendance_locked"] = "Attendance Locked";
+
+$lang["edit_loan"] = "Edit Loan";
+$lang["item_name"] = "Item Name";
+$lang["date_paid"] = "Date Paid";
+$lang["penalty"] = "Penalty";
+
+$lang["min_payment_not_met"] = "Minimum payment should be atleast: ";
+
+$lang["loan_detail"] = "Loan Detail";
+
+$lang["no_changes_made"] = "No changes was made.";
+
+$lang["payroll_binding"] = "Payslip Binding";
+
+$lang["replicate"] = "Replicate";
+
+$lang["no_active_loan"] = "No Active Loan";
+
+$lang["payroll_reply_to"] = "Payroll Reply-To";
+
+$lang["disable_hourly_leave"] = "Disable Hourly Leave";
+
+$lang["payslip_generated_payment"] = "Payslip generated payment from Payroll: ";
+
+$lang["all_breaktime_consumed"] = "All breaktime consumed!";

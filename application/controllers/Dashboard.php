@@ -10,6 +10,8 @@ class Dashboard extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model("Custom_widgets_model");
+        $this->load->model("Clients_model");
+        $this->load->model("Dashboards_model");
     }
 
     public function index() {
@@ -130,16 +132,14 @@ class Dashboard extends MY_Controller {
             $widget["closed_tickets"] = true;
         }
 
-        if ($this->can_view_team_members_list()) {
-            $widget["all_team_members"] = true;
-        }
+        $widget["all_team_members"] = true;
 
-        if ($this->can_view_team_members_list() && $show_attendance && $access_timecards->access_type === "all") {
+        if ($show_attendance && $access_timecards->access_type === "all") {
             $widget["clocked_in_team_members"] = true;
             $widget["clocked_out_team_members"] = true;
         }
 
-        if ($this->can_view_team_members_list() && $show_message) {
+        if ($show_message) {
             $widget["latest_online_team_members"] = true;
         }
 
@@ -620,9 +620,9 @@ class Dashboard extends MY_Controller {
         if (is_numeric($key)) {
 
             $widgets_title = $value;
-            $details_button = modal_anchor(get_uri("dashboard/view_custom_widget"), "<i class='fa fa-ellipsis-h'></i>", array("class" => "text-off pr10 pl10", "title" => lang('custom_widget_details'), "data-post-id" => $key));
+            $details_button = modal_anchor(get_uri("dashboard/view_custom_widget"), "<i class='fa fa-eye' style='color: darkslategrey;'></i>", array("class" => "text-off pr10 pl10", "title" => lang('custom_widget_details'), "data-post-id" => $key));
         } else {
-            $details_button = modal_anchor(get_uri("dashboard/view_default_widget"), "<i class='fa fa-ellipsis-h'></i>", array("class" => "text-off pr10 pl10", "title" => lang($key), "data-post-widget" => $key));
+            $details_button = modal_anchor(get_uri("dashboard/view_default_widget"), "<i class='fa fa-eye' style='color: darkslategrey;'></i>", array("class" => "text-off pr10 pl10", "title" => lang($key), "data-post-widget" => $key));
             $widgets_title = lang($key);
         }
 

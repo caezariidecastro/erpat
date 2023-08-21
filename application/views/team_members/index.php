@@ -1,55 +1,27 @@
 <div id="page-content" class="p20 clearfix">
     <div class="panel panel-default">
-        <div class="page-title clearfix">
-            <h1><?php echo lang('users'); ?></h1>
-            <div class="title-button-group">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default btn-sm active mr-1"  title="<?php echo lang('list_view'); ?>"><i class="fa fa-bars"></i></button>
-                    <?php echo anchor(get_uri("hrs/team_members/view"), "<i class='fa fa-th-large'></i>", array("class" => "btn btn-default btn-sm")); ?>
-                </div> 
-                <?php
-                if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "team_member_update_permission")) {
-                    echo modal_anchor(get_uri("hrs/team_members/invitation_modal"), "<i class='fa fa-envelope-o'></i> " . lang('send_invitation'), array("class" => "btn btn-default", "title" => lang('send_invitation')));
-                    echo modal_anchor(get_uri("hrs/team_members/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_employee'), array("class" => "btn btn-default", "title" => lang('add_team_member')));
-                }
-                ?>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table id="team_member-table" class="display" cellspacing="0" width="100%">            
-            </table>
+        <ul id="leaves-tabs" data-toggle="ajax-tab" class="nav nav-tabs bg-white inner" role="tablist">
+            <li class="title-tab"><h4 class="pl15 pt10 pr15"><?php echo lang('employee'); ?></h4></li>
+            <li><a  role="presentation" class="active" href="<?php echo_uri("Team_members/lists"); ?>" data-target="#user-panel"><?php echo lang("general"); ?></a></li>
+            <?php if($staff_view_personal_background) { ?>
+            <li><a  role="presentation" href="<?php echo_uri("Team_members/personal_view"); ?>" data-target="#personal-panel"><?php echo lang("personal_info"); ?></a></li>
+            <?php } ?>
+            <?php if($staff_view_job_description) { ?>
+                <li><a  role="presentation" href="<?php echo_uri("Team_members/job_view"); ?>" data-target="#job-panel"><?php echo lang("job_info"); ?></a></li>
+            <?php } ?>
+            <?php if($staff_view_bank_info) { ?>
+                <li><a  role="presentation" href="<?php echo_uri("Team_members/bank_view"); ?>" data-target="#bank-panel"><?php echo lang("bank_details"); ?></a></li>
+            <?php } ?>
+            <?php if($staff_view_contribution_details) { ?>
+                <li><a  role="presentation" href="<?php echo_uri("Team_members/contribution_view"); ?>" data-target="#contributions-panel"><?php echo lang("contributions"); ?></a></li>
+            <?php } ?>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active" id="user-panel"></div>
+            <div role="tabpanel" class="tab-pane fade" id="personal-panel"></div>
+            <div role="tabpanel" class="tab-pane fade" id="job-panel"></div>
+            <div role="tabpanel" class="tab-pane fade" id="bank-panel"></div>
+            <div role="tabpanel" class="tab-pane fade" id="contributions-panel"></div>
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        var visibleContact = false;
-        if ("<?php echo $show_contact_info; ?>") {
-            visibleContact = true;
-        }
-
-        var visibleDelete = false;
-        if ("<?php echo $this->login_user->is_admin; ?>") {
-            visibleDelete = true;
-        }
-
-        $("#team_member-table").appTable({
-            source: '<?php echo_uri("hrs/team_members/list_data/") ?>',
-            order: [[1, "asc"]],
-            radioButtons: [{text: '<?php echo lang("active_employees") ?>', name: "status", value: "active", isChecked: true}, {text: '<?php echo lang("inactive_employees") ?>', name: "status", value: "inactive", isChecked: false}],
-            columns: [
-                {title: '', "class": "w50 text-center"},
-                {title: "<?php echo lang("name") ?>"},
-                {title: "<?php echo lang("job_title") ?>", "class": "w15p"},
-                {visible: visibleContact, title: "<?php echo lang("email") ?>", "class": "w20p"},
-                {visible: visibleContact, title: "<?php echo lang("phone") ?>", "class": "w15p"}
-                <?php echo $custom_field_headers; ?>,
-                {visible: visibleDelete, title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
-            ],
-            printColumns: combineCustomFieldsColumns([0, 1, 2, 3, 4], '<?php echo $custom_field_headers; ?>'),
-            xlsColumns: combineCustomFieldsColumns([0, 1, 2, 3, 4], '<?php echo $custom_field_headers; ?>')
-
-        });
-    });
-</script>    

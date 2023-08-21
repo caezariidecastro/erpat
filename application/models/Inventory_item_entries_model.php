@@ -5,16 +5,17 @@ class Inventory_item_entries_model extends Crud_model {
     private $table = null;
 
     function __construct() {
-        $this->table = 'inventory_items';
+        $this->table = $this->db->dbprefix('inventory_items');
         parent::__construct($this->table);
     }
 
     function get_details($options = array()) {
-        $inventory_items_table = $this->db->dbprefix('inventory_items');
+        $inventory_items_table = $this->table;
         $where = "";
         $id = get_array_value($options, "id");
         $category = get_array_value($options, "category");
         $vendor = get_array_value($options, "vendor");
+        $kind = get_array_value($options, "kind");
 
         if ($id) {
             $where .= " AND $inventory_items_table.id=$id";
@@ -28,7 +29,11 @@ class Inventory_item_entries_model extends Crud_model {
             $where .= " AND $inventory_items_table.vendor = $vendor";
         }
 
-        $sql = "SELECT $inventory_items_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, un.title AS unit_abbreviation, v.name AS vendor_name, COALESCE((
+        if($kind){
+            $where .= " AND $inventory_items_table.kind = '$kind'";
+        }
+
+        $sql = "SELECT $inventory_items_table.*, TRIM(CONCAT(creator.first_name, ' ', creator.last_name)) AS creator_name, cat.title AS category_name, brand.name AS brand_name, un.title AS unit_abbreviation, v.name AS vendor_name, COALESCE((
             SELECT SUM(inventory.stock)
             FROM inventory
             WHERE item_id = $inventory_items_table.id
@@ -54,15 +59,10 @@ class Inventory_item_entries_model extends Crud_model {
             FROM invoice_items
             LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
             LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
-            LEFT JOIN deliveries ON deliveries.reference_number = invoice_items.delivery_reference_no
+            LEFT JOIN deliveries ON deliveries.invoice_id = invoices.id
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
             AND i.item_id = $inventory_items_table.id
-            AND (
-                invoice_items.delivery_reference_no IS NOT NULL
-                OR
-                invoice_items.delivery_reference_no != ''
-            )
             AND invoices.status NOT IN ('draft', 'cancelled')
             AND (
                 (
@@ -88,11 +88,6 @@ class Inventory_item_entries_model extends Crud_model {
             LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
-            AND (
-                invoice_items.delivery_reference_no IS NULL
-                OR
-                invoice_items.delivery_reference_no = ''
-            )
             AND invoices.status NOT IN ('draft', 'cancelled')
             AND (
                 (
@@ -140,8 +135,11 @@ class Inventory_item_entries_model extends Crud_model {
             AND bill_of_materials.item_id = $inventory_items_table.id
         ), 0) AS bom
         FROM $inventory_items_table
+        LEFT JOIN invoice_items ON invoice_items.inventory_id = $inventory_items_table.id
+        LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
         LEFT JOIN users creator ON creator.id = $inventory_items_table.created_by
         LEFT JOIN inventory_item_categories cat ON cat.id = $inventory_items_table.category
+        LEFT JOIN product_brands brand ON brand.id = $inventory_items_table.brand 
         LEFT JOIN units un ON un.id = $inventory_items_table.unit
         LEFT JOIN vendors v ON v.id = $inventory_items_table.vendor
         WHERE $inventory_items_table.deleted=0 $where";

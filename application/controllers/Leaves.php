@@ -7,37 +7,28 @@ class Leaves extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("leave", "redirect");   
         $this->access_only_team_members();
+
         $this->load->model("Leave_credits_model");
+        $this->load->model("Leave_types_model");
+        $this->load->model("Leave_applications_model");
+        $this->load->model("Team_model");
 
         $this->init_permission_checker("leave");
     }
-
-    //only admin or assigend members can access/manage other member's leave
-    //none admin users who has limited permission to manage other members leaves, can't manage his/her own leaves
-    protected function access_only_allowed_members($user_id = 0) {
-        if ($this->access_type !== "all") {
-            if ($user_id === $this->login_user->id || !array_search($user_id, $this->allowed_members)) {
-                redirect("forbidden");
-            }
-        }
-    }
-
-    protected function can_delete_leave_application() {
-        if ($this->login_user->is_admin || get_array_value($this->login_user->permissions, "can_delete_leave_application") == "1") {
-            return true;
-        }
-    }
-
+    
     function index() {
-        $this->validate_user_sub_module_permission("module_hrs");
-        $this->check_module_availability("module_leave");        
         $this->template->rander("leaves/index");
     }
 
     //load assign leave modal 
 
     function assign_leave_modal_form($applicant_id = 0) {
+
+        if(!$this->with_permission("leave_create")) {
+            exit_response_with_message("not_permitted_creating_leave_application");
+        }
 
         if ($applicant_id) {
             $view_data['team_members_info'] = $this->Users_model->get_one($applicant_id);
@@ -50,7 +41,7 @@ class Leaves extends MY_Controller {
             } else {
                 $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
             }
-            $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
+            $view_data['team_members_dropdown'] = $this->get_users_select2_filter();
         }
 
         $view_data['leave_types_dropdown'] = array("" => "-") + $this->Leave_types_model->get_dropdown_list(array("title"), "id", array("status" => "active"));
@@ -72,14 +63,13 @@ class Leaves extends MY_Controller {
         $leave_data['applicant_id'] = $applicant_id;
         $leave_data['created_by'] = $this->login_user->id;
         $leave_data['checked_by'] = $this->login_user->id;
-        $leave_data['checked_at'] = $leave_data['created_at'];
+        $leave_data['checked_at'] = "0000:00:00";
         $leave_data['status'] = "pending";
 
-        //hasn't full access? allow to update only specific member's record, excluding loged in user's own record
-        $this->access_only_allowed_members($leave_data['applicant_id']);
-
-        if(get_total_leave_credit_balance($leave_data['applicant_id']) < $leave_data['total_days']) {
-            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient') ) );
+        $cur_bal = get_total_leave_credit_balance($leave_data['applicant_id'], $leave_data['leave_type_id']);
+        $cur_bal = number_with_decimal($cur_bal);
+        if(is_leave_credit_required( $leave_data['leave_type_id'] ) && $cur_bal < $leave_data['total_days'] ) {
+            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient')." ".lang("balance").": ".$cur_bal ) );
             return;
         }
 
@@ -101,8 +91,10 @@ class Leaves extends MY_Controller {
         $leave_data['checked_at'] = "0000:00:00";
         $leave_data['status'] = "pending";
 
-        if(get_total_leave_credit_balance($leave_data['applicant_id']) < $leave_data['total_days']) {
-            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient') ) );
+        $cur_bal = get_total_leave_credit_balance($leave_data['applicant_id'], $leave_data['leave_type_id']);
+        $cur_bal = number_with_decimal($cur_bal);
+        if(is_leave_credit_required( $leave_data['leave_type_id'] ) && $cur_bal < $leave_data['total_days'] ) {
+            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient')." ".lang("balance").": ".$cur_bal ) );
             return;
         }
 
@@ -187,24 +179,32 @@ class Leaves extends MY_Controller {
 
     // load pending approval tab
     function pending_approval() {
-        $this->load->view("leaves/pending_approval");
+        $view_data['leave_types_dropdown'] = $this->_get_leave_types_select2_data();
+        $this->load->view("leaves/pending_approval", $view_data);
     }
 
     // load all applications tab 
     function all_applications() {
-        $this->load->view("leaves/all_applications");
+        $view_data['leave_types_dropdown'] = $this->_get_leave_types_select2_data();
+        $view_data['status_dropdown'] = array(
+            array('id' => '', 'text'  => '- Leave Status -'),
+            array('id' => 'pending', 'text'  => '- Pending -'),
+            array('id' => 'approved', 'text'  => '- Approved -'),
+            array('id' => 'rejected', 'text'  => '- Rejected -')
+        );
+        $this->load->view("leaves/all_applications", $view_data);
     }
 
     // load leave summary tab
     function summary() {
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
-        $view_data['leave_types_dropdown'] = json_encode($this->_get_leave_types_dropdown_list_for_filter());
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $view_data['leave_types_dropdown'] = json_encode($this->_get_leave_types_dropdown());
         $this->load->view("leaves/summary", $view_data);
     }
 
     // list of pending leave application. prepared for datatable
     function pending_approval_list_data() {
-        $options = array("status" => "pending", "access_type" => $this->access_type, "allowed_members" => $this->allowed_members);
+        $options = array("status" => "pending", "access_type" => $this->access_type, "allowed_members" => $this->allowed_members, "leave_type_id" => $this->input->post('leave_type_id'));
         $list_data = $this->Leave_applications_model->get_list($options)->result();
 
         $result = array();
@@ -225,8 +225,18 @@ class Leaves extends MY_Controller {
         $start_date = $this->input->post('start_date');
         $end_date = $this->input->post('end_date');
         $applicant_id = $this->input->post('applicant_id');
+        $status = $this->input->post('status');
 
-        $options = array("start_date" => $start_date, "end_date" => $end_date, "applicant_id" => $applicant_id, "login_user_id" => $this->login_user->id, "access_type" => $this->access_type, "allowed_members" => $this->allowed_members);
+        $options = array(
+            "start_date" => $start_date, 
+            "end_date" => $end_date, 
+            "status" => $status, 
+            "applicant_id" => $applicant_id, 
+            "login_user_id" => $this->login_user->id, 
+            "access_type" => $this->access_type, 
+            "allowed_members" => $this->allowed_members, 
+            "leave_type_id" => $this->input->post('leave_type_id')
+        );
         $list_data = $this->Leave_applications_model->get_list($options)->result();
         $result = array();
         foreach ($list_data as $data) {
@@ -242,7 +252,14 @@ class Leaves extends MY_Controller {
         $applicant_id = $this->input->post('applicant_id');
         $leave_type_id = $this->input->post('leave_type_id');
 
-        $options = array("start_date" => $start_date, "end_date" => $end_date, "access_type" => $this->access_type, "allowed_members" => $this->allowed_members, "applicant_id" => $applicant_id, "leave_type_id" => $leave_type_id);
+        $options = array(
+            "start_date" => $start_date, 
+            "end_date" => $end_date, 
+            "access_type" => $this->access_type, 
+            "allowed_members" => $this->allowed_members, 
+            "applicant_id" => $applicant_id, 
+            "leave_type_id" => $leave_type_id
+        );
         $list_data = $this->Leave_applications_model->get_summary($options)->result();
 
 
@@ -278,7 +295,7 @@ class Leaves extends MY_Controller {
             $can_manage_application = true;
         }
 
-        if ($this->can_delete_leave_application() && $can_manage_application) {
+        if ($this->with_permission("leave_delete") && $can_manage_application) {
             $actions .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/leaves/delete"), "data-action" => "delete-confirmation"));
         }
 
@@ -296,12 +313,27 @@ class Leaves extends MY_Controller {
 
     // prepare a row of leave application list table
     private function _make_row_for_summary($data) {
-        $meta_info = $this->_prepare_leave_info($data);
 
+        $image_url = get_avatar($data->applicant_avatar);
+        $data->applicant_meta = "<span class='avatar avatar-xs mr10'><img src='$image_url' alt=''></span>" . $data->applicant_name;
+
+        $data->total_hours = $data->total_hours?$data->total_hours:0;
+        $duration = convert_number_to_decimal($data->total_hours/8) . " " . lang("day") . " (" . $data->total_hours . " " . lang("hour") . ")";
+        $data->duration_meta = $duration;
+        
+        $data->leave_type_meta = "<span style='background-color:" . $data->leave_type_color . "' class='color-tag pull-left'></span>" 
+            . $data->leave_type_title . ", " . ($data->required_credits?"Deducted":"Not Deducted"). ", " . ($data->paid?"w/ Pay":"Not Paid");
+        
+        $data->balance = $data->balance?$data->balance:0;
+        $balance_day = convert_number_to_decimal($data->balance) . " " . lang("day");
+        $balance = $balance_day . " (" . ($data->balance*8) . " " . lang("hour") . ")";
+        $data->balance_meta = $balance;
+        
         return array(
-            get_team_member_profile_link($data->applicant_id, $meta_info->applicant_meta),
-            $meta_info->leave_type_meta,
-            $meta_info->duration_meta
+            get_team_member_profile_link($data->applicant_id, $data->applicant_meta),
+            $data->leave_type_meta,
+            $data->duration_meta,
+            $data->balance_meta
         );
     }
 
@@ -342,7 +374,14 @@ class Leaves extends MY_Controller {
             $duration = $duration . " (" . $data->total_hours . " " . lang("hour") . ")";
         }
         $data->duration_meta = $duration;
-        $data->leave_type_meta = "<span style='background-color:" . $data->leave_type_color . "' class='color-tag pull-left'></span>" . $data->leave_type_title;
+        
+        $data->leave_type_meta = "<span style='background-color:" . $data->leave_type_color . "' class='color-tag pull-left'></span>" . $data->leave_type_title . ", " . ($data->required_credits?"Deducted":"Not Deducted"). ", " . ($data->paid?"w/ Pay":"Not Paid");
+        
+        $balance_day = $data->balance . " " . lang("days");
+        $balance = $balance_day . " (" . ($data->balance*8) . " " . lang("hour") . ")";
+        $data->balance_meta = $balance;
+        
+        $data->checked_date = convert_date_utc_to_local($data->checked_at, "d/m/Y");
         return $data;
     }
 
@@ -358,20 +397,9 @@ class Leaves extends MY_Controller {
             show_404();
         }
 
-
         //checking the user permissiton to show/hide reject and approve button
-        $can_manage_application = false;
-        if ($this->access_type === "all") {
-            $can_manage_application = true;
-        } else if (array_search($info->applicant_id, $this->allowed_members) && $info->applicant_id !== $this->login_user->id) {
-            $can_manage_application = true;
-        }
-        $view_data['show_approve_reject'] = $can_manage_application;
-
-        //has permission to manage the appliation? or is it own application?
-        if (!$can_manage_application && $info->applicant_id !== $this->login_user->id) {
-            redirect("forbidden");
-        }
+        $can_manage_application = $this->with_permission("leave_update");
+        $view_data['show_approve_reject'] = $can_manage_application?true:false;
 
         $view_data['leave_info'] = $this->_prepare_leave_info($info);
         $this->load->view("leaves/application_details", $view_data);
@@ -387,6 +415,7 @@ class Leaves extends MY_Controller {
 
         $applicaiton_id = $this->input->post('id');
         $status = $this->input->post('status');
+        $leave_type_id = $this->input->post('leave_type_id');
         $now = get_current_utc_time();
 
         $leave_data = array(
@@ -399,20 +428,17 @@ class Leaves extends MY_Controller {
         //otherwise user can cancel only his/her own application
         $applicatoin_info = $this->Leave_applications_model->get_one($applicaiton_id);
 
-        if ($status === "approved" || $status === "rejected") {
-            $this->access_only_allowed_members($applicatoin_info->applicant_id);
-        } else if ($status === "canceled" && $applicatoin_info->applicant_id != $this->login_user->id) {
-            //any user can't cancel other user's leave application
-            redirect("forbidden");
+        if ( ($status === "approved" || $status === "rejected" || $status === "canceled") ) {
+            if( !$this->with_permission("leave_update") ) {
+                exit_response_with_message("permission_denied");
+            }
+        } else if($applicatoin_info->status === "pending") {
+            //user can update only the applications where status = pending
+            exit_response_with_message("can_only_update_pending_leave");
         }
 
-        //user can update only the applications where status = pending
-        if ($applicatoin_info->status != "pending" || !($status === "approved" || $status === "rejected" || $status === "canceled")) {
-            redirect("forbidden");
-        }
-
-        if($status == "approved" && get_total_leave_credit_balance($applicatoin_info->applicant_id) < $applicatoin_info->total_days) {
-            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient_admin') ) );
+        if($status == "approved" && is_leave_credit_required($leave_type_id) && get_total_leave_credit_balance($applicatoin_info->applicant_id, $leave_type_id) < $applicatoin_info->total_days) {
+            echo json_encode( array("success" => false, 'message' => lang('leave_credits_insufficient_admin').get_total_leave_credit_balance($applicatoin_info->applicant_id, $leave_type_id) ) );
             return;
         }
 
@@ -427,10 +453,11 @@ class Leaves extends MY_Controller {
                 $credit_data = array(
                     "user_id" => $applicatoin_info->applicant_id,
                     "leave_id" => $applicatoin_info->id,
+                    "leave_type_id" => $leave_type_id,
                     "counts" => $applicatoin_info->total_days,
                     "action" => 'credit',
                     "remarks" => $leave_type[0]->title." - Approval",
-                    "date_created" => date('Y-m-d H:i:s'),
+                    "date_created" => get_current_utc_time(),
                     "created_by" => $this->login_user->id,
                 );
                 $this->Leave_credits_model->save($credit_data, null);
@@ -457,15 +484,15 @@ class Leaves extends MY_Controller {
             "id" => "required|numeric"
         ));
 
-        if (!$this->can_delete_leave_application()) {
-            redirect("forbidden");
+        if (!$this->with_permission("leave_delete")) {
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+            exit;
         }
-
-        $applicatoin_info = $this->Leave_applications_model->get_one($id);
-        $this->access_only_allowed_members($applicatoin_info->applicant_id);
-
-
+        
         if ($this->Leave_applications_model->delete($id)) {
+            $option = array("leave_id"=>$id);
+            $this->Leave_credits_model->delete_where($option);
+
             echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
         } else {
             echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
@@ -474,8 +501,6 @@ class Leaves extends MY_Controller {
 
     //view leave list of login user
     function leave_info() {
-        $this->check_module_availability("module_leave");
-
         $view_data['applicant_id'] = $this->login_user->id;
         if ($this->input->is_ajax_request()) {
             $this->load->view("team_members/leave_info", $view_data);
@@ -485,51 +510,12 @@ class Leaves extends MY_Controller {
         }
     }
 
-    //summary dropdown list of team members
-
-    private function _get_members_dropdown_list_for_filter() {
-
-        if ($this->access_type === "all") {
-            $where = array("user_type" => "staff");
-        } else {
-            if (!count($this->allowed_members)) {
-                $where = array("user_type" => "nothing");
-            } else {
-                $allowed_members = $this->allowed_members;
-                $allowed_members[] = $this->login_user->id;
-
-                $where = array("user_type" => "staff", "where_in" => array("id" => $allowed_members));
-            }
-        }
-
-        $members = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
-
-        $members_dropdown = array(array("id" => "", "text" => "- " . lang("users") . " -"));
-        foreach ($members as $id => $name) {
-            $members_dropdown[] = array("id" => $id, "text" => $name);
-        }
-        return $members_dropdown;
-    }
-
-    //summary dropdown list of leave type 
-
-    private function _get_leave_types_dropdown_list_for_filter() {
-
-        $leave_type = $this->Leave_types_model->get_dropdown_list(array("title"), "id", array("status" => "active"));
-
-        $leave_type_dropdown = array(array("id" => "", "text" => "- " . lang("leave_type") . " -"));
-        foreach ($leave_type as $id => $name) {
-            $leave_type_dropdown[] = array("id" => $id, "text" => $name);
-        }
-        return $leave_type_dropdown;
-    }
-
     // load leave credits tab 
     function leave_credits() {
-        $fields = array("first_name", "last_name");
-        $where = array("user_type" => "staff");
-        $view_data['team_members_dropdown'] = json_encode($this->_get_members_dropdown_list_for_filter());
-        
+        $view_data['team_members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $view_data['department_select2'] = $this->_get_team_select2_data();
+        $view_data['leave_types_dropdown'] = $this->_get_leave_types_select2_data();
+        $view_data['can_manage_credit'] = $this->with_permission("leave_manage");
         $this->load->view("leaves/leave_credits", $view_data);
     }
 
@@ -540,42 +526,56 @@ class Leaves extends MY_Controller {
 
     //load leave type add/edit form
     function modal_form_type() {
+        if(!$this->login_user->is_admin) {
+            exit_response_with_message("not_permitted_managing_leave_types");
+        }
         $view_data['model_info'] = $this->Leave_types_model->get_one($this->input->post('id'));
         $this->load->view('leaves/modal_form_type', $view_data);
     }
 
     //load leave type add form
-    function modal_form_add_credit() {
-        self::modal_form_credit("add");
+    function modal_form_add_credit($user_id = 0) {
+        $this->with_permission("leave_update", "not_permitted_updating_leave_credits");
+        self::modal_form_credit("add", $user_id);
     }
-    
 
     //load leave type deduct form
-    function modal_form_deduct_credit() {
-        self::modal_form_credit("deduct");
+    function modal_form_deduct_credit($user_id = 0) {
+        $this->with_permission("leave_update", "not_permitted_updating_leave_credits");
+        self::modal_form_credit("deduct", $user_id);
+    }
+
+    function modal_form_convert_credit($user_id = 0) {
+        $this->with_permission("leave_update", "not_permitted_updating_leave_credits");
+        self::modal_form_credit("convert", $user_id);
     }
     
     //load leave type add/deduct form
-    function modal_form_credit($form_type) {
-        //show all members list to only admin and other members who has permission to manage all member's leave
-        //show only specific members list who has limited access
-        if ($this->access_type === "all") {
-            $where = array("user_type" => "staff");
+    function modal_form_credit($form_type, $user_id = 0) {
+        if ($user_id) {
+            $view_data['team_members_info'] = $this->Users_model->get_one($user_id);
         } else {
-            $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
+            //show all members list to only admin and other members who has permission to manage all member's leave
+            //show only specific members list who has limited access
+            if ($this->access_type === "all") {
+                $where = array("user_type" => "staff");
+            } else {
+                $where = array("user_type" => "staff", "id !=" => $this->login_user->id, "where_in" => array("id" => $this->allowed_members));
+            }
+            $view_data['team_members_dropdown'] = $this->get_users_select2_filter();
         }
-        $view_data['team_members_dropdown'] = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", $where);
-
+        $view_data['leave_types_dropdown'] = array("" => "-") + $this->Leave_types_model->get_dropdown_list(array("title"), "id", array("status" => "active"));
         $view_data['model_info'] = $this->Leave_types_model->get_one($this->input->post('id'));
 
         if($form_type === "add") {
             $view_data['credit_form_action'] = "debit";
-            $this->load->view('leaves/modal_form_credit', $view_data);
         } else if($form_type === "deduct") {
             $view_data['credit_form_action'] = "credit";
-            $this->load->view('leaves/modal_form_credit', $view_data);
+        } else if($form_type === "convert") {
+            $view_data['credit_form_action'] = "convert";
         }
         
+        $this->load->view('leaves/modal_form_credit', $view_data);
     }
 }
 

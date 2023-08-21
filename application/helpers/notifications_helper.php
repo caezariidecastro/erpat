@@ -72,7 +72,7 @@ if (!function_exists('get_notification_config')) {
         $client_link = function($options) {
             $url = "";
             if (isset($options->client_id)) {
-                $url = get_uri("pms/clients/view/" . $options->client_id);
+                $url = get_uri("sales/Clients/view/" . $options->client_id);
             }
 
             return array("url" => $url);
@@ -106,7 +106,7 @@ if (!function_exists('get_notification_config')) {
         $invoice_link = function($options) {
             $url = "";
             if (isset($options->invoice_id)) {
-                $url = get_uri("invoices/preview/" . $options->invoice_id);
+                $url = get_uri("sales/Invoices/preview/" . $options->invoice_id);
             }
 
             return array("url" => $url);
@@ -115,7 +115,7 @@ if (!function_exists('get_notification_config')) {
         $estimate_link = function($options) {
             $url = "";
             if (isset($options->estimate_id)) {
-                $url = get_uri("estimates/preview/" . $options->estimate_id . "/1");
+                $url = get_uri("sales/Estimates/preview/" . $options->estimate_id . "/1");
             }
 
             return array("url" => $url);
@@ -124,7 +124,7 @@ if (!function_exists('get_notification_config')) {
         $estimate_request_link = function($options) {
             $url = "";
             if (isset($options->estimate_request_id)) {
-                $url = get_uri("estimate_requests/view_estimate_request/" . $options->estimate_request_id);
+                $url = get_uri("sales/Estimate_requests/view_estimate_request/" . $options->estimate_request_id);
             }
 
             return array("url" => $url);
@@ -439,6 +439,12 @@ if (!function_exists('send_notification_emails')) {
     function send_notification_emails($notification_id, $email_notify_to, $extra_data = array()) {
 
         $ci = & get_instance();
+        $ci->load->model("Estimate_requests_model");
+        $ci->load->model("Invoices_model");
+        $ci->load->model("Ticket_comments_model");
+        $ci->load->model("Tasks_model");
+        $ci->load->model("Clients_model");
+        $ci->load->model("Email_templates_model");
 
         $notification = $ci->Notifications_model->get_email_notification($notification_id);
 
@@ -458,7 +464,7 @@ if (!function_exists('send_notification_emails')) {
         }
 
 
-        $parser_data["APP_TITLE"] = get_setting("app_title");
+        $parser_data["APP_TITLE"] = get_setting("site_title");
         $parser_data["COMPANY_NAME"] = get_setting("company_name");
 
         $notification_multiple_tasks_user_wise = get_array_value($extra_data, "notification_multiple_tasks_user_wise");
@@ -701,7 +707,7 @@ if (!function_exists('send_push_notifications')) {
 
             $data = array(
                 "message" => $message,
-                "title" => $user_id ? $user_info->first_name . " " . $user_info->last_name : get_setting('app_title'),
+                "title" => $user_id ? $user_info->first_name . " " . $user_info->last_name : get_setting('site_title'),
                 "icon" => get_avatar($user_id ? $user_info->image : "system_bot"),
                 "notification_id" => $notification_id,
                 "url_attributes" => $url_attributes
@@ -764,6 +770,7 @@ if (!function_exists('get_notification_multiple_tasks_data')) {
 
     function get_notification_multiple_tasks_data($tasks, $event) {
         $ci = get_instance();
+        $ci->load->model("Project_members_model");
         $user_wise_tasks = array();
 
         //user whose are on the notify to team members or notify to team, will get all tasks
@@ -847,7 +854,7 @@ if (!function_exists('send_slack_notification')) {
             }
 
             $user_info = $ci->Users_model->get_one($user_id);
-            $title = $user_id ? ($user_info->first_name . " " . $user_info->last_name) : get_setting('app_title');
+            $title = $user_id ? ($user_info->first_name . " " . $user_info->last_name) : get_setting('site_title');
             $avatar = get_avatar($user_id ? $user_info->image : "system_bot");
 
             $data = array(

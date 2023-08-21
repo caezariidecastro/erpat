@@ -8,6 +8,10 @@ class Search extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_team_members();
+        $this->load->model("Projects_model");
+        $this->load->model("Tasks_model");
+        $this->load->model("Clients_model");
+        $this->load->model("Todo_model");
     }
 
     public function index() {
@@ -23,6 +27,7 @@ class Search extends MY_Controller {
 
     function search_modal_form() {
         $search_fields = array(
+            "all",
             "task",
             "project"
         );
@@ -45,37 +50,71 @@ class Search extends MY_Controller {
         $this->load->view("search/modal_form", $view_data);
     }
 
+
+
     function get_search_suggestion() {
         $search = $this->input->post("search");
         $search_field = $this->input->post("search_field");
 
         if ($search && $search_field) {
             $options = array();
-            $result = array();
+            $result_array = array();
 
-            if ($search_field == "task") { //task
+            if ($search_field == "all") {
+
                 $options["show_assigned_tasks_only_user_id"] = $this->show_assigned_tasks_only_user_id();
-                $result = $this->Tasks_model->get_search_suggestion($search, $options)->result();
+                $tasks = $this->Tasks_model->get_search_suggestion($search, $options)->result();
+                foreach ($tasks as $value) {
+                    $result_array[] = array("value" => $value->id, "label" => lang("task") . " #$value->id: " . $value->title);
+                }
+    
+                if (!$this->can_manage_all_projects()) {
+                    $options["user_id"] = $this->login_user->id;
+                }
+                $projects = $this->Projects_model->get_search_suggestion($search, $options)->result();
+                foreach ($projects as $value) {
+                    $result_array[] = array("value" => $value->id, "label" => lang("project") . " #$value->id: " . $value->title);
+                }
+                
+                if (!$this->can_access_clients()) {
+                    redirect("forbidden");
+                }
+                $clients = $this->Clients_model->get_search_suggestion($search)->result();
+                foreach ($clients as $value) {
+                    $result_array[] = array("value" => $value->id, "label" => lang("client") . " #$value->id: " . $value->title);
+                }
+    
+                $todos = $this->Todo_model->get_search_suggestion($search, $this->login_user->id)->result();
+                foreach ($todos as $value) {
+                    $result_array[] = array("value" => $value->id, "label" => lang("todo") . " #$value->id: " . $value->title);
+                }
+
+            } else if ($search_field == "task") { //task
+                $options["show_assigned_tasks_only_user_id"] = $this->show_assigned_tasks_only_user_id();
+                $tasks = $this->Tasks_model->get_search_suggestion($search, $options)->result();
+                foreach ($tasks as $value) {
+                    $result_array[] = array("value" => $value->id, "label" => lang("task") . " #$value->id: " . $value->title);
+                }
             } else if ($search_field == "project") { //project
                 if (!$this->can_manage_all_projects()) {
                     $options["user_id"] = $this->login_user->id;
                 }
-                $result = $this->Projects_model->get_search_suggestion($search, $options)->result();
+                $projects = $this->Projects_model->get_search_suggestion($search, $options)->result();
+                foreach ($projects as $value) {
+                    $result_array[] = array("value" => $value->id, "label" => lang("project") . " #$value->id: " . $value->title);
+                }
             } else if ($search_field == "client") { //client
                 if (!$this->can_access_clients()) {
                     redirect("forbidden");
                 }
-                $result = $this->Clients_model->get_search_suggestion($search)->result();
+                $clients = $this->Clients_model->get_search_suggestion($search)->result();
+                foreach ($clients as $value) {
+                    $result_array[] = array("value" => $value->id, "label" => lang("client") . " #$value->id: " . $value->title);
+                }
             } else if ($search_field == "todo" && get_setting("module_todo")) { //todo
-                $result = $this->Todo_model->get_search_suggestion($search, $this->login_user->id)->result();
-            }
-
-            $result_array = array();
-            foreach ($result as $value) {
-                if ($search_field == "task") {
-                    $result_array[] = array("value" => $value->id, "label" => lang("task") . " $value->id: " . $value->title);
-                } else {
-                    $result_array[] = array("value" => $value->id, "label" => $value->title);
+                $todos = $this->Todo_model->get_search_suggestion($search, $this->login_user->id)->result();
+                foreach ($todos as $value) {
+                    $result_array[] = array("value" => $value->id, "label" => lang("todo") . " #$value->id: " . $value->title);
                 }
             }
 

@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("mes/ProductInventory/add_inventory"), array("id" => "inventory-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/ProductInventory/add_inventory"), array("id" => "inventory-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <div class="form-group">
         <label for="warehouse" class="col-md-3"><?php echo lang('warehouse'); ?></label>

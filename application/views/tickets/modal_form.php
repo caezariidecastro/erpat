@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("css/tickets/save"), array("id" => "ticket-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("tickets/save"), array("id" => "ticket-form", "class" => "general-form", "role" => "form")); ?>
 <div id="new-ticket-dropzone" class="post-dropzone">
     <div class="modal-body clearfix">
         <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
@@ -156,8 +156,8 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        var uploadUrl = "<?php echo get_uri("css/tickets/upload_file"); ?>";
-        var validationUrl = "<?php echo get_uri("css/tickets/validate_ticket_file"); ?>";
+        var uploadUrl = "<?php echo get_uri("tickets/upload_file"); ?>";
+        var validationUrl = "<?php echo get_uri("tickets/validate_ticket_file"); ?>";
         var editMode = "<?php echo $model_info->id; ?>";
 
         var dropzone = attachDropzoneWithForm("#new-ticket-dropzone", uploadUrl, validationUrl);
@@ -194,7 +194,7 @@
                     $("#project_id").hide();
                     appLoader.show({container: "#porject-dropdown-section"});
                     $.ajax({
-                        url: "<?php echo get_uri("css/tickets/get_project_suggestion") ?>" + "/" + client_id,
+                        url: "<?php echo get_uri("tickets/get_project_suggestion") ?>" + "/" + client_id,
                         dataType: "json",
                         success: function (result) {
                             $("#project_id").show().val("");
@@ -217,7 +217,7 @@
                 $("#requested_by_id").hide();
                 appLoader.show({container: "#requested-by-dropdown-section"});
                 $.ajax({
-                    url: "<?php echo get_uri("css/tickets/get_client_contact_suggestion") ?>" + "/" + client_id,
+                    url: "<?php echo get_uri("tickets/get_client_contact_suggestion") ?>" + "/" + client_id,
                     dataType: "json",
                     success: function (result) {
                         $("#requested_by_id").show().val("");

@@ -55,23 +55,20 @@
  */
 //define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
-//set the environment to production after installation
-define('ENVIRONMENT', 'production');
-//getenv('ENVIRONMENT')
-// we don't want to access the main project before installation. redirect to installation page
-// if (ENVIRONMENT === 'pre_installation') {
-//     $domain = $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
+if( !file_exists('.env.production.php') ) {
+    $domain = $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
 
-//     $domain = preg_replace('/index.php.*/', '', $domain); //remove everything after index.php
-//     if (!empty($_SERVER['HTTPS'])) {
-//         $domain = 'https://' . $domain;
-//     } else {
-//         $domain = 'http://' . $domain;
-//     }
+    $domain = preg_replace('/index.php.*/', '', $domain); //remove everything after index.php
+    if (!empty($_SERVER['HTTPS'])) {
+        $domain = 'https://' . $domain;
+    } else {
+        $domain = 'http://' . $domain;
+    }
 
-//     header("Location: $domain./install/index.php");
-//     exit;
-// }
+    header("Location: $domain./install/index.php");
+    exit; 
+}
+require_once '.env.production.php';
 
 /*
  * ---------------------------------------------------------------
@@ -98,9 +95,11 @@ switch (ENVIRONMENT) {
         break;
 
     default:
-        header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-        echo 'The application environment is not set correctly.';
-        exit(1); // EXIT_ERROR
+        header("Location: install/index.php");
+        exit();
+        //header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+        //echo 'The application environment is not set correctly.';
+        //exit(1); // EXIT_ERROR
 }
 
 /*
@@ -287,10 +286,5 @@ define('VIEWPATH', $view_folder . DIRECTORY_SEPARATOR);
  * --------------------------------------------------------------------
  *
  * And away we go...
- */
-require_once BASEPATH . 'dotenv/autoloader.php';
-	
-	$dotenv = new Dotenv\Dotenv(__DIR__);
-	$dotenv->load();
-    
+ */ 
 require_once BASEPATH . 'core/CodeIgniter.php';

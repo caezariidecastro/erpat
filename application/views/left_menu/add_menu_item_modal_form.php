@@ -1,7 +1,6 @@
 <?php echo form_open(get_uri("left_menus/prepare_custom_menu_item_data"), array("id" => "custom-menu-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <div class="form-group">
-        <input type="hidden" name="is_sub_menu" value="<?php echo $model_info->is_sub_menu; ?>" />
         <label for="title" class=" col-md-3"><?php echo lang('title'); ?></label>
         <div class=" col-md-9">
             <?php
@@ -32,6 +31,14 @@
                 "data-msg-required" => lang("field_required"),
             ));
             ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="is_sub_menu" class=" col-md-3"><?php echo lang('is_sub_menu'); ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_checkbox("is_sub_menu", "1", $model_info->is_sub_menu ? true : false, "id='is_sub_menu'");
+            ?>                       
         </div>
     </div>
     <div class="form-group">

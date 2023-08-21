@@ -7,7 +7,12 @@ class Leave_credits extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->access_only_team_members();
+        
         $this->load->model("Leave_credits_model");
+        $this->load->model("Leave_types_model");
+
+        $this->init_permission_checker("leave");
     }
 
     //load leave type list view
@@ -23,22 +28,30 @@ class Leave_credits extends MY_Controller {
 
     //save leave type
     function save() {
+        $this->with_permission("leave_manage", "redirect");
 
         validate_submitted_data(array(
             "counts" => "numeric",
-            "user_id" => "required"
+            "user_id" => "required",
+            "leave_type_id" => "required",
+            "counts" => "required",
         ));
+
+        if(!$this->with_permission("leave_update")) {
+            exit_response_with_message("not_permitted_updating_leave_credits");
+        }
 
         $id = $this->input->post('id');
         $data = array(
             "user_id" => $this->input->post('user_id'),
+            "leave_type_id" => $this->input->post('leave_type_id'),
             "counts" => $this->input->post('counts'),
             "action" => $this->input->post('action'),
             "remarks" => $this->input->post('remarks'),
         );
 
         if(!$id){
-            $data["date_created"] = date('Y-m-d H:i:s');
+            $data["date_created"] = get_current_utc_time();
             $data["created_by"] = $this->login_user->id;
         }
 
@@ -50,8 +63,66 @@ class Leave_credits extends MY_Controller {
         }
     }
 
+    function convert() {
+        $this->with_permission("leave_manage", "redirect");
+
+        validate_submitted_data(array(
+            "counts" => "numeric",
+            "user_id" => "required",
+            "leave_type_id" => "required",
+            "leave_type_to_id" => "required",
+            "counts" => "required",
+        ));
+
+        if(!$this->with_permission("leave_update")) {
+            exit_response_with_message("not_permitted_updating_leave_credits");
+        }
+
+        if($this->input->post('leave_type_id') === $this->input->post('leave_type_to_id')) {
+            echo json_encode(array("success" => false, 'message' => lang('same_leave_type_origin_and_target')));
+            exit;
+        }
+
+        $shared_data = array(
+            "user_id" => $this->input->post('user_id'),
+            "counts" => $this->input->post('counts'),
+            "date_created" => get_current_utc_time(),
+            "created_by" => $this->login_user->id,
+            "remarks" => $this->input->post('remarks'),
+        );
+
+        $balance = $this->Leave_credits_model->get_balance(
+            array(
+                "user_id"=>$this->input->post('user_id'),
+                "leave_type_id"=>$this->input->post('leave_type_id')
+            )
+        );
+
+        if(intval($this->input->post('counts')) > $balance) {
+            echo json_encode(array("success" => false, 'message' => lang('leave_type_credit_insufficient').$balance." credit(s)"));
+            exit;
+        }
+
+        $origin_data = $shared_data;
+        $origin_data['leave_type_id'] = $this->input->post('leave_type_id');
+        $origin_data['action'] = 'credit';
+        $origin_id = $this->Leave_credits_model->save($origin_data);
+
+        $target_data = $shared_data;
+        $target_data['leave_type_id'] = $this->input->post('leave_type_to_id');
+        $target_data['action'] = 'debit';
+        $target_id = $this->Leave_credits_model->save($target_data);
+
+        if ($origin_id && $target_id) {
+            echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
     //delete/undo a leve type
     function delete() {
+        $this->with_permission("leave_manage", "redirect");
         
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -79,20 +150,23 @@ class Leave_credits extends MY_Controller {
         $end_date = $this->input->post('end_date');
         $user_id = $this->input->post('user_id');
         $action = $this->input->post('action');
+        $department_id = $this->input->post('department_select2_filter');
         
         $options = array(
             "start_date" => $start_date,
             "end_date" => $end_date,
             "login_user_id" => $this->login_user->id,
+            "access_type" => $this->access_type, 
+            "allowed_members" => $this->allowed_members, 
             "user_id" => $user_id,
             "action" => $action,
-            //"access_type" => $this->access_type,
-            //"allowed_members" => $this->allowed_members
+            "department_id" => $department_id,
+            "leave_type_id" => $this->input->post('leave_type_id'),
         );
         $list_data = $this->Leave_credits_model->get_details($options)->result();
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = $this->_make_row($data);
+            $result[] = $this->_make_row($data, $action=="balance"?true:false);
         }
         echo json_encode(array("data" => $result));
     }
@@ -105,15 +179,21 @@ class Leave_credits extends MY_Controller {
     }
 
     //make a row of leave types row
-    private function _make_row($data) {
-        $label_column_text = $data->action == "debit" ? "DEBIT" : "CREDIT";
-        $label_column_color = $data->action == "debit" ? "#4f72ff" : "#ff4747";
-        $label_column_count = $data->action == "debit" ? $data->counts : "-".$data->counts;
+    private function _make_row($data, $balance = false) {
+        $label_column_text = $data->action == "debit" ? "ADDED" : "DEDUCTED";
+        $label_column_color = $data->action == "debit" ? "#8bc408" : "#ff4747";
+        $label_column_count = $data->action == "debit" ? $data->counts : ($data->counts*-1);
+
+        if($balance) {
+            $label_column_text = "BALANCE";
+            $label_column_color = "#4f72ff";
+            $label_column_count = $data->balance;
+        }
 
         return array(
             get_team_member_profile_link($data->user_id, $data->fullname, array("target" => "_blank")),
             "<span class='mt0 label' style='background-color:".$label_column_color.";' title=" . lang("label") . ">" . strtoupper($label_column_text) . "</span> ",
-            $label_column_count,
+            strval(convert_number_to_decimal($label_column_count)),
             $data->remarks ? $data->remarks : "-",
             $data->date_created ? $data->date_created : "-",
             get_team_member_profile_link($data->created_by, $data->creator, array("target" => "_blank")),

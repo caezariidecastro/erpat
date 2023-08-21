@@ -8,7 +8,7 @@
 if (!function_exists('get_timezone_offset')) {
 
     function get_timezone_offset() {
-        $timeZone = new DateTimeZone(get_setting("timezone"));
+        $timeZone = new DateTimeZone(get_setting("timezone", "Asia/Manila"));
         $dateTime = new DateTime("now", $timeZone);
         return $timeZone->getOffset($dateTime);
     }
@@ -24,7 +24,7 @@ if (!function_exists('get_timezone_offset')) {
  */
 if (!function_exists('convert_date_local_to_utc')) {
 
-    function convert_date_local_to_utc($date = "", $format = "Y-m-d H:i:s") {
+    function convert_date_local_to_utc($date = "", $format = "Y-m-d H:i:s", $add_days = 0, $negative = false) {
         if (!$date) {
             return false;
         }
@@ -32,7 +32,11 @@ if (!function_exists('convert_date_local_to_utc')) {
         $time_offset = get_timezone_offset() * -1;
 
         //add time offset
-        return date($format, strtotime($date) + $time_offset);
+        if($negative) {
+            return date($format, strtotime($date . "-$add_days days") + $time_offset);
+        } else {
+            return date($format, strtotime($date . "+$add_days days") + $time_offset);
+        }
     }
 
 }
@@ -62,9 +66,14 @@ if (!function_exists('get_current_utc_time')) {
  */
 if (!function_exists('convert_date_utc_to_local')) {
 
-    function convert_date_utc_to_local($date_time, $format = "Y-m-d H:i:s") {
+    function convert_date_utc_to_local($date_time, $format = "Y-m-d H:i:s", $add_days = 0, $negative = false) {
         $date = new DateTime($date_time . ' +00:00');
         $date->setTimezone(new DateTimeZone(get_setting('timezone')));
+        if($negative) {
+            $date->sub(new DateInterval("P".$add_days."D"));
+        } else {
+            $date->add(new DateInterval("P".$add_days."D"));
+        }
         return $date->format($format);
     }
 
@@ -192,7 +201,7 @@ if (!function_exists('convert_time_string_to_decimal')) {
  */
 if (!function_exists('convert_seconds_to_time_format')) {
 
-    function convert_seconds_to_time_format($seconds = 0) {
+    function convert_seconds_to_time_format($seconds = 0, $addUnits = false) {
         $is_negative = false;
         if ($seconds < 0) {
             $seconds = $seconds * -1;
@@ -208,6 +217,10 @@ if (!function_exists('convert_seconds_to_time_format')) {
         $secs = ($secs < 10) ? "0" . $secs : $secs;
 
         $string = $hours . ":" . $mins . ":" . $secs;
+        if($addUnits) {
+            $string = $hours . "h " . $mins . "m " . $secs."s";
+        }
+        
         if ($is_negative) {
             $string = "-" . $string;
         }
@@ -431,6 +444,24 @@ if (!function_exists('get_date_difference_in_days')) {
 
 }
 
+/**
+ * get date difference in month
+ * 
+ * $start_date && $end_date should be Y-m-d format
+ * 
+ * @return difference in month
+ */
+if (!function_exists('get_date_difference_in_months')) {
+
+    function get_date_difference_in_months($start_date, $end_date) {
+
+        $start = new DateTime($start_date);
+        $end = new DateTime($end_date);
+
+        return $end->diff($start)->format("%a")/30.417;
+    }
+
+}
 
 /**
  * is online user? if the last online <= 1 minute then we'll assume that the user is online
@@ -513,4 +544,227 @@ if (!function_exists('convert_hours_to_humanize_data')) {
         return $duration->humanize();
     }
 
+}
+
+//Convert time to hour in decimal.
+if (!function_exists('convert_seconds_to_hour_decimal')) {
+
+    function convert_seconds_to_hour_decimal($seconds = 0) {
+        $is_negative = false;
+        if ($seconds < 0) {
+            $seconds = $seconds * -1;
+            $is_negative = true;
+        }
+        $seconds = $seconds * 1;
+        $hours = floor($seconds / 3600);
+        $mins = floor(($seconds - ($hours * 3600)) / 60);
+        $secs = floor($seconds % 60);
+
+        $total = $hours + (($mins+($secs/60))/60);
+        $total = number_format($total, 2, '.', ',');
+        if ($is_negative) {
+            $total = -$total;
+        }
+        return strval( convert_number_to_decimal($total) );
+    }
+
+}
+
+if (!function_exists('add_day_to_datetime')) {
+
+    function add_day_to_datetime($datetime, $days = 0, $format = "Y-m-d H:i:s") {
+        $date = new DateTime($datetime);
+        $date->add(new DateInterval("P".$days."D"));
+       return $date->format($format);
+    }
+
+    
+}
+
+if (!function_exists('sub_day_to_datetime')) {
+
+    function sub_day_to_datetime($datetime, $days = 0, $format = "Y-m-d H:i:s") {
+        $date = new DateTime($datetime);
+        $date->sub(new DateInterval("P".$days."D"));
+       return $date->format($format);
+    }
+
+}
+
+if (!function_exists('pluralize_text')) {
+
+    function pluralize_text( $count, $text )
+    {
+        return $count . ( ( $count == 1 ) ? ( " $text" ) : ( " ${text}s" ) );
+    }
+
+}
+
+if (!function_exists('last_online_text')) {
+
+    function last_online_text($last_online) {
+
+        if(!$last_online) {
+            return "Never";
+        }
+
+        //get Date diff as intervals 
+        $d1 = new DateTime( convert_date_utc_to_local($last_online) );
+        $d2 = new DateTime( get_my_local_time() );
+        $interval = $d1->diff($d2);
+
+        $diff_seconds = $interval->s;
+        $diff_minutes = $interval->i;
+        $diff_hours   = $interval->h;
+        $diff_days    = $interval->d;
+        $diff_weeks    = floor($interval->d/7);
+        $diff_months  = $interval->m;
+        $diff_years   = $interval->y;
+
+        $suffix = ( $interval->invert ? ' ago' : '' );
+
+        if ( $interval->y >= 1 ) {
+            return pluralize_text( $interval->y, 'year' ) . $suffix;
+        } else if ( $interval->m >= 1 ) {
+            return pluralize_text( $interval->m, 'month' ) . $suffix;
+        } else if ( $interval->d >= 1 ) {
+            return pluralize_text( $interval->d, 'day' ) . $suffix;
+        } else if ( $interval->h >= 1 ) {
+            return pluralize_text( $interval->h, 'hour' ) . $suffix;
+        } else if ( $interval->i >= 1 ) {
+            return pluralize_text( $interval->i, 'minute' ) . $suffix;
+        } else if ( $interval->s >= 1 ) {
+            return pluralize_text( $interval->s, 'second' ) . $suffix;
+        } else {
+            return "Online";
+        }
+    }
+
+}
+
+if (!function_exists('get_day_name')) {
+
+    function get_day_name($day_short) {
+        
+        switch($day_short) {
+            case "mon":
+                return "monday";
+                break;
+            case "tue":
+                return "tuesday";
+                break;
+            case "wed":
+                return "wednesday";
+                break;
+            case "thu":
+                return "thursday";
+                break;
+            case "fri":
+                return "friday";
+                break;
+            case "sat":
+                return "saturday";
+                break;
+            case "sun":
+                return "sunday";
+                break;
+            default:
+                return "unknown";
+                break;
+        }
+    }
+    
+}
+
+
+if (!function_exists('get_sched_title')) {
+
+    function get_sched_title($key) {
+        
+        switch($key) {
+            case "":
+                return "Regular";
+                break;
+            case "_first":
+                return "1st Break";
+                break;
+            case "_lunch":
+                return "Lunch Break";
+                break;
+            case "_second":
+                return "2nd Break";
+                break;
+            default:
+                return "unknown";
+                break;
+        }
+    }
+    
+}
+
+/**
+ * convert timestamp to date with timezone.
+ * 
+ * @param string $format
+ * @return local date
+ */
+if (!function_exists('convert_timestamp_to_date')) {
+
+    function convert_timestamp_to_date($timestamp, $format = "Y-m-d H:i:s") {
+        return date($format, $timestamp);
+    }
+
+}
+
+/**
+ * Convert the date to new specified format.
+ * 
+ * @param string $date
+ * @param string $format
+ * @return datetime date
+ */
+if (!function_exists('convert_date_format')) {
+    function convert_date_format($date = "", $format = "Y-m-d H:i:s") {
+        if (!$date) {
+            return false;
+        }
+
+        return date($format, strtotime($date));
+    }
+}
+
+
+if (!function_exists('get_time_overlap_seconds')) {
+    function get_time_overlap_seconds($start_one, $end_one, $start_two, $end_two) {
+
+        $start_one = new DateTime($start_one);
+        $end_one = new DateTime($end_one);
+        $start_two = new DateTime($start_two);
+        $end_two = new DateTime($end_two);
+
+        // Check if there is an overlap
+        if ($start_one < $end_two && $start_two < $end_one) {
+            // Calculate the overlapping time
+            $overlapStart = max($start_one, $start_two);
+            $overlapEnd = min($end_one, $end_two);
+            $overlap = $overlapEnd->diff($overlapStart);
+
+            return ($overlap->days * 24 * 60 * 60) + ($overlap->h * 60 * 60) + ($overlap->i * 60) + $overlap->s;
+        }
+     
+        return 0; //Return 0 if there is no overlap
+    }
+}
+
+if (!function_exists('is_within_range')) {
+    function is_within_range($datetime, $start = '00:00', $end = '03:00') {
+        $dt = new DateTime($datetime);
+        $dt_time = $dt->format('H:i');
+    
+        if ($dt_time >= $start && $dt_time <= $end) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

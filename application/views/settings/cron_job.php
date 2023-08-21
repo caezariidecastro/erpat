@@ -40,7 +40,7 @@
                                 $status_class = "label-danger";
                             }
 
-                            echo "<span class='label $status_class large'>" . $text . "</span>";
+                            echo "<span id='last_cron_job_time' class='label $status_class large'>" . $text . "</span>";
                             ?>
                         </div>
                     </div> 
@@ -51,12 +51,21 @@
                         </div>
                     </div> 
                     <div class="form-group clearfix">
-                        <label  class=" col-md-2">cPanel Cron Job Command *</label>
+                        <label  class=" col-md-2">Cron Job Command *</label>
                         <div class=" col-md-10">
                             <div>
                                 <?php echo "<pre>wget -q -O- " . get_uri("cron") . "</pre>"; ?>
                             </div>
                         </div>
+                    </div> 
+                    <div class="form-group clearfix" >
+                        <?php echo form_open(get_uri("settings/override_cron_command"), array("id" => "cron-settings-form", "class" => "general-form dashed-row", "style" => "display: flex;", "role" => "form")); ?>
+                        <button type="submit" class="btn btn-primary"><span class="fa fa-fire"></span> <?php echo lang('run_cron_command'); ?></button>
+                        <div style="position: absolute; right: 30px;">
+                            <input id="autocron" type="checkbox" data-toggle="toggle" style="transform: scale(1.4); margin-right: 10px;">
+                            Auto-Cron every <input type="number" id="cronfreq" min="2" max="60" value="5"> s
+                        </div>
+                        <?php echo form_close(); ?>
                     </div> 
                 </div>
 
@@ -65,3 +74,56 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#cron-settings-form").appForm({
+            isModal: false,
+            onSuccess: function (result) {
+                $('#last_cron_job_time').text(result.data);
+                appAlert.success(result.message, {duration: 5000});
+            },
+            onError: function(result) {
+                appLoader.hide();
+                appAlert.error(result.message, {duration: 5000});
+            }
+        });
+
+        let auto_loop = null;
+        $('#autocron').on('input', function() {
+            exe_loop();
+        });
+
+        $("#cronfreq").change(function(){
+            exe_loop();
+        });
+
+        function exe_loop() {
+            if(auto_loop) {
+                clearInterval(auto_loop);
+            }
+            
+            if( $('#autocron').is(":checked") ) {
+                let freq = $('#cronfreq').val();
+                start_loop( freq*1000 );
+            }
+        }
+
+        function start_loop(frequency) {
+            auto_loop = setInterval(() => {
+                $.ajax({
+                    url: "<?= get_uri("settings/run_cron_command") ?>",
+                    data: {},
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (response) {
+                        if(response.success) {
+                            $('#last_cron_job_time').text(response.data);
+                            appAlert.success("Autocron executed successfully.", {duration: 2000});
+                        }
+                    }
+                });
+            }, frequency);
+        }
+    });
+</script>

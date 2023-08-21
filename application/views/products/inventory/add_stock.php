@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("mes/ProductInventory/add_stock"), array("id" => "inventory-override-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/ProductInventory/add_stock"), array("id" => "inventory-override-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="warehouse_id" value="<?= $warehouse_id?>">
     <input type="hidden" name="inventory_id" value="<?= $inventory_id?>">

@@ -70,6 +70,33 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="invoice_terms" class=" col-md-2"><?php echo lang('invoice_terms'); ?></label>
+                        <div class=" col-md-10">
+                            <?php
+                            echo form_textarea(array(
+                                "id" => "invoice_terms",
+                                "name" => "invoice_terms",
+                                "value" => get_setting("invoice_terms"),
+                                "class" => "form-control"
+                            ));
+                            ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="invoice_warranty" class=" col-md-2"><?php echo lang('invoice_warranty'); ?></label>
+                        <div class=" col-md-10">
+                            <?php
+                            echo form_textarea(array(
+                                "id" => "invoice_warranty",
+                                "name" => "invoice_warranty",
+                                "value" => get_setting("invoice_warranty"),
+                                "class" => "form-control"
+                            ));
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="invoice_style" class=" col-md-2"><?php echo lang('invoice_style'); ?></label>
                         <div class="col-md-10">
                             <?php
@@ -278,6 +305,8 @@ load_js(array(
         $("#invoice-settings-form .select2").select2();
 
         initWYSIWYGEditor("#invoice_footer", {height: 100});
+        initWYSIWYGEditor("#invoice_terms", {height: 100});
+        initWYSIWYGEditor("#invoice_warranty", {height: 100});
 
         $(".cropbox-upload").change(function () {
             showCropBox(this);

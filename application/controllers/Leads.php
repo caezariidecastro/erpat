@@ -7,19 +7,24 @@ class Leads extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("lead", "redirect");
+        $this->with_permission("lead", "redirect");
 
         //check permission to access this module
-        $this->init_permission_checker("lead");
+        //$this->init_permission_checker("lead");
+        
         $this->load->model("Lead_status_model");
         $this->load->model("Lead_source_model");
+        $this->load->model("Clients_model");
+        $this->load->model("Social_links_model");
+        $this->load->model("Email_templates_model");
+        $this->load->model("General_files_model");
     }
 
     /* load leads list view */
 
     function index() {
-        $this->validate_user_sub_module_permission("module_mcs");
-        $this->access_only_allowed_members();
-        $this->check_module_availability("module_lead");
+        //$this->access_only_allowed_members();
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("leads", $this->login_user->is_admin, $this->login_user->user_type);
 
@@ -39,7 +44,7 @@ class Leads extends MY_Controller {
     }
 
     private function make_lead_modal_form_data($lead_id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "numeric"
@@ -87,7 +92,7 @@ class Leads extends MY_Controller {
     function save() {
         $client_id = $this->input->post('id');
 
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "numeric",
@@ -137,7 +142,7 @@ class Leads extends MY_Controller {
     /* delete or undo a lead */
 
     function delete() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -155,7 +160,7 @@ class Leads extends MY_Controller {
     /* list of leads, prepared for datatable  */
 
     function list_data() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("leads", $this->login_user->is_admin, $this->login_user->user_type);
         $options = array(
             "custom_fields" => $custom_fields,
@@ -223,8 +228,7 @@ class Leads extends MY_Controller {
     /* load lead details view */
 
     function view($client_id = 0, $tab = "") {
-        $this->check_module_availability("module_lead");
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         if ($client_id) {
             $options = array("id" => $client_id);
@@ -263,7 +267,7 @@ class Leads extends MY_Controller {
     /* load estimates tab  */
 
     function estimates($client_id) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         if ($client_id) {
             $view_data["lead_info"] = $this->Clients_model->get_one($client_id);
@@ -278,7 +282,7 @@ class Leads extends MY_Controller {
     /* load estimate requests tab  */
 
     function estimate_requests($client_id) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         if ($client_id) {
             $view_data['client_id'] = $client_id;
@@ -289,7 +293,7 @@ class Leads extends MY_Controller {
     /* load notes tab  */
 
     function notes($client_id) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         if ($client_id) {
             $view_data['client_id'] = $client_id;
@@ -300,7 +304,7 @@ class Leads extends MY_Controller {
     /* load events tab  */
 
     function events($client_id) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         if ($client_id) {
             $view_data['client_id'] = $client_id;
@@ -313,7 +317,7 @@ class Leads extends MY_Controller {
 
     function files($client_id) {
 
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $options = array("client_id" => $client_id);
         $view_data['files'] = $this->General_files_model->get_details($options)->result();
@@ -327,7 +331,7 @@ class Leads extends MY_Controller {
         $view_data['model_info'] = $this->General_files_model->get_one($this->input->post('id'));
         $client_id = $this->input->post('client_id') ? $this->input->post('client_id') : $view_data['model_info']->client_id;
 
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $view_data['client_id'] = $client_id;
         $this->load->view('leads/files/modal_form', $view_data);
@@ -344,7 +348,7 @@ class Leads extends MY_Controller {
         ));
 
         $client_id = $this->input->post('client_id');
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
 
         $files = $this->input->post("files");
@@ -387,7 +391,7 @@ class Leads extends MY_Controller {
     /* list of files, prepared for datatable  */
 
     function files_list_data($client_id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $options = array("client_id" => $client_id);
         $list_data = $this->General_files_model->get_details($options)->result();
@@ -433,7 +437,7 @@ class Leads extends MY_Controller {
         $file_info = $this->General_files_model->get_details(array("id" => $file_id))->row();
 
         if ($file_info) {
-            $this->access_only_allowed_members();
+            //$this->access_only_allowed_members();
 
             if (!$file_info->client_id) {
                 redirect("forbidden");
@@ -508,8 +512,7 @@ class Leads extends MY_Controller {
     }
 
     function contact_profile($contact_id = 0, $tab = "") {
-        $this->check_module_availability("module_lead");
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $view_data['user_info'] = $this->Users_model->get_one($contact_id);
         $view_data['lead_info'] = $this->Clients_model->get_one($view_data['user_info']->client_id);
@@ -528,7 +531,7 @@ class Leads extends MY_Controller {
     /* load contacts tab  */
 
     function contacts($client_id) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         if ($client_id) {
             $view_data['client_id'] = $client_id;
@@ -541,7 +544,7 @@ class Leads extends MY_Controller {
     /* contact add modal */
 
     function add_new_contact_modal_form() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $view_data['model_info'] = $this->Users_model->get_one(0);
         $view_data['model_info']->client_id = $this->input->post('client_id');
@@ -554,7 +557,7 @@ class Leads extends MY_Controller {
 
     function contact_general_info_tab($contact_id = 0) {
         if ($contact_id) {
-            $this->access_only_allowed_members();
+            //$this->access_only_allowed_members();
 
             $view_data['model_info'] = $this->Users_model->get_one($contact_id);
             $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("lead_contacts", $contact_id, $this->login_user->is_admin, $this->login_user->user_type)->result();
@@ -569,7 +572,7 @@ class Leads extends MY_Controller {
 
     function company_info_tab($client_id = 0) {
         if ($client_id) {
-            $this->access_only_allowed_members();
+            //$this->access_only_allowed_members();
 
             $view_data['model_info'] = $this->Clients_model->get_one($client_id);
             $view_data['statuses'] = $this->Lead_status_model->get_details()->result();
@@ -590,7 +593,7 @@ class Leads extends MY_Controller {
 
     function contact_social_links_tab($contact_id = 0) {
         if ($contact_id) {
-            $this->access_only_allowed_members();
+            //$this->access_only_allowed_members();
 
             $view_data['user_id'] = $contact_id;
             $view_data['user_type'] = "lead";
@@ -605,7 +608,7 @@ class Leads extends MY_Controller {
         $contact_id = $this->input->post('contact_id');
         $client_id = $this->input->post('client_id');
 
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $user_data = array(
             "first_name" => $this->input->post('first_name'),
@@ -674,7 +677,7 @@ class Leads extends MY_Controller {
 
     //save social links of a contact
     function save_contact_social_links($contact_id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $id = 0;
 
@@ -708,7 +711,7 @@ class Leads extends MY_Controller {
 
     //save profile image of a contact
     function save_profile_image($user_id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         //process the the file which has uploaded by dropzone
         $profile_image = str_replace("~", ":", $this->input->post("profile_image"));
@@ -741,7 +744,7 @@ class Leads extends MY_Controller {
             "id" => "required|numeric"
         ));
 
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $id = $this->input->post('id');
 
@@ -764,7 +767,7 @@ class Leads extends MY_Controller {
 
     function contacts_list_data($client_id = 0) {
 
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("lead_contacts", $this->login_user->is_admin, $this->login_user->user_type);
 
@@ -829,7 +832,7 @@ class Leads extends MY_Controller {
     /* upadate a lead status */
 
     function save_lead_status($id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $data = array(
             "lead_status_id" => $this->input->post('value')
@@ -845,8 +848,7 @@ class Leads extends MY_Controller {
     }
 
     function all_leads_kanban() {
-        $this->access_only_allowed_members();
-        $this->check_module_availability("module_lead");
+        //$this->access_only_allowed_members();
 
         $view_data['owners_dropdown'] = $this->_get_owners_dropdown("filter");
         $view_data['lead_sources'] = $this->Lead_source_model->get_details()->result();
@@ -855,8 +857,7 @@ class Leads extends MY_Controller {
     }
 
     function all_leads_kanban_data() {
-        $this->access_only_allowed_members();
-        $this->check_module_availability("module_lead");
+        //$this->access_only_allowed_members();
 
         $options = array(
             "status" => $this->input->post('status'),
@@ -874,8 +875,7 @@ class Leads extends MY_Controller {
     }
 
     function save_lead_sort_and_status() {
-        $this->access_only_allowed_members();
-        $this->check_module_availability("module_lead");
+        //$this->access_only_allowed_members();
 
         validate_submitted_data(array(
             "id" => "required|numeric"
@@ -896,7 +896,7 @@ class Leads extends MY_Controller {
     }
 
     function make_client_modal_form($lead_id = 0) {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         //prepare company details
         $view_data["lead_info"] = $this->make_lead_modal_form_data($lead_id);
@@ -919,7 +919,7 @@ class Leads extends MY_Controller {
     }
 
     function save_as_client() {
-        $this->access_only_allowed_members();
+        //$this->access_only_allowed_members();
 
         $client_id = $this->input->post('main_client_id');
 
@@ -1036,7 +1036,7 @@ class Leads extends MY_Controller {
                     }
                 }
 
-                echo json_encode(array("success" => true, 'redirect_to' => get_uri("pms/clients/view/$save_client_id"), "message" => lang('record_saved')));
+                echo json_encode(array("success" => true, 'redirect_to' => get_uri("sales/Clients/view/$save_client_id"), "message" => lang('record_saved')));
             } else {
                 echo json_encode(array("success" => false, lang('error_occurred')));
             }
@@ -1312,7 +1312,7 @@ class Leads extends MY_Controller {
     }
 
     function download_sample_excel_file() {
-        download_app_files(get_setting("system_file_path"), serialize(array(array("file_name" => "import-leads-sample.xlsx"))));
+        download_app_files(get_setting("system_default_path"), serialize(array(array("file_name" => "import-leads-sample.xlsx"))));
     }
 
 }

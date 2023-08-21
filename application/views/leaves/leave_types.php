@@ -14,10 +14,13 @@
             columns: [
                 {title: '<?php echo lang("title"); ?>'},
                 {title: '<?php echo lang("description"); ?>'},
+                {title: '<?php echo lang("required_credits"); ?>'},
+                {title: '<?php echo lang("paid"); ?>'},
                 {title: '<?php echo lang("status"); ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
             ],
-            printColumns: [0, 1, 2]
+            printColumns: [0, 1, 2],
+            tableRefreshButton: true
         });
     });
 </script>

@@ -16,3 +16,26 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#confirmationModal').on('shown.bs.modal', function (e) {
+            var reason = JSON.stringify($('.user-status-confirm').attr('class'))
+            if(typeof reason !== 'undefined') {
+                if(reason.indexOf('restore') !== -1) {
+                    $('#confirmationModalTitle').text('Restore?');
+                    $('#confirmDeleteButton').removeClass('btn-danger');
+                    $('#confirmDeleteButton').addClass('btn-primary');
+                    $('#confirmDeleteButton').text('Restore');
+                    return;
+                }
+            }
+
+            $('#confirmationModalTitle').text('<?php echo lang('delete') . "?"; ?>');
+            $('#confirmDeleteButton').removeClass('btn-primary');
+            $('#confirmDeleteButton').addClass('btn-danger');
+            $('#confirmDeleteButton').text('<?php echo lang("delete"); ?>');
+            
+        })
+    })
+</script>

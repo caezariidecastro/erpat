@@ -88,5 +88,6 @@
 
     <?php $this->load->view("includes/csrf_ajax"); ?>
     <?php $this->load->view("includes/custom_head"); ?>
+    <script>console.log('Running ERPat v<?= $this->config->item('app_version') ?>')</script>
 
 </head>

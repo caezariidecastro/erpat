@@ -18,6 +18,7 @@
                     <li><a role="presentation" class="" href="<?php echo_uri("settings/slack/"); ?>" data-target="#integration-slack">Slack</a></li>
                     <li><a role="presentation" class="" href="<?php echo_uri("settings/bitbucket/"); ?>" data-target="#integration-bitbucket">Bitbucket</a></li>
                     <li><a role="presentation" class="" href="<?php echo_uri("settings/github/"); ?>" data-target="#integration-github">GitHub</a></li>
+                    <li><a role="presentation" class="" href="<?php echo_uri("settings/firebase/"); ?>" data-target="#integration-firebase">Firebase</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -27,6 +28,7 @@
                     <div role="tabpanel" class="tab-pane fade" id="integration-slack"></div>
                     <div role="tabpanel" class="tab-pane fade" id="integration-bitbucket"></div>
                     <div role="tabpanel" class="tab-pane fade" id="integration-github"></div>
+                    <div role="tabpanel" class="tab-pane fade" id="integration-firebase"></div>
                 </div>
             </div>
         </div>
@@ -47,8 +49,9 @@
                 $("[data-target=#integration-bitbucket]").trigger("click");
             } else if (tab === "github") {
                 $("[data-target=#integration-github]").trigger("click");
+            } else if (tab === "firebase") {
+                $("[data-target=#integration-firebase]").trigger("click");
             }
         }, 210);
     });
-
 </script>

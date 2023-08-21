@@ -7,6 +7,9 @@ class Todo extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("todo", "redirect");
+
+        $this->load->model("Todo_model");
     }
 
     protected function validate_access($todo_info) {
@@ -17,8 +20,6 @@ class Todo extends MY_Controller {
 
     //load todo list view
     function index() {
-        $this->check_module_availability("module_todo");
-
         $this->template->rander("todo/index");
     }
 

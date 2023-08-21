@@ -37,6 +37,28 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="required_credits" class=" col-md-3"><?php echo lang('required_credits'); ?></label>
+        <div class="col-md-9">
+            <?= form_dropdown(
+                    "required_credits", 
+                    array(""=>"No","1"=>"Yes"), 
+                    array($model_info->required_credits), 
+                    "class='select2'"
+            ); ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="paid" class=" col-md-3"><?php echo lang('paid'); ?></label>
+        <div class="col-md-9">
+            <?= form_dropdown(
+                    "paid", 
+                    array(""=>"No","1"=>"Yes"), 
+                    array($model_info->paid), 
+                    "class='select2'"
+            ); ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="status" class=" col-md-3"><?php echo lang('status'); ?></label>
         <div class=" col-md-9">
             <?php
@@ -73,6 +95,6 @@
             }
         });
         $("#name").focus();
-
+        $('.select2').select2();
     });
 </script>    

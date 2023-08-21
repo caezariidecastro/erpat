@@ -62,9 +62,17 @@ $config['index_page'] = '';
 
 $config['temp_file_path'] = 'files/temp/';
 $config['profile_image_path'] = 'files/profile_images/';
+$config['store_image_path'] = 'files/stores_images/';
+$config['event_epass_path'] = 'files/epass_qrcodes/';
+$config['event_epass_ticket_path'] = 'files/epass_ticket/';
+$config['raffle_entry_path'] = 'files/raffle_entry/';
+$config['raffle_prize_path'] = 'files/raffle_prize/';
+$config['product_image_path'] = 'files/products_images/';
+$config['barcode_image_path'] = 'files/barcode_images/';
 $config['timeline_file_path'] = 'files/timeline_files/';
 $config['project_file_path'] = 'files/project_files/';
-$config['system_file_path'] = 'files/system/';
+$config['system_file_path'] = 'files/system_files/';
+$config['system_default_path'] = 'files/system/';
 
 
 /*
@@ -350,7 +358,7 @@ $config['cache_query_string'] = FALSE;
   | http://codeigniter.com/user_guide/libraries/encryption.html
   |
  */
-$config['encryption_key'] = 'afed2c1c995d457';
+$config['encryption_key'] = ENCRYPTION;
 
 /*
   |--------------------------------------------------------------------------
@@ -407,10 +415,10 @@ $config['sess_driver'] = 'database'; //to save the session in the database set t
 
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_table_name'] = 'ci_sessions';
-$config['sess_expiration'] = 7200;
+$config['sess_expiration'] = 86400; //1day
 $config['sess_save_path'] = 'ci_sessions';
 $config['sess_match_ip'] = FALSE;
-$config['sess_time_to_update'] = 300;
+$config['sess_time_to_update'] = 300; //5min
 $config['sess_regenerate_destroy'] = FALSE;
 
 /*
@@ -479,10 +487,10 @@ $config['global_xss_filtering'] = FALSE;
 
 
 
-$config['csrf_protection'] = TRUE;
-$config['csrf_token_name'] = 'businext_csrf_token';
-$config['csrf_cookie_name'] = 'businext_csrf_cookie';
-$config['csrf_expire'] = 7200;
+$config['csrf_protection'] = FALSE;
+$config['csrf_token_name'] = 'erpat_csrf_token';
+$config['csrf_cookie_name'] = 'erpat_csrf_cookie';
+$config['csrf_expire'] = 	7200;
 $config['csrf_regenerate'] = FALSE;
 $config['csrf_exclude_uris'] = array();
 

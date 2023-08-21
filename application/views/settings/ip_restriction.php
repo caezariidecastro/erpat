@@ -33,6 +33,12 @@
                         <i class="fa fa-info-circle"></i> <?php echo lang("enter_one_ip_per_line"); ?>
                     </div>
                 </div>
+                <div class="form-group">
+                        <label for="ip_tracking_whitelisting" class=" col-md-2"><?php echo lang('ip_tracking_whitelisting'); ?></label>
+                        <div class="col-md-10">
+                            <input type="text" value="<?php echo get_setting('whitelisted_user_ip_tracking') ?>" name="whitelisted_user_ip_tracking" id="team_members_dropdown_ip_tracking" class="w100p validate-hidden"  placeholder="<?php echo lang('whitelisted'); ?>"  />    
+                        </div>
+                    </div>
                 <div class="panel-footer">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
                 </div>
@@ -51,5 +57,12 @@
                 appAlert.success(result.message, {duration: 10000});
             }
         });
+    });
+
+    $("#ip-settings-form .select2").select2();
+
+    $("#team_members_dropdown_ip_tracking").select2({
+        multiple: true,
+        data: <?php echo ($members_dropdown); ?>
     });
 </script>

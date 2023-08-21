@@ -23,8 +23,17 @@ if (isset($page_type) && $page_type === "full") {
                     <?php echo modal_anchor(get_uri('hrs/leaves/apply_leave_modal_form'), "<i class='fa fa-plus-circle'></i> " . lang('apply_leave'), array("class" => "btn btn-default", "title" => lang('apply_leave'))); ?>
                 </div>
             </div>    
+        <?php } else { ?>
+            <div class="tab-title clearfix no-border">
+                <div class="title-button-group">
+                    <?php echo modal_anchor(get_uri('hrs/leaves/assign_leave_modal_form/'.$applicant_id), "<i class='fa fa-plus-circle'></i> " . lang('assign_leave'), array("class" => "btn btn-default", "title" => lang('assign_leave'))); ?>
+                </div>
+                <div class="title-button-group">
+                    <?php echo modal_anchor(get_uri("hrs/leaves/modal_form_add_credit/".$applicant_id), "<i class='fa fa-plus-circle'></i> " . lang('add_leave_credits'), array("class" => "btn btn-default", "title" => lang('leave_credit_add_form'))); ?>
+                    <?php echo modal_anchor(get_uri("hrs/leaves/modal_form_deduct_credit/".$applicant_id), "<i class='fa fa-minus-circle'></i> " . lang('remove_leave_credits'), array("class" => "btn btn-default", "title" => lang('leave_credit_deduct_form'))); ?>
+                </div>
+            </div>
         <?php } ?>
-
     </ul>
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane fade" id="team_member-monthly-leaves">
@@ -47,7 +56,7 @@ if (isset($page_type) && $page_type === "full") {
                             {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}
                         ],
                         printColumns: [1, 2, 3, 4],
-                        xlsColumns: [1, 2, 3, 4]
+                        xlsColumns: [1, 2, 3, 4],
                     });
                 };
 

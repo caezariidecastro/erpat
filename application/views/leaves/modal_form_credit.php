@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("hrs/leave_credits/save"), array("id" => "leave-credit-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("hrs/leave_credits/".( $credit_form_action === "convert"?"convert":"save" )), array("id" => "leave-credit-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <div class="form-group">
@@ -18,6 +18,27 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="leave_type" class=" col-md-3"><?php echo lang('leave_type')." (origin)"; ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_dropdown("leave_type_id", $leave_types_dropdown, "", "class='select2 validate-hidden' id='leave_type_id' data-rule-required='true', data-msg-required='" . lang('field_required') . "'");
+            ?>
+        </div>
+    </div>
+    <?php if( $credit_form_action === "convert" ) { ?>
+    <div class="form-group">
+        <label for="leave_type" class=" col-md-3"><i class='fa fa-arrow-down'></i> <i class='fa fa-arrow-down'></i> <i class='fa fa-arrow-down'></i> <i class='fa fa-arrow-down'></i> <i class='fa fa-arrow-down'></i></label>
+    </div>
+    <div class="form-group">
+        <label for="leave_type" class=" col-md-3"><?php echo lang('leave_type')." (target)"; ?></label>
+        <div class=" col-md-9">
+            <?php
+            echo form_dropdown("leave_type_to_id", $leave_types_dropdown, "", "class='select2 validate-hidden' id='leave_type_to_id' data-rule-required='true', data-msg-required='" . lang('field_required') . "'");
+            ?>
+        </div>
+    </div>
+    <?php } ?>
+    <div class="form-group">
         <label for="title" class=" col-md-3"><?php echo lang('credits')." (".lang('days').")"; ?></label>
         <div class=" col-md-9">
             <?php
@@ -26,6 +47,7 @@
                 "name" => "counts",
                 "value" => $model_info->counts,
                 "type" => "number",
+                "min" => "0",
                 "class" => "form-control",
                 "placeholder" => lang('number_of_days'),
                 "autofocus" => true,
@@ -63,7 +85,11 @@
     $(document).ready(function() {
         $("#leave-credit-form").appForm({
             onSuccess: function(result) {
-                $("#leave-credit-table").dataTable()._fnAjaxUpdate();
+                if(result.success) {
+                    location.reload();
+                    //$(".table-refresh-button").trigger( "click" );
+                }
+                appLoader.hide();
                 //$("#leave-credit-table").appTable({newData: result.data, dataId: result.id});
             }
         });
@@ -72,8 +98,10 @@
         if ($("#user_id").length) {
             $("#user_id").select2();
         }
-        // setDatePicker("#in_date, #out_date");
-        // setTimePicker("#in_time, #out_time");
-
+        
+        $("#leave_type_id").select2();
+        <?php if( $credit_form_action === "convert" ) { ?>
+            $("#leave_type_to_id").select2();
+        <?php } ?>
     });
 </script>    

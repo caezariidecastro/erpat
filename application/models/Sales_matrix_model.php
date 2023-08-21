@@ -18,12 +18,9 @@ class Sales_matrix_model extends Crud_model {
         , COALESCE((
             SELECT SUM(invoice_items.total)
             FROM invoice_items
-            LEFT JOIN deliveries ON deliveries.reference_number = invoice_items.delivery_reference_no
             LEFT JOIN inventory ON inventory.id = invoice_items.inventory_id
             LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
             WHERE (
-                deliveries.created_on BETWEEN '$start 00:00:00' AND '$end 23:59:59' 
-                OR 
                 invoices.bill_date BETWEEN '$start 00:00:00' AND '$end 23:59:59'
             )
             AND inventory.item_id = $inventory_items_table.id

@@ -37,8 +37,12 @@ class Crud_model extends CI_Model {
         }
     }
 
-    function get_one($id = 0) {
-        return $this->get_one_where(array('id' => $id));
+    function get_one($id = 0, $is_uuid = false) {
+        if($is_uuid) {
+            return $this->get_one_where(array('uuid' => $id));
+        } else {
+            return $this->get_one_where(array('id' => $id));
+        }
     }
 
     function get_one_where($where = array()) {
@@ -227,16 +231,24 @@ class Crud_model extends CI_Model {
         return $success;
     }
 
-    function get_dropdown_list($option_fields = array(), $key = "id", $where = array()) {
+    function delete_where($where = array()) {
+        $data = array('deleted' => 1);
+        return $this->db->update($this->table, $data, $where);
+    }
+
+    function get_dropdown_list($option_fields = array(), $key = "id", $where = array(), $add = false) {
         $where["deleted"] = 0;
         $list_data = $this->get_all_where($where, 0, 0, $option_fields[0])->result();
         $result = array();
         foreach ($list_data as $data) {
             $text = "";
             foreach ($option_fields as $option) {
-                $text .= $data->$option . " ";
+                $text .= $data->$option." ";
+                if($add == "loan") {
+                    $text = get_id_name($text, date("Y", strtotime($data->date_applied)).'-L', 4);
+                }
             }
-            $result[$data->$key] = $text;
+            $result[$data->$key] = $text . " ";
         }
         return $result;
     }

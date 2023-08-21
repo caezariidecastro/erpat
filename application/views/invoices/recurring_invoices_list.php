@@ -8,7 +8,7 @@
     }
 
     $("#recurring-invoice-table").appTable({
-    source: '<?php echo_uri("invoices/recurring_list_data") ?>',
+    source: '<?php echo_uri("sales/Invoices/recurring_list_data") ?>',
             order: [[0, "desc"]],
             rangeDatepicker: [{startDate: {name: "next_recurring_start_date"}, endDate: {name: "next_recurring_end_date"}, showClearButton: true}],
 <?php if ($currencies_dropdown) { ?>
@@ -24,6 +24,7 @@
     {title: "<?php echo lang("next_recurring_date") ?>", "iDataSort": 4, "class": "w10p"},
     {title: "<?php echo lang("repeat_every") ?>", "class": "w10p text-center"},
     {title: "<?php echo lang("cycles") ?>", "class": "w10p text-center"},
+    {title: "<?php echo lang("note") ?>", "class": "w10p text-center"},
     {title: "<?php echo lang("status") ?>", "class": "w10p text-center"},
     {title: "<?php echo lang("invoice_value") ?>", "class": "w10p text-right"},
     {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option w100", visible: optionVisibility}

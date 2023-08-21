@@ -9,7 +9,7 @@
 
         <div class="col-sm-9 col-lg-10">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div id="role-list-box" class="panel panel-default">
                         <div class="page-title clearfix">
                             <h4> <?php echo lang('roles'); ?></h4>
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-9">
                     <div id="role-details-section"> 
                         <div id="empty-role" class="text-center p15 box panel panel-default " style="min-height: 150px;">
                             <div class="box-content" style="vertical-align: middle; height: 100%"> 

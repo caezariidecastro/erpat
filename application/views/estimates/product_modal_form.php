@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("estimates/save_item"), array("id" => "estimate-item-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Estimates/save_item"), array("id" => "estimate-item-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <input type="hidden" name="estimate_id" value="<?php echo $estimate_id; ?>" />
@@ -119,7 +119,7 @@
 
     function applySelect2OnItemTitle(){
         $.ajax({
-            url: "<?php echo get_uri("invoices/get_inventory_items_select2_data/")?>", 
+            url: "<?php echo get_uri("sales/Invoices/get_inventory_items_select2_data/")?>", 
             dataType: 'json',
             success: function(data){
                 $("#estimate_item_title").select2({data: data}).change(function (e) {
@@ -127,7 +127,7 @@
                     $('#inventory_id').val(inventory_id);
         
                     $.ajax({
-                        url: "<?php echo get_uri("inventory/get_inventory"); ?>",
+                        url: "<?php echo get_uri("sales/ProductInventory/get_inventory"); ?>",
                         data: {id: inventory_id},
                         cache: false,
                         type: 'POST',

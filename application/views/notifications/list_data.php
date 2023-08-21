@@ -18,7 +18,7 @@ if (count($notifications)) {
         }
 
         $avatar = get_avatar("system_bot");
-        $title = get_setting("app_title");
+        $title = get_setting("site_title");
         if ($notification->user_id) {
             if ($notification->user_id == "999999998") {
                 //check if it's bitbucket commit notification
@@ -30,7 +30,7 @@ if (count($notifications)) {
                 $title = "GitHub";
             } else {
                 $avatar = get_avatar($notification->user_image);
-                $title = $notification->user_id ? $notification->user_name : get_setting("app_title");
+                $title = $notification->user_id ? $notification->user_name : get_setting("site_title");
             }
         }
 

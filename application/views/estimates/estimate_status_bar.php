@@ -7,7 +7,7 @@
             echo (anchor(get_uri("mcs/leads/view/" . $estimate_info->client_id), $estimate_info->company_name));
         } else if($estimate_info->client_id) {
             echo lang("client") . ": ";
-            echo (anchor(get_uri("pms/clients/view/" . $estimate_info->client_id), $estimate_info->company_name));
+            echo (anchor(get_uri("sales/Clients/view/" . $estimate_info->client_id), $estimate_info->company_name));
         } else if($estimate_info->consumer_id) {
             echo lang("consumer") . ": ";
             echo get_team_member_profile_link($estimate_info->consumer_id, trim($consumer_info->first_name . " " . $consumer_info->last_name), array("target" => "_blank"));
@@ -26,7 +26,7 @@
         <span class="ml15">
             <?php
             echo lang("estimate_request") . ": ";
-            echo (anchor(get_uri("estimate_requests/view_estimate_request/" . $estimate_info->estimate_request_id), lang('estimate_request') . " - " . $estimate_info->estimate_request_id));
+            echo (anchor(get_uri("sales/Estimates/view_estimate_request/" . $estimate_info->estimate_request_id), lang('estimate_request') . " - " . $estimate_info->estimate_request_id));
             ?>
         </span>
         <?php

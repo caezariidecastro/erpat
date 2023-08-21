@@ -9,6 +9,7 @@ class Suppliers extends MY_Controller {
         parent::__construct();
         $this->load->model("Vendors_model");
         $this->load->model("Users_model");
+        $this->load->model("Email_templates_model");
     }
 
     protected function _get_status_select2_data() {
@@ -22,7 +23,6 @@ class Suppliers extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_mes");
         $view_data["status_select2"] = $this->_get_status_select2_data();
         $this->template->rander("suppliers/index", $view_data);
     }
@@ -107,7 +107,7 @@ class Suppliers extends MY_Controller {
         );
 
         if(!$id){
-            $vendor_data["created_on"] = date('Y-m-d H:i:s');
+            $vendor_data["created_on"] = get_current_utc_time();
             $vendor_data["created_by"] = $this->login_user->id;
         }
 
@@ -198,7 +198,7 @@ class Suppliers extends MY_Controller {
 
             $user_data["disable_login"] = "1";
             $user_data["password"] = $password;
-            $user_data["created_at"] = date('Y-m-d H:i:s');
+            $user_data["created_at"] = get_current_utc_time();
             $user_data["created_by"] = $this->login_user->id;
 
             if ($this->input->post('email_login_details')) {

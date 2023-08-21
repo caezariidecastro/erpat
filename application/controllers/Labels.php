@@ -24,9 +24,9 @@ class Labels extends MY_Controller {
         } else if ($context == "invoice") {
             $this->init_permission_checker("invoice");
             return $this->access_only_allowed_members();
-        } else if ($context == "asset_entry" && get_setting("module_ats") == "1" && ($this->login_user->is_admin || get_array_value($permissions, "module_ats"))) {
+        } else if ($context == "asset_entry" && get_setting("module_ams") == "1" && ($this->login_user->is_admin || get_array_value($permissions, "module_ams"))) {
             return true;
-        } else if ($context == "event" || $context == "note" || $context == "to_do") {
+        } else if ($context == "event" || $context == "note" || $context == "to_do" || $context == "zones" || $context == "racks" || $context == "bays" || $context == "levels" || $context == "positions" || $context == "pallets" || $context == "users" || $context == "services") {
             if ($label_id) {
                 //can access only own labels if there has any associated user id with this label
                 $label_info = $this->Labels_model->get_one($label_id);
@@ -68,7 +68,7 @@ class Labels extends MY_Controller {
             "context" => $type
         );
 
-        if ($type == "event" || $type == "note" || $type == "to_do") {
+        if ($type == "event" || $type == "note" || $type == "to_do" || $type == "zones" || $context == "racks" || $context == "bays" || $context == "levels") {
             $labels_where["user_id"] = $this->login_user->id;
         }
 
@@ -106,7 +106,7 @@ class Labels extends MY_Controller {
         );
 
         //save user_id for only events and personal notes
-        if ($context == "event" || $context == "to_do" || $context == "note") {
+        if ($context == "event" || $context == "to_do" || $context == "note" || $context == "zones" || $context == "racks" || $context == "bays" || $context == "levels") {
             $label_data["user_id"] = $this->login_user->id;
         }
 

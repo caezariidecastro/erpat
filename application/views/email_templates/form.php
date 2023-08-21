@@ -43,9 +43,23 @@
         <hr />
         <div class="form-group m0">
             <button type="submit" class="btn btn-primary mr15"><span class="fa fa-check-circle"></span> <?php echo lang('save'); ?></button>
+            
             <button id="restore_to_default" data-toggle="popover" data-id="<?php echo $model_info->id; ?>" data-placement="top" type="button" class="btn btn-danger"><span class="fa fa-refresh"></span> <?php echo lang('restore_to_default'); ?></button>
         </div>
-
+        <div class="form-group mt15">
+            <div class=" col-md-12">
+                <?php
+                echo form_input(array(
+                    "id" => "test_email_address",
+                    "name" => "test_email_address",
+                    "value" => "",
+                    "placeholder" => "Email to send the preview.",
+                    "class" => "form-control"
+                ));
+                ?>
+            </div>
+            <button id="test_email" data-toggle="popover" data-placement="top" type="button" class="btn btn-warning mt15"><span class="fa fa-email"></span> <?php echo lang('test_email'); ?></button>
+        </div>
     </div>
     <?php echo form_close(); ?>
 </div>
@@ -78,11 +92,39 @@
             btnOkLabel: "<?php echo lang('yes'); ?>",
             btnCancelLabel: "<?php echo lang('no'); ?>",
             onConfirm: function () {
+                appLoader.show();
+
                 $.ajax({
                     url: "<?php echo get_uri('email_templates/restore_to_default') ?>",
                     type: 'POST',
                     dataType: 'json',
                     data: {id: this.id},
+                    success: function (result) {
+                        if (result.success) {
+                            $('#custom_message').summernote('code', result.data);
+                            appAlert.success(result.message, {duration: 10000});
+                        } else {
+                            appAlert.error(result.message);
+                        }
+                        appLoader.hide();
+                    }
+                });
+
+            }
+        });
+
+        $('#test_email').confirmation({
+            btnOkLabel: "<?php echo lang('yes'); ?>",
+            btnCancelLabel: "<?php echo lang('no'); ?>",
+            onConfirm: function () {
+                $.ajax({
+                    url: "<?php echo get_uri('email_templates/test_email') ?>",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        email: $('#test_email_address').val(),
+                        template_name: '<?= $model_info->template_name ?>'
+                    },
                     success: function (result) {
                         if (result.success) {
                             $('#custom_message').summernote('code', result.data);

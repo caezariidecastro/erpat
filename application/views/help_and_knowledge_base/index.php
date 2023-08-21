@@ -1,4 +1,4 @@
-<div id="page-content" class="clearfix p20 help-page-container <?php echo "main_" . $type ?>">
+<div id="page-content" class="clearfix p20 help-page-container <?php echo "main_" . $type ?>" style="background-color: #e5e9ec;">
     <div id="search-box-wrapper">
         <div class="help-search-box-container">
             <h2><?php
@@ -24,7 +24,7 @@
             $count++;
             ?>
             <div class="col-md-4 col-sm-12">
-                <a href="<?php echo get_uri("css/".$type . "/category/" . $category->id); ?>">
+                <a href="<?php echo get_uri($type . "/category/" . $category->id); ?>">
                     <div class="panel panel-default">
                         <div class="page-body p15 help-category-box">
                             <h4><?php echo $category->title; ?></h4>

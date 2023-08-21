@@ -3,7 +3,7 @@
         <li><a role="presentation" href="<?php echo_uri("warehouse"); ?>" data-target="#inventory"><?php echo lang('warehouse'); ?></a></li>
         <div class="tab-title clearfix no-border">
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("mes/ProductInventory/add_inventory_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_inventory'), array("class" => "btn btn-default", "title" => lang('add_inventory'), "id" => "add_inventory_button")); ?>
+                <?php echo modal_anchor(get_uri("sales/ProductInventory/add_inventory_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_inventory'), array("class" => "btn btn-default", "title" => lang('add_inventory'), "id" => "add_inventory_button")); ?>
             </div>
         </div>
     </ul>
@@ -23,7 +23,7 @@
         $('a[data-target="#inventory"]').click();
         
         $("#inventory-table").appTable({
-            source: '<?php echo_uri("mes/ProductInventory/list_data/".$id) ?>',
+            source: '<?php echo_uri("sales/ProductInventory/list_data/".$id) ?>',
             columns: [
                 {title: "<?php echo lang('title') ?> ", "class": "text-left"},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center dropdown-option w100"}

@@ -11,14 +11,15 @@ class PurchaseOrders extends MY_Controller {
         parent::__construct();
         $this->load->model("Purchase_orders_model");
         $this->load->model("Vendors_model");
-        $this->load->model("Material_entries_model");
+        $this->load->model("Inventory_item_entries_model");
         $this->load->model("Purchase_order_materials_model");
         $this->load->model("Purchase_order_budgets_model");
-        $this->load->model("Material_inventory_model");
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
         $this->load->model("Expense_categories_model");
         $this->load->model("Expenses_model");
+        $this->load->model("Payment_methods_model");
+        $this->load->model("Email_templates_model");
     }
 
     protected function _get_vendor_dropdown_data($status = null) {
@@ -72,7 +73,6 @@ class PurchaseOrders extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_mes");
         $view_data["vendor_select2"] = $this->_get_vendor_select2_data();
         $view_data["account_select2"] = $this->_get_account_select2_data();
         $this->template->rander("purchase_orders/index", $view_data);
@@ -92,7 +92,7 @@ class PurchaseOrders extends MY_Controller {
         );
 
         if(!$id){
-            $purchase_order_data["created_on"] = date('Y-m-d H:i:s');
+            $purchase_order_data["created_on"] = get_current_utc_time();
             $purchase_order_data["created_by"] = $this->login_user->id;
         }
 
@@ -136,6 +136,10 @@ class PurchaseOrders extends MY_Controller {
     }
 
     function save_material(){
+        validate_submitted_data(array(
+            "purchase_id" => "numeric"
+        ));
+
         $id = $this->input->post('id');
         $purchase_id = $this->input->post('purchase_id');
         $vendor_id = $this->input->post('vendor_id');
@@ -228,7 +232,7 @@ class PurchaseOrders extends MY_Controller {
     }
 
     private function _material_make_row($data, $vendor_id, $purchase_id) {
-        $title = "<div class='item-row strong mb5'>$data->title</div><span>" . $data->warehouse_name . "</span>";
+        $title = "<div class='item-row strong mb5'>$data->title</div>";
 
         return array(
             $title,
@@ -241,7 +245,7 @@ class PurchaseOrders extends MY_Controller {
     }
 
     function material_list_data($purchase_id = 0, $vendor_id = 0){
-        if($purchase_id && $vendor_id){
+        if($purchase_id){
             $list_data = $this->Purchase_order_materials_model->get_details(array(
                 "purchase_id" => $purchase_id
             ))->result();
@@ -260,7 +264,7 @@ class PurchaseOrders extends MY_Controller {
 
         $vendor_id = $this->input->post("vendor_id");
 
-        $view_data['material_dropdown'] = array("" => "-") + $this->Material_entries_model->get_dropdown_list(array("name"), "id", array("vendor" => $vendor_id));
+        $view_data['material_dropdown'] = array("" => "-") + $this->Inventory_item_entries_model->get_dropdown_list(array("name"), "id", array("vendor" => $vendor_id));
         $view_data['model_info'] = $this->Purchase_order_materials_model->get_one($this->input->post('id'));
         $view_data["warehouse_dropdown"] = $this->get_warehouses_select2_data($view_data['model_info']->material_id);
         $view_data["purchase_id"] = $this->input->post("purchase_id");
@@ -271,7 +275,7 @@ class PurchaseOrders extends MY_Controller {
 
     function get_warehouses_select2_data($material_id = 0){
         $material_id = !$material_id ? $this->input->post("material_id") : $material_id;
-        $warehouses = $this->Material_inventory_model->get_details(array("material_id" => $material_id))->result();
+        $warehouses = $this->Inventory_item_entries_model->get_details(array("material_id" => $material_id))->result();
 
         $warehouse_list = array(array("id" => "", "text" => "-"));
         foreach ($warehouses as $value) {

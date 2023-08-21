@@ -7,9 +7,16 @@ class Tickets extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("ticket", "no_permission");
+        $this->with_permission("ticket", "no_permission");
         $this->init_permission_checker("ticket");
 
         $this->load->model("Ticket_templates_model");
+        $this->load->model("Ticket_types_model");
+        $this->load->model("Ticket_comments_model");
+        $this->load->model("Tickets_model");
+        $this->load->model("Projects_model");
+        $this->load->model("Clients_model");
     }
 
     //only admin can delete tickets
@@ -19,8 +26,6 @@ class Tickets extends MY_Controller {
 
     // load ticket list view
     function index() {
-        $this->check_module_availability("module_ticket");
-
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("tickets", $this->login_user->is_admin, $this->login_user->user_type);
 
         $view_data['show_project_reference'] = get_setting('project_reference_in_tickets');
@@ -30,26 +35,52 @@ class Tickets extends MY_Controller {
             //prepare ticket label filter list
             $view_data['ticket_labels_dropdown'] = json_encode($this->make_labels_dropdown("ticket", "", true));
 
-            //prepare assign to filter list
-            $assigned_to_dropdown = array(array("id" => "", "text" => "- " . lang("assigned_to") . " -"));
-
-            $assigned_to_list = $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
-            foreach ($assigned_to_list as $key => $value) {
-                $assigned_to_dropdown[] = array("id" => $key, "text" => $value);
-            }
-
             $view_data['show_options_column'] = true; //team members can view the options column
 
-            $view_data['assigned_to_dropdown'] = json_encode($assigned_to_dropdown);
-
-            $view_data['ticket_types_dropdown'] = json_encode($this->_get_ticket_types_dropdown_list_for_filter());
-
-            $this->template->rander("tickets/tickets_list", $view_data);
+            $view_data['assigned_to_dropdown'] = json_encode($this->get_users_select2_dropdown("assigned_to"));
+            
+            $view_data['ticket_types_dropdown'] = json_encode($this->_get_ticket_types_select2_filter());
+            
+            $this->template->rander("tickets/index", $view_data);
         } else {
             $view_data['client_id'] = $this->login_user->client_id;
             $view_data['page_type'] = "full";
             $this->template->rander("clients/tickets/index", $view_data);
         }
+    }
+
+    function view_browse() {
+        $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("tickets", $this->login_user->is_admin, $this->login_user->user_type);
+
+        $view_data['show_project_reference'] = get_setting('project_reference_in_tickets');
+
+        //prepare ticket label filter list
+        $view_data['ticket_labels_dropdown'] = json_encode($this->make_labels_dropdown("ticket", "", true));
+
+        $view_data['show_options_column'] = true; //team members can view the options column
+
+        $allowed_users = $this->get_allowed_users_only("ticket_staff");
+        $view_data['assigned_to_dropdown'] = json_encode($this->get_users_select2_dropdown("assigned_to", $allowed_users));
+
+        $view_data['ticket_types_dropdown'] = json_encode($this->_get_ticket_types_select2_filter());
+        
+        $this->load->view("tickets/browse/index", $view_data);
+    }
+
+    function view_templates() {
+        $this->access_only_team_members();
+        $view_data["type"] = "templates";
+        $this->load->view("tickets/templates/index", $view_data);
+    }
+
+    function view_types() {
+        $view_data["type"] = "types";
+        $this->load->view("tickets/types/index", $view_data);
+    }
+
+    function view_settings() {
+        $view_data["type"] = "settings";
+        $this->load->view("settings/tickets/", $view_data);
     }
 
     //load new tickt modal 
@@ -104,9 +135,7 @@ class Tickets extends MY_Controller {
         $requested_by_suggestion = array(array("id" => "", "text" => "-"));
         $view_data['requested_by_dropdown'] = $requested_by_suggestion;
 
-        //prepare assign to list
-        $assigned_to_dropdown = array("" => "-") + $this->Users_model->get_dropdown_list(array("first_name", "last_name"), "id", array("deleted" => 0, "user_type" => "staff"));
-        $view_data['assigned_to_dropdown'] = $assigned_to_dropdown;
+        $view_data['assigned_to_dropdown'] = $this->get_users_select2_filter("assigned_to", "ticket_staff");
 
         //prepare label suggestions
         $view_data['label_suggestions'] = $this->make_labels_dropdown("ticket", $view_data['model_info']->labels);
@@ -323,7 +352,7 @@ class Tickets extends MY_Controller {
         $ticket_status = "<span class='label $ticket_status_class large clickable'>" . lang($data->status) . "</span> ";
 
 
-        $title = anchor(get_uri("css/tickets/view/" . $data->id), $data->title);
+        $title = anchor(get_uri("tickets/view/" . $data->id), $data->title);
 
 
         //show labels fild to team members only
@@ -341,9 +370,9 @@ class Tickets extends MY_Controller {
         }
 
         $row_data = array(
-            anchor(get_uri("css/tickets/view/" . $data->id), get_ticket_id($data->id)),
+            anchor(get_uri("tickets/view/" . $data->id), get_ticket_id($data->id)),
             $title,
-            $data->company_name ? anchor(get_uri("pms/clients/view/" . $data->client_id), $data->company_name) : lang("unknown_client"),
+            $data->company_name ? anchor(get_uri("sales/Clients/view/" . $data->client_id), $data->company_name) : lang("unknown_client"),
             $data->project_title ? anchor(get_uri("pms/projects/view/" . $data->project_id), $data->project_title) : "-",
             $data->ticket_type ? $data->ticket_type : "-",
             $assigned_to,
@@ -365,26 +394,26 @@ class Tickets extends MY_Controller {
             if ($ticket_info) {
                 $this->access_only_allowed_members_or_client_contact($ticket_info->client_id);
 
-                $edit = '<li role="presentation">' . modal_anchor(get_uri("css/tickets/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $ticket_info->id)) . '</li>';
+                $edit = '<li role="presentation">' . modal_anchor(get_uri("tickets/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit'), "data-post-view" => "details", "data-post-id" => $ticket_info->id)) . '</li>';
 
                 //show option to close/open the tickets
                 $status = "";
                 if ($ticket_info->status === "closed") {
-                    $status = '<li role="presentation">' . js_anchor("<i class='fa fa-check-circle'></i> " . lang('mark_as_open'), array('title' => lang('mark_as_open'), "class" => "", "data-action-url" => get_uri("css/tickets/save_ticket_status/$ticket_info->id/open"), "data-action" => "update")) . '</li>';
+                    $status = '<li role="presentation">' . js_anchor("<i class='fa fa-check-circle'></i> " . lang('mark_as_open'), array('title' => lang('mark_as_open'), "class" => "", "data-action-url" => get_uri("tickets/save_ticket_status/$ticket_info->id/open"), "data-action" => "update")) . '</li>';
                 } else {
-                    $status = '<li role="presentation">' . js_anchor("<i class='fa fa-check-circle'></i> " . lang('mark_as_closed'), array('title' => lang('mark_as_closed'), "class" => "", "data-action-url" => get_uri("css/tickets/save_ticket_status/$ticket_info->id/closed"), "data-action" => "update")) . '</li>';
+                    $status = '<li role="presentation">' . js_anchor("<i class='fa fa-check-circle'></i> " . lang('mark_as_closed'), array('title' => lang('mark_as_closed'), "class" => "", "data-action-url" => get_uri("tickets/save_ticket_status/$ticket_info->id/closed"), "data-action" => "update")) . '</li>';
                 }
 
                 $assigned_to = "";
                 if ($ticket_info->assigned_to === "0") {
-                    $assigned_to = '<li role="presentation">' . js_anchor("<i class='fa fa-user'></i> " . lang('assign_to_me'), array('title' => lang('assign_myself_in_this_ticket'), "data-action-url" => get_uri("css/tickets/assign_to_me/$ticket_info->id"), "data-action" => "update")) . '</li>';
+                    $assigned_to = '<li role="presentation">' . js_anchor("<i class='fa fa-user'></i> " . lang('assign_to_me'), array('title' => lang('assign_myself_in_this_ticket'), "data-action-url" => get_uri("tickets/assign_to_me/$ticket_info->id"), "data-action" => "update")) . '</li>';
                 }
 
 
                 //show the delete menu if user has access to delete the tickets
                 $delete_ticket = "";
                 if ($this->can_delete_tickets()) {
-                    $delete_ticket = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("css/tickets/delete"), "data-action" => "delete-confirmation")) . '</li>';
+                    $delete_ticket = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("tickets/delete"), "data-action" => "delete-confirmation")) . '</li>';
                 }
 
                 $row_data[] = '
@@ -600,12 +629,6 @@ class Tickets extends MY_Controller {
         }
     }
 
-    //load the ticket templates view of ticket template list
-    function ticket_templates() {
-        $this->access_only_team_members();
-        $this->template->rander("tickets/templates/index");
-    }
-
     private function can_view_ticket_template($id = 0) {
         if ($id) {
             $template_info = $this->Ticket_templates_model->get_one($id);
@@ -733,7 +756,7 @@ class Tickets extends MY_Controller {
             $title = $data->title;
             $ticket_type = "";
         } else {
-            $title = modal_anchor(get_uri("css/tickets/ticket_template_view/" . $data->id), $data->title, array("class" => "edit", "title" => lang('ticket_template'), "data-post-id" => $data->id));
+            $title = modal_anchor(get_uri("tickets/ticket_template_view/" . $data->id), $data->title, array("class" => "edit", "title" => lang('ticket_template'), "data-post-id" => $data->id));
             $ticket_type = $data->ticket_type ? $data->ticket_type : "-";
         }
 
@@ -745,10 +768,10 @@ class Tickets extends MY_Controller {
         }
 
         //only creator and admin can edit/delete templates
-        $actions = modal_anchor(get_uri("css/tickets/ticket_template_view/" . $data->id), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('template_details'), "data-modal-title" => lang('template'), "data-post-id" => $data->id));
+        $actions = modal_anchor(get_uri("tickets/ticket_template_view/" . $data->id), "<i class='fa fa-bolt'></i>", array("class" => "edit", "title" => lang('template_details'), "data-modal-title" => lang('template'), "data-post-id" => $data->id));
         if ($data->created_by == $this->login_user->id || $this->login_user->is_admin) {
-            $actions = modal_anchor(get_uri("css/tickets/ticket_template_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_template'), "data-post-id" => $data->id))
-                    . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("css/tickets/delete_ticket_template"), "data-action" => "delete-confirmation"));
+            $actions = modal_anchor(get_uri("tickets/ticket_template_modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_template'), "data-post-id" => $data->id))
+                    . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("tickets/delete_ticket_template"), "data-action" => "delete-confirmation"));
         }
 
         if ($view_type == "modal") {
@@ -821,7 +844,7 @@ class Tickets extends MY_Controller {
     /* load tickets settings modal */
 
     function settings_modal_form() {
-        $this->load->view('tickets/settings/modal_form');
+        $this->load->view('tickets/signature/modal_form');
     }
 
     /* save tickets settings */
@@ -852,22 +875,6 @@ class Tickets extends MY_Controller {
             $suggestion[] = array("id" => $key, "text" => $value);
         }
         echo json_encode($suggestion);
-    }
-
-    private function _get_ticket_types_dropdown_list_for_filter() {
-
-        $where = array();
-        if ($this->login_user->user_type === "staff" && $this->access_type !== "all") {
-            $where = array("where_in" => array("id" => $this->allowed_ticket_types));
-        }
-
-        $ticket_type = $this->Ticket_types_model->get_dropdown_list(array("title"), "id", $where);
-
-        $ticket_type_dropdown = array(array("id" => "", "text" => "- " . lang("ticket_type") . " -"));
-        foreach ($ticket_type as $id => $name) {
-            $ticket_type_dropdown[] = array("id" => $id, "text" => $name);
-        }
-        return $ticket_type_dropdown;
     }
 
 }

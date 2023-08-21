@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("client_groups/save"), array("id" => "groups-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Client_groups/save"), array("id" => "groups-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <div class="form-group">

@@ -64,13 +64,12 @@ class Help_articles_model extends Crud_model {
         $help_articles_table = $this->db->dbprefix('help_articles');
         $help_categories_table = $this->db->dbprefix('help_categories');
 
-        $search = $this->db->escape_str($search);
+        //$search = $this->db->escape_str($search);
         
         $sql = "SELECT $help_articles_table.id, $help_articles_table.title
         FROM $help_articles_table
         LEFT JOIN $help_categories_table ON $help_categories_table.id=$help_articles_table.category_id   
-        WHERE $help_articles_table.deleted=0 AND $help_articles_table.status='active' AND $help_categories_table.deleted=0 AND $help_categories_table.status='active' AND $help_categories_table.type='$type'
-            AND $help_articles_table.title LIKE '%$search%'
+        WHERE $help_articles_table.deleted=0 AND $help_articles_table.status='active' AND $help_categories_table.deleted=0 AND $help_categories_table.status='active' AND $help_categories_table.type='$type' AND ($help_articles_table.title LIKE '%$search%' OR $help_articles_table.description LIKE '%$search%') 
         ORDER BY $help_articles_table.title ASC
         LIMIT 0, 10";
 

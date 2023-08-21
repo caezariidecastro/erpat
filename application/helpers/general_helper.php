@@ -52,19 +52,28 @@ if (!function_exists('get_file_uri')) {
  */
 if (!function_exists('get_avatar')) {
 
-    function get_avatar($image = "") {
-        if ($image === "system_bot") {
+    function get_avatar($request = "", $isId = false) {
+        if ($request === "system_bot") {
             return base_url("assets/images/avatar-bot.jpg");
-        } else if ($image === "bitbucket") {
+        } else if ($request === "bitbucket") {
             return base_url("assets/images/bitbucket_logo.png");
-        } else if ($image === "github") {
+        } else if ($request === "github") {
             return base_url("assets/images/github_logo.png");
-        } else if ($image) {
-            $file = @unserialize($image);
+        } else if ($request) {
+            if($isId) {
+                $ci = get_instance();
+                $usr_instance = $ci->Users_model->get_baseinfo((int)$request);
+
+                if(!isset($usr_instance->image))
+                    return base_url("assets/images/avatar.jpg");
+
+                $request = $usr_instance->image;
+            }
+            $file = @unserialize($request);
             if (is_array($file)) {
                 return get_source_url_of_file($file, get_setting("profile_image_path") . "/", "thumbnail");
             } else {
-                return base_url(get_setting("profile_image_path")) . "/" . $image;
+                return base_url(get_setting("profile_image_path")) . "/" . $request;
             }
         } else {
             return base_url("assets/images/avatar.jpg");
@@ -304,9 +313,13 @@ if (!function_exists('active_submenu')) {
  */
 if (!function_exists('get_setting')) {
 
-    function get_setting($key = "") {
+    function get_setting($key = "", $default = "") {
         $ci = get_instance();
-        return $ci->config->item($key);
+        $value = $ci->config->item($key);
+        if(!isset($value)) {
+            return $default;
+        }
+        return $value;
     }
 
 }
@@ -672,13 +685,13 @@ if (!function_exists('to_url')) {
  */
 if (!function_exists('validate_submitted_data')) {
 
-    function validate_submitted_data($fields = array()) {
+    function validate_submitted_data($fields = array(), $returnAsBool = false) {
         $ci = get_instance();
         foreach ($fields as $field_name => $requirement) {
             $ci->form_validation->set_rules($field_name, $field_name, $requirement);
         }
 
-        if ($ci->form_validation->run() == FALSE) {
+        if ($ci->form_validation->run() == FALSE && $returnAsBool == FALSE) {
             if (ENVIRONMENT === 'production') {
                 $message = lang('something_went_wrong');
             } else {
@@ -686,6 +699,8 @@ if (!function_exists('validate_submitted_data')) {
             }
             echo json_encode(array("success" => false, 'message' => $message));
             exit();
+        } else {
+            
         }
     }
 
@@ -721,6 +736,11 @@ if (!function_exists('get_team_member_profile_link')) {
 
     function get_team_member_profile_link($id = 0, $name = "", $attributes = array()) {
         $ci = get_instance();
+
+        if( !$id ) {
+            return "None";
+        }
+
         if ($ci->login_user->user_type === "staff") {
             return anchor("hrs/employee/view/" . $id, $name, $attributes);
         } else {
@@ -761,7 +781,7 @@ if (!function_exists('get_vendor_contact_link')) {
 if (!function_exists('get_client_contact_profile_link')) {
 
     function get_client_contact_profile_link($id = 0, $name = "", $attributes = array()) {
-        return anchor("clients/contact_profile/" . $id, $name, $attributes);
+        return anchor("sales/Clients/contact_profile/" . $id, $name, $attributes);
     }
 
 }
@@ -813,6 +833,52 @@ if (!function_exists('get_invoice_status_label')) {
 
 }
 
+/**
+ * return a colorful label accroding to expense status
+ * 
+ * @param Object $expense_info
+ * @return html
+ */
+if (!function_exists('get_expense_status_label')) {
+
+    function get_expense_status_label($expense_info, $return_html = true) {
+        $expense_status_class = "label-default";
+        $status = "not_paid";
+        $now = get_my_local_time("Y-m-d");
+
+        //ignore the hidden value. check only 2 decimal place.
+        $expense_info->amount = floor($expense_info->amount * 100) / 100;
+
+        if ($expense_info->status == "cancelled") {
+            $expense_status_class = "label-danger";
+            $status = "cancelled";
+        } else if ($expense_info->status != "draft" && $expense_info->due_date < $now && $expense_info->payment_received < $expense_info->amount) {
+            $expense_status_class = "label-danger";
+            $status = "overdue";
+        } else if ($expense_info->status !== "draft" && $expense_info->payment_received <= 0) {
+            $expense_status_class = "label-warning";
+            $status = "not_paid";
+        } else if ($expense_info->payment_received * 1 && $expense_info->payment_received >= $expense_info->amount) {
+            $expense_status_class = "label-success";
+            $status = "fully_paid";
+        } else if ($expense_info->payment_received > 0 && $expense_info->payment_received < $expense_info->amount) {
+            $expense_status_class = "label-primary";
+            $status = "partially_paid";
+        } else if ($expense_info->status === "draft") {
+            $expense_status_class = "label-default";
+            $status = "draft";
+        }
+
+        $expense_status = "<span class='mt0 label $expense_status_class large'>" . lang($status) . "</span>";
+        if ($return_html) {
+            return $expense_status;
+        } else {
+            return $status;
+        }
+    }
+
+}
+
 
 
 /**
@@ -825,6 +891,9 @@ if (!function_exists('get_invoice_making_data')) {
 
     function get_invoice_making_data($invoice_id) {
         $ci = get_instance();
+        $ci->load->model("Clients_model");
+        $ci->load->model("Invoices_model");
+        $ci->load->model("Invoice_items_model");
         $invoice_info = $ci->Invoices_model->get_details(array("id" => $invoice_id))->row();
 
         $ci->load->model('Deliveries_model');
@@ -875,7 +944,7 @@ if (!function_exists('prepare_invoice_pdf')) {
             }
 
             $invoice_info = get_array_value($invoice_data, "invoice_info");
-            $pdf_file_name = lang("invoice") . "-" . $invoice_info->id . ".pdf";
+            $pdf_file_name = get_invoice_id($invoice_info->id) . ".pdf";
 
             if ($mode === "download") {
                 $ci->pdf->Output($pdf_file_name, "D");
@@ -982,14 +1051,14 @@ if (!function_exists('prepare_payroll_pdf')) {
         $ci->load->library('pdf');
         $ci->pdf->setPrintHeader(false);
         $ci->pdf->setPrintFooter(false);
-        $ci->pdf->SetCellPadding(1.5);
-        $ci->pdf->setImageScale(1.42);
+        $ci->pdf->SetCellPadding(1);
+        $ci->pdf->setImageScale(2.0);
         $ci->pdf->AddPage();
-        $ci->pdf->SetFontSize(10);
+        $ci->pdf->SetFontSize(9);
 
         if ($payroll_data) {
 
-            $html = $ci->load->view("payroll/pdf", $payroll_data, true);
+            $html = $ci->load->view("payrolls/pdf", $payroll_data, true);
             $ci->pdf->writeHTML($html, true, false, true, false, '');
 
             $payroll_info = get_array_value($payroll_data, "payroll_info");
@@ -1001,54 +1070,34 @@ if (!function_exists('prepare_payroll_pdf')) {
 
 }
 
-if (!function_exists('prepare_contribution_pdf')) {
+/**
+ * 
+ * get payroll number
+ * @param Int $payroll_id
+ * @return string
+ */
+if (!function_exists('get_payroll_id')) {
 
-    function prepare_contribution_pdf($contribution_data) {
-        $ci = get_instance();
-        $ci->load->library('pdf');
-        $ci->pdf->setPrintHeader(false);
-        $ci->pdf->setPrintFooter(false);
-        $ci->pdf->SetCellPadding(1.5);
-        $ci->pdf->setImageScale(1.42);
-        $ci->pdf->AddPage();
-        $ci->pdf->SetFontSize(10);
-
-        if ($contribution_data) {
-
-            $html = $ci->load->view("contribution_entries/pdf", $contribution_data, true);
-            $ci->pdf->writeHTML($html, true, false, true, false, '');
-
-            $contribution_info = get_array_value($contribution_data, "contribution_info");
-            $pdf_file_name =  str_replace(" ", "-", $contribution_info->employee_name) . "-" .lang("contribution") . "-" . $contribution_info->created_on . ".pdf";
-
-            $ci->pdf->Output($pdf_file_name, "I");
-        }
+    function get_payroll_id($payroll_id) {
+        $prefix = strtoupper(lang("payroll")) . " #";
+        $value = str_pad($payroll_id, 4, 0, STR_PAD_LEFT);
+        return $prefix . $value ;
     }
 
 }
 
-if (!function_exists('prepare_incentive_pdf')) {
+/**
+ * 
+ * get payslip number
+ * @param Int $payslip_id
+ * @return string
+ */
+if (!function_exists('get_payslip_id')) {
 
-    function prepare_incentive_pdf($incentive_data) {
-        $ci = get_instance();
-        $ci->load->library('pdf');
-        $ci->pdf->setPrintHeader(false);
-        $ci->pdf->setPrintFooter(false);
-        $ci->pdf->SetCellPadding(1.5);
-        $ci->pdf->setImageScale(1.42);
-        $ci->pdf->AddPage();
-        $ci->pdf->SetFontSize(10);
-
-        if ($incentive_data) {
-
-            $html = $ci->load->view("incentive_entries/pdf", $incentive_data, true);
-            $ci->pdf->writeHTML($html, true, false, true, false, '');
-
-            $incentive_info = get_array_value($incentive_data, "incentive_info");
-            $pdf_file_name =  str_replace(" ", "-", $incentive_info->employee_name) . "-" .lang("incentive") . "-" . $incentive_info->created_on . ".pdf";
-
-            $ci->pdf->Output($pdf_file_name, "I");
-        }
+    function get_payslip_id($id, $payroll_id) {
+        $prefix = str_pad($payroll_id, 4, 0, STR_PAD_LEFT); 
+        $value = str_pad($id, 3, 0, STR_PAD_LEFT);
+        return $prefix ."-". $value ;
     }
 
 }
@@ -1080,7 +1129,7 @@ if (!function_exists('prepare_estimate_pdf')) {
             }
 
             $estimate_info = get_array_value($estimate_data, "estimate_info");
-            $pdf_file_name = lang("estimate") . "-$estimate_info->id.pdf";
+            $pdf_file_name = get_estimate_id($estimate_info->id).".pdf";
 
             if ($mode === "download") {
                 $ci->pdf->Output($pdf_file_name, "D");
@@ -1109,7 +1158,23 @@ if (!function_exists('get_invoice_id')) {
     function get_invoice_id($invoice_id) {
         $prefix = get_setting("invoice_prefix");
         $prefix = $prefix ? $prefix : strtoupper(lang("invoice")) . " #";
-        return $prefix . $invoice_id;
+        return get_id_name($invoice_id, $prefix, 4);
+    }
+
+}
+
+/**
+ * 
+ * get expense number
+ * @param Int $expense_id
+ * @return string
+ */
+if (!function_exists('get_expense_id')) {
+
+    function get_expense_id($expense_id) {
+        $prefix = get_setting("expense_prefix");
+        $prefix = $prefix ? $prefix : strtoupper(lang("expense")) . " #";
+        return get_id_name($expense_id, $prefix, 4);
     }
 
 }
@@ -1117,7 +1182,7 @@ if (!function_exists('get_invoice_id')) {
 if (!function_exists('get_purchase_order_id')) {
 
     function get_purchase_order_id($purchase_order_id) {
-        return lang("purchase")." #" . $purchase_order_id;
+        return get_id_name($purchase_order_id,  lang("purchase_order")." #", 4);
     }
 
 }
@@ -1125,7 +1190,7 @@ if (!function_exists('get_purchase_order_id')) {
 if (!function_exists('get_purchase_return_id')) {
 
     function get_purchase_return_id($purchase_return_id) {
-        return strtoupper(lang("return"))." #" . $purchase_return_id;
+        return get_id_name($purchase_return_id, lang("return_order")." #", 4);
     }
 
 }
@@ -1133,15 +1198,7 @@ if (!function_exists('get_purchase_return_id')) {
 if (!function_exists('get_payroll_id')) {
 
     function get_payroll_id($id) {
-        return strtoupper(lang("payroll"))." #" . $id;
-    }
-
-}
-
-if (!function_exists('get_incentive_id')) {
-
-    function get_incentive_id($id) {
-        return strtoupper(lang("incentive"))." #" . $id;
+        return get_id_name($id, lang("payroll")." #", 4);
     }
 
 }
@@ -1157,7 +1214,7 @@ if (!function_exists('get_estimate_id')) {
     function get_estimate_id($estimate_id) {
         $prefix = get_setting("estimate_prefix");
         $prefix = $prefix ? $prefix : strtoupper(lang("estimate")) . " #";
-        return $prefix . $estimate_id;
+        return get_id_name($estimate_id, $prefix, 4);
     }
 
 }
@@ -1173,7 +1230,7 @@ if (!function_exists('get_ticket_id')) {
     function get_ticket_id($ticket_id) {
         $prefix = get_setting("ticket_prefix");
         $prefix = $prefix ? $prefix : lang("ticket") . " #";
-        return $prefix . $ticket_id;
+        return get_id_name($ticket_id, $prefix, 4);
     }
 
 }
@@ -1189,6 +1246,8 @@ if (!function_exists('get_estimate_making_data')) {
 
     function get_estimate_making_data($estimate_id) {
         $ci = get_instance();
+        $ci->load->model("Estimates_model");
+        $ci->load->model("Estimate_items_model");
         $estimate_info = $ci->Estimates_model->get_details(array("id" => $estimate_id))->row();
         if ($estimate_info) {
             $data['estimate_info'] = $estimate_info;
@@ -1212,19 +1271,21 @@ if (!function_exists('get_estimate_making_data')) {
  */
 if (!function_exists('get_team_members_and_teams_select2_data_list')) {
 
-    function get_team_members_and_teams_select2_data_list() {
+    function get_team_members_and_teams_select2_data_list($exclude_teams = false) {
         $ci = get_instance();
 
-        $team_members = $ci->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"))->result();
+        $team_members = $ci->Users_model->get_all_where(array("deleted" => 0, "status" => "active", "user_type" => "staff"))->result();
         $members_and_teams_dropdown = array();
 
         foreach ($team_members as $team_member) {
             $members_and_teams_dropdown[] = array("type" => "member", "id" => "member:" . $team_member->id, "text" => $team_member->first_name . " " . $team_member->last_name);
         }
 
-        $team = $ci->Team_model->get_all_where(array("deleted" => 0))->result();
-        foreach ($team as $team) {
-            $members_and_teams_dropdown[] = array("type" => "team", "id" => "team:" . $team->id, "text" => $team->title);
+        if(!$exclude_teams) {
+            $team = $ci->Team_model->get_all_where(array("deleted" => 0))->result();
+            foreach ($team as $team) {
+                $members_and_teams_dropdown[] = array("type" => "team", "id" => "team:" . $team->id, "text" => $team->title);
+            }
         }
 
         return $members_and_teams_dropdown;
@@ -1367,6 +1428,7 @@ if (!function_exists('update_custom_fields_changes')) {
     function update_custom_fields_changes($related_to_type, $related_to_id, $changes, $activity_log_id = 0) {
         if ($changes && count($changes)) {
             $ci = get_instance();
+            $ci->load->model("Tasks_model");
 
             $related_to_data = new stdClass();
 
@@ -1475,9 +1537,9 @@ if (!function_exists("get_file_from_setting")) {
                     return get_source_url_of_file($file, get_setting("system_file_path"), "thumbnail", $only_file_path_with_slash, $only_file_path_with_slash, $show_full_size_thumbnail);
                 } else {
                     if ($only_file_path_with_slash) {
-                        return "/" . (get_setting("system_file_path") . $setting_value);
+                        return "/" . (get_setting("system_default_path") . $setting_value);
                     } else {
-                        return get_file_uri(get_setting("system_file_path") . $setting_value);
+                        return get_file_uri(get_setting("system_default_path") . $setting_value);
                     }
                 }
             }
@@ -1668,6 +1730,7 @@ if (!function_exists('validate_invoice_verification_code')) {
     function validate_invoice_verification_code($code = "", $given_invoice_data = array()) {
         if ($code) {
             $ci = get_instance();
+            $ci->load->model("Verification_model");
             $options = array("code" => $code, "type" => "invoice_payment");
             $verification_info = $ci->Verification_model->get_details($options)->row();
 
@@ -1781,7 +1844,7 @@ if (!function_exists('can_access_messages_module')) {
         $client_message_users = get_setting("client_message_users");
         $client_message_users_array = explode(",", $client_message_users);
 
-        if (($ci->login_user->user_type === "staff" && ($ci->login_user->is_admin || get_array_value($ci->login_user->permissions, "message_permission") !== "no" || in_array($ci->login_user->id, $client_message_users_array))) || ($ci->login_user->user_type === "client" && $client_message_users)) {
+        if (($ci->login_user->user_type === "staff" && ($ci->login_user->is_admin || get_array_value($ci->login_user->permissions, "message_permission") !== "" || in_array($ci->login_user->id, $client_message_users_array))) || ($ci->login_user->user_type === "client" && $client_message_users)) {
             $can_chat = true;
         }
 
@@ -1957,23 +2020,275 @@ if (!function_exists('get_current_material_inventory_count')) {
 
 if (!function_exists('get_total_leave_credit_balance')) {
 
-    function get_total_leave_credit_balance($user_id = 0) {
+    function get_total_leave_credit_balance($user_id = 0, $leave_type_id = 0) {
         $ci = get_instance();
-        $options = array("user_id" => $user_id ? $user_id : $ci->login_user->id);
-        return $ci->Leave_credits_model->get_balance($options)['balance'];
+        $ci->load->model("Leave_credits_model");
+        $options = array("user_id" => $user_id);
+        if($leave_type_id) {
+            $options = array_merge($options,
+                array("leave_type_id"=>$leave_type_id)
+            );
+        }
+        return $ci->Leave_credits_model->get_balance($options);
     }
 }
 
-if (!function_exists('is_user_has_module_permission')) {
+if (!function_exists('is_leave_credit_required')) {
 
-    function is_user_has_module_permission($module) {
+    function is_leave_credit_required($leave_type_id) {
         $ci = get_instance();
-        $permissions = $ci->login_user->permissions;
+        $ci->load->model("Leave_types_model");
+        $options = array("id" => $leave_type_id);
+        $query = $ci->Leave_types_model->get_details($options);
+        if($query->num_rows()) {
+            return $query->row()->required_credits?true:false;
+        }
 
-        if(get_setting($module) == "1" && ($ci->login_user->is_admin || get_array_value($permissions, $module))){
+        return false;
+    }
+}
+
+if (!function_exists('sanitize_with_special_char')) {
+
+    function sanitize_with_special_char($cur_string) {
+        return trim(preg_replace('/\s\s+/', ' ',$cur_string));
+    }
+}
+
+if (!function_exists('hash_unique_id')) {
+
+    function hash_unique_id($data, $width=192, $rounds=3, $salt="bytescrafter") {
+        return substr(
+            implode(
+                array_map(
+                    function ($h) {
+                        return str_pad(bin2hex(strrev($h)), 16, "0");
+                    },
+                    str_split(hash("tiger192,$rounds", $data, true), 8)
+                )
+            ), 0, 48-(192-$width)/4
+        );
+    }
+}
+
+if (!function_exists('get_encode_where')) {
+
+    function get_encode_where($object, $encoded = 'true', $isEcho = false) {
+        if($isEcho) {
+            echo (string)$encoded === 'true' ? json_encode($object) : $object;
+        } else {
+            return (string)$encoded === 'true' ? json_encode($object) : $object;
+        }
+    }
+}
+
+/** 
+ * Get header Authorization
+ * */
+if (!function_exists('getAuthorizationHeader')) {
+    function getAuthorizationHeader(){
+        $headers = null;
+        if (isset($_SERVER['Authorization'])) {
+            $headers = trim($_SERVER["Authorization"]);
+        }
+        else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+            $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+        } elseif (function_exists('apache_request_headers')) {
+            $requestHeaders = apache_request_headers();
+            // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
+            $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+            //print_r($requestHeaders);
+            if (isset($requestHeaders['Authorization'])) {
+                $headers = trim($requestHeaders['Authorization']);
+            }
+        }
+        return $headers;
+    }
+}
+
+/**
+* get access token from header
+* */
+if (!function_exists('getBearerToken')) {
+    function getBearerToken() {
+        $headers = getAuthorizationHeader();
+        // HEADER: Get the access token from the header
+        if (!empty($headers)) {
+            if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
+                return $matches[1];
+            }
+        }
+        return null;
+    }
+}
+
+//make labels view data for different contexts
+if (!function_exists("make_status_view_data")) {
+
+    function make_status_view_data($is_active = false) {
+        return "<span class='mt0 label large' style='background-color: ".($is_active?'#46c246':'#ff4f4f').";'>" . ($is_active?'ENABLED':'DISABLED') . "</span> ";;
+    }
+
+}
+
+if (!function_exists("serialized_breaktime")) {
+    function serialized_breaktime($breaktime_object, $default = '', $convert_to_local = true, $totime = true) {
+
+        $ci = get_instance();
+        $ci->load->helper('date_time');
+
+        //Deserialized data else set to default.
+        $current = isset($breaktime_object)?unserialize($breaktime_object):[null,null,null,null,null,null];
+
+        if($totime) {
+            $current[0] = isset($current[0])?format_to_time($current[0], $convert_to_local):$default;
+            $current[1] = isset($current[1])?format_to_time($current[1], $convert_to_local):$default;
+            $current[2] = isset($current[2])?format_to_time($current[2], $convert_to_local):$default;
+            $current[3] = isset($current[3])?format_to_time($current[3], $convert_to_local):$default;
+            $current[4] = isset($current[4])?format_to_time($current[4], $convert_to_local):$default;
+            $current[5] = isset($current[5])?format_to_time($current[5], $convert_to_local):$default;
+        } else {
+            $current[0] = isset($current[0])?$current[0]:$default;
+            $current[1] = isset($current[1])?$current[1]:$default;
+            $current[2] = isset($current[2])?$current[2]:$default;
+            $current[3] = isset($current[3])?$current[3]:$default;
+            $current[4] = isset($current[4])?$current[4]:$default;
+            $current[5] = isset($current[5])?$current[5]:$default;
+        }
+
+        return $current;
+    }
+}
+
+if (!function_exists("contain_str")) {
+
+    function contain_str($haystack, $needle) {
+        if (strpos($haystack, $needle) !== false) {
             return true;
         }
 
         return false;
+    }
+
+}
+
+if (!function_exists('get_id_name')) {
+    function get_id_name($id, $prefix = "", $zeros = 2) {
+        if($id) {
+            return $prefix.str_pad($id, $zeros, '0', STR_PAD_LEFT);
+        }
+        return "-";
+    }
+}
+
+if (!function_exists('get_warehouse_link')) {
+
+    function get_warehouse_link($id = 0, $name = "", $attributes = array()) {
+        $ci = get_instance();
+
+        if( !$id ) {
+            return "None";
+        }
+
+        return anchor("inventory/Warehouses/view/" . $id, $name, $attributes);
+    }
+
+}
+
+if (!function_exists('set_user_meta')) {
+    function set_user_meta($user_id, $meta_key, $meta_val) {
+        $ci = get_instance();
+
+        return $ci->Users_model
+            ->set_meta($user_id, $meta_key, $meta_val);
+    }
+}
+
+if (!function_exists('get_user_meta')) {
+    function get_user_meta($user_id, $meta_key) {
+        $ci = get_instance();
+
+        return $ci->Users_model
+            ->get_meta($user_id, $meta_key);
+    }
+}
+
+if (!function_exists('get_night_differential')) {
+    function get_night_differential($start_date = "2023-03-27 20:00:00", $end_date = "2023-03-28 05:00:00") {
+        // Overtime start time trigger
+        $night_start = get_setting('nightpay_start_trigger', '10:00 PM'); //10pm
+        $night_start = convert_time_to_24hours_format($night_start); //22:00:00
+
+        // Overtime end time trigger
+        $night_end = get_setting('nightpay_end_trigger', '06:00 AM'); //6am
+        $night_end = convert_time_to_24hours_format($night_end); //06:00:00
+
+        // get the date base on the current start date.
+        $start_check = convert_date_format($start_date, "Y-m-d")." ".$night_start;
+        $end_check = add_day_to_datetime($start_date, 1, "Y-m-d")." ".$night_end;
+        $latest_span = get_time_overlap_seconds(
+            $start_date, $end_date, $start_check , $end_check 
+        );
+
+        // get the date base on the current start date.
+        $start_check = sub_day_to_datetime($start_date, 1, "Y-m-d")." ".$night_start;
+        $end_check = convert_date_format($start_date, "Y-m-d")." ".$night_end;
+        $pre_span = get_time_overlap_seconds(
+            $start_date, $end_date, $start_check , $end_check 
+        );
+
+        return $latest_span + $pre_span;
+    }
+}
+
+if (!function_exists('adjustBrightness')) {
+    function adjustBrightness($hex, $steps) {
+        // Steps should be between -255 and 255. Negative = darker, positive = lighter
+        $steps = max(-255, min(255, $steps));
+
+        // Normalize into a six character long hex string
+        $hex = str_replace('#', '', $hex);
+        if (strlen($hex) == 3) {
+            $hex = str_repeat(substr($hex,0,1), 2).str_repeat(substr($hex,1,1), 2).str_repeat(substr($hex,2,1), 2);
+        }
+
+        // Split into three parts: R, G and B
+        $color_parts = str_split($hex, 2);
+        $return = '#';
+
+        foreach ($color_parts as $color) {
+            $color   = hexdec($color); // Convert to decimal
+            $color   = max(0,min(255,$color + $steps)); // Adjust color
+            $return .= str_pad(dechex($color), 2, '0', STR_PAD_LEFT); // Make two char hex code
+        }
+
+        return $return;
+    }
+}
+
+if (!function_exists('get_custom_link')) {
+
+    function get_custom_link($path = "", $name = "", $attributes = array(), $new_name) {
+        $ci = get_instance();
+
+        $cur_name = $name;
+        if( isset($new_name) ) {
+            $cur_name = $new_name;
+        }
+
+        return anchor($path . $name, $cur_name, $attributes);
+    }
+
+}
+
+if (!function_exists('exit_response_with_message')) {
+
+    function exit_response_with_message($content, $is_lang = true) {
+        echo json_encode(array(
+            "success" => false,
+            "textColor" => "#ef4646",
+            "message" => $is_lang?lang($content):$content   
+        ));
+        exit;
     }
 }

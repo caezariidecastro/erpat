@@ -1,6 +1,6 @@
 <div class="modal-body clearfix">
 
-    <?php echo form_open(get_uri("estimate_requests/save_estimate_form_field"), array("id" => "estimate-form", "class" => "general-form", "role" => "form")); ?>
+    <?php echo form_open(get_uri("sales/Estimate_requests/save_estimate_form_field"), array("id" => "estimate-form", "class" => "general-form", "role" => "form")); ?>
     
     <input type="hidden" name="estimate_form_id" value="<?php echo $estimate_form_id; ?>" />
 

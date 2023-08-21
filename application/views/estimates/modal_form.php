@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("estimates/save"), array("id" => "estimate-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Estimates/save"), array("id" => "estimate-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <input type="hidden" name="estimate_request_id" value="<?php echo $estimate_request_id; ?>" />
@@ -46,6 +46,21 @@
             ?>
         </div>
     </div>
+    <?php if (!$client_id) { ?>
+    <div class="form-group">
+        <label for="type" class=" col-md-3"><?php echo lang('type'); ?></label>
+        <div class="col-md-9">
+            <label for="service" class="mr10">
+                <input id="service" name="type" type="radio" <?= !$model_info->type ? "checked" : ($model_info->type == "service" ? "checked" : "") ?> value="service"/>
+                Client
+            </label>
+            <label for="product" class="">
+                <input id="product" name="type" type="radio" <?= $model_info->type == "product" ? "checked" : "" ?> value="product"/>
+                Customer
+            </label>
+        </div>
+    </div>
+    <?php } ?>
     <?php if ($client_id) { ?>
         <input type="hidden" name="estimate_client_id" value="<?php echo $client_id; ?>" />
     <?php } else if(!$model_info->consumer_id) { ?>
@@ -67,7 +82,7 @@
         </div>
     <?php } else if($model_info->consumer_id) { ?>
         <div class="form-group">
-            <label for="estimate_client_id" class=" col-md-3" id="estimate_client_id_label"><?php echo lang('consumer'); ?></label>
+            <label for="estimate_client_id" class=" col-md-3" id="estimate_client_id_label"><?php echo lang('customer'); ?></label>
             <div class="col-md-9" id="estimate_client_selection_wrapper">
                 <?php
                 echo form_input(array(
@@ -77,7 +92,7 @@
                     "class" => "form-control",
                     "data-rule-required" => "true",
                     "data-msg-required" => lang('field_required'),
-                    "placeholder" => lang('consumer')
+                    "placeholder" => lang('customer')
                 ));
                 ?>
             </div>
@@ -113,19 +128,6 @@
                 "data-rich-text-editor" => true
             ));
             ?>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="type" class=" col-md-3"><?php echo lang('type'); ?></label>
-        <div class="col-md-9">
-            <label for="service" class="mr10">
-                <input id="service" name="type" type="radio" <?= !$model_info->type ? "checked" : ($model_info->type == "service" ? "checked" : "") ?> value="service"/>
-                Service
-            </label>
-            <label for="product" class="">
-                <input id="product" name="type" type="radio" <?= $model_info->type == "product" ? "checked" : "" ?> value="product"/>
-                Product
-            </label>
         </div>
     </div>
 
@@ -176,13 +178,13 @@
 
         $("#product").click(function(){
             $('#estimate_client_id').select2("destroy");
-            $("#estimate_client_id_label").html("Consumer");
-            $("#estimate_client_id").attr("placeholder", "Consumer");
+            $("#estimate_client_id_label").html("Customer");
+            $("#estimate_client_id").attr("placeholder", "Customer");
             $("#estimate_client_id").hide();
             appLoader.show({container: "#estimate_client_selection_wrapper", css:"left: 7%; bottom: -30px;"});
 
             $.ajax({
-                url: "<?php echo get_uri("lds/consumers/get_consumer_select2_data") ?>",
+                url: "<?php echo get_uri("sms/customer/get_customer_select2_data") ?>",
                 dataType: "json",
                 success: function (result) {
                     $("#estimate_client_id").show().val("");
@@ -200,7 +202,7 @@
             appLoader.show({container: "#estimate_client_selection_wrapper", css:"left: 7%; bottom: -30px;"});
 
             $.ajax({
-                url: "<?php echo get_uri("estimates/get_clients_and_leads_select2") ?>",
+                url: "<?php echo get_uri("sales/Estimate_requests/get_clients_and_leads_select2") ?>",
                 dataType: "json",
                 success: function (result) {
                     $("#estimate_client_id").show().val("");

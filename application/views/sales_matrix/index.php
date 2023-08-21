@@ -13,7 +13,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#sales-matrix-table").appTable({
-            source: '<?php echo_uri("sales_matrix/list_data") ?>',
+            source: '<?php echo_uri("sales/Sales_matrix/list_data") ?>',
             rangeDatepicker: [{startDate: {name: "start_date", value: ""}, endDate: {name: "end_date", value: moment().format("YYYY-MM-DD")}, showClearButton: true}],
             order: [[0, 'desc']],
             columns: [

@@ -1,22 +1,12 @@
 <!-- WORKAROUND -->
 
 <?php
-    $bill_type_lang = "";
-    $cost_type_lang = "";
-    $add_bill_type_lang = "";
-    
-    if($invoice_info->client_id){
-        $bill_type_lang = lang("service");
-        $cost_type_lang = lang("rate");
-        $add_bill_type_lang = modal_anchor(get_uri("invoices/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-invoice_id" => $invoice_info->id));
-    }
+    $bill_type_lang = lang("item");
+    $cost_type_lang = lang("rate");
 
-    if($invoice_info->consumer_id){
-        $bill_type_lang = lang("product");
-        $cost_type_lang = lang("amount");
-        $add_bill_type_lang = modal_anchor(get_uri("invoices/add_delivery_item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_product'), array("class" => "btn btn-default", "title" => lang('add_product'), "data-post-invoice_id" => $invoice_info->id));
-    }
+    $add_service_button = modal_anchor(get_uri("sales/Invoices/item_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_service'), array("class" => "btn btn-default", "title" => lang('add_service'), "data-post-invoice_id" => $invoice_info->id));
 
+    $add_product_button = modal_anchor(get_uri("sales/Invoices/product_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_product'), array("class" => "btn btn-default", "title" => lang('add_product'), "data-post-invoice_id" => $invoice_info->id));
 ?>
 
 <div id="page-content" class="clearfix">
@@ -42,32 +32,33 @@
                     <ul class="dropdown-menu" role="menu">
                         <?php 
                             if ($invoice_status !== "cancelled" && $can_edit_invoices && $invoice_info->client_id) { ?>
-                            <li role="presentation"><?php echo modal_anchor(get_uri("invoices/send_invoice_modal_form/" . $invoice_info->id), "<i class='fa fa-envelope-o'></i> " . lang('email_invoice_to_client'), array("title" => lang('email_invoice_to_client'), "data-post-id" => $invoice_info->id, "role" => "menuitem", "tabindex" => "-1")); ?> </li>
+                            <li role="presentation"><?php echo modal_anchor(get_uri("sales/Invoices/send_invoice_modal_form/" . $invoice_info->id), "<i class='fa fa-envelope-o'></i> " . lang('email_invoice_to_client'), array("title" => lang('email_invoice_to_client'), "data-post-id" => $invoice_info->id, "role" => "menuitem", "tabindex" => "-1")); ?> </li>
                         <?php } ?>
-                        <li role="presentation"><?php echo anchor(get_uri("invoices/download_pdf/" . $invoice_info->id), "<i class='fa fa-download'></i> " . lang('download_pdf'), array("title" => lang('download_pdf'))); ?> </li>
-                        <li role="presentation"><?php echo anchor(get_uri("invoices/download_pdf/" . $invoice_info->id . "/view"), "<i class='fa fa-file-pdf-o'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "target" => "_blank")); ?> </li>
-                        <li role="presentation"><?php echo anchor(get_uri("invoices/preview/" . $invoice_info->id . "/1"), "<i class='fa fa-search'></i> " . lang('invoice_preview'), array("title" => lang('invoice_preview'), "target" => "_blank")); ?> </li>
+                        <li role="presentation"><?php echo anchor(get_uri("sales/Invoices/download_pdf/" . $invoice_info->id), "<i class='fa fa-download'></i> " . lang('download_pdf'), array("title" => lang('download_pdf'))); ?> </li>
+                        <li role="presentation"><?php echo anchor(get_uri("sales/Invoices/download_pdf/" . $invoice_info->id . "/view"), "<i class='fa fa-file-pdf-o'></i> " . lang('view_pdf'), array("title" => lang('view_pdf'), "target" => "_blank")); ?> </li>
+                        <li role="presentation"><?php echo anchor(get_uri("sales/Invoices/preview/" . $invoice_info->id . "/1"), "<i class='fa fa-search'></i> " . lang('invoice_preview'), array("title" => lang('invoice_preview'), "target" => "_blank")); ?> </li>
                         <li role="presentation"><?php echo js_anchor("<i class='fa fa-print'></i> " . lang('print_invoice'), array('title' => lang('print_invoice'), 'id' => 'print-invoice-btn')); ?> </li>
 
                         <?php if ($can_edit_invoices) { ?>
                             <li role="presentation" class="divider"></li>
 
                             <?php if ($invoice_status !== "cancelled") { ?>
-                                <li role="presentation"><?php echo modal_anchor(get_uri("invoices/modal_form"), "<i class='fa fa-edit'></i> " . lang('edit_invoice'), array("title" => lang('edit_invoice'), "data-post-id" => $invoice_info->id, "role" => "menuitem", "tabindex" => "-1")); ?> </li>
+                                <li role="presentation"><?php echo modal_anchor(get_uri("sales/Invoices/modal_form"), "<i class='fa fa-edit'></i> " . lang('edit_invoice'), array("title" => lang('edit_invoice'), "data-post-id" => $invoice_info->id, "role" => "menuitem", "tabindex" => "-1")); ?> </li>
                             <?php } ?>
 
                             <?php if ($invoice_status == "draft" && $invoice_status !== "cancelled") { ?>
-                                <li role="presentation"><?php echo ajax_anchor(get_uri("invoices/update_invoice_status/" . $invoice_info->id . "/not_paid"), "<i class='fa fa-check'></i> " . lang('mark_invoice_as_not_paid'), array("data-reload-on-success" => "1")); ?> </li>
+                                <li role="presentation"><?php echo ajax_anchor(get_uri("sales/Invoices/update_invoice_status/" . $invoice_info->id . "/not_paid"), "<i class='fa fa-check'></i> " . lang('mark_invoice_as_not_paid'), array("data-reload-on-success" => "1")); ?> </li>
                             <?php } else if ($invoice_status == "not_paid" || $invoice_status == "overdue" || $invoice_status == "partially_paid") { ?>
-                                <li role="presentation"><?php echo js_anchor("<i class='fa fa-close'></i> " . lang('mark_invoice_as_cancelled'), array('title' => lang('mark_invoice_as_cancelled'), "data-action-url" => get_uri("invoices/update_invoice_status/" . $invoice_info->id . "/cancelled"), "data-action" => "delete-confirmation", "data-reload-on-success" => "1")); ?> </li>
+                                <li role="presentation"><?php echo js_anchor("<i class='fa fa-close'></i> " . lang('mark_invoice_as_cancelled'), array('title' => lang('mark_invoice_as_cancelled'), "data-action-url" => get_uri("sales/Invoices/update_invoice_status/" . $invoice_info->id . "/cancelled"), "data-action" => "delete-confirmation", "data-reload-on-success" => "1")); ?> </li>
                             <?php } ?>
-                            <li role="presentation"><?php echo modal_anchor(get_uri("invoices/modal_form"), "<i class='fa fa-copy'></i> " . lang('clone_invoice'), array("data-post-is_clone" => true, "data-post-id" => $invoice_info->id, "title" => lang('clone_invoice'))); ?></li>
+                            <li role="presentation"><?php echo modal_anchor(get_uri("sales/Invoices/modal_form"), "<i class='fa fa-copy'></i> " . lang('clone_invoice'), array("data-post-is_clone" => true, "data-post-id" => $invoice_info->id, "title" => lang('clone_invoice'))); ?></li>
                         <?php } ?>
 
                     </ul>
                 </span>
                 <?php if ($invoice_status !== "cancelled" && $can_edit_invoices) { ?>
-                    <?php echo $add_bill_type_lang; ?>
+                    <?php echo $add_service_button; ?>
+                    <?php echo $add_product_button; ?>
                     <?php echo modal_anchor(get_uri("invoice_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("class" => "btn btn-default", "title" => lang('add_payment'), "data-post-invoice_id" => $invoice_info->id)); ?>
                 <?php } ?>
             </div>
@@ -132,7 +123,7 @@
                             foreach ($files as $key => $value) {
                                 $file_name = get_array_value($value, "file_name");
                                 echo "<div>";
-                                echo js_anchor(remove_file_prefix($file_name), array("data-toggle" => "app-modal", "data-sidebar" => "0", "data-url" => get_uri("invoices/file_preview/" . $invoice_info->id . "/" . $key)));
+                                echo js_anchor(remove_file_prefix($file_name), array("data-toggle" => "app-modal", "data-sidebar" => "0", "data-url" => get_uri("sales/Invoices/file_preview/" . $invoice_info->id . "/" . $key)));
                                 echo "</div>";
                             }
                             ?>
@@ -150,7 +141,7 @@
         <?php if ($invoice_info->recurring) { ?>
             <ul id="invoice-view-tabs" data-toggle="ajax-tab" class="nav nav-tabs" role="tablist">
                 <li><a  role="presentation" href="#" data-target="#invoice-payments"> <?php echo lang('payments'); ?></a></li>
-                <li><a  role="presentation" href="<?php echo_uri("invoices/sub_invoices/" . $invoice_info->id); ?>" data-target="#sub-invoices"> <?php echo lang('sub_invoices'); ?></a></li>
+                <li><a  role="presentation" href="<?php echo_uri("sales/Invoices/sub_invoices/" . $invoice_info->id); ?>" data-target="#sub-invoices"> <?php echo lang('sub_invoices'); ?></a></li>
             </ul>
 
             <div class="tab-content">
@@ -192,7 +183,7 @@
         }
 
         $("#invoice-item-table").appTable({
-            source: '<?php echo_uri("invoices/item_list_data/" . $invoice_info->id . "/") ?>',
+            source: '<?php echo_uri("sales/Invoices/item_list_data/" . $invoice_info->id . "/") ?>',
             order: [[0, "asc"]],
             hideTools: true,
             displayLength: 100,
@@ -228,7 +219,7 @@
 
                             //update sort indexes
                             $.ajax({
-                                url: '<?php echo_uri("Invoices/update_item_sort_values") ?>',
+                                url: '<?php echo_uri("sales/Invoices/update_item_sort_values") ?>',
                                 type: "POST",
                                 data: {sort_values: data},
                                 success: function () {
@@ -288,7 +279,7 @@
 
     updateInvoiceStatusBar = function (invoiceId) {
         $.ajax({
-            url: "<?php echo get_uri("invoices/get_invoice_status_bar"); ?>/" + invoiceId,
+            url: "<?php echo get_uri("sales/Invoices/get_invoice_status_bar"); ?>/" + invoiceId,
             success: function (result) {
                 if (result) {
                     $("#invoice-status-bar").html(result);

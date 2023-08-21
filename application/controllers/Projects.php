@@ -7,9 +7,23 @@ class Projects extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
+        $this->load->model("Projects_model");
+        $this->load->model("Project_files_model");
+        $this->load->model("Project_members_model");
         $this->load->model("Project_settings_model");
+        $this->load->model("Project_comments_model");
+        $this->load->model("Milestones_model");
+        $this->load->model("Clients_model");
+        $this->load->model("Timesheets_model");
+
+        $this->load->model("Tasks_model");
         $this->load->model("Checklist_items_model");
         $this->load->model("Likes_model");
+        $this->load->model("Tickets_model");
+        $this->load->model("Attendance_model");
+        $this->load->model("Task_status_model");
+
+        $this->load->model("Estimates_model");
     }
 
     private function can_delete_projects() {
@@ -298,7 +312,6 @@ class Projects extends MY_Controller {
     }
 
     function all_projects() {
-        $this->validate_user_sub_module_permission("module_pms");
         $view_data['project_labels_dropdown'] = json_encode($this->make_labels_dropdown("project", "", true));
 
         $view_data["can_create_projects"] = $this->can_create_projects();
@@ -878,7 +891,7 @@ class Projects extends MY_Controller {
         $row_data = array(
             anchor(get_uri("pms/projects/view/" . $data->id), $data->id),
             $title,
-            anchor(get_uri("pms/clients/view/" . $data->client_id), $data->company_name),
+            anchor(get_uri("sales/Clients/view/" . $data->client_id), $data->company_name),
             $price,
             $data->start_date,
             $start_date,
@@ -1752,7 +1765,7 @@ class Projects extends MY_Controller {
         $row_data = array(
             get_team_member_profile_link($data->user_id, $user),
             $project_title,
-            anchor(get_uri("pms/clients/view/" . $data->timesheet_client_id), $data->timesheet_client_company_name),
+            anchor(get_uri("sales/Clients/view/" . $data->timesheet_client_id), $data->timesheet_client_company_name),
             $task_title,
             $data->start_time,
             ($data->hours || get_setting("users_can_input_only_total_hours_instead_of_period")) ? format_to_date($data->start_time) : format_to_datetime($data->start_time),
@@ -1875,7 +1888,7 @@ class Projects extends MY_Controller {
 
             $result[] = array(
                 $project_title,
-                anchor(get_uri("pms/clients/view/" . $data->timesheet_client_id), $data->timesheet_client_company_name),
+                anchor(get_uri("sales/Clients/view/" . $data->timesheet_client_id), $data->timesheet_client_company_name),
                 $member,
                 $task_title,
                 $duration,
@@ -1955,7 +1968,6 @@ class Projects extends MY_Controller {
     /* load all time sheets view  */
 
     function all_timesheets() {
-        $this->validate_user_sub_module_permission("module_pms");
         $this->access_only_team_members();
         $members = $this->_get_members_to_manage_timesheet();
 
@@ -2270,7 +2282,6 @@ class Projects extends MY_Controller {
     }
 
     function all_tasks() {
-        $this->validate_user_sub_module_permission("module_pms");
         $this->access_only_team_members();
         $view_data['project_id'] = 0;
         $projects = $this->Tasks_model->get_my_projects_dropdown_list($this->login_user->id)->result();
@@ -4477,7 +4488,6 @@ class Projects extends MY_Controller {
 
     //load global gantt view
     function all_gantt() {
-        $this->validate_user_sub_module_permission("module_pms");
         $this->access_only_team_members();
 
         //only admin/ the user has permission to manage all projects, can see all projects, other team mebers can see only their own projects.

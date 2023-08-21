@@ -1,6 +1,6 @@
 <div class="modal-body clearfix search-modal">
     <div class="form-group mb0">
-        <div class="row">
+        <div class="row" style="margin-top: 10px;">
             <div class=" col-sm-3">
                 <?php
                 $this->load->helper('cookie');
@@ -10,11 +10,11 @@
                     "id" => "search_field",
                     "name" => "search_field",
                     "class" => "form-control pull-left",
-                    "value" => $selected_search_field_of_user_cookie ? $selected_search_field_of_user_cookie : "task"
+                    "value" => $selected_search_field_of_user_cookie ? $selected_search_field_of_user_cookie : "all"
                 ));
                 ?>
             </div>
-            <div class="col-sm-9 pl0">
+            <div class="col-sm-7 pl0">
                 <?php
                 echo form_input(array(
                     "id" => "search",
@@ -23,9 +23,42 @@
                     "autocomplete" => "false",
                     "class" => "form-control help-search-box",
                     "placeholder" => lang('search'),
+                    "style" => "border-bottom: 1px solid #c3c3c3;",
                     "type" => "search"
                 ));
                 ?>
+            </div>
+            <div class="col-sm-2" style="text-align: right;">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span></button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="display: flex; justify-content: center; border-top: 1px dashed #c9c9c9; margin: 20px 0 0;">
+                <ul class="nav navbar-nav navbar-right inline-block">
+                    <?php
+
+                        //get the array of hidden topbar menus
+                        $hidden_topbar_menus = explode(",", get_setting("user_" . $user . "_hidden_topbar_menus"));
+
+                        if (!in_array("quick_add", $hidden_topbar_menus)) {
+                            $this->load->view("settings/topbar_parts/quick_add");
+                        }
+
+                        if (!in_array("to_do", $hidden_topbar_menus)) {
+                            $this->load->view("todo/topbar_icon");
+                        }
+                        if (!in_array("favorite_projects", $hidden_topbar_menus) && !(get_setting("disable_access_favorite_project_option_for_clients") && $this->login_user->user_type == "client")) {
+                            $this->load->view("projects/star/topbar_icon");
+                        }
+                        if (!in_array("favorite_clients", $hidden_topbar_menus)) {
+                            $this->load->view("clients/star/topbar_icon");
+                        }
+                        if (!in_array("dashboard_customization", $hidden_topbar_menus) && (get_setting("disable_new_dashboard_icon") != 1)) {
+                            $this->load->view("dashboards/list/topbar_icon");
+                        }
+
+                    ?>
+                </ul>
             </div>
         </div>
     </div>
@@ -35,17 +68,17 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $(".search-modal").closest(".modal-content").css({"border-radius": "40px"});
+        $(".search-modal").closest(".modal-content").css({"border-radius": "10px"});
         $('#ajaxModal').on('hidden.bs.modal', function () {
             $(this).find(".modal-content").css({"border-radius": "0"});
         });
 
         var $searchBox = $("#search"),
-                $searchField = $("#search_field");
+            $searchField = $("#search_field");
 
-        $searchField.select2({
-            data: <?php echo ($search_fields_dropdown); ?>
-        });
+            $searchField.select2({
+                data: <?php echo ($search_fields_dropdown); ?>
+            });
 
         var awesomplete = new Awesomplete($searchBox[0], {
             minChars: 1,
@@ -115,7 +148,7 @@
                     } else if (searchFieldValue === "project") {
                         location = "<?php echo get_uri("projects/view"); ?>/" + this.value;
                     } else if (searchFieldValue === "client") {
-                        location = "<?php echo get_uri("clients/view"); ?>/" + this.value;
+                        location = "<?php echo get_uri("sales/Clients/view"); ?>/" + this.value;
                     }
 
                     window.location.href = location;

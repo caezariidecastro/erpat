@@ -23,7 +23,6 @@ class Account_transfers extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_fas");
         $this->template->rander("account_transfers/index");
     }
 
@@ -72,7 +71,7 @@ class Account_transfers extends MY_Controller {
         );
 
         if(!$id){
-            $data["created_on"] = date('Y-m-d H:i:s');
+            $data["created_on"] = get_current_utc_time();
             $data["created_by"] = $this->login_user->id;
         }
 

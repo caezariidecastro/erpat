@@ -1,22 +1,35 @@
 <?php
 $settings_menu = array(
-    "app_settings" => array(
+    "system" => array(
         array("name" => "general", "url" => "settings/general"),
-        array("name" => "company", "url" => "settings/company"),
-        array("name" => "email_templates", "url" => "email_templates"),
-        array("name" => "modules", "url" => "settings/modules"),
-        array("name" => "notifications", "url" => "settings/notifications"),
-        //array("name" => "updates", "url" => "Updates"),
+        array("name" => "display", "url" => "settings/display"),
+        array("name" => "calendar", "url" => "settings/calendar"),
+        array("name" => "finance", "url" => "settings/finance"),
+        array("name" => "company", "url" => "settings/company")
     ),
     "components" => array(
+        array("name" => "gdpr", "url" => "settings/gdpr"),
+        array("name" => "kiosk", "url" => "settings/kiosk"),
+        array("name" => "footer", "url" => "settings/footer"),
         array("name" => "tasks", "url" => "task_status")
+    ),
+    "customization" => array(
+        array("name" => "email_templates", "url" => "email_templates"),
+        array("name" => "notifications", "url" => "settings/notifications"),
+    ),
+    "maintainance" => array(
+        array("name" => "apis", "url" => "settings/apis"),
+        array("name" => "crons", "url" => "settings/crons"),
+        array("name" => "modules", "url" => "settings/modules"),
+        array("name" => "migrate_database", "url" => "database"),
+        array("name" => "check_fix", "url" => "check_fix")
     ),
     "access_permission" => array(
         array("name" => "roles", "url" => "roles"),
     ),
     "client" => array(
         array("name" => "client_permissions", "url" => "settings/client_permissions"),
-        array("name" => "client_groups", "url" => "client_groups"),
+        array("name" => "client_groups", "url" => "sales/client_groups"),
         array("name" => "dashboard", "url" => "dashboard/client_default_dashboard"),
         array("name" => "client_left_menu", "url" => "left_menus/index/client_default"),
         array("name" => "client_projects", "url" => "settings/client_projects"),
@@ -24,7 +37,13 @@ $settings_menu = array(
     "setup" => array(
         array("name" => "custom_fields", "url" => "custom_fields"),
         array("name" => "cron_job", "url" => "settings/cron_job"),
+        array("name" => "left_menu", "url" => "left_menus"),
+        array("name" => "email_title_smtp", "url" => "settings/email"),
         array("name" => "integration", "url" => "settings/integration"),
+        array("name" => "imap_settings", "url" => "settings/imap_settings"),
+        array("name" => "system_account", "url" => "settings/system_account"),
+        array("name" => "payment_methods", "url" => "payment_methods"),
+        array("name" => "shipping_option", "url" => "settings/shipping_option"),
     ),
 );
 
@@ -38,30 +57,22 @@ if (get_setting("module_event") == "1") {
 }
 
 if (get_setting("module_invoice") == "1") {
-    $settings_menu["components"][] = array("name" => "invoices", "url" => "settings/invoices");
+    $settings_menu["customization"][] = array("name" => "invoices", "url" => "settings/invoices");
 }
 
 if (get_setting("module_estimate") == "1") {
-    $settings_menu["components"][] = array("name" => "estimates", "url" => "settings/estimates");
+    $settings_menu["customization"][] = array("name" => "estimates", "url" => "settings/estimates");
 }
 
-$settings_menu["components"][] = array("name" => "email_title_smtp", "url" => "settings/email");
-$settings_menu["components"][] = array("name" => "imap_settings", "url" => "settings/imap_settings");
+if (get_setting("module_ticket") == "1") {
+    $settings_menu["components"][] = array("name" => "tickets", "url" => "settings/tickets");
+}
 
-$settings_menu["components"][] = array("name" => "payment_methods", "url" => "payment_methods");
-$settings_menu["components"][] = array("name" => "taxes", "url" => "taxes");
 $settings_menu["components"][] = array("name" => "projects", "url" => "settings/projects");
 
 if (get_setting("module_project_timesheet") == "1") {
     $settings_menu["components"][] = array("name" => "timesheets", "url" => "settings/timesheets");
 }
-
-$settings_menu["setup"][] = array("name" => "gdpr", "url" => "settings/gdpr");
-$settings_menu["setup"][] = array("name" => "pages", "url" => "pages");
-
-$settings_menu["setup"][] = array("name" => "left_menu", "url" => "left_menus");
-
-$settings_menu["setup"][] = array("name" => "footer", "url" => "settings/footer");
 
 ?>
 

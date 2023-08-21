@@ -7,7 +7,8 @@ class Expense_categories extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->access_only_admin();
+        $this->init_permission_checker("expense");
+        $this->access_only_allowed_members();
         $this->load->model("Expense_categories_model");
     }
 
@@ -103,8 +104,11 @@ class Expense_categories extends MY_Controller {
 
     //prepare an expense category list row
     private function _make_row($data) {
-        $actions = $data->is_editable ? modal_anchor(get_uri("fas/expense_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expenses_category'), "data-post-id" => $data->id))
-        . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expenses_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/expense_categories/delete"), "data-action" => "delete")) : "Default";
+        $actions = modal_anchor(get_uri("fas/expense_categories/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expenses_category'), "data-post-id" => $data->id));
+
+        if($data->is_editable) {
+            $actions .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expenses_category'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/expense_categories/delete"), "data-action" => "delete"));
+        }
 
         return array(
             $data->title,

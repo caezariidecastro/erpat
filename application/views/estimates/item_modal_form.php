@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("estimates/save_item"), array("id" => "estimate-item-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Estimates/save_item"), array("id" => "estimate-item-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
     <input type="hidden" name="estimate_id" value="<?php echo $estimate_id; ?>" />
@@ -127,7 +127,7 @@
                 //get existing item info
                 $("#add_new_item_to_library").val(""); //reset the flag to add new item in library
                 $.ajax({
-                    url: "<?php echo get_uri("estimates/get_estimate_item_info_suggestion"); ?>",
+                    url: "<?php echo get_uri("sales/Estimate_requests/get_estimate_item_info_suggestion"); ?>",
                     data: {item_name: e.val},
                     cache: false,
                     type: 'POST',

@@ -68,7 +68,6 @@ class Entries extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_ats");
         $this->template->rander("asset_entries/index");
     }
 
@@ -129,7 +128,7 @@ class Entries extends MY_Controller {
         );
 
         if(!$id){
-            $entry_data["created_on"] = date('Y-m-d H:i:s');
+            $entry_data["created_on"] = get_current_utc_time();
             $entry_data["created_by"] = $this->login_user->id;
         }
 

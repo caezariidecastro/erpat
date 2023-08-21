@@ -8,7 +8,7 @@
 <input name="currency_code" value="<?php echo $currency; ?>" type="hidden"/>
 <input name="business" value="<?php echo get_array_value($payment_method, "email"); ?>" type="hidden" />
 
-<?php $return_url = isset($verification_code) ? get_uri("pay_invoice/index/$verification_code") : get_uri("invoices/preview/$invoice_id"); ?>
+<?php $return_url = isset($verification_code) ? get_uri("pay_invoice/index/$verification_code") : get_uri("sales/Invoices/preview/$invoice_id"); ?>
 
 <input name="return" value="<?php echo $return_url; ?>" type="hidden"/>
 <input name="cancel_return" value="<?php echo $return_url; ?>" type="hidden"/>

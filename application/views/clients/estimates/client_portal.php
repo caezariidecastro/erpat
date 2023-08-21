@@ -5,11 +5,11 @@
             <li class="title-tab"><h4 class="pl15 pt10"></h4></li>
             <li><a role="presentation" class="active" href="javascript:;" data-target="#esimates-tab"><?php echo lang("estimates"); ?></a></li>
             <?php if (isset($can_request_estimate) && $can_request_estimate) { ?>
-                <li><a role="presentation" href="<?php echo_uri("estimate_requests/estimate_requests_for_client/" . $client_id); ?>" data-target="#esimate-requests-tab"><?php echo lang('estimate_requests'); ?></a></li>
+                <li><a role="presentation" href="<?php echo_uri("sales/Estimate_requests/estimate_requests_for_client/" . $client_id); ?>" data-target="#esimate-requests-tab"><?php echo lang('estimate_requests'); ?></a></li>
                 <div class="tab-title clearfix no-border">
 
                     <div class="title-button-group">
-                        <?php echo modal_anchor(get_uri("estimate_requests/request_an_estimate_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('request_an_estimate'), array("class" => "btn btn-default", "title" => lang('request_an_estimate'))); ?>           
+                        <?php echo modal_anchor(get_uri("sales/Estimate_requests/request_an_estimate_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('request_an_estimate'), array("class" => "btn btn-default", "title" => lang('request_an_estimate'))); ?>           
                     </div>
 
                 </div>
@@ -33,7 +33,7 @@
     $(document).ready(function () {
         var currencySymbol = "<?php echo $client_info->currency_symbol; ?>";
         $("#estimate-table").appTable({
-            source: '<?php echo_uri("estimates/estimate_list_data_of_client/" . $client_id) ?>',
+            source: '<?php echo_uri("sales/Estimates/estimate_list_data_of_client/" . $client_id) ?>',
             order: [[0, "desc"]],
             columns: [
                 {title: "<?php echo lang("estimate") ?>", "class": "w25p"},

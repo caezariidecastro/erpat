@@ -14,7 +14,7 @@
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
                                 <?php if ($this->login_user->user_type == "staff") { ?>
-                                    <li role="presentation"><?php echo modal_anchor(get_uri("css/tickets/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('ticket'), "data-post-view" => "details", "data-post-id" => $ticket_info->id)); ?></li>
+                                    <li role="presentation"><?php echo modal_anchor(get_uri("tickets/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('ticket'), "data-post-view" => "details", "data-post-id" => $ticket_info->id)); ?></li>
                                     <?php if ($can_create_tasks && !$ticket_info->task_id) { ?> 
                                         <li role="presentation"><?php echo modal_anchor(get_uri("projects/task_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('create_new_task'), array("title" => lang('create_new_task'), "data-post-project_id" => $ticket_info->project_id, "data-post-ticket_id" => $ticket_info->id)); ?></li>
                                     <?php } ?>
@@ -22,18 +22,18 @@
                                 <?php } ?>
 
                                 <?php if ($ticket_info->status === "closed") { ?>
-                                    <li role="presentation"><?php echo ajax_anchor(get_uri("css/tickets/save_ticket_status/$ticket_info->id/open"), "<i class='fa fa-check-circle'></i> " . lang('mark_as_open'), array("class" => "", "title" => lang('mark_as_open'), "data-reload-on-success" => "1")); ?> </li>
+                                    <li role="presentation"><?php echo ajax_anchor(get_uri("tickets/save_ticket_status/$ticket_info->id/open"), "<i class='fa fa-check-circle'></i> " . lang('mark_as_open'), array("class" => "", "title" => lang('mark_as_open'), "data-reload-on-success" => "1")); ?> </li>
                                 <?php } else { ?>
-                                    <li role="presentation"><?php echo ajax_anchor(get_uri("css/tickets/save_ticket_status/$ticket_info->id/closed"), "<i class='fa fa-check-circle'></i> " . lang('mark_as_closed'), array("class" => "", "title" => lang('mark_as_closed'), "data-reload-on-success" => "1")); ?> </li>
+                                    <li role="presentation"><?php echo ajax_anchor(get_uri("tickets/save_ticket_status/$ticket_info->id/closed"), "<i class='fa fa-check-circle'></i> " . lang('mark_as_closed'), array("class" => "", "title" => lang('mark_as_closed'), "data-reload-on-success" => "1")); ?> </li>
                                 <?php } ?>
                                 <?php if ($ticket_info->assigned_to === "0" && $this->login_user->user_type == "staff") { ?>
-                                    <li role="presentation"><?php echo ajax_anchor(get_uri("css/tickets/assign_to_me/$ticket_info->id"), "<i class='fa fa-user'></i> " . lang('assign_to_me'), array("class" => "", "title" => lang('assign_myself_in_this_ticket'), "data-reload-on-success" => "1")); ?></li>
+                                    <li role="presentation"><?php echo ajax_anchor(get_uri("tickets/assign_to_me/$ticket_info->id"), "<i class='fa fa-user'></i> " . lang('assign_to_me'), array("class" => "", "title" => lang('assign_myself_in_this_ticket'), "data-reload-on-success" => "1")); ?></li>
                                 <?php } ?>
                                 <?php if ($ticket_info->client_id === "0" && $this->login_user->user_type == "staff") { ?>
                                     <?php if ($can_create_client) { ?>
-                                        <li role="presentation"><?php echo modal_anchor(get_uri("clients/modal_form"), "<i class='fa fa-plus'></i> " . lang('link_to_new_client'), array("title" => lang('link_to_new_client'), "data-post-ticket_id" => $ticket_info->id)); ?></li>
+                                        <li role="presentation"><?php echo modal_anchor(get_uri("sales/Clients/modal_form"), "<i class='fa fa-plus'></i> " . lang('link_to_new_client'), array("title" => lang('link_to_new_client'), "data-post-ticket_id" => $ticket_info->id)); ?></li>
                                     <?php } ?>
-                                    <li role="presentation"><?php echo modal_anchor(get_uri("css/tickets/add_client_modal_form/$ticket_info->id"), "<i class='fa fa-chain'></i> " . lang('link_to_existing_client'), array("title" => lang('link_to_existing_client'))); ?></li>
+                                    <li role="presentation"><?php echo modal_anchor(get_uri("tickets/add_client_modal_form/$ticket_info->id"), "<i class='fa fa-chain'></i> " . lang('link_to_existing_client'), array("title" => lang('link_to_existing_client'))); ?></li>
                                 <?php } ?>
                             </ul>
                         </span>
@@ -54,7 +54,7 @@
                     ?>
 
                     <div id="comment-form-container" >
-                        <?php echo form_open(get_uri("css/tickets/save_comment"), array("id" => "comment-form", "class" => "general-form", "role" => "form")); ?>
+                        <?php echo form_open(get_uri("tickets/save_comment"), array("id" => "comment-form", "class" => "general-form", "role" => "form")); ?>
                         <div class="p15 box">
                             <div class="box-content avatar avatar-md pr15">
                                 <img src="<?php echo get_avatar($this->login_user->image); ?>" alt="..." />
@@ -80,7 +80,7 @@
 
                                     <?php
                                     if ($this->login_user->user_type === "staff") {
-                                        echo modal_anchor(get_uri("css/tickets/insert_template_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('insert_template'), array("class" => "btn btn-default pull-left btn-sm round ml10", "title" => lang('insert_template'), "style" => "color: #7988a2", "data-post-ticket_type_id" => $ticket_info->ticket_type_id, "id" => "insert-template-btn"));
+                                        echo modal_anchor(get_uri("tickets/insert_template_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('insert_template'), array("class" => "btn btn-default pull-left btn-sm round ml10", "title" => lang('insert_template'), "style" => "color: #7988a2", "data-post-ticket_type_id" => $ticket_info->ticket_type_id, "id" => "insert-template-btn"));
                                     }
                                     ?>
 
@@ -111,8 +111,8 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        var uploadUrl = "<?php echo get_uri("css/tickets/upload_file"); ?>";
-        var validationUrl = "<?php echo get_uri("css/tickets/validate_ticket_file"); ?>";
+        var uploadUrl = "<?php echo get_uri("tickets/upload_file"); ?>";
+        var validationUrl = "<?php echo get_uri("tickets/validate_ticket_file"); ?>";
 
         var decending = "<?php echo $sort_as_decending; ?>";
 

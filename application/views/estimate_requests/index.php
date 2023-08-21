@@ -3,10 +3,11 @@
     </table>
 </div>
 
+
 <script type="text/javascript">
     $(document).ready(function () {
         $("#estimate-request-table").appTable({
-            source: '<?php echo_uri("estimate_requests/estimate_request_list_data") ?>',
+            source: '<?php echo_uri("sales/Estimate_requests/estimate_request_list_data") ?>',
             order: [[4, 'desc']],
             filterDropdown: [{name: "assigned_to", class: "w150", options: <?php echo $assigned_to_dropdown; ?>}, {name: "status", class: "w150", options: <?php echo $statuses_dropdown; ?>}],
             columns: [

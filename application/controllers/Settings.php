@@ -8,6 +8,9 @@ class Settings extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
+        $this->load->model("Estimates_model");
+        $this->load->model("Invoices_model");
+        $this->load->model("Estimates_model");
     }
 
     function index() {
@@ -15,20 +18,12 @@ class Settings extends MY_Controller {
     }
 
     function general() {
-        $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
-        $view_data['timezone_dropdown'] = array();
-        foreach ($tzlist as $zone) {
-            $view_data['timezone_dropdown'][$zone] = $zone;
-        }
-
         $view_data['language_dropdown'] = get_language_list();
-
-        $view_data["currency_dropdown"] = get_international_currency_code_dropdown();
         $this->template->rander("settings/general", $view_data);
     }
 
     function save_general_settings() {
-        $settings = array("site_logo", "favicon", "show_background_image_in_signin_page", "show_logo_in_signin_page", "app_title", "language", "timezone", "date_format", "time_format", "first_day_of_week", "weekends", "default_currency", "currency_symbol", "currency_position", "decimal_separator", "no_of_decimals", "accepted_file_formats", "rows_per_page", "item_purchase_code", "scrollbar", "enable_rich_text_editor", "rtl", "show_theme_color_changer", "default_theme_color");
+        $settings = array("site_logo", "favicon", "show_background_image_in_signin_page", "show_logo_in_signin_page", "site_title", "site_admin_email", "syntry_site_link", "language", "enable_training",);
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);
@@ -39,8 +34,6 @@ class Settings extends MY_Controller {
 
                     //delete old file
                     delete_app_files(get_setting("system_file_path"), get_system_files_setting_value("site_logo"));
-                } else if ($setting === "item_purchase_code" && $value === "******") {
-                    $value = get_setting('item_purchase_code');
                 } else if ($setting === "favicon") {
                     $value = str_replace("~", ":", $value);
                     $value = serialize(move_temp_file("favicon.png", get_setting("system_file_path"), "", $value));
@@ -52,12 +45,7 @@ class Settings extends MY_Controller {
                 }
 
 
-                $this->Settings_model->save_setting($setting, $value);
-            }
-
-            //save empty value too for weekends
-            if ($setting === "weekends") {
-                $this->Settings_model->save_setting($setting, $value);
+                $this->Settings_model->save_setting($setting, $value, 'general');
             }
         }
 
@@ -67,7 +55,7 @@ class Settings extends MY_Controller {
         $sigin_page_background = get_array_value($unserialize_files_data, 0);
         if ($sigin_page_background) {
             delete_app_files(get_setting("system_file_path"), get_system_files_setting_value("signin_page_background"));
-            $this->Settings_model->save_setting("signin_page_background", serialize($sigin_page_background));
+            $this->Settings_model->save_setting("signin_page_background", serialize($sigin_page_background), 'general');
         }
 
         if ($_FILES) {
@@ -77,11 +65,69 @@ class Settings extends MY_Controller {
                 $site_logo = serialize(move_temp_file("site-logo.png", get_setting("system_file_path")));
                 //delete old file
                 delete_app_files(get_setting("system_file_path"), get_system_files_setting_value("site_logo"));
-                $this->Settings_model->save_setting("site_logo", $site_logo);
+                $this->Settings_model->save_setting("site_logo", $site_logo, 'general');
             }
         }
 
         echo json_encode(array("success" => true, 'message' => lang('settings_updated'), 'reload_page' => $sigin_page_background));
+    }
+
+    function display() {
+        $this->template->rander("settings/display");
+    }
+
+    function save_display_settings() {
+        $settings = array("rows_per_page", "scrollbar", "enable_rich_text_editor", "name_format", "show_theme_color_changer", "default_theme_color", "accepted_file_formats");
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if ($value || $value === "0") {
+                $this->Settings_model->save_setting($setting, $value, 'display');
+            }
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
+    function calendar() {
+        $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+        $view_data['timezone_dropdown'] = array();
+        foreach ($tzlist as $zone) {
+            $view_data['timezone_dropdown'][$zone] = $zone;
+        }
+
+        $view_data['members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $this->template->rander("settings/calendar", $view_data);
+    }
+
+    function save_calendar_settings() {
+        $settings = array("timezone", "date_format", "time_format", "first_day_of_week", "weekends", "overtime_trigger", "bonuspay_trigger", "nightpay_start_trigger", "nightpay_end_trigger", "yearly_paid_time_off", "days_per_year", "days_locked_attendance", "disable_hourly_leave");
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if ($value || $value === "0") {
+                $this->Settings_model->save_setting($setting, $value, 'calendar');
+            }
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
+    function finance() {
+        $view_data["currency_dropdown"] = get_international_currency_code_dropdown();
+        $this->template->rander("settings/finance", $view_data);
+    }
+
+    function save_finance_settings() {
+        $settings = array("default_currency", "currency_symbol", "currency_position", "decimal_separator", "no_of_decimals", "attendance_calc_mode", "basic_pay_calculation", "payroll_reply_to");
+
+        foreach ($settings as $setting) {
+            foreach ($settings as $setting) {
+                $value = $this->input->post($setting);
+                if ($value || $value === "0") {
+                    $this->Settings_model->save_setting($setting, $value, 'finance');
+                }
+            }
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
     }
 
     function company() {
@@ -92,7 +138,24 @@ class Settings extends MY_Controller {
         $settings = array("company_name", "company_address", "company_phone", "company_email", "company_website", "company_vat_number");
 
         foreach ($settings as $setting) {
-            $this->Settings_model->save_setting($setting, $this->input->post($setting));
+            $this->Settings_model->save_setting($setting, $this->input->post($setting), 'company');
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
+    function shipping_option() {
+        $view_data['tax_lists'] = array(
+            "0" => "None",
+            "12" => "VAT (12%)",
+        );
+        $this->template->rander("settings/shipping_option", $view_data);
+    }
+
+    function save_shipping_option_settings() {
+        $settings = array("minimum_order", "base_delivery_fee", "free_shipping_amount", "shipping_computation", "fixed_amount", "distance_rate", "package_rate", "tax_applied", "delivery_verification");
+
+        foreach ($settings as $setting) {
+            $this->Settings_model->save_setting($setting, $this->input->post($setting), 'shipping');
         }
         echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
     }
@@ -157,11 +220,28 @@ class Settings extends MY_Controller {
     }
 
     function ip_restriction() {
-        $this->template->rander("settings/ip_restriction");
+        $team_members = $this->Users_model->get_all_where(array(
+            "deleted" => 0, 
+            "status" => "active",
+            "user_type" => "staff"
+        ))->result();
+        
+        $members_dropdown = array();
+        foreach ($team_members as $team_member) {
+            $fullname = $team_member->first_name . " " . $team_member->last_name;
+            if(get_setting('name_format') == "lastfirst") {
+                $fullname = $team_member->last_name.", ".$team_member->first_name;
+            }
+            $members_dropdown[] = array("id" => $team_member->id, "text" => $fullname);
+        }
+        $view_data['members_dropdown'] = json_encode($members_dropdown);
+
+        $this->template->rander("settings/ip_restriction", $view_data);
     }
 
     function save_ip_settings() {
         $this->Settings_model->save_setting("allowed_ip_addresses", $this->input->post("allowed_ip_addresses"));
+        $this->Settings_model->save_setting("whitelisted_user_ip_tracking", $this->input->post("whitelisted_user_ip_tracking"));
 
         echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
     }
@@ -250,13 +330,13 @@ class Settings extends MY_Controller {
     }
 
     function save_invoice_settings() {
-        $settings = array("allow_partial_invoice_payment_from_clients", "invoice_color", "invoice_footer", "send_bcc_to", "invoice_prefix", "invoice_style", "invoice_logo", "send_invoice_due_pre_reminder", "send_invoice_due_after_reminder", "send_recurring_invoice_reminder_before_creation", "default_due_date_after_billing_date", "initial_number_of_the_invoice", "client_can_pay_invoice_without_login");
+        $settings = array("allow_partial_invoice_payment_from_clients", "invoice_color", "invoice_footer", "invoice_terms", "invoice_warranty", "send_bcc_to", "invoice_prefix", "invoice_style", "invoice_logo", "send_invoice_due_pre_reminder", "send_invoice_due_after_reminder", "send_recurring_invoice_reminder_before_creation", "default_due_date_after_billing_date", "initial_number_of_the_invoice", "client_can_pay_invoice_without_login");
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);
             $saveable = true;
 
-            if ($setting == "invoice_footer") {
+            if ($setting == "invoice_footer" || $setting == "invoice_terms" || $setting == "invoice_warranty") {
                 $value = decode_ajax_post_data($value);
             } else if ($setting === "invoice_logo" && $value) {
                 $value = str_replace("~", ":", $value);
@@ -479,34 +559,227 @@ class Settings extends MY_Controller {
         }
     }
 
+    function apis_list() {
+        $list_data = array(
+           'syntry' => 'Syntry',
+           'makeid' => 'MakeID',
+           'payhp' => 'PayHP',
+           'galyon_app' => 'Galyon',
+           'galyon_web' => 'Galyon',
+        );
+        $result = array();
+        foreach ($list_data as $key => $val) {
+            $result[] = $this->make_apis_row($key, $val);
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    function make_apis_row($key, $val) {
+
+        if (strpos($key, 'apis_') !== false) {
+            $key = str_replace("apis_", "", $key);
+        }
+        
+        return array(
+            lang($key), //Name
+            $val, //Group
+            get_setting("apis_$key") ? "Active" : "Inactive", 
+            js_anchor(
+                "<i class='fa fa-".( get_setting("apis_$key")?"stop":"play" )."' style='color: ".( get_setting("apis_$key")?"red":"green" ).";'></i>", 
+                array(
+                    'title' => lang('apis_updated'), 
+                    "class" => "update", 
+                    "data-action-url" => get_uri("settings/save_module_status?key=apis_$key&val=$val"), 
+                    "data-action" => "update",
+                    "data-reload-on-success" => "1"
+                )
+            )
+        );
+    }
+
+    function apis() {
+        $this->template->rander("settings/apis");
+    }
+
+    function save_apis_status() {
+        $key = $this->input->get('key');
+        $val = $this->input->get('val');
+        $status = get_setting($key)?"0":"1";
+        $success = $this->Settings_model->save_setting($key, $status, 'apis');
+        echo json_encode(array("success" => true, 'data' => $this->make_apis_row($key, $val), 'message' => lang('settings_updated'))); 
+    }
+
+    function module_list() {
+        $list_data = array(
+            //DEFAULT
+           'timeline' => 'General',
+           'event' => 'General',
+           'todo' => 'General',
+           'note' => 'General',
+           'announcement' => 'General',
+           'message' => 'General',
+           'chat' => 'General',
+
+           //SECURITY
+           'access' => 'SECURITY',
+
+           //STAFFING
+           'employee' => 'Human Resource',
+           'department' => 'Human Resource',
+           'attendance' => 'Human Resource',
+           'schedule' => 'Human Resource',
+           'leave' => 'Human Resource',
+           'holidays' => 'Human Resource',
+           'disciplinary' => 'Human Resource',
+
+           //DISTRIBUTION
+           'warehouse' => 'Warehouse',
+           'inventory' => 'Warehouse',
+
+           //PROCUREMENT
+           'purchase' => 'Procurement',
+           'return' => 'Procurement',
+           'supplier' => 'Procurement',
+           
+           //MANUFACTURING
+           'productions' => 'Productions',
+           'billofmaterials' => 'Productions',
+           'unit' => 'Productions',
+
+           //FINANCE
+           'accounting_summary' => 'Finance',
+           'balancesheet' => 'Finance',
+           'account' => 'Finance',
+           'transfer' => 'Finance',
+           'payment' => 'Finance',
+           'expense' => 'Finance',
+           'loan' => 'Finance',
+           'payroll' => 'Finance',
+
+           //LOGISTICS
+           'delivery' => 'Logistics',
+           'item_transfer' => 'Logistics',
+           'vehicle' => 'Logistics',
+           'driver' => 'Logistics',
+
+           //SALES
+           'sales_summary' => 'Sales',
+           'invoice' => 'Sales',
+           'service' => 'Sales',  
+           'product' => 'Sales',
+           'clients' => 'Sales', //customer
+           'stores' => 'Sales',
+
+            //MARKETING
+           'lead' => 'Marketing',
+           'epass' => 'Marketing',
+           'raffle' => 'Marketing',
+           'estimate' => 'Marketing',
+           'estimate_request' => 'Marketing',
+           
+           //ASSETS
+           'assets' => 'Storage',
+           'asset_category' => 'Storage',
+           'location' => 'Storage',
+           'vendors' => 'Storage',
+           'brands' => 'Storage',
+
+           //PLANNING
+           'allprojects' => 'Planning',
+           'mytask' => 'Planning',
+           'gantt' => 'Planning',
+           'project_timesheet' => 'Planning',
+
+           //HELP CENTER
+           'ticket' => 'Support',
+           'page' => 'Content', //Done
+           'help' => 'Support', //Done
+           'knowledge_base' => 'Content', //Done
+        );
+        $result = array();
+        foreach ($list_data as $key => $val) {
+            $result[] = $this->make_module_row($key, $val);
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    function make_module_row($key, $val) {
+
+        if (strpos($key, 'module_') !== false) {
+            $key = str_replace("module_", "", $key);
+        }
+        
+        return array(
+            lang($key), //Name
+            $val, //Group
+            get_setting("module_$key") ? "Active" : "Inactive", 
+            js_anchor(
+                "<i class='fa fa-".( get_setting("module_$key")?"stop":"play" )."' style='color: ".( get_setting("module_$key")?"red":"green" ).";'></i>", 
+                array(
+                    'title' => lang('module_updated'), 
+                    "class" => "update", 
+                    "data-action-url" => get_uri("settings/save_module_status?key=module_$key&val=$val"), 
+                    "data-action" => "update",
+                    "data-reload-on-success" => "1"
+                )
+            )
+        );
+    }
+
     function modules() {
         $this->template->rander("settings/modules");
+    }
+
+    function save_module_status() {
+        $key = $this->input->get('key');
+        $val = $this->input->get('val');
+        $status = get_setting($key)?"0":"1";
+        $success = $this->Settings_model->save_setting($key, $status, 'modules');
+        echo json_encode(array("success" => true, 'data' => $this->make_module_row($key, $val), 'message' => lang('settings_updated'))); 
     }
 
     function save_module_settings() {
 
         $settings = array(
-            "module_timeline", "module_event", "module_todo", "module_note", "module_message", "module_chat", "module_announcement", 
-        "module_hrs", 
-            "module_hrm_department", "module_hrm_employee", "module_attendance", "module_hrm_disciplinary", "module_leave", "module_hrm_holidays",
-        "module_fas", 
-            "module_fas_summary", "module_fas_payments", "module_expense", "module_fas_contributions", "module_fas_incentives", "module_fas_payroll", "module_fas_accounts", "module_fas_transfer", "module_fas_balancesheet",
-        "module_mes", 
-            "module_pid_productions", "module_pid_billofmaterials", "module_pid_rawmaterials", "module_pid_inventory", "module_pid_products", "module_pid_purchases", "module_pid_returns", "module_pid_supplier",
-        "module_mcs", 
-            "module_lead",
-        "module_lds", 
-            "module_lms_delivery", "module_lms_warehouse", "module_lms_transfer", "module_lms_vehicles", "module_lms_driver", "module_lms_consumer",
-        "module_sms", 
-            "module_sms_pos", "module_sms_giftcard", "module_sms_coupons", "module_sms_sales_matrix", "module_invoice", "module_estimate", "module_estimate_request", "module_estimate_request", "module_sms_customers",
-        "module_ats",
-            "module_assets", "module_ams_category", "module_ams_location", "module_vendors", "module_brands", 
-        "module_pms", 
-            "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet", "module_clients", "module_services", 
-        "module_css",  
-            "module_ticket", "module_help", "module_knowledge_base",
-    
-    );
+            //DEFAULT
+            "module_timeline", "module_event", "module_todo", "module_note", "module_announcement", "module_message", "module_chat", 
+
+            //SECURITY
+            "module_access",
+
+            //STAFFING
+            "module_employee", "module_department", "module_attendance", "module_schedule", "module_leave", "module_holidays", "module_disciplinary",
+
+            //DISTRIBUTION
+            "module_warehouse", "module_inventory",
+
+            //PROCUREMENT
+            "module_purchase", "module_return", "module_supplier",
+
+            //MANUFACTURING
+            "module_productions", "module_billofmaterials", "unit",
+
+            //LOGISTICS
+            "module_delivery", "module_item_transfer", "module_vehicle", "module_driver", 
+
+            //FINANCE
+            "module_accounting_summary", "module_balancesheet", "module_account", "module_transfer",  "module_payment", "module_expense", "module_loan", "module_payroll",  
+
+            //SALES
+            "module_sales_summary", "module_invoice", "module_service", "module_product", "module_clients", "module_stores", //customer
+
+            //MARKETING
+            "module_lead", "module_estimate", "module_estimate_request", "module_epass", "module_raffle",
+
+            //SAFEKEEP
+            "module_assets", "module_asset_category", "module_location", "module_vendors", "module_brands", 
+
+            //PLANNING
+            "module_allprojects", "module_mytask", "module_gantt", "module_project_timesheet",
+
+            //HELP CENTER
+            "module_ticket", "module_page", "module_help", "module_knowledge_base",
+        );
 
         foreach ($settings as $setting) {
             $value = $this->input->post($setting);
@@ -593,7 +866,7 @@ class Settings extends MY_Controller {
     /* show the ticket settings tab */
 
     function tickets() {
-        $this->load->view("settings/tickets/index");
+        $this->template->rander("settings/tickets/index");
     }
 
     /* save ticket settings */
@@ -804,6 +1077,32 @@ class Settings extends MY_Controller {
         $settings = array(
             "users_can_start_multiple_timers_at_a_time",
             "users_can_input_only_total_hours_instead_of_period"
+        );
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if (is_null($value)) {
+                $value = "";
+            }
+
+            $this->Settings_model->save_setting($setting, $value);
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
+    function kiosk() {
+        $view_data['members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $this->template->rander("settings/components/kiosk", $view_data);
+    }
+
+    function save_kiosk_settings() {
+        $settings = array(
+            "enable_selected_user_access", 
+            "whitelisted_selected_user_access",
+            "since_last_break", "since_last_clock_out",
+            "breaktime_tracking", "whitelisted_breaktime_tracking", 
+            "auto_clockout", "whitelisted_autoclockout", "autoclockout_trigger_hour", 
+            "auto_clockin_employee",
         );
 
         foreach ($settings as $setting) {
@@ -1068,6 +1367,25 @@ class Settings extends MY_Controller {
         echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
     }
 
+    function firebase() {
+        $this->load->view("settings/integration/firebase");
+    }
+
+    function save_firebase_settings() {
+
+        $settings = array("enable_firebase_integration", "enable_chat_via_firebase", "firebase_server_key");
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if (is_null($value)) {
+                $value = "";
+            }
+
+            $this->Settings_model->save_setting($setting, $value);
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
+
     function test_slack_notification() {
         $this->load->helper('notifications');
         if (send_slack_notification("test_slack_notification", $this->login_user->id, 0, get_setting("slack_webhook_url"))) {
@@ -1077,6 +1395,233 @@ class Settings extends MY_Controller {
         }
     }
 
+    function system_account() {
+        $this->template->rander("settings/system_account/index");
+    }
+
+    function settings_list_account() {
+        $options = array(
+            "status" => "active",
+            "user_type" => "sysadmin"
+        );
+        $list_data = $this->Users_model->get_details($options)->result();
+
+        $result = array();
+        foreach ($list_data as $data) {
+            $result[] = $this->settings_list_account_row($data);
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    protected function settings_list_account_row($data) {
+        $action_btn = modal_anchor(
+            get_uri("settings/settings_add_account"), 
+            "<i class='fa fa-pencil'></i>", 
+            array(
+                "class" => "edit", 
+                "title" => lang('edit_account'), 
+                "data-post-id" => $data->id
+        ))
+        .js_anchor("<i class='fa fa-times fa-fw'></i>", 
+            array(
+            'title' => lang('delete_team_member'), 
+            "class" => "delete user-status-confirm", 
+            "data-id" => $data->id, 
+            "data-action-url" => get_uri("settings/settings_delete_account"), 
+            "data-action" => "delete-confirmation"
+        ));
+
+        return array(
+            $data->first_name,
+            $data->last_name,
+            $data->is_admin?"ADMIN":strtoupper($data->user_type),
+            $data->email,
+            $data->access_syntry?"Biometric App":"None",
+            $action_btn
+        );
+    }
+
+    function settings_add_account() {
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        if( $user_id = $this->input->post('id') ) {
+            $options = array(
+                "id"=>$user_id,
+                "status" => "active",
+                "user_type" => "sysadmin"
+            );
+            $data = $this->Users_model->get_details($options)->row();
+            $view_data["model_info"] = $data;
+            $view_data["is_admin"] = $data->is_admin;
+        }
+        
+        $this->load->view("settings/system_account/modal_form", $view_data);
+    }
+
+    function settings_delete_account() {
+        if (!$this->login_user->is_admin) {
+			redirect("forbidden");
+		}
+
+        validate_submitted_data(array(
+            "id" => "required|numeric"
+        ));
+
+        $id = $this->input->post('id');
+
+        if ($id != $this->login_user->id && $this->Users_model->delete($id)) {
+            echo json_encode(array("success" => true, 'message' => lang('record_deleted')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('record_cannot_be_deleted')));
+        }
+    }
+
+    function settings_save_account() {
+        if (!$this->login_user->is_admin) {
+			redirect("forbidden");
+		}
+
+        validate_submitted_data(array(
+            "id" => "numeric"
+        ));
+
+        $user_id = $this->input->post('id');
+
+        $user_data = array(
+            "first_name" => $this->input->post('first_name'),
+            "last_name" => $this->input->post('last_name'),
+            "email" => $this->input->post('email'),
+            "access_syntry" => $this->input->post('access_syntry')?"1":"0",
+        );
+
+        $user_type = $this->input->post('account_type');    
+        if($user_type === "admin") {
+            $user_data['is_admin'] = "1";
+            $user_data['user_type'] = "staff";
+        } else { //system
+            $user_data['is_admin'] = "0";
+            $user_data['user_type'] = "system";
+        }
+
+        $new_pass = $this->input->post('new_pass');
+        $confirm_pass = $this->input->post('confirm_pass');
+        if(!empty($new_pass)) {
+            if(strlen($new_pass) >= 7 && $new_pass == $confirm_pass) {
+                $user_data['password'] = password_hash($new_pass, PASSWORD_DEFAULT);
+            } else {
+                echo json_encode(array("success" => false, 'message' => lang('password_not_match')));
+                exit;
+            }
+        }
+
+        if ($this->Users_model->save($user_data, $user_id)) {
+            $options = array(
+                "id" => $user_id
+            );
+            $current = $this->Users_model->get_details($options)->row();
+
+            echo json_encode(array("success" => true, "data" => $this->settings_list_account_row($current), 'id' => $user_id, 'message' => lang('record_updated')));
+        } else {
+            echo json_encode(array("success" => false, 'message' => lang('error_occurred')));
+        }
+    }
+
+    function run_cron_command() {
+        $this->load->library('cron_job');
+        ini_set('max_execution_time', 300); //execute maximum 300 seconds 
+
+        $this->cron_job->run();
+        echo json_encode(array("success" => true, "data" => get_my_local_time('d/m/Y h:i:s A'), 'message' => lang('record_updated')));
+    }
+
+    function override_cron_command() {
+        $this->load->library('cron_job');
+        ini_set('max_execution_time', 600); //execute maximum 600 seconds 
+		
+        $this->cron_job->override();
+        echo json_encode(array("success" => true, "data" => get_my_local_time('d/m/Y h:i:s A'), 'message' => lang('record_updated')));
+    }
+
+    function cron_list() {
+        $list_data = array(
+            'notifications' => 'General',
+            'invoices' => 'Sales',
+            'tasks' => 'Planning',
+            'calendars' => 'General',
+            'tickets' => 'Help Center',
+            'imaps' => 'Integration',
+            'expenses' => 'Sales',
+            'attendances' => 'Staffing',
+            'leaves' => 'Staffing',
+        );
+        $result = array();
+        foreach ($list_data as $key => $val) {
+            $result[] = $this->make_cron_row($key, $val);
+        }
+        echo json_encode(array("data" => $result));
+    }
+
+    function make_cron_row($key, $val) {
+
+        if (strpos($key, 'cron_') !== false) {
+            $key = str_replace("cron_", "", $key);
+        }
+        
+        return array(
+            lang($key), //Name
+            $val, //Group
+            get_setting("cron_$key") ? "Active" : "Inactive", 
+            js_anchor(
+                "<i class='fa fa-".( get_setting("cron_$key")?"stop":"play" )."' style='color: ".( get_setting("cron_$key")?"red":"green" ).";'></i>", 
+                array(
+                    'title' => lang('cron_updated'), 
+                    "class" => "update", 
+                    "data-action-url" => get_uri("settings/save_cron_status?key=cron_$key&val=$val"), 
+                    "data-action" => "update",
+                    "data-reload-on-success" => "1"
+                )
+            )
+        );
+    }
+
+    function crons() {
+        $this->template->rander("settings/crons");
+    }
+
+    function save_cron_status() {
+        $key = $this->input->get('key');
+        $val = $this->input->get('val');
+        $status = get_setting($key)?"0":"1";
+        $success = $this->Settings_model->save_setting($key, $status, 'crons');
+        echo json_encode(array("success" => true, 'data' => $this->make_cron_row($key, $val), 'message' => lang('settings_updated'))); 
+    }
+
+    function save_cron_settings() {
+
+        $settings = array(
+            'notifications',
+            'invoices',
+            'tasks',
+            'calendars',
+            'tickets',
+            'imaps',
+            'expenses',
+            'attendances',
+            'leaves'
+        );
+
+        foreach ($settings as $setting) {
+            $value = $this->input->post($setting);
+            if (is_null($value)) {
+                $value = "";
+            }
+
+            $this->Settings_model->save_setting($setting, $value);
+        }
+        echo json_encode(array("success" => true, 'message' => lang('settings_updated')));
+    }
 }
 
 /* End of file general_settings.php */

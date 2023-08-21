@@ -3,7 +3,7 @@
         <div class="page-title clearfix">
             <h4> <?php echo lang('categories') . " (" . lang($type) . ")"; ?></h4>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("css/help/category_modal_form/" . $type), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'))); ?>
+                <?php echo modal_anchor(get_uri("help/category_modal_form/" . $type), "<i class='fa fa-plus-circle'></i> " . lang('add_category'), array("class" => "btn btn-default", "title" => lang('add_category'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -15,7 +15,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#category-table").appTable({
-            source: '<?php echo_uri("css/help/categories_list_data/" . $type) ?>',
+            source: '<?php echo_uri("help/categories_list_data/" . $type) ?>',
             columns: [
                 {title: '<?php echo lang("title"); ?>'},
                 {title: '<?php echo lang("description"); ?>'},

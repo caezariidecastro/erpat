@@ -7,17 +7,19 @@ class Team extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->access_only_admin();
+        $this->access_only_team_members();
+
+        $this->init_permission_checker("department");
     }
 
     function index() {
-        $this->validate_user_sub_module_permission("module_hrs");
-        $this->template->rander("team/index");
+        $view_data["can_add_new"] = $this->with_permission("department_create");
+        $this->template->rander("team/index", $view_data);
     }
 
     function department(){
-        $this->validate_user_sub_module_permission("module_hrs");
-        $this->template->rander("team/department");
+        $view_data["can_add_new"] = $this->with_permission("department_create");
+        $this->template->rander("team/department", $view_data);
     }
 
     /* load team add/edit modal */
@@ -27,15 +29,15 @@ class Team extends MY_Controller {
             "id" => "numeric"
         ));
         
-        $team_members = $this->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"))->result();
-        $members_dropdown = array();
-
-        foreach ($team_members as $team_member) {
-            $members_dropdown[] = array("id" => $team_member->id, "text" => $team_member->first_name . " " . $team_member->last_name);
+        $id = $this->input->post('id');
+        if($id) {
+            $this->with_permission("department_update", "no_permission");
+        } else {
+            $this->with_permission("department_create", "no_permission");
         }
 
-        $view_data['members_dropdown'] = json_encode($members_dropdown);
-        $view_data['model_info'] = $this->Team_model->get_one($this->input->post('id'));
+        $view_data['members_dropdown'] = json_encode($this->get_users_select2_dropdown());
+        $view_data['model_info'] = $this->Team_model->get_one($id);
         $this->load->view('team/modal_form', $view_data);
     }
 
@@ -43,15 +45,15 @@ class Team extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
-        
-        $team_members = $this->Users_model->get_all_where(array("deleted" => 0, "user_type" => "staff"))->result();
-        $members_dropdown = array();
 
-        foreach ($team_members as $team_member) {
-            $members_dropdown[] = array("id" => $team_member->id, "text" => $team_member->first_name . " " . $team_member->last_name);
+        $id = $this->input->post('id');
+        if($id) {
+            $this->with_permission("department_update", "no_permission");
+        } else {
+            $this->with_permission("department_create", "no_permission");
         }
 
-        $view_data['members_dropdown'] = json_encode($members_dropdown);
+        $view_data['members_dropdown'] = json_encode($this->get_users_select2_dropdown());
         $view_data['model_info'] = $this->Team_model->get_one($this->input->post('id'));
         $this->load->view('team/department_modal_form', $view_data);
     }
@@ -66,6 +68,12 @@ class Team extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        if($id) {
+            $this->with_permission("department_update", "no_permission");
+        } else {
+            $this->with_permission("department_create", "no_permission");
+        }
+
         $data = array(
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
@@ -74,7 +82,7 @@ class Team extends MY_Controller {
         );
 
         if(!$id){
-            $data["created_on"] = date('Y-m-d H:i:s');
+            $data["date_created"] = get_current_utc_time();
             $data["created_by"] = $this->login_user->id;
         }
 
@@ -94,6 +102,10 @@ class Team extends MY_Controller {
         ));
 
         $id = $this->input->post('id');
+        if($id) {
+            $this->with_permission("department_delete", "no_permission");
+        }
+
         if ($this->input->post('undo')) {
             if ($this->Team_model->delete($id, true)) {
                 echo json_encode(array("success" => true, "data" => $this->_row_data($id), "message" => lang('record_undone')));
@@ -112,7 +124,10 @@ class Team extends MY_Controller {
     /* list of team prepared for datatable */
 
     function list_data() {
-        $list_data = $this->Team_model->get_details()->result();
+        $option = array(
+            "access_only" => $this->get_imploded_departments()
+        );
+        $list_data = $this->Team_model->get_details($option)->result();
         $result = array();
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data);
@@ -131,19 +146,29 @@ class Team extends MY_Controller {
     /* prepare a row of team list table */
 
     private function _make_row($data) {
-        $member_count = empty($data->members[0]) ? '0' : count(explode(",", $data->members));
+        $member_count = $this->Users_model->get_actual_active($data->members);
         $total_members = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $member_count . "</span>";
-        $head_count = empty($data->heads[0]) ? '0' : count(explode(",", $data->heads));
+        $head_count = $this->Users_model->get_actual_active($data->heads);
         $total_heads = "<span class='label label-light w100'><i class='fa fa-users'></i> " . $head_count . "</span>";
+
+        $actions = "";
+        if($this->with_permission("department_update")) {            
+            $actions = anchor(get_uri("hrs/team/export_qrcode/".$data->id), "<i class='fa fa-qrcode'></i> ", array("class" => "edit", "target" => "_blank"))
+            .modal_anchor(get_uri("hrs/team/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_department'), "data-post-id" => $data->id));
+        }
+
+        if($this->with_permission("department_delete")) {            
+            $actions .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_department'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/team/delete"), "data-action" => "delete-confirmation"));
+        }
+
         return array(
             $data->title,
             $data->description,
             modal_anchor(get_uri("hrs/team/heads_list"), $total_heads, array("title" => lang('department_heads'), "data-post-heads" => $data->heads)),
             modal_anchor(get_uri("hrs/team/members_list"), $total_members, array("title" => lang('employee'), "data-post-members" => $data->members)),
-            $data->created_on,
+            $data->date_created,
             get_team_member_profile_link($data->created_by, $data->creator_name, array("target" => "_blank")),
-            modal_anchor(get_uri("hrs/team/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_department'), "data-post-id" => $data->id))
-            . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_department'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("hrs/team/delete"), "data-action" => "delete-confirmation"))
+            $actions
         );
     }
 
@@ -155,6 +180,88 @@ class Team extends MY_Controller {
     function heads_list() {
         $view_data['team_members'] = $this->Users_model->get_team_members($this->input->post('heads'))->result();
         $this->load->view('team/heads_list', $view_data);
+    }
+
+    function export_qrcode( $team_id = 0) {
+
+        $team_info = $this->Team_model->get_details(array(
+            "id" => $team_id
+        ))->row();
+
+        $this->load->library('pdf');
+        $this->pdf->setPrintHeader(false);
+        $this->pdf->setPrintFooter(false);
+        $this->pdf->SetCellPadding(1);
+        $this->pdf->setImageScale(2.0);
+        $this->pdf->AddPage();
+        $this->pdf->SetFontSize(9);
+
+        $this->load->helper('utility');
+        $users = get_team_all_unique($team_info->heads, $team_info->members);
+        $total_pages = ceil(count($users)/20); //20 items per page
+        $html = "Page 1 of $total_pages for ".$team_info->title;
+        $this->pdf->writeHTML($html, true, false, true, false, '');
+
+        $style = array(
+            'border' => 2,
+            'vpadding' => '2px',
+            'hpadding' => '2px',
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => array(255,255,255), //array(255,255,255)
+            'module_width' => 1, // width of a single module in points
+            'module_height' => 1 // height of a single module in points
+        );
+		
+		$current_page = 1;
+        $current_col_number = 0;
+		$current_rows = 0;
+
+        $current_width = 10;
+        $incremental_width = 50;
+        
+        $current_height = 20;
+        $incremental_height  = 52;
+
+        for( $i=0; $i<count($users); $i++ ) {
+			if(!$user_info = $this->Users_model->get_details(array(
+                'id'=>$users[$i],
+                'status'=>'active'
+                ))->row()) {
+				continue; //skip this, user not found.
+			}
+			
+            // QRCODE,H : QR-CODE Best error correction
+            $this->pdf->write2DBarcode('{"id":"'.$users[$i].'"}', 'QRCODE,H', $current_width , $current_height, 40, 40, $style, 'N');
+            $fullname = $user_info->first_name . " " . $user_info->last_name;
+            if(get_setting('name_format') == "lastfirst") {
+                $fullname = $user_info->last_name.", ".$user_info->first_name;
+            }
+            $this->pdf->Text($current_width , $current_height+41, $fullname);
+
+            $current_width += $incremental_width;
+			$current_rows += 1;
+			
+            if($current_col_number < 3) {
+                $current_col_number += 1;
+            } else {
+                $current_width = 10;
+                $current_col_number = 0;
+                $current_height += $incremental_height;
+			
+				if($current_rows >= 20) {
+					$current_rows = 0;
+					$current_height = 20;
+					$this->pdf->AddPage();
+					
+                    $current_page += 1;
+					$html = "Page ".$current_page." of ".$team_info->title;
+        			$this->pdf->writeHTML($html, true, false, true, false, '');
+				}
+            }
+        }
+
+        $pdf_file_name =  str_replace(" ", "-", $team_info->title) . "-QRcodes.pdf";
+        $this->pdf->Output($pdf_file_name, "I");
     }
 
 }

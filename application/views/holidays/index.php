@@ -17,13 +17,14 @@
     $(document).ready(function () {
         $("#holiday-table").appTable({
             source: '<?php echo_uri("hrs/holidays/list_data") ?>',
-            dateRangeType: "monthly",
+            dateRangeType: "yearly",//TODO: Add filter by month.
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('title') ?> ", "class": "w20p"},
                 {title: "<?php echo lang('description') ?>"},
                 {title: "<?php echo lang('from') ?>", "class": "w100"},
                 {title: "<?php echo lang('to') ?>", "class": "w100"},
+                {title: "<?php echo lang('type') ?>", "class": "w100"},
                 {title: "<?php echo lang('created_by') ?>",},
                 {title: "<?php echo lang('date_created') ?>",},
                 {title: "<i class='fa fa-bars'></i>", "class": "text-center option w100"}

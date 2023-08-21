@@ -55,16 +55,11 @@
 
 
 </div>
-<style type="text/css">
-    .datatable-tools:first-child {
-        display:  none;
-    }
-</style>
 
 <script type="text/javascript">
     $(document).ready(function () {
         $("#items-table").appTable({
-            source: '<?php echo_uri("mes/ProductInventory/item_list_data/") ?>',
+            source: '<?php echo_uri("sales/ProductInventory/item_list_data/") ?>',
             columns: [
                 {title: '<?php echo lang("product") ?>'},
             ]
@@ -91,7 +86,7 @@
                     appLoader.show();
 
                     $.ajax({
-                        url: "<?php echo get_uri("mes/ProductInventory/item_details/"); ?>"+item_id,
+                        url: "<?php echo get_uri("sales/ProductInventory/item_details/"); ?>"+item_id,
                         success: function (result) {
                             $('#result').html(result);
                             appLoader.hide();

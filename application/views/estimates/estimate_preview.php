@@ -13,8 +13,8 @@
             <div class = "panel panel-default  p15 no-border clearfix">
 
                 <div class="mr15 strong pull-left">
-                    <?php echo ajax_anchor(get_uri("estimates/update_estimate_status/$estimate_info->id/accepted"), "<i class='fa fa fa-check-circle'></i> " . lang('mark_as_accepted'), array("class" => "btn btn-success mr15", "title" => lang('mark_as_accepted'), "data-reload-on-success" => "1")); ?>
-                    <?php echo ajax_anchor(get_uri("estimates/update_estimate_status/$estimate_info->id/declined"), "<i class='fa fa-times-circle-o'></i> " . lang('mark_as_rejected'), array("class" => "btn btn-danger mr15", "title" => lang('mark_as_rejected'), "data-reload-on-success" => "1")); ?>
+                    <?php echo ajax_anchor(get_uri("sales/Estimates/update_estimate_status/$estimate_info->id/accepted"), "<i class='fa fa fa-check-circle'></i> " . lang('mark_as_accepted'), array("class" => "btn btn-success mr15", "title" => lang('mark_as_accepted'), "data-reload-on-success" => "1")); ?>
+                    <?php echo ajax_anchor(get_uri("sales/Estimates/update_estimate_status/$estimate_info->id/declined"), "<i class='fa fa-times-circle-o'></i> " . lang('mark_as_rejected'), array("class" => "btn btn-danger mr15", "title" => lang('mark_as_rejected'), "data-reload-on-success" => "1")); ?>
                 </div>
                 <div class="pull-right">
                     <?php

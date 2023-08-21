@@ -9,7 +9,7 @@
         }
         echo form_open(get_uri($url . "/save_profile_image/" . $user_info->id), array("id" => "profile-image-form", "class" => "general-form", "role" => "form"));
         ?>
-        <?php if ($this->login_user->is_admin || $user_info->id === $this->login_user->id) { ?>
+        <?php if ($this->login_user->is_admin || $user_info->id === $this->login_user->id || current_has_permit("staff_update")) { ?>
             <div class="file-upload btn mt0 p0 profile-image-upload">
                 <span><i class="btn fa fa-camera" ></i></span> 
                 <input id="profile_image_file" class="upload" name="profile_image_file" type="file" data-height="200" data-width="200" data-preview-container="#profile-image-preview" data-input-field="#profile_image" />
@@ -18,9 +18,11 @@
         <?php } ?>
         <span class="avatar avatar-lg"><img id="profile-image-preview" src="<?php echo get_avatar($user_info->image); ?>" alt="..."></span> 
         <h4 class=""><?php echo $user_info->first_name . " " . $user_info->last_name; ?></h4>
+        <?php if(user_has_permit($this->login_user->id, 'attendance')) { ?>
+            <a href="<?= base_url("hrs/employee/qrcode/".$user_info->id); ?>" target="_blank"><strong style="color: white;">GET QRCODE</strong></a>
+        <?php } ?>
         <?php echo form_close(); ?>
     </div> 
-
 
     <div class="box-content pl15">
         <p class="p10 m0"><label class="label label-info large"><strong> <?php echo $user_info->job_title; ?> </strong></label></p> 

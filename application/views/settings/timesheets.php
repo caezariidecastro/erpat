@@ -11,7 +11,7 @@
             <?php echo form_open(get_uri("settings/save_timesheets_settings"), array("id" => "timesheet-settings-form", "class" => "general-form dashed-row", "role" => "form")); ?>
             <div class="panel">
                 <div class="panel-default panel-heading">
-                    <h4><?php echo lang("timesheet_settings"); ?></h4>
+                    <h4><?php echo lang("timesheets"); ?></h4>
                 </div>
                 <div class="panel-body">
                     <div class="form-group">

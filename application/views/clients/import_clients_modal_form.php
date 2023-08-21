@@ -1,10 +1,10 @@
-<?php echo form_open(get_uri("clients/save_client_from_excel_file"), array("id" => "import-client-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Clients/save_client_from_excel_file"), array("id" => "import-client-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix import-client-modal-body">
     <div id="upload-area">
         <?php
         $this->load->view("includes/multi_file_uploader", array(
-            "upload_url" => get_uri("clients/upload_excel_file"),
-            "validation_url" => get_uri("clients/validate_import_clients_file"),
+            "upload_url" => get_uri("sales/Clients/upload_excel_file"),
+            "validation_url" => get_uri("sales/Clients/validate_import_clients_file"),
             "max_files" => 1,
             "hide_description" => true
         ));
@@ -15,7 +15,7 @@
 </div>
 
 <div class="modal-footer">
-    <?php echo anchor("clients/download_sample_excel_file", "<i class='fa fa-cloud-download'></i> " . lang("download_sample_file"), array("title" => lang("download_sample_file"), "class" => "btn btn-default pull-left")); ?>
+    <?php echo anchor("sales/Clients/download_sample_excel_file", "<i class='fa fa-cloud-download'></i> " . lang("download_sample_file"), array("title" => lang("download_sample_file"), "class" => "btn btn-default pull-left")); ?>
     <button type="button" class="btn btn-default cancel-upload" data-dismiss="modal"><span class="fa fa-close"></span> <?php echo lang('close'); ?></button>
     <button id="form-previous" type="button" class="btn btn-default hide"><span class="fa fa-arrow-circle-left"></span> <?php echo lang('back'); ?></button>
     <button id="form-next" type="button" disabled="true" class="btn btn-info"><span class="fa  fa-arrow-circle-right"></span> <?php echo lang('next'); ?></button>

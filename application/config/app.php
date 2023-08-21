@@ -4,9 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //don't change or add new config in this file
 
-$config['app_version'] = '2.5';
+$config['app_version'] = '1.43.214';
 
-$config['app_update_url'] = 'https://businext.app/latest/';
+define("TOKEN_EXPIRY", 43200); //12hrs
+
+$config['app_update_url'] = 'http://update.erpat.app/latest/';
 
 $config['updates_path'] = './updates/';
 

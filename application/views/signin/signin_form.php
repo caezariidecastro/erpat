@@ -1,7 +1,7 @@
 <div class="panel panel-default mb15">
     <div class="panel-heading text-center">
         <?php if (get_setting("show_logo_in_signin_page") === "yes") { ?>
-            <img class="p20" src="<?php echo get_logo_url(); ?>" />
+            <img class="p20" src="<?php echo get_logo_url(); ?>" style="width: -webkit-fill-available; max-width: 80%;"/>
         <?php } else { ?>
             <h2><?php echo lang('signin'); ?></h2>
         <?php } ?>

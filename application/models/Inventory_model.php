@@ -19,7 +19,7 @@ class Inventory_model extends Crud_model {
         $delivered_query = "";
 
         if ($id) {
-            $where .= " AND $inventory_table.id=$id";
+            $where .= " AND inventory_items.id=$id";
             $delivered_query .= " AND i.id=$id";
         }
 
@@ -35,7 +35,7 @@ class Inventory_model extends Crud_model {
             $item_query = "AND i.item_id = $inventory_table.item_id";
         }
 
-        $sql = "SELECT $inventory_table.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, $inventory_table.name AS item_name, units.abbreviation AS unit_abbreviation, 
+        $sql = "SELECT inventory_items.*, TRIM(CONCAT(users.first_name, ' ', users.last_name)) AS full_name, w.name AS warehouse_name, w.address AS warehouse_address, inventory_items.name AS item_name, inventory_items.`description` AS `description`, units.abbreviation AS unit_abbreviation, inventory_items.id as inventory_id, $inventory_table.stock, $inventory_table.warehouse,
         COALESCE((
             SELECT SUM(inventory_stock_override.stock)
             FROM inventory_stock_override
@@ -55,15 +55,10 @@ class Inventory_model extends Crud_model {
             FROM invoice_items
             LEFT JOIN inventory i ON i.id = invoice_items.inventory_id
             LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
-            LEFT JOIN deliveries ON deliveries.reference_number = invoice_items.delivery_reference_no
+            LEFT JOIN deliveries ON deliveries.invoice_id = invoices.id
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
             $delivered_query
-            AND (
-                invoice_items.delivery_reference_no IS NOT NULL
-                OR
-                invoice_items.delivery_reference_no != ''
-            )
             AND invoices.status NOT IN ('draft', 'cancelled')
             AND (
                 (
@@ -90,11 +85,6 @@ class Inventory_model extends Crud_model {
             LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
             WHERE i.deleted = 0
             AND invoice_items.deleted = 0
-            AND (
-                invoice_items.delivery_reference_no IS NULL
-                OR
-                invoice_items.delivery_reference_no = ''
-            )
             AND invoices.status NOT IN ('draft', 'cancelled')
             AND (
                 (
@@ -135,11 +125,14 @@ class Inventory_model extends Crud_model {
             AND inventory_transfers.receiver = $inventory_table.warehouse
             AND inventory_transfers.status = 'completed'
         ), 0) AS received
-        FROM $inventory_table
-        LEFT JOIN users ON users.id = $inventory_table.created_by
+        FROM inventory_items
+        LEFT JOIN $inventory_table ON $inventory_table.item_id = inventory_items.id
+        LEFT JOIN invoice_items ON invoice_items.inventory_id = inventory_items.id
+        LEFT JOIN invoices ON invoices.id = invoice_items.invoice_id
+        LEFT JOIN users ON users.id = inventory_items.created_by
         LEFT JOIN warehouses w ON w.id = $inventory_table.warehouse
-        LEFT JOIN units ON units.id = $inventory_table.unit
-        WHERE $inventory_table.deleted=0 $where";
+        LEFT JOIN units ON units.id = inventory_items.unit
+        WHERE inventory_items.deleted=0 $where";
         return $this->db->query($sql);
     }
 
@@ -154,8 +147,8 @@ class Inventory_model extends Crud_model {
         $inventory_table = $this->db->dbprefix('inventory');
 
         $sql = "SELECT $inventory_table.*, w.name AS warehouse_name
-        FROM $inventory_table
-        LEFT JOIN inventory_items ON inventory_items.id = $inventory_table.item_id
+        FROM inventory_items
+        LEFT JOIN $inventory_table ON $inventory_table.id = $inventory_table.item_id
         LEFT JOIN warehouses w ON w.id = $inventory_table.warehouse
         LEFT JOIN bill_of_materials ON bill_of_materials.item_id = $inventory_table.item_id
         WHERE $inventory_table.deleted=0 

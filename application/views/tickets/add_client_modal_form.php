@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("css/tickets/link_to_client"), array("id" => "ticket-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("tickets/link_to_client"), array("id" => "ticket-form", "class" => "general-form", "role" => "form")); ?>
 
 <div class="modal-body clearfix">
     <input type="hidden" name="ticket_id" value="<?php echo $ticket_id; ?>" />

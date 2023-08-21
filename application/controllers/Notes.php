@@ -7,7 +7,10 @@ class Notes extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("note", "redirect");
+
         $this->access_only_team_members();
+        $this->load->model("Notes_model");
     }
 
     protected function validate_access_to_note($note_info, $edit_mode = false) {
@@ -40,8 +43,6 @@ class Notes extends MY_Controller {
 
     //load note list view
     function index() {
-        $this->check_module_availability("module_note");
-
         $this->template->rander("notes/index");
     }
 

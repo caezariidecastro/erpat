@@ -8,6 +8,8 @@ class Email_templates extends MY_Controller {
     function __construct() {
         parent::__construct();
         $this->access_only_admin();
+        $this->load->model('Email_templates_model');
+        $this->load->helper('utility');
     }
 
     private function _templates() {
@@ -19,6 +21,19 @@ class Email_templates extends MY_Controller {
                 "new_client_greetings" => array("CONTACT_FIRST_NAME", "CONTACT_LAST_NAME", "COMPANY_NAME", "DASHBOARD_URL", "CONTACT_LOGIN_EMAIL", "CONTACT_LOGIN_PASSWORD", "LOGO_URL", "SIGNATURE"),
                 "client_contact_invitation" => array("INVITATION_SENT_BY", "INVITATION_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
                 "verify_email" => array("VERIFY_EMAIL_URL", "SITE_URL", "LOGO_URL", "SIGNATURE"),
+                
+            ),
+            "payrolls" => array(
+                "payslips" => array("PAYSLIP_ID", "PAY_PERIOD", "FIRST_NAME", "LAST_NAME", "REMARKS", "SIGNATURE"),
+            ),
+            "events" => array(
+                "event_pass" => array("REFERENCE_ID", "GROUP_NAME", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "TOTAL_SEATS", "REMARKS", "SIGNATURE"),
+                "epass_confirm" => array("REFERENCE_ID", "GROUP_NAME", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "TOTAL_SEATS", "REMARKS", "COMPANION_LINK", "SIGNATURE"),
+            ),
+            "raffle" => array(
+                "raffle_entry" => array("REFERENCE_ID", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "EMAIL_ADDRESS", "REMARKS", "RAFFLE_TTITLE", "RAFFLE_ID", "SIGNATURE"),
+                "raffle_subscription" => array("REFERENCE_ID", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "EMAIL_ADDRESS", "REMARKS", "RAFFLE_TTITLE", "RAFFLE_ID", "SIGNATURE"),
+                "raffle_join" => array("REFERENCE_ID", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "EMAIL_ADDRESS", "REMARKS", "RAFFLE_TTITLE", "RAFFLE_ID", "SIGNATURE"),
             ),
             "project" => array(
                 "project_task_deadline_reminder" => array("APP_TITLE", "DEADLINE", "SIGNATURE", "TASKS_LIST", "LOGO_URL"),
@@ -113,6 +128,42 @@ class Email_templates extends MY_Controller {
         }
     }
 
+    function test_email() {
+        validate_submitted_data(array(
+            "email" => "required",
+            "template_name" => "required"
+        ));
+
+        $email = $this->input->post('email');
+        $template_name = $this->input->post('template_name');
+
+        $email_template = $this->Email_templates_model->get_final_template( $template_name );
+        $parser_data["SIGNATURE"] = $email_template->signature;
+
+        // $qr_code = "data:image/png;base64,".get_qrcode_image(123, 'event_pass', 'verify', false, 120);
+        // $saved_url = save_base_64_image($qr_code, get_setting("event_epass_path"));
+
+        // $parser_data["REFERENCE_ID"] = strtoupper("82e7ec97-7337-477d-9f6e-0ab72b1a570e");
+        // $parser_data["QR_CODE"] = $saved_url;
+        // $parser_data["GROUP_NAME"] = "VIEWER";
+        // $parser_data["FIRST_NAME"] = "Juan";
+        // $parser_data["LAST_NAME"] = "Dela Cruz";
+        // $parser_data["PHONE_NUMBER"] = "639 123 456 7890";
+        // $parser_data["TOTAL_SEATS"] = 3;
+        // $parser_data["REMARKS"] = "Me, Myself, and I";
+        // $link = "https://events.brilliantskinessentials.ph/companion?refid=".strtoupper("82e7ec97-7337-477d-9f6e-0ab72b1a570e");
+        // $parser_data["COMPANION_LINK"] = "<a href='$link' target='__blank'>Click Here</a>";
+        // $parser_data["LOGO_URL"] = get_logo_url();
+
+        $message = $this->parser->parse_string($email_template->message, $parser_data, TRUE);
+        $sent = send_app_mail($email, $email_template->subject, $message, array(
+            // "attachments" => array(
+            //     array("file_path" => $saved_url)
+            // ), 
+            //"cc" => get_setting('site_admin_email'), 
+        ));
+        echo json_encode( array("success"=>$sent, "message"=>lang('test_email_sent').$email ) );
+    }
     /* load template edit form */
 
     function form($template_name = "") {

@@ -3,7 +3,7 @@
     <ul class="list-group mb0">
         <?php
             foreach ($estimate_forms as $form) {
-            echo "<li class='list-group-item'>" . anchor(get_uri("estimate_requests/submit_estimate_request_form/" . $form->id), $form->title) . "</li>";
+            echo "<li class='list-group-item'>" . anchor(get_uri("sales/Estimate_requests/submit_estimate_request_form/" . $form->id), $form->title) . "</li>";
         }
         ?>
     </ul>

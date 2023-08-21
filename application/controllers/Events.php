@@ -7,11 +7,17 @@ class Events extends MY_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->with_module("event", "redirect");
+
+        $this->load->model("Events_model");
+        $this->load->model("Leave_applications_model");
+        $this->load->model("Projects_model");
+        $this->load->model("Tasks_model");
+        $this->load->model("Clients_model");
     }
 
     //load calendar view
     function index($encrypted_event_id = "") {
-        $this->check_module_availability("module_event");
         $view_data['encrypted_event_id'] = $encrypted_event_id;
         $view_data['calendar_filter_dropdown'] = $this->get_calendar_filter_dropdown();
         $this->template->rander("events/index", $view_data);
@@ -64,6 +70,13 @@ class Events extends MY_Controller {
         $view_data['clients_dropdown'] = $clients_dropdown;
 
         $view_data["can_share_events"] = $this->can_share_events();
+
+        $event_options = array(
+            array("id" => 'have_participants', "text" => "Have Participants"),
+            array("id" => 'with_tickets', "text" => "With Tickets"),
+            array("id" => 'include_raffles', "text" => "Include Raffles")
+        );
+        $view_data['event_options'] = json_encode($event_options);
 
         //prepare label suggestion dropdown
         $view_data['label_suggestions'] = $this->make_labels_dropdown("event", $model_info->labels);
@@ -119,7 +132,7 @@ class Events extends MY_Controller {
             "end_date" => $this->input->post('end_date'),
             "start_time" => $start_time,
             "end_time" => $end_time,
-            "location" => $this->input->post('location'),
+            "location" => $this->input->post('event_option'),
             "labels" => $this->input->post('labels'),
             "color" => $this->input->post('color'),
             "created_by" => $this->login_user->id,

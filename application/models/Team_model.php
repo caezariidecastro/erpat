@@ -17,6 +17,11 @@ class Team_model extends Crud_model {
             $where = " AND $team_table.id=$id";
         }
 
+        $access_only = get_array_value($options, "access_only");
+        if ($access_only) {
+            $where = " AND $team_table.id IN ($access_only)";
+        }
+
         $sql = "SELECT $team_table.*, TRIM(CONCAT(emp.first_name, ' ', emp.last_name)) AS creator_name
         FROM $team_table
         LEFT JOIN users emp ON emp.id = $team_table.created_by
@@ -28,9 +33,18 @@ class Team_model extends Crud_model {
         $team_table = $this->db->dbprefix('team');
         $team_ids = implode(",", $team_ids);
 
-        $sql = "SELECT $team_table.members
+        $sql = "SELECT $team_table.heads, $team_table.members
         FROM $team_table
         WHERE $team_table.deleted=0 AND id in($team_ids)";
+        return $this->db->query($sql);
+    }
+
+    function get_teams($user_id) {
+        $team_table = $this->db->dbprefix('team');
+
+        $sql = "SELECT $team_table.title
+        FROM $team_table
+        WHERE $team_table.deleted=0 AND (FIND_IN_SET('$user_id', $team_table.heads) OR FIND_IN_SET('$user_id', $team_table.members))";
         return $this->db->query($sql);
     }
 

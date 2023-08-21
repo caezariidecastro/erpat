@@ -7,12 +7,15 @@ class Pages extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->access_only_admin();
+        $this->with_module("page", "redirect");
+        $this->with_permission("page", "redirect");
+
         $this->load->model("Pages_model");
     }
 
     function index() {
-        $this->template->rander("pages/index");
+        $view_data['page_create'] = $this->with_permission("page_create");
+        $this->template->rander("pages/index", $view_data);
     }
 
     function modal_form() {
@@ -20,7 +23,15 @@ class Pages extends MY_Controller {
             "id" => "numeric"
         ));
 
-        $view_data['model_info'] = $this->Pages_model->get_one($this->input->post('id'));
+        $id = $this->input->post('id');
+        
+        if( isset($id) ) {
+            $this->with_permission("page_edit", "no_permission");
+        } else {
+            $this->with_permission("page_create", "no_permission");
+        }
+
+        $view_data['model_info'] = $this->Pages_model->get_one($id);
 
         $this->load->view('pages/modal_form', $view_data);
     }
@@ -48,6 +59,12 @@ class Pages extends MY_Controller {
             "visible_to_team_members_only" => is_null($this->input->post('visible_to_team_members_only')) ? "" : $this->input->post('visible_to_team_members_only'),
             "visible_to_clients_only" => is_null($this->input->post('visible_to_clients_only')) ? "" : $this->input->post('visible_to_clients_only')
         );
+    
+        if( isset($id) ) {
+            $this->with_permission("page_update", "no_permission");
+        } else {
+            $this->with_permission("page_create", "no_permission");
+        }
 
         $save_id = $this->Pages_model->save($data, $id);
         if ($save_id) {
@@ -62,6 +79,7 @@ class Pages extends MY_Controller {
         validate_submitted_data(array(
             "id" => "numeric"
         ));
+        $this->with_permission("page_delete", "no_permission");
 
         $id = $this->input->post('id');
         if ($this->input->post('undo')) {
@@ -95,9 +113,14 @@ class Pages extends MY_Controller {
     }
 
     private function _make_row($data) {
-        $options = modal_anchor(get_uri("pages/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('add_page'), "data-post-id" => $data->id));
+        $options = "";
+        if($this->with_permission("page_update")) {
+            $options = modal_anchor(get_uri("pages/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('add_page'), "data-post-id" => $data->id));
+        }
 
-        $options .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_page'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("pages/delete"), "data-action" => "delete"));
+        if($this->with_permission("page_delete")) {
+            $options .= js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_page'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("pages/delete"), "data-action" => "delete"));
+        }
 
         return array($data->title,
             anchor(get_uri("about") . "/" . $data->slug, get_uri("about") . "/" . $data->slug, array("target" => "_blank")),

@@ -21,7 +21,6 @@ class Brands extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_ats");
         $view_data["status_select2"] = $this->_get_status_select2_data();
         $this->template->rander("asset_brands/index", $view_data);
     }
@@ -61,7 +60,7 @@ class Brands extends MY_Controller {
         );
 
         if(!$id){
-            $brand_data["created_on"] = date('Y-m-d H:i:s');
+            $brand_data["created_on"] = get_current_utc_time();
             $brand_data["created_by"] = $this->login_user->id;
         }
 

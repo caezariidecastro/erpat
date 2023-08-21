@@ -10,10 +10,10 @@
             <div class="row p20">
                 <p> 
                     <?php
-                    $client_link = anchor(get_uri("pms/clients/view/" . $client_info->id), $client_info->company_name, array("class" => "white-link"));
+                    $client_link = anchor(get_uri("sales/Clients/view/" . $client_info->id), $client_info->company_name, array("class" => "white-link"));
 
                     if ($this->login_user->user_type === "client") {
-                        $client_link = anchor(get_uri("clients/contact_profile/" . $this->login_user->id . "/company"), $client_info->company_name, array("class" => "white-link"));
+                        $client_link = anchor(get_uri("sales/Clients/contact_profile/" . $this->login_user->id . "/company"), $client_info->company_name, array("class" => "white-link"));
                     }
 
                     echo lang("company_name") . ": <b>" . $client_link . "</b>";
@@ -53,18 +53,18 @@
 
 
     <ul id="client-contact-tabs" data-toggle="ajax-tab" class="nav nav-tabs" role="tablist">
-        <li><a  role="presentation" href="<?php echo_uri("clients/contact_general_info_tab/" . $user_info->id); ?>" data-target="#tab-general-info"> <?php echo lang('general_info'); ?></a></li>
-        <li><a  role="presentation" href="<?php echo_uri("clients/company_info_tab/" . $user_info->client_id); ?>" data-target="#tab-company-info"> <?php echo lang('company'); ?></a></li>
-        <li><a  role="presentation" href="<?php echo_uri("clients/contact_social_links_tab/" . $user_info->id); ?>" data-target="#tab-social-links"> <?php echo lang('social_links'); ?></a></li>
-        <li><a role="presentation" href="<?php echo_uri("clients/account_settings/" . $user_info->id); ?>" data-target="#tab-account-settings"> <?php echo lang('account_settings'); ?></a></li>
+        <li><a  role="presentation" href="<?php echo_uri("sales/Clients/contact_general_info_tab/" . $user_info->id); ?>" data-target="#tab-general-info"> <?php echo lang('general_info'); ?></a></li>
+        <li><a  role="presentation" href="<?php echo_uri("sales/Clients/company_info_tab/" . $user_info->client_id); ?>" data-target="#tab-company-info"> <?php echo lang('company'); ?></a></li>
+        <li><a  role="presentation" href="<?php echo_uri("sales/Clients/contact_social_links_tab/" . $user_info->id); ?>" data-target="#tab-social-links"> <?php echo lang('social_links'); ?></a></li>
+        <li><a role="presentation" href="<?php echo_uri("sales/Clients/account_settings/" . $user_info->id); ?>" data-target="#tab-account-settings"> <?php echo lang('account_settings'); ?></a></li>
         <?php if ($user_info->id == $this->login_user->id) { ?>
-            <li><a role="presentation" href="<?php echo_uri("clients/my_preferences/" . $user_info->id); ?>" data-target="#tab-my-preferences"> <?php echo lang('my_preferences'); ?></a></li>
+            <li><a role="presentation" href="<?php echo_uri("sales/Clients/my_preferences/" . $user_info->id); ?>" data-target="#tab-my-preferences"> <?php echo lang('my_preferences'); ?></a></li>
         <?php } ?>
         <?php if ($user_info->id == $this->login_user->id && !get_setting("disable_editing_left_menu_by_clients")) { ?>
             <li><a role="presentation" href="<?php echo_uri("left_menus/index/user"); ?>" data-target="#tab-user-left-menu"> <?php echo lang('left_menu'); ?></a></li>
         <?php } ?>
         <?php if ($user_info->id == $this->login_user->id && get_setting("enable_gdpr") && (get_setting("clients_can_request_account_removal") || get_setting("allow_clients_to_export_their_data"))) { ?>
-            <li><a role="presentation" href="<?php echo_uri("clients/gdpr/" . $user_info->id); ?>" data-target="#tab-gdpr">GDPR</a></li>
+            <li><a role="presentation" href="<?php echo_uri("sales/Clients/gdpr/" . $user_info->id); ?>" data-target="#tab-gdpr">GDPR</a></li>
         <?php } ?>
     </ul>
 

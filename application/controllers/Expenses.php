@@ -11,19 +11,26 @@ class Expenses extends MY_Controller {
         $this->access_only_allowed_members();
         $this->load->model("Accounts_model");
         $this->load->model("Account_transactions_model");
+        $this->load->model("Expenses_model");
         $this->load->model("Expense_categories_model");
+        $this->load->model("Expenses_payments_model");
+        $this->load->model("Invoice_payments_model");
+        $this->load->model("Projects_model");
+        $this->load->model("Clients_model");
+        $this->load->model("Taxes_model");
     }
 
     //load the expenses list view
     function index() {
-        $this->validate_user_sub_module_permission("module_fas");
-        $this->check_module_availability("module_expense");
+        $this->with_module("expense");
 
         $view_data["custom_field_headers"] = $this->Custom_fields_model->get_custom_field_headers_for_table("expenses", $this->login_user->is_admin, $this->login_user->user_type);
 
         $view_data['categories_dropdown'] = $this->_get_categories_dropdown();
         $view_data['members_dropdown'] = $this->_get_team_members_dropdown();
         $view_data["projects_dropdown"] = $this->_get_projects_dropdown_for_income_and_epxenses("expenses");
+
+        $view_data["can_edit_expenses"] = true; //TODO: Check if user can edit expense row.
 
         $this->template->rander("expenses/index", $view_data);
     }
@@ -60,6 +67,37 @@ class Expenses extends MY_Controller {
             $accounts_dropdown[$group->id] = $group->name;
         }
         return $accounts_dropdown;
+    }
+
+    //prepare options dropdown for invoices list
+    private function _make_options_dropdown($data, $recurring = false) {
+        $expense_id = $data->id;
+
+        $edit = '<li role="presentation">' . modal_anchor(get_uri("expenses/modal_form"), "<i class='fa fa-pencil'></i> " . lang('edit'), array("title" => lang('edit_invoice'), "data-post-id" => $expense_id)) . '</li>';
+
+        $delete = '<li role="presentation">' . js_anchor("<i class='fa fa-times fa-fw'></i>" . lang('delete'), array('title' => lang('delete_invoice'), "class" => "delete", "data-id" => $expense_id, "data-action-url" => get_uri("expenses/delete"), "data-action" => "delete-confirmation")) . '</li>';
+
+        $mark_unpaid = "";
+        $add_payment = "";
+
+        if($data->status != "cancelled" && !$recurring) {
+            if((float)$data->payment_received < (float)$data->amount) {
+                $add_payment = '<li role="presentation">' . modal_anchor(get_uri("expenses_payments/payment_modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_payment'), array("title" => lang('add_payment'), "data-post-expense_id" => $expense_id)) . '</li>';
+            } 
+
+            if($data->status != "not_paid" && (float)$data->payment_received == 0 && (float)$data->payment_received < (float)$data->amount) {
+                $mark_unpaid = '<li role="presentation">' . ajax_anchor(get_uri("expenses/mark_as_unpaid/".$expense_id), "<i class='fa fa-check'></i> " . lang('mark_invoice_as_not_paid'), array("data-reload-on-success" => "1")) . '</li>';
+            } 
+        }
+
+        return '
+                <span class="dropdown inline-block">
+                    <button class="btn btn-default dropdown-toggle  mt0 mb0" type="button" data-toggle="dropdown" aria-expanded="true">
+                        <i class="fa fa-cogs"></i>&nbsp;
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">' . $edit . $delete . $mark_unpaid . $add_payment . '</ul>
+                </span>';
     }
 
     //load the expenses list yearly view
@@ -134,12 +172,14 @@ class Expenses extends MY_Controller {
 
         $recurring = $this->input->post('recurring') ? 1 : 0;
         $expense_date = $this->input->post('expense_date');
+        $due_date = $this->input->post('due_date');
         $repeat_every = $this->input->post('repeat_every');
         $repeat_type = $this->input->post('repeat_type');
         $no_of_cycles = $this->input->post('no_of_cycles');
 
         $data = array(
             "expense_date" => $expense_date,
+            "due_date" => $due_date,
             "title" => $this->input->post('title'),
             "description" => $this->input->post('description'),
             "account_id" => $account_id,
@@ -203,9 +243,6 @@ class Expenses extends MY_Controller {
 
             $this->Account_transactions_model->update_expense($id, $data);
         }
-        else{
-            $this->Account_transactions_model->add_expense($account_id, $amount, $save_id);
-        }
 
         if ($save_id) {
             save_custom_fields("expenses", $save_id, $this->login_user->is_admin, $this->login_user->user_type);
@@ -259,7 +296,7 @@ class Expenses extends MY_Controller {
 
         $result = array();
         foreach ($list_data as $data) {
-            $result[] = $this->_make_row($data, $custom_fields);
+            $result[] = $this->_make_row($data, $custom_fields, $recurring=="recurring"?true:false);
         }
         echo json_encode(array("data" => $result));
     }
@@ -272,8 +309,13 @@ class Expenses extends MY_Controller {
         return $this->_make_row($data, $custom_fields);
     }
 
+    private function get_expense_balance($amount = 0, $expense_id = 0) {
+        $total_payments = $this->Expenses_payments_model->get_total_payments($expense_id);
+        return (float)$amount - (float)$total_payments;
+    }
+
     //prepare a row of expnese list
-    private function _make_row($data, $custom_fields) {
+    private function _make_row($data, $custom_fields, $recurring = false) {
 
         $description = $data->description;
         $title = $data->title;
@@ -332,13 +374,11 @@ class Expenses extends MY_Controller {
                 $description .= "<br /> ";
                 $description .= lang("next_recurring_date") . ": " . format_to_date($data->next_recurring_date, false);
             }
-        }
-
-        if ($data->recurring_expense_id) {
-            if ($description) {
+        } else {
+            if ($data->recurring_expense_id) {
                 $description .= "<br /> ";
+                $description .= lang("generated_by") . ": " . lang("expense") ." #". $data->recurring_expense_id;
             }
-            $description .= modal_anchor(get_uri("fas/expenses/expense_details"), lang("original_expense"), array("title" => lang("expense_details"), "data-post-id" => $data->recurring_expense_id));
         }
 
         $files_link = "";
@@ -362,17 +402,25 @@ class Expenses extends MY_Controller {
             $tax2 = $data->amount * ($data->tax_percentage2 / 100);
         }
 
+        $invoice_url = modal_anchor(get_uri("fas/expenses/expense_details"), get_expense_id($data->id), array("title" => lang("expense_details"), "data-post-id" => $data->id));
+        $invoice_url = $data->recurring ? get_expense_id($data->id) : $invoice_url;
+        $invoice_url = format_to_date($data->expense_date, false)." - ".$invoice_url;
+        $payable_balance = $this->get_expense_balance($data->amount, $data->id);
+        $payable_payment = $data->amount - $payable_balance;
+
         $row_data = array(
-            $data->expense_date,
-            modal_anchor(get_uri("fas/expenses/expense_details"), format_to_date($data->expense_date, false), array("title" => lang("expense_details"), "data-post-id" => $data->id)),
-            $data->category_title,
+            $data->id,
+            $invoice_url,
+            $data->category_title . " #".$data->category_id,
             $title,
             $description,
             $files_link,
             to_currency($data->amount),
             to_currency($tax),
-            to_currency($tax2),
-            to_currency($data->amount + $tax + $tax2)
+            to_currency($data->amount + $tax + $tax2),
+            to_currency($payable_payment),
+            to_currency($payable_balance),
+            get_expense_status_label($data)
         );
 
         foreach ($custom_fields as $field) {
@@ -380,9 +428,8 @@ class Expenses extends MY_Controller {
             $row_data[] = $this->load->view("custom_fields/output_" . $field->field_type, array("value" => $data->$cf_id), true);
         }
 
-        $row_data[] = modal_anchor(get_uri("fas/expenses/modal_form"), "<i class='fa fa-pencil'></i>", array("class" => "edit", "title" => lang('edit_expense'), "data-post-id" => $data->id))
-                . js_anchor("<i class='fa fa-times fa-fw'></i>", array('title' => lang('delete_expense'), "class" => "delete", "data-id" => $data->id, "data-action-url" => get_uri("fas/expenses/delete"), "data-action" => "delete-confirmation"));
-
+        $row_data[] = $this->_make_options_dropdown($data, $recurring);
+        
         return $row_data;
     }
 
@@ -435,7 +482,7 @@ class Expenses extends MY_Controller {
             $expenses = $this->Expenses_model->get_yearly_expenses_chart($year);
             $values = array();
             foreach ($expenses as $value) {
-                $values[$value->month - 1] = $value->total; //in array the month january(1) = index(0)
+                $values[$value->month - 1] = $value->payment; //in array the month january(1) = index(0)
             }
 
             foreach ($months as $key => $month) {
@@ -447,13 +494,12 @@ class Expenses extends MY_Controller {
         }
     }
 
-    function income_vs_expenses() {
-        $this->validate_user_sub_module_permission("module_fas");
+    function cash_flow_comparison() {
         $view_data["projects_dropdown"] = $this->_get_projects_dropdown_for_income_and_epxenses();
-        $this->template->rander("expenses/income_vs_expenses_chart", $view_data);
+        $this->template->rander("expenses/summary/cash_flows", $view_data);
     }
 
-    function income_vs_expenses_chart_data() {
+    function cash_flow_comparison_data() {
 
         $year = $this->input->post("year");
         $project_id = $this->input->post("project_id");
@@ -492,12 +538,12 @@ class Expenses extends MY_Controller {
         }
     }
 
-    function income_vs_expenses_summary() {
+    function income_statements() {
         $view_data["projects_dropdown"] = $this->_get_projects_dropdown_for_income_and_epxenses();
-        $this->load->view("expenses/income_vs_expenses_summary", $view_data);
+        $this->load->view("expenses/summary/income_statements", $view_data);
     }
 
-    function income_vs_expenses_summary_list_data() {
+    function income_statements_list_data() {
 
         $year = explode("-", $this->input->post("start_date"));
         $project_id = $this->input->post("project_id");
@@ -508,6 +554,7 @@ class Expenses extends MY_Controller {
 
             $payments = array();
             $expenses = array();
+            $balances = array();
 
             for ($i = 1; $i <= 12; $i++) {
                 $payments[$i] = 0;
@@ -518,13 +565,14 @@ class Expenses extends MY_Controller {
                 $payments[$payment->month] = $payment->total;
             }
             foreach ($expenses_data as $expense) {
-                $expenses[$expense->month] = $expense->total;
+                $expenses[$expense->month] = $expense->payment;
+                $balances[$expense->month] = (float)$expense->total - (float)$expense->payment;
             }
 
             //get the list of summary
             $result = array();
             for ($i = 1; $i <= 12; $i++) {
-                $result[] = $this->_row_data_of_summary($i, $payments[$i], $expenses[$i]);
+                $result[] = $this->_row_data_of_summary($i, $payments[$i], $expenses[$i], $balances[$i]);
             }
 
             echo json_encode(array("data" => $result));
@@ -532,7 +580,7 @@ class Expenses extends MY_Controller {
     }
 
     //get the row of summary
-    private function _row_data_of_summary($month_index, $payments, $expenses) {
+    private function _row_data_of_summary($month_index, $payments, $expenses, $payables) {
         //get the month name
         $month_array = array(" ", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
 
@@ -546,7 +594,8 @@ class Expenses extends MY_Controller {
             $month_name,
             to_currency($payments),
             to_currency($expenses),
-            to_currency($profit)
+            to_currency($profit),
+            to_currency($payables)
         );
     }
 
@@ -593,6 +642,41 @@ class Expenses extends MY_Controller {
         $view_data['custom_fields_list'] = $this->Custom_fields_model->get_combined_details("expenses", $expense_id, $this->login_user->is_admin, $this->login_user->user_type)->result();
 
         $this->load->view("expenses/expense_details", $view_data);
+    }
+
+    function mark_as_unpaid($expense_id = 0) {
+        if($expense_id) {
+            $result = $this->update_expense_status($expense_id, "not_paid", true);
+            echo $result?lang('error_occured'):lang('error_occured');
+        } else {
+            echo lang('error_occured');
+        }
+    }
+
+    function update_expense_status($expense_id = 0, $status = "", $return = false) {
+
+        if ($expense_id && $status) {
+            //change the draft status of the expense
+            $this->Expenses_model->update_expense_status($expense_id, $status);
+
+            //save extra information for cancellation
+            if ($status == "cancelled") {
+                $data = array(
+                    "cancelled_at" => get_current_utc_time(),
+                    "cancelled_by" => $this->login_user->id
+                );
+
+                $this->Expenses_model->save($data, $expense_id);
+            }
+
+            if($return) {
+                return array("success" => true, 'message' => lang('record_saved'));
+            } else {
+                echo json_encode(array("success" => true, 'message' => lang('record_saved')));
+            }
+        }
+
+        return "";
     }
 
 }

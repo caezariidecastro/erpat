@@ -10,78 +10,148 @@ class Cron_job {
     private $ci = null;
 
     function run() {
+        $this->ci = get_instance();
+        $this->ci->load->model("Attendance_model");
+        $this->ci->load->model("Tickets_model");
+        $this->ci->load->model("Invoices_model");
+        $this->ci->load->model("Invoice_items_model");
+        $this->ci->load->model("Tasks_model");
+        
         $this->today = get_today_date();
+        $this->current_time = strtotime(get_current_utc_time());
+
+        $this->call_minutely_jobs();
+        $this->call_hourly_jobs();
+        $this->call_daily_jobs();
+        $this->call_weekly_jobs();
+        $this->call_monthly_jobs();
+        $this->call_quarterly_jobs();
+        $this->call_yearly_jobs();
+    }
+
+    function override() {
         $this->ci = get_instance();
         $this->current_time = strtotime(get_current_utc_time());
 
-        $this->call_hourly_jobs();
+        $this->ci->Settings_model->save_setting("last_minutely_job_time", "");//$this->current_time-60);
+        $this->ci->Settings_model->save_setting("last_hourly_job_time", "");//$this->current_time-3600);
+        $this->ci->Settings_model->save_setting("last_daily_job_time", "");//(int)get_current_utc_time("Ymd")-1);
+        $this->ci->Settings_model->save_setting("last_weekly_job_time", "");//(int)get_current_utc_time("Ymd")-7);
+        $this->ci->Settings_model->save_setting("last_monthly_job_time", "");//(int)get_current_utc_time("Ym")-1);
+        $this->ci->Settings_model->save_setting("last_quarterly_job_time", "");//(int)get_current_utc_time("Ym")-4);
+        $this->ci->Settings_model->save_setting("last_yearly_job_time", "");//(int)get_current_utc_time("Y")-1);
 
+        $this->run();
+    }
 
-        try {
-            $this->run_imap();
-        } catch (Exception $e) {
-            echo $e;
+    private function is_enable($cron_name) {
+        if ( $this->ci->Settings_model->get_setting("cron_".$cron_name) === "1" ) {
+            return true;
         }
 
-        try {
-            $this->get_google_calendar_events();
-        } catch (Exception $e) {
-            echo $e;
-        }
+        return false;
+    }
 
-        try {
-            $this->close_inactive_tickets();
-        } catch (Exception $e) {
-            echo $e;
+    private function _is_minutely_job_runnable() {
+        $last_minutely_job_time = get_setting('last_minutely_job_time');
+        if ($last_minutely_job_time == "" || (($this->current_time-$last_minutely_job_time) > 60)) {
+            return true;
+        }
+    }
+
+    private function call_minutely_jobs() {
+        //wait 1 minute for each call of following actions
+        if ( $this->_is_minutely_job_runnable() ) {
+            if($this->is_enable("attendances")) {
+                $this->attendance_auto_clockin_and_out();
+            }
+
+            try {
+                if($this->is_enable("imaps")) {
+                    $this->run_imap();
+                }
+            } catch (Exception $e) {
+                echo $e;
+            }
+
+            try {
+                if($this->is_enable("calendars")) {
+                    $this->get_google_calendar_events();
+                }
+            } catch (Exception $e) {
+                echo $e;
+            }
+
+            $this->ci->Settings_model->save_setting("last_minutely_job_time", $this->current_time);
+        }
+    }
+
+    private function _is_hourly_job_runnable() {
+        $last_hourly_job_time = get_setting('last_hourly_job_time');
+        if ($last_hourly_job_time == "" || (($this->current_time-$last_hourly_job_time) > 3600)) {
+            return true;
         }
     }
 
     private function call_hourly_jobs() {
         //wait 1 hour for each call of following actions
         if ($this->_is_hourly_job_runnable()) {
-
-
+            
             try {
-                $this->create_recurring_invoices();
+                if($this->is_enable("invoices")) {
+                    $this->create_recurring_invoices();
+                }
             } catch (Exception $e) {
                 echo $e;
             }
 
             try {
-                $this->create_recurring_expenses();
+                if($this->is_enable("expenses")) {
+                    $this->create_recurring_expenses();
+                }
             } catch (Exception $e) {
                 echo $e;
             }
 
             try {
-                $this->send_invoice_due_pre_reminder();
-            } catch (Exception $e) {
-                echo $e;
-            }
-
-
-            try {
-                $this->send_invoice_due_after_reminder();
-            } catch (Exception $e) {
-                echo $e;
-            }
-
-
-            try {
-                $this->send_recurring_invoice_creation_reminder();
+                if($this->is_enable("expenses")) {
+                    $this->send_invoice_due_pre_reminder();
+                }
             } catch (Exception $e) {
                 echo $e;
             }
 
 
             try {
-                $this->create_recurring_tasks();
+                if($this->is_enable("invoices")) {
+                    $this->send_invoice_due_after_reminder();
+                }
+            } catch (Exception $e) {
+                echo $e;
+            }
+
+
+            try {
+                if($this->is_enable("invoices")) {
+                    $this->send_recurring_invoice_creation_reminder();
+                }
+            } catch (Exception $e) {
+                echo $e;
+            }
+
+
+            try {
+                if($this->is_enable("tasks")) {
+                    $this->create_recurring_tasks();
+                }
             } catch (Exception $e) {
                 echo $e;
             }
 
             try {
-                $this->send_task_reminder_notifications();
+                if($this->is_enable("notifications")) {
+                    $this->send_task_reminder_notifications();
+                }
             } catch (Exception $e) {
                 echo $e;
             }
@@ -90,10 +160,144 @@ class Cron_job {
         }
     }
 
-    private function _is_hourly_job_runnable() {
-        $last_hourly_job_time = get_setting('last_hourly_job_time');
-        if ($last_hourly_job_time == "" || ($this->current_time > ($last_hourly_job_time * 1 + 3600))) {
+    private function _is_daily_job_runnable() {
+        $last_daily_job_time = get_setting('last_daily_job_time');
+        if ($last_daily_job_time == "" || (((int)get_current_utc_time("Ymd")-$last_daily_job_time) >= 1)) {
             return true;
+        }
+    }
+
+    private function call_daily_jobs() {
+        if ($this->_is_daily_job_runnable()) {
+
+            try {
+                if($this->is_enable("leaves")) {
+                    $this->leave_credit_auto_casting();
+                }
+            } catch (Exception $e) {
+                echo $e;
+            }
+
+            try {
+                if($this->is_enable("tickets")) {
+                    $this->close_inactive_tickets();
+                }
+            } catch (Exception $e) {
+                echo $e;
+            }
+
+            $this->ci->Settings_model->save_setting("last_daily_job_time", get_current_utc_time("Ymd"));
+        }
+    }
+
+    private function _is_weekly_job_runnable() {
+        $last_weekly_job_time = get_setting('last_weekly_job_time');
+        if ($last_weekly_job_time == "" || (((int)get_current_utc_time("Ymd")-$last_weekly_job_time) >= 7)) {
+            return true;
+        }
+    }
+
+    private function call_weekly_jobs() {
+        if ($this->_is_weekly_job_runnable()) {
+            // DO SOMETHING HERE
+
+            $this->ci->Settings_model->save_setting("last_weekly_job_time", get_current_utc_time("Ymd"));
+        }
+    }
+
+    private function _is_monthly_job_runnable() {
+        $last_monthly_job_time = get_setting('last_monthly_job_time');
+        if ($last_monthly_job_time == "" || (((int)get_current_utc_time("Ym")-$last_monthly_job_time) >= 1)) {
+            return true;
+        }
+    }
+
+    private function call_monthly_jobs() {
+        if ($this->_is_monthly_job_runnable()) {
+            // DO SOMETHING HERE
+
+            $this->ci->Settings_model->save_setting("last_monthly_job_time", get_current_utc_time("Ym"));
+        }
+    }
+
+    private function _is_quarterly_job_runnable() {
+        $month = (int)get_current_utc_time("m");
+        $last_quarterly_job_time = get_setting('last_quarterly_job_time');
+        if ($last_quarterly_job_time == "" || (((int)get_current_utc_time("Ym")-$last_quarterly_job_time) >= 4 && ($month === 3 || $month === 6 || $month === 9 || $month === 12))) {
+            return true;
+        }
+    }
+
+    private function call_quarterly_jobs() {
+        if ($this->_is_quarterly_job_runnable() ) {
+            // DO SOMETHING HERE
+            
+            $this->ci->Settings_model->save_setting("last_quarterly_job_time", get_current_utc_time("Ym"));
+        }
+    }
+
+    private function _is_yearly_job_runnable() {
+        $last_yearly_job_time = get_setting('last_yearly_job_time');
+        if ($last_yearly_job_time == "" || (((int)get_current_utc_time("Y")-$last_yearly_job_time) >= 1)) {
+            return true;
+        }
+    }
+
+    private function call_yearly_jobs() {
+        if ($this->_is_yearly_job_runnable()) {
+            // DO SOMETHING HERE
+
+            $this->ci->Settings_model->save_setting("last_yearly_job_time", get_current_utc_time("Y"));
+        }
+    }
+
+    // CRON LISTS STARTS HERE
+
+    private function attendance_auto_clockin_and_out() {
+        //Run auto clockout if attendance is greater than 10hrs with note Sytem Logout.
+        if(get_setting('auto_clockout')) {
+            $this->ci->Attendance_model->auto_clockout();
+        }
+
+        if(get_setting('auto_clockin_employee')) {
+            $this->ci->Attendance_model->auto_clocked_in();
+        }
+    }
+
+    private function leave_credit_auto_casting() {
+        //* Should execute only first day of month.
+        //* Only once every month can be execute.
+
+        $last_monthly_first_day = get_setting('last_monthly_first_day_job_time');
+        $current_monthly_first_day = get_my_local_time('Ym');
+        
+        if($last_monthly_first_day != $current_monthly_first_day) {
+            //Load the helper and model class.
+            $this->ci->load->helper("leave");
+            $this->ci->load->model("Leave_credits_model");
+
+            //Get all list of user that is employed and active.
+            $option = array( "date_hired" => true, "is_regular" => true );
+            $employees = $this->ci->Users_model->get_all_active($option);
+
+            //Loop all users and add the leave credits monthly grant.
+            foreach($employees as $user) {
+                if($user->date_hired && $user->date_hired != "0000-00-00") {
+                    $credit_earning = get_monthly_leave_credit_earning($user->date_hired);
+
+                    $data = array(
+                        "user_id" => $user->id,
+                        "counts" => $credit_earning,
+                        "action" => 'debit',
+                        "remarks" => 'Monthly Credit Earning as Regular Employee.',
+                        "date_created" => get_current_utc_time(),
+                        "created_by" => 0,
+                    );
+                    $this->ci->Leave_credits_model->save($data);
+                }
+            }
+            
+            $this->ci->Settings_model->save_setting("last_monthly_first_day_job_time", $current_monthly_first_day);
         }
     }
 
@@ -304,7 +508,7 @@ class Cron_job {
             "project_id" => $task->project_id,
             "milestone_id" => $task->milestone_id,
             "points" => $task->points,
-            "status_id" => $task->status_id,
+            "status_id" => 1,
             "labels" => $task->labels,
             "points" => $task->points,
             "start_date" => $start_date,
@@ -394,6 +598,7 @@ class Cron_job {
     }
 
     private function create_recurring_expenses() {
+        $this->ci->load->model("Expenses_model");
         $recurring_expenses = $this->ci->Expenses_model->get_renewable_expenses($this->today);
         if ($recurring_expenses->num_rows()) {
             foreach ($recurring_expenses->result() as $expense) {
@@ -410,12 +615,16 @@ class Cron_job {
         //check recurring expense once/hour?
 
         $expense_date = $expense->next_recurring_date;
+        $due_date = convert_date_local_to_utc($expense_date, "Y-m-d", 7);
 
         $new_expense_data = array(
             "title" => $expense->title,
             "expense_date" => $expense_date,
+            "due_date" => $due_date,
+            "status" => "not_paid",
             "description" => $expense->description,
             "category_id" => $expense->category_id,
+            "account_id" => $expense->account_id,
             "amount" => $expense->amount,
             "project_id" => $expense->project_id,
             "user_id" => $expense->user_id,
@@ -439,7 +648,7 @@ class Cron_job {
         $this->ci->Expenses_model->save($recurring_expense_data, $expense->id);
 
         //finally send notification
-//        log_notification("recurring_expense_created_vai_cron_job", array("expense_id" => $new_expense_id), "0");
+        //log_notification("recurring_expense_created_vai_cron_job", array("expense_id" => $new_expense_id), "0");
     }
 
 }

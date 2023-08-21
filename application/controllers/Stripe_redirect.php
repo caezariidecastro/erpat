@@ -13,6 +13,8 @@ class Stripe_redirect extends CI_Controller {
         parent::__construct();
         $this->load->library("stripe");
         $this->load->model("Stripe_ipn_model");
+        $this->load->model("Invoices_model");
+        $this->load->model("Invoice_payments_model");
     }
 
     function index($payment_verification_code = "") {

@@ -41,19 +41,11 @@ if (isset($_POST)) {
         exit();
     }
 
-    /*
-     * check the db config file
-     * if db already configured, we'll assume that the installation has completed
-     */
-    $db_file_path = "../application/config/database.php";
-    $db_file = file_get_contents($db_file_path);
-    $is_installed = strpos($db_file, "enter_hostname");
-
-    if (!$is_installed) {
-        echo json_encode(array("success" => false, "message" => "Seems this app is already installed! You can't reinstall it again."));
+    //check if the env production is installed.
+    if (is_file('.env.production')) {
+        echo json_encode(array("success" => false, "message" => "Found environment configuration, app seems installed!"));
         exit();
     }
-
 
     //start installation
 
@@ -78,36 +70,26 @@ if (isset($_POST)) {
 
     $mysqli->close();
     // database created
+
     // set the database config file
+    $db_file_path = "../.env.backup.php";
+    $prod_file_path = "../.env.production.php";
+    $db_file = file_get_contents($db_file_path);
 
     $db_file = str_replace('enter_hostname', $host, $db_file);
     $db_file = str_replace('enter_db_username', $dbuser, $db_file);
     $db_file = str_replace('enter_db_password', $dbpassword, $db_file);
     $db_file = str_replace('enter_database_name', $dbname, $db_file);
 
-    file_put_contents($db_file_path, $db_file);
-
-
-    // set random enter_encryption_key
-
-    $config_file_path = "../application/config/config.php";
     $encryption_key = substr(md5(rand()), 0, 15);
-    $config_file = file_get_contents($config_file_path);
-    $config_file = str_replace('enter_encryption_key', $encryption_key, $config_file);
+    $db_file = str_replace('enter_encryption_key', $encryption_key, $db_file);
+    $db_file = str_replace('deployment', 'production', $db_file);
 
-    file_put_contents($config_file_path, $config_file);
+    file_put_contents($prod_file_path, $db_file);
+    unlink("../.env.backup.php");
+    unlink("database.sql");    
 
-
-    // set the environment = production
-
-    $index_file_path = "../index.php";
-
-    $index_file = file_get_contents($index_file_path);
-    $index_file = preg_replace('/pre_installation/', 'production', $index_file, 1); //replace the first occurence of 'pre_installation'
-
-    file_put_contents($index_file_path, $index_file);
-
-
+    //TODO: Call the migration to the latest and also the check and fix execution.
     echo json_encode(array("success" => true, "message" => "Installation successfull."));
     exit();
 }

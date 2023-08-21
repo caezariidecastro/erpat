@@ -172,7 +172,6 @@ class Left_menu {
 
             $last_menu_item = ""; //store last menu item to the get the data on creating submenu
             $last_final_menu_item = ""; //store the last menu item of final left menu to add submenu to this item 
-            $parent_item_added_as_submenu = false;
 
             foreach ($custom_left_menu_items as $key => $value) {
                 $item_value_array = $this->_get_item_array_value($value, $left_menu_items);
@@ -184,19 +183,19 @@ class Left_menu {
                     //but if any other menu item which haven't any submenu, added as a submenu of a menu item which have submenu, that won't be added
 
                     $parent_item_array = $this->_get_item_array_value(get_array_value($custom_left_menu_items, $last_menu_item), $left_menu_items);
-                    if (!$parent_item_added_as_submenu && !isset($parent_item_array["submenu"])) {
+                    if (!isset($parent_item_array["submenu"])) {
                         $final_left_menu_items[$last_final_menu_item]["submenu"][] = $parent_item_array;
-                        $parent_item_added_as_submenu = true;
                     }
 
                     //add this item
-                    array_push($final_left_menu_items[$last_final_menu_item]["submenu"], $item_value_array);
+                    if($item_value_array) {
+                        array_push($final_left_menu_items[$last_final_menu_item]["submenu"], $item_value_array);
+                    }
                 } else {
                     $final_left_menu_items[] = $item_value_array;
                     $last_menu_item = $key;
                     $last_final_menu_item = end($final_left_menu_items);
                     $last_final_menu_item = key($final_left_menu_items);
-                    $parent_item_added_as_submenu = false;
                 }
             }
         }
@@ -247,303 +246,243 @@ class Left_menu {
 
             $access_expense = get_array_value($permissions, "expense");
             $access_invoice = get_array_value($permissions, "invoice");
-            $access_ticket = get_array_value($permissions, "ticket");
             $access_client = get_array_value($permissions, "client");
             $access_lead = get_array_value($permissions, "lead");
-            $access_timecard = get_array_value($permissions, "attendance");
             $access_leave = get_array_value($permissions, "leave");
             $access_estimate = get_array_value($permissions, "estimate");
             $access_items = ($this->ci->login_user->is_admin || $access_invoice || $access_estimate);
 
             $client_message_users = get_setting("client_message_users");
             $client_message_users_array = explode(",", $client_message_users);
-            $access_messages = ($this->ci->login_user->is_admin || get_array_value($permissions, "message_permission") !== "no" || in_array($this->ci->login_user->id, $client_message_users_array));
+            $access_messages = ($this->ci->login_user->is_admin || get_array_value($permissions, "message_permission") !== "" || in_array($this->ci->login_user->id, $client_message_users_array));
 
-            $manage_help_and_knowledge_base = ($this->ci->login_user->is_admin || get_array_value($permissions, "help_and_knowledge_base"));
-
-
-            if (get_setting("module_timeline") == "1") {
+            if (module_enabled("module_timeline") == "1") {
                 $sidebar_menu["timeline"] = array("name" => "timeline", "url" => "timeline", "class" => " fa-comments font-18");
             }
 
-            if (get_setting("module_announcement") == "1") {
+            if (module_enabled("module_announcement") == "1") {
                 $sidebar_menu["announcements"] = array("name" => "announcements", "url" => "announcements", "class" => "fa-bullhorn");
             }
 
-            if (get_setting("module_todo") == "1") {
+            if (module_enabled("module_todo") == "1") {
                 $sidebar_menu["todo"] = array("name" => "todo", "url" => "todo", "class" => "fa-check-square-o font-16");
             }
 
-            if (get_setting("module_event") == "1") {
+            if (module_enabled("module_event") == "1") {
                 $sidebar_menu["events"] = array("name" => "events", "url" => "events", "class" => "fa-calendar");
             }
 
-            if (get_setting("module_note") == "1") {
+            if (module_enabled("module_note") == "1") {
                 $sidebar_menu["notes"] = array("name" => "notes", "url" => "notes", "class" => "fa-book font-16");
             }
 
-            if (get_setting("module_message") == "1" && $access_messages) {
+            if (module_enabled("module_message") == "1" && $access_messages) {
                 $sidebar_menu["messages"] = array("name" => "messages", "url" => "messages", "class" => "fa-envelope", "devider" => true, "badge" => count_unread_message(), "badge_class" => "badge-secondary");
             }
 
             // Start: Module permissions workaround
-            if (is_user_has_module_permission("module_hrs")) {
-                $sidebar_menu["menu_hrs"] = array("name" => "menu_hrs", "url" => "hrs", "class" => "fa-users", "devider" => true,
-                "submenu" => array(
-                    array("name" => "submenu_hrm_employee", "url" => "hrs/employee"),
-                    array("name" => "submenu_hrm_department", "url" => "hrs/department"),
-                    array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance"),
-                    array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary"),
-                    array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves"),
-                    array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays")
-                ));
+
+            // STAFFING
+            
+            $sidebar_menu["department"] = array("name" => "submenu_hrm_department", "url" => "hrs/department", "class" => "fa-circle");
+            if (module_enabled("module_attendance") && current_has_permit("attendance")) {
+                $sidebar_menu["attendance"] = array("name" => "submenu_hrm_attendance", "url" => "hrs/attendance", "class" => "fa-circle");
+            }
+            $sidebar_menu["disciplinary"] = array("name" => "submenu_hrm_disciplinary", "url" => "hrs/disciplinary", "class" => "fa-circle");
+            if ($this->ci->login_user->is_admin || (module_enabled("module_leave") == "1" && $access_leave)) {
+                $sidebar_menu["leaves"] = array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves", "class" => "fa-circle");
+            } else if (module_enabled("module_leave") == "1") {
+                $sidebar_menu["leaves"] = array("name" => "submenu_hrm_leaves", "url" => "hrs/leaves/leave_info", "class" => "fa-circle");
+            }
+            $sidebar_menu["holidays"] = array("name" => "submenu_hrm_holidays", "url" => "hrs/holidays", "class" => "fa-circle");
+
+            // STAFFING > Employee
+            if( module_enabled("module_employee") && current_has_permit("staff") ) {
+                $sidebar_menu["employee"] = array("name" => "employee", "url" => "Team_members", "class" => "fa-circle");
             }
 
-            if (is_user_has_module_permission("module_fas")) {
-                $sidebar_menu["menu_fas"] = array("name" => "menu_fas", "url" => "fas", "class" => "fa-money", "devider" => true,
-                "submenu" => array(
-                    array("name" => "submenu_fas_summary", "url" => "fas/summary"),
-                    array("name" => "submenu_fas_payments", "url" => "fas/payments"),
-                    array("name" => "submenu_fas_expenses", "url" => "fas/expenses"),
-                    array("name" => "submenu_fas_contributions", "url" => "fas/contributions"),
-                    array("name" => "submenu_fas_incentives", "url" => "fas/incentives"),
-                    array("name" => "submenu_fas_payroll", "url" => "fas/payroll"),
-                    array("name" => "submenu_fas_transfers", "url" => "fas/transfers"),
-                    array("name" => "submenu_fas_accounts", "url" => "fas/accounts"),
-                ));
+            // STAFFING > Schedule
+            if( module_enabled("module_schedule") && current_has_permit("schedule") ) {
+                $sidebar_menu["schedule"] = array("name" => "submenu_hrm_schedule", "url" => "hrs/schedule", "class" => "fa-circle");
             }
 
-            if (is_user_has_module_permission("module_mes")) {
-                $sidebar_menu["menu_mes"] = array("name" => "menu_mes", "url" => "mes", "class" => "fa-industry", "devider" => true,
-                "submenu" => array(
-                    array("name" => "submenu_pid_productions", "url" => "mes/manufacturing-orders"),
-                    array("name" => "submenu_pid_billofmaterials", "url" => "mes/bill-of-materials"),
-                    array("name" => "submenu_pid_materials", "url" => "mes/raw-materials"),
-                    array("name" => "submenu_pid_process", "url" => "mes/work-in-process"),
-                    array("name" => "submenu_pid_products", "url" => "mes/products"),
-                    array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders"),
-                    array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns"),
-                    array("name" => "submenu_pid_supplier", "url" => "mes/suppliers"),
-                    array("name" => "submenu_pid_units", "url" => "mes/units"),
-                ));
+            // SECURITY > ACCESS LOG
+            if( module_enabled("module_access") && current_has_permit("access_logs") ) {
+                $sidebar_menu["access_logs"] = array("name" => "access_logs", "url" => "access_logs", "class" => "fa-circle");
             }
 
-            if (is_user_has_module_permission("module_mcs")) {
-                $sidebar_menu["menu_mcs"] = array("name" => "menu_mcs", "url" => "mcs", "class" => "fa-users", "devider" => true,
-                "submenu" => array(
-                    array("name" => "submenu_mcs_leads", "url" => "mcs/leads"),
-                    array("name" => "submenu_mcs_status", "url" => "mcs/lead_status"),
-                    array("name" => "submenu_mcs_source", "url" => "mcs/lead_source"),
-                ));
-            }
-
-            if (is_user_has_module_permission("module_lds")) {
-                $sidebar_menu["menu_lms"] = array("name" => "menu_lms", "url" => "lds", "class" => "fa-truck", "devider" => true,
-                "submenu" => array(
-                    array("name" => "submenu_lms_delivery", "url" => "lds/deliveries"),
-                    array("name" => "submenu_lms_warehouse", "url" => "lds/warehouses"),
-                    array("name" => "submenu_lms_transfers", "url" => "lds/transfers"),
-                    array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles"),
-                    array("name" => "submenu_lms_drivers", "url" => "lds/drivers"),
-                    array("name" => "submenu_lms_consumers", "url" => "lds/consumers"),
-                ));
-            }
-
-            if (is_user_has_module_permission("module_sms")) {
-                $sidebar_menu["menu_sms"] = array("name" => "menu_sms", "url" => "sms", "class" => "fa-tags", "devider" => true,
-                "submenu" => array(
-                    array("name" => "submenu_sms_pointofsale", "url" => "sms/point-of-sale"),
-                    array("name" => "submenu_sms_giftcard", "url" => "sms/giftcard"),
-                    array("name" => "submenu_sms_coupons", "url" => "sms/coupons"),
-                    array("name" => "submenu_sms_salesmatrix", "url" => "sms/sales-matrix"),
-                    array("name" => "submenu_sms_estimates", "url" => "sms/estimates"),
-                    array("name" => "submenu_sms_invoices", "url" => "sms/invoices"),
-                    array("name" => "submenu_sms_customers", "url" => "sms/customers"),
-                ));
-            }
-
-            if (is_user_has_module_permission("module_ats")) {
-                $sidebar_menu["menu_ams"] = array("name" => "menu_ams", "url" => "ams", "class" => "fa-archive", "devider" => true,
-                "submenu" => array(
-                    array("name" => "submenu_ams_assets", "url" => "ams/entries"),
-                    array("name" => "submenu_ams_category", "url" => "ams/categories"),
-                    array("name" => "submenu_ams_location", "url" => "ams/locations"),
-                    array("name" => "submenu_ams_vendors", "url" => "ams/vendors"),
-                    array("name" => "submenu_ams_maker", "url" => "ams/brands"),
-                ));
-            }
-
-            if (is_user_has_module_permission("module_pms")) {
-                $sidebar_menu["menu_pms"] = array("name" => "menu_pms", "url" => "pms", "class" => "fa-cubes", "devider" => true,
-                "submenu" => array(
-                    array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects"),
-                    array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks"),
-                    array("name" => "submenu_pms_view_gantts", "url" => "pms/view_gantts"),
-                    array("name" => "submenu_pms_timesheets", "url" => "pms/timesheets"),
-                    array("name" => "submenu_pms_clients", "url" => "pms/clients"),
-                    array("name" => "submenu_pms_services", "url" => "pms/services")
-                ));
-            }
             // End: Module permissions workaround
 
-            // if ($this->ci->login_user->is_admin || $access_client) {
-            //     $sidebar_menu["clients"] = array("name" => "clients", "url" => "clients", "class" => "fa-briefcase");
-            // }
-
-            // if (get_setting("module_lead") == "1" && ($this->ci->login_user->is_admin || $access_lead)) {
-            //     $sidebar_menu["leads"] = array("name" => "leads", "url" => "leads", "class" => "fa-cubes");
-            // }
-
-            $project_submenu = array(
-                // array("name" => "all_projects", "url" => "projects/all_projects"),
-                // array("name" => "tasks", "url" => "projects/all_tasks", "class" => "fa-tasks")
-            );
-
-            // if (get_setting("module_gantt")) {
-            //     $project_submenu[] = array("name" => "gantt", "url" => "projects/all_gantt", "class" => "fa-braille");
-            // }
-
-
-            // if (get_setting("module_project_timesheet")) {
-            //     $project_submenu[] = array("name" => "timesheets", "url" => "projects/all_timesheets", "class" => "fa-clock-o");
-            // }
-
-            // $sidebar_menu["projects"] = array("name" => "projects", "url" => "projects", "class" => "fa-th-large",
-            //     "submenu" => $project_submenu
-            // );
-
-            // if (get_setting("module_estimate") && get_setting("module_estimate_request") && ($this->ci->login_user->is_admin || $access_estimate)) {
-
-            //     $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "estimates", "class" => "fa-file",
-            //         "submenu" => array(
-            //             array("name" => "estimate_list", "url" => "estimates"),
-            //             array("name" => "estimate_requests", "url" => "estimate_requests", "class" => "fa-file-text-o"),
-            //             array("name" => "estimate_forms", "url" => "estimate_requests/estimate_forms", "class" => "fa-file-o")
-            //         )
-            //     );
-            // } else if (get_setting("module_estimate") && ($this->ci->login_user->is_admin || $access_estimate)) {
-            //     $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "estimates", "class" => "fa-file");
-            // }
-
-            // if (get_setting("module_invoice") == "1" && ($this->ci->login_user->is_admin || $access_invoice)) {
-            //     $sidebar_menu["invoices"] = array("name" => "invoices", "url" => "invoices", "class" => "fa-file-text");
-            // }
-
-            // if ($access_items && (get_setting("module_invoice") == "1" || get_setting("module_estimate") == "1" )) {
-            //     $sidebar_menu["items"] = array("name" => "items", "url" => "items", "class" => "fa-list-ul");
-            // }
-
-            // if ((get_setting("module_invoice") == "1" || get_setting("module_expense") == "1") && ($this->ci->login_user->is_admin || $access_expense || $access_invoice)) {
-            //     $finance_submenu = array();
-            //     $finance_url = "";
-            //     $show_payments_menu = false;
-            //     $show_expenses_menu = false;
-
-
-            //     if (get_setting("module_invoice") == "1" && ($this->ci->login_user->is_admin || $access_invoice)) {
-            //         $finance_submenu[] = array("name" => "invoice_payments", "url" => "invoice_payments", "class" => "fa-money");
-            //         $finance_url = "invoice_payments";
-            //         $show_payments_menu = true;
-            //     }
-            //     if (get_setting("module_expense") == "1" && ($this->ci->login_user->is_admin || $access_expense)) {
-            //         $finance_submenu[] = array("name" => "expenses", "url" => "expenses", "class" => "fa-money");
-            //         $finance_url = "expenses";
-            //         $show_expenses_menu = true;
-            //     }
-
-            //     if ($show_expenses_menu && $show_payments_menu) {
-            //         $finance_submenu[] = array("name" => "income_vs_expenses", "url" => "expenses/income_vs_expenses", "class" => "fa-line-chart");
-            //     }
-
-            //     $sidebar_menu["finance"] = array("name" => "finance", "url" => $finance_url, "class" => "fa-money", "devider" => true, "submenu" => $finance_submenu);
-            // }
-
-            // if (get_setting("module_ticket") == "1" && ($this->ci->login_user->is_admin || $access_ticket)) {
-
-            //     $ticket_badge = 0;
-            //     if ($this->ci->login_user->is_admin || $access_ticket === "all") {
-            //         $ticket_badge = count_new_tickets();
-            //     } else if ($access_ticket === "specific") {
-            //         $specific_ticket_permission = get_array_value($permissions, "ticket_specific");
-            //         $ticket_badge = count_new_tickets($specific_ticket_permission);
-            //     }
-
-            //     // 
-
-            //     $sidebar_menu["tickets"] = array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
-            // }
-
-
-            // if (get_array_value($this->ci->login_user->permissions, "hide_team_members_list") != "1") {
-            //     $sidebar_menu["team_members"] = array("name" => "team_members", "url" => "team_members", "class" => "fa-user font-16");
-            // }
-
-
-            // if (get_setting("module_attendance") == "1" && ($this->ci->login_user->is_admin || $access_timecard)) {
-            //     $sidebar_menu["attendance"] = array("name" => "attendance", "url" => "attendance", "class" => "fa-clock-o font-16");
-            // } else if (get_setting("module_attendance") == "1") {
-            //     $sidebar_menu["attendance"] = array("name" => "attendance", "url" => "attendance/attendance_info", "class" => "fa-clock-o font-16");
-            // }
-
-            // if (get_setting("module_leave") == "1" && ($this->ci->login_user->is_admin || $access_leave)) {
-            //     $sidebar_menu["leaves"] = array("name" => "leaves", "url" => "leaves", "class" => "fa-sign-out font-16", "devider" => true);
-            // } else if (get_setting("module_leave") == "1") {
-            //     $sidebar_menu["leaves"] = array("name" => "leaves", "url" => "leaves/leave_info", "class" => "fa-sign-out font-16", "devider" => true);
-            // }
-
-            //prepere the help and suppor menues
-            if (get_setting("module_css") == "1" && ($this->ci->login_user->is_admin || get_array_value($permissions, "module_css"))) {
-
-                $module_help = get_setting("module_help") == "1" ? true : false;
-                $module_knowledge_base = get_setting("module_knowledge_base") == "1" ? true : false;
-
-                $help_knowledge_base_menues = array();
-                $main_url = "help";
-
-                if (get_setting("module_ticket") == "1" && ($this->ci->login_user->is_admin || $access_ticket)) {
-
-                    $ticket_badge = 0;
-                    if ($this->ci->login_user->is_admin || $access_ticket === "all") {
-                        $ticket_badge = count_new_tickets();
-                    } else if ($access_ticket === "specific") {
-                        $specific_ticket_permission = get_array_value($permissions, "ticket_specific");
-                        $ticket_badge = count_new_tickets($specific_ticket_permission);
-                    }
-    
-                    $help_knowledge_base_menues[]= array("name" => "tickets", "url" => "css/tickets", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
-                    $help_knowledge_base_menues[]= array("name" => "ticket_type", "url" => "css/ticket_types", "class" => "fa-life-ring", "devider" => true, "badge" => $ticket_badge, "badge_class" => "badge-secondary");
-                }    
-
-                if ($module_help) {
-                    $help_knowledge_base_menues[] = array("name" => "help", "url" => "css/".$main_url, "class" => "fa-question-circle");
-                }
-
-                //push the help manage menu if user has access
-                if ($manage_help_and_knowledge_base && $module_help) {
-                    $help_knowledge_base_menues[] = array("name" => "articles", "url" => "css/help/help_articles", "class" => "fa-question-circle");
-                    $help_knowledge_base_menues[] = array("name" => "categories", "url" => "css/help/help_categories", "class" => "fa-question-circle");
-                }
-
-                if ($module_knowledge_base) {
-                    $help_knowledge_base_menues[] = array("name" => "knowledge_base", "url" => "css/knowledge_base", "class" => "fa-question-circle-o");
-                }
-
-                //push the knowledge_base manage menu if user has access
-                if ($manage_help_and_knowledge_base && $module_knowledge_base) {
-                    $help_knowledge_base_menues[] = array("name" => "articles", "category" => "help", "url" => "css/help/knowledge_base_articles", "class" => "fa-question-circle-o");
-                    $help_knowledge_base_menues[] = array("name" => "categories", "category" => "help", "url" => "css/help/knowledge_base_categories", "class" => "fa-question-circle-o");
-                }
-
-
-                if (!$module_help) {
-                    $main_url = "knowledge_base";
-                }
-
-                $sidebar_menu["help_and_support"] = array("name" => "help_and_support", "url" => "css/".$main_url, "class" => "fa-question-circle",
-                    "submenu" => $help_knowledge_base_menues
-                );
+            //DISTRIBUTION
+            if( module_enabled("module_warehouse") && current_has_permit("warehouse") ) {
+                $sidebar_menu["warehouses"] = array("name" => "warehouses", "url" => "inventory/Warehouses", "class" => "fa-circle");
+            }
+            if( module_enabled("module_warehouse") && current_has_permit("warehouse") ) {
+                $sidebar_menu["pallets"] = array("name" => "submenu_lms_pallets", "url" => "inventory/Pallets", "class" => "fa-circle");  
             }
 
+            //FINANCE
+            if( module_enabled("module_accounting_summary") && current_has_permit("accounting_summary") ) {
+                $sidebar_menu["summary"] = array("name" => "submenu_fas_summary", "url" => "fas/summary", "class" => "fa-circle");
+            }
+            if( module_enabled("module_account") && current_has_permit("account") ) {
+                $sidebar_menu["accounts"] = array("name" => "submenu_fas_accounts", "url" => "fas/accounts", "class" => "fa-circle");
+            }
+            if( module_enabled("module_payment") && current_has_permit("payment") ) {
+                $sidebar_menu["payments"] = array("name" => "submenu_fas_payments", "url" => "fas/payments", "class" => "fa-circle");
+            }
+            if( module_enabled("module_expense") && current_has_permit("expense") ) {
+                $sidebar_menu["expenses"] = array("name" => "submenu_fas_expenses", "url" => "fas/expenses", "class" => "fa-circle");
+            }
+            if( module_enabled("module_payroll") && current_has_permit("payroll") ) {
+                $sidebar_menu["payrolls"] = array("name" => "payrolls", "url" => "Payrolls", "class" => "fa-circle");
+            }
+            if( module_enabled("module_loan") && current_has_permit("loan") ) {
+                $sidebar_menu["loans"] = array("name" => "loans", "url" => "finance/Loans", "class" => "fa-circle");
+            }
+            if( current_has_permit("tax") ) {
+                $sidebar_menu["taxes"] = array("name" => "taxes", "url" => "taxes", "class" => "fa-circle");
+            }
+
+            // PROCUREMENT
+            if (module_enabled("module_purchase") && current_has_permit('purchase')) {
+                $sidebar_menu["purchase-orders"] = array("name" => "submenu_pid_purchases", "url" => "mes/purchase-orders", "class" => "fa-circle");
+            }
+            if (module_enabled("module_return") && current_has_permit('return')) {
+                $sidebar_menu["purchase-returns"] = array("name" => "submenu_pid_returns", "url" => "mes/purchase-returns", "class" => "fa-circle");
+            }
+            if (module_enabled("module_supplier") && current_has_permit('supplier')) {
+                $sidebar_menu["suppliers"] = array("name" => "submenu_pid_supplier", "url" => "mes/suppliers", "class" => "fa-circle");
+            }
+
+            // PRODUCTION
+            if (module_enabled("module_productions") && current_has_permit('production')) {
+                $sidebar_menu["manufacturing-orders"] = array("name" => "manufacturing_order", "url" => "production/ManufacturingOrders", "class" => "fa-circle");
+            }
+            if (module_enabled("module_billofmaterials") && current_has_permit('billofmaterial')) {
+                $sidebar_menu["bill-of-materials"] = array("name" => "bill_of_materials", "url" => "production/BillOfMaterials", "class" => "fa-circle"); 
+            }      
+            if (module_enabled("module_unit") && current_has_permit('unit')) {
+                $sidebar_menu["units"] = array("name" => "submenu_pid_units", "url" => "mes/units", "class" => "fa-circle"); 
+            }    
+
+            // LOGISTICS
+            if (module_enabled("module_delivery") && current_has_permit('delivery')) {
+                $sidebar_menu["deliveries"] = array("name" => "submenu_lms_delivery", "url" => "lds/deliveries", "class" => "fa-circle");
+            }
+            if (current_has_permit('item_transfer')) {
+                $sidebar_menu["lds_transfers"] = array("name" => "submenu_lms_transfers", "url" => "lds/transfers", "class" => "fa-circle");
+            }
+            if (module_enabled("module_vehicle") && current_has_permit('vehicle')) {
+                $sidebar_menu["vehicles"] = array("name" => "submenu_lms_vehicles", "url" => "lds/vehicles", "class" => "fa-circle");
+            }
+            if (module_enabled("module_driver") && current_has_permit('driver')) {
+                $sidebar_menu["drivers"] = array("name" => "submenu_lms_drivers", "url" => "lds/drivers", "class" => "fa-circle");   
+            }
+
+            //SALES
+            if (module_enabled("module_sales_summary") && current_has_permit('sales_summary')) {
+                $sidebar_menu["sales-matrix"] = array("name" => "sales_matrix", "url" => "sales/Sales_matrix", "class" => "fa-circle");
+            }
+            if (module_enabled("module_invoice") && current_has_permit('invoice')) {
+                $sidebar_menu["invoices"] = array("name" => "submenu_sms_invoices", "url" => "sales/Invoices", "class" => "fa-circle");
+            }
+            if (module_enabled("module_service") && current_has_permit('service')) {
+                $sidebar_menu["services"] = array("name" => "submenu_sms_services", "url" => "sales/Services", "class" => "fa-circle");
+            }
+            if (module_enabled("module_product") && current_has_permit('product')) {
+                $sidebar_menu["products"] = array("name" => "submenu_pid_products", "url" => "sales/ProductEntries", "class" => "fa-circle");
+            }
+            if (module_enabled("module_clients") && current_has_permit('client')) {
+                $sidebar_menu["clients"] = array("name" => "clients", "url" => "sales/Clients", "class" => "fa-circle");
+            }
+            if (module_enabled("module_clients") && current_has_permit('client')) {
+                $sidebar_menu["customers"] = array("name" => "submenu_sms_customers", "url" => "sales/Customers", "class" => "fa-circle");
+            }
+            if (module_enabled("module_stores") && current_has_permit('store')) {
+                $sidebar_menu["stores"] = array("name" => "stores", "url" => "sales/Stores", "class" => "fa-circle");
+            }
+
+            //MARKETING
+            if (module_enabled("module_lead") && current_has_permit('lead')) {
+                $sidebar_menu["leads"] = array("name" => "submenu_mcs_leads", "url" => "mcs/leads", "class" => "fa-circle");
+            }
+            if (module_enabled("module_lead") && current_has_permit('lead')) {
+                $sidebar_menu["lead_status"] = array("name" => "submenu_mcs_status", "url" => "mcs/lead_status", "class" => "fa-circle");
+            }
+            if (module_enabled("module_lead") && current_has_permit('lead')) {
+                $sidebar_menu["lead_source"] = array("name" => "submenu_mcs_source", "url" => "mcs/lead_source", "class" => "fa-circle");
+            }
+            if( module_enabled("module_estimate") && current_has_permit("estimate") ) {
+                $sidebar_menu["estimates"] = array("name" => "estimates", "url" => "sales/Estimates", "class" => "fa-circle");
+            } //module_estimate_request
+            if( module_enabled("module_epass") && current_has_permit("event_epass") ) {
+                $sidebar_menu["epass"] = array("name" => "epass", "url" => "mcs/epass", "class" => "fa-circle");
+            }
+            if( module_enabled("module_raffle") && current_has_permit("raffle_draw") ) {
+                $sidebar_menu["module_raffle"] = array("name" => "raffle_draw", "url" => "raffle_draw", "class" => "fa-circle");
+            }
+
+            // ASSETS - GENERALIZED
+            if (module_enabled("module_assets") && current_has_permit('asset')) {
+                $sidebar_menu["entries"] = array("name" => "asset_entries", "url" => "ams/entries", "class" => "fa-circle");
+            }
+            if (module_enabled("module_asset_category") && current_has_permit('asset_category', false, true)) {
+                $sidebar_menu["categories"] = array("name" => "asset_categories", "url" => "ams/categories", "class" => "fa-circle");
+            }
+            if (module_enabled("module_location") && current_has_permit('location')) {
+                $sidebar_menu["locations"] = array("name" => "asset_location", "url" => "ams/locations", "class" => "fa-circle");
+            }
+            if (module_enabled("module_vendors") && current_has_permit('vendor')) {
+                $sidebar_menu["vendors"] = array("name" => "asset_vendor", "url" => "ams/vendors", "class" => "fa-circle");
+            }
+            if (module_enabled("module_brands") && current_has_permit('brand')) {
+                $sidebar_menu["brands"] = array("name" => "asset_brand", "url" => "ams/brands", "class" => "fa-circle");
+            }
+
+            // PLANNING
+            if (module_enabled("module_allprojects") && current_has_permit('can_manage_all_projects')) {
+                $sidebar_menu["all_projects"] = array("name" => "submenu_pms_all_projects", "url" => "pms/all_projects", "class" => "fa-circle");
+            }
+
+            if (module_enabled("module_mytask") && current_has_permit('can_manage_all_projects')) {
+                $sidebar_menu["my_tasks"] = array("name" => "submenu_pms_my_tasks", "url" => "pms/my_tasks", "class" => "fa-circle");
+            }
+
+            if (module_enabled("module_gantt") && current_has_permit('can_manage_all_projects')) {
+                $sidebar_menu["view_gantts"] = array("name" => "submenu_pms_view_gantts", "url" => "pms/view_gantts", "class" => "fa-circle");
+            }
+
+            if (module_enabled("module_project_timesheet") && current_has_permit('can_manage_all_projects')) {
+                $sidebar_menu["timesheets"] = array("name" => "submenu_pms_timesheets", "url" => "pms/timesheets", "class" => "fa-circle");
+            }
+
+            // HELP CENTER
+
+            if ( module_enabled("module_ticket") == "1" && current_has_permit('ticket') ) {
+
+                $ticket_badge = 0;
+                if ($this->ci->login_user->is_admin || $access_ticket === "all") {
+                    $ticket_badge = count_new_tickets();
+                } else if ($access_ticket === "specific") {
+                    $specific_ticket_permission = get_array_value($permissions, "ticket_specific");
+                    $ticket_badge = count_new_tickets($specific_ticket_permission);
+                }
+
+                $sidebar_menu["tickets"] = array("name" => "tickets", "url" => "tickets", "class" => "fa-circle", "badge" => $ticket_badge, "badge_class" => "badge-secondary");
+            }
+
+            if ( module_enabled("module_page") == "1" && current_has_permit('page') ) {
+                $sidebar_menu["pages"] = array("name" => "pages", "url" => "pages", "class" => "fa-circle");
+            }
+
+            if ( module_enabled("module_help") == "1" && current_has_permit('help') ) {
+                $sidebar_menu["help"] = array("name" => "help_page_title", "url" => "help", "class" => "fa-circle");
+            }
+
+            if ( module_enabled("module_knowledge_base") == "1" && current_has_permit('knowledge_base') ) {
+                $sidebar_menu["knowledge_base"] = array("name" => "knowledge_base", "url" => "knowledge_base", "class" => "fa-circle");
+            }
 
             if ($this->ci->login_user->is_admin) {
                 $sidebar_menu["settings"] = array("name" => "settings", "url" => "settings/general", "class" => "fa-wrench");
@@ -555,12 +494,12 @@ class Left_menu {
 
             $sidebar_menu[] = $dashboard_menu;
 
-            if (get_setting("module_event") == "1" && !in_array("events", $hidden_menu)) {
+            if (module_enabled("module_event") == "1" && !in_array("events", $hidden_menu)) {
                 $sidebar_menu[] = array("name" => "events", "url" => "events", "class" => "fa-calendar");
             }
 
             //check message access settings for clients
-            if (get_setting("module_message") && get_setting("client_message_users")) {
+            if (module_enabled("module_message") && get_setting("client_message_users")) {
                 $sidebar_menu[] = array("name" => "messages", "url" => "messages", "class" => "fa-envelope", "badge" => count_unread_message());
             }
 
@@ -569,36 +508,36 @@ class Left_menu {
             }
 
 
-            if (get_setting("module_estimate") && !in_array("estimates", $hidden_menu)) {
-                $sidebar_menu[] = array("name" => "estimates", "url" => "estimates", "class" => "fa-file");
+            if (module_enabled("module_estimate") && !in_array("estimates", $hidden_menu)) {
+                $sidebar_menu[] = array("name" => "estimates", "url" => "sales/Estimates", "class" => "fa-file");
             }
 
-            if (get_setting("module_invoice") == "1") {
+            if (module_enabled("module_invoice") == "1") {
                 if (!in_array("invoices", $hidden_menu)) {
-                    $sidebar_menu[] = array("name" => "invoices", "url" => "invoices", "class" => "fa-file-text");
+                    $sidebar_menu[] = array("name" => "invoices", "url" => "sales/Invoices", "class" => "fa-file-text");
                 }
                 if (!in_array("payments", $hidden_menu)) {
                     $sidebar_menu[] = array("name" => "invoice_payments", "url" => "invoice_payments", "class" => "fa-money");
                 }
             }
 
-            if (get_setting("module_ticket") == "1" && !in_array("tickets", $hidden_menu)) {
-                $sidebar_menu[] = array("name" => "tickets", "url" => "css/tickets", "class" => "fa-life-ring");
+            if (module_enabled("module_ticket") == "1" && !in_array("tickets", $hidden_menu)) {
+                $sidebar_menu[] = array("name" => "tickets", "url" => "tickets", "class" => "fa-life-ring");
             }
 
-            if (get_setting("module_announcement") == "1" && !in_array("announcements", $hidden_menu)) {
+            if (module_enabled("module_announcement") == "1" && !in_array("announcements", $hidden_menu)) {
                 $sidebar_menu[] = array("name" => "announcements", "url" => "announcements", "class" => "fa-bullhorn");
             }
 
-            $sidebar_menu[] = array("name" => "users", "url" => "clients/users", "class" => "fa-user");
+            $sidebar_menu[] = array("name" => "users", "url" => "sales/Clients/users", "class" => "fa-user");
 
             if (get_setting("client_can_view_files")) {
-                $sidebar_menu[] = array("name" => "files", "url" => "clients/files/" . $this->ci->login_user->id . "/page_view", "class" => "fa-file-image-o");
+                $sidebar_menu[] = array("name" => "files", "url" => "sales/Clients/files/" . $this->ci->login_user->id . "/page_view", "class" => "fa-file-image-o");
             }
 
-            $sidebar_menu[] = array("name" => "my_profile", "url" => "clients/contact_profile/" . $this->ci->login_user->id, "class" => "fa-cog");
+            $sidebar_menu[] = array("name" => "my_profile", "url" => "sales/Clients/contact_profile/" . $this->ci->login_user->id, "class" => "fa-cog");
 
-            if (get_setting("module_knowledge_base") == "1" && !in_array("knowledge_base", $hidden_menu)) {
+            if (module_enabled("module_knowledge_base") == "1" && !in_array("knowledge_base", $hidden_menu)) {
                 $sidebar_menu[] = array("name" => "knowledge_base", "url" => "knowledge_base", "class" => "fa-question-circle");
             }
         }

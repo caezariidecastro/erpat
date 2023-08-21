@@ -5,4 +5,4 @@
 <meta name="author" content="bytescrafter">
 <link rel="icon" href="<?php echo get_favicon_url(); ?>" />
 
-<title><?php echo get_setting('app_title'); ?></title>
+<title><?php echo get_setting('site_title'); ?></title>

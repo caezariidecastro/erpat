@@ -8,6 +8,9 @@ class Tasks_model extends Crud_model {
         $this->table = 'tasks';
         parent::__construct($this->table);
         parent::init_activity_log("task", "title", "project", "project_id");
+        $this->load->model("Tickets_model");
+        $this->load->model("Task_status_model");
+        $this->load->model("Milestones_model");
     }
 
     function schema() {
@@ -454,7 +457,7 @@ class Tasks_model extends Crud_model {
 
         $sql = "SELECT * FROM $tasks_table
                         WHERE $tasks_table.deleted=0 AND $tasks_table.recurring=1
-                        AND $tasks_table.next_recurring_date IS NOT NULL AND $tasks_table.next_recurring_date='$date'
+                        AND $tasks_table.next_recurring_date IS NOT NULL AND $tasks_table.next_recurring_date<'$date'
                         AND ($tasks_table.no_of_cycles < 1 OR ($tasks_table.no_of_cycles_completed < $tasks_table.no_of_cycles ))";
 
         return $this->db->query($sql);

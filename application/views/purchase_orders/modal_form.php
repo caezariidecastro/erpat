@@ -13,7 +13,7 @@
         <label for="vendor_id" class="col-md-3"><?php echo lang('supplier'); ?></label>
         <div class="col-md-9">
             <?php
-            echo form_dropdown("vendor_id", $vendor_dropdown, $model_info ? $model_info->vendor_id : "", "class='select2 validate-hidden' data-rule-required='true' data-msg-required='".lang("field_required")."' id='vendor_id'");
+            echo form_dropdown("vendor_id", $vendor_dropdown, $model_info ? $model_info->vendor_id : "", "class='select2 validate-hidden' id='vendor_id'");
             ?>
         </div>
     </div>
@@ -27,9 +27,7 @@
                 "value" => $model_info ? $model_info->remarks : "",
                 "class" => "form-control",
                 "placeholder" => lang('remarks'),
-                "data-rich-text-editor" => true,
-                "data-rule-required" => true,
-                "data-msg-required" => lang("field_required"),
+                "data-rich-text-editor" => true
             ));
             ?>
         </div>

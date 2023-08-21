@@ -1,6 +1,6 @@
 <div class="modal-body clearfix">
     <div>
-        <?php echo form_open(get_uri("estimate_requests/update_estimate_request"), array("id" => "estimate-request-update-form", "class" => "general-form", "role" => "form")); ?>
+        <?php echo form_open(get_uri("sales/Estimate_requests/update_estimate_request"), array("id" => "estimate-request-update-form", "class" => "general-form", "role" => "form")); ?>
         <input type="hidden" name="id" value="<?php echo $model_info->id; ?>" />
 
         <div class="form-group">

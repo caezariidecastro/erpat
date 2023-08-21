@@ -38,9 +38,10 @@
                 {title: '<?php echo lang("start_date") ?>', "iDataSort": 2},
                 {visible: false, searchable: false},
                 {title: '<?php echo lang("end_date") ?>', "iDataSort": 4},
-                {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100", visible: showOption}
+                {title: '<i class="fa fa-bars"></i>', "class": "text-center dropdown-option", visible: showOption}
             ],
-            printColumns: [0, 1, 3, 5]
+            printColumns: [0, 1, 3, 5],
+            tableRefreshButton: true
         });
     });
 </script>

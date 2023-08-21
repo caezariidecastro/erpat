@@ -2,6 +2,39 @@
 
 BusiNext was originally develop for the used of Bytes Crafter client ticketing and project management solution.
 
+## Installation
+
+1. Copy to your target public_html then open it on your browser.
+2. You will be promt with installation page, complete it.
+3. You can now login using your admin account from previous step.
+4. Important! Dont for =get to update database on http://localhost/migrate/update.
+
+## CI / CD Standards
+
+Please add this command on git automatic deployment.
+
+```
+rm -R install
+rm -R documentation
+rm -R .env.backup.php
+chmod 600 .env.production.php
+```
+
+## Issues on Plesk with JWT
+- Add this to the top of the .htaccess
+```
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+```
+
+## Issues on MySQL slow query
+- First we can truncate the ci_sessions table but will lgout users.
+- For long term, you need to set this on your php config.
+```
+session.gc_probability = 1
+session.gc_divisor = 1000
+session.gc_maxlifetime = 1440
+```
+
 ## Contributing
 
 Please read [CONTRIBUTING](CONTRIBUTING) for details on our code of conduct, and the process for submitting pull requests to us.

@@ -7,6 +7,7 @@ class Project_files_model extends Crud_model {
     function __construct() {
         $this->table = 'project_files';
         parent::__construct($this->table);
+        $this->load->model("Projects_model");
         parent::init_activity_log("project_file", "file_name", "project", "project_id");
     }
 

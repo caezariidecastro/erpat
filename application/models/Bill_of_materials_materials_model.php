@@ -37,6 +37,8 @@ class Bill_of_materials_materials_model extends Crud_model {
         WHERE $bill_of_materials_materials_table.deleted=0
         AND material_inventory.material_id = $material_id
         AND $bill_of_materials_materials_table.bill_of_material_id = $bill_of_material_id";
-        return $this->db->query($sql)->num_rows() > 0 ? TRUE : FALSE;
+
+        $query = $this->db->query($sql);
+        return ($query && $query->num_rows()) > 0 ? TRUE : FALSE;
     }
 }

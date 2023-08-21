@@ -1,5 +1,5 @@
 <div class="panel panel-primary">
-    <a href="<?php echo get_uri("clients/index"); ?>" class="white-link">
+    <a href="<?php echo get_uri("sales/Clients/index"); ?>" class="white-link">
         <div class="panel-body">
             <div class="widget-icon">
                 <i class="fa fa-briefcase"></i>

@@ -12,7 +12,7 @@
                 <div class="form-group">
                     <label for="export_my_data" class=" col-md-2"><?php echo lang('export_my_data'); ?></label>
                     <div class=" col-md-10">
-                        <?php echo anchor(get_uri("clients/export_my_data/"), lang("export"), array("class" => "btn btn-primary", "title" => lang('export_my_data'))); ?>
+                        <?php echo anchor(get_uri("sales/Clients/export_my_data/"), lang("export"), array("class" => "btn btn-primary", "title" => lang('export_my_data'))); ?>
                     </div>
                 </div>
             <?php } ?>
@@ -25,7 +25,7 @@
                             <button class="btn btn-danger" disabled="true"><?php echo lang("applied"); ?></button>
                             <?php
                         } else {
-                            echo anchor(get_uri("clients/request_my_account_removal/"), lang("apply"), array("class" => "btn btn-danger", "title" => lang('i_want_to_remove_my_account')));
+                            echo anchor(get_uri("sales/Clients/request_my_account_removal/"), lang("apply"), array("class" => "btn btn-danger", "title" => lang('i_want_to_remove_my_account')));
                         }
                         ?>
                     </div>

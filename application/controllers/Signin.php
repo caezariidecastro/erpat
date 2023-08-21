@@ -5,6 +5,8 @@ class Signin extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->helper('email');
+        $this->load->model("Email_templates_model");
+        $this->load->model("Verification_model");
     }
 
     function index() {
@@ -74,6 +76,18 @@ class Signin extends CI_Controller {
         }
     }
 
+    function session() {
+        $email = $this->input->post("email");
+        $password = $this->input->post("password");
+
+        if (!$this->Users_model->authenticate($email, $password)) {
+            echo json_encode(array("success" => false, "message" => lang("authentication_failed") ));
+            return;
+        }
+
+        echo json_encode(array("success" => true, "seid" => $this->session->session_id));
+    }
+
     // check authentication
     function authenticate($email) {
 
@@ -82,7 +96,6 @@ class Signin extends CI_Controller {
             $this->form_validation->set_message('authenticate', "");
             return false;
         }
-
 
         $password = $this->input->post("password");
         if (!$this->Users_model->authenticate($email, $password)) {
@@ -198,7 +211,6 @@ class Signin extends CI_Controller {
             "password" => "required"
         ));
 
-
         $key = $this->input->post("key");
         $password = $this->input->post("password");
         $valid_key = $this->is_valid_reset_password_key($key);
@@ -215,8 +227,19 @@ class Signin extends CI_Controller {
                     $this->Verification_model->delete_permanently($verification_info->id);
                 }
 
-                echo json_encode(array("success" => true, 'message' => lang("password_reset_successfully") . " " . anchor("signin", lang("signin"))));
-                return true;
+                $user_info = $this->Users_model->get_one($user->id);
+                
+                if($user_info->is_admin || $user_info->access_erpat) { //check if has access to erpat.
+                    $link = anchor("signin", lang("signin"));
+                } else if($user_info->access_syntry) { //check if has access to syntry. and so on.
+                    $link = anchor(get_setting("syntry_site_link", "http://syntry.erpat.app"), lang("signin"));
+                } else {
+                    echo json_encode(array("success" => false, 'message' => lang("no_permission")));
+                    exit;
+                }
+
+                echo json_encode(array("success" => true, 'message' => lang("password_reset_successfully") . " " . $link));
+                exit;
             }
         }
         echo json_encode(array("success" => false, 'message' => lang("error_occurred")));

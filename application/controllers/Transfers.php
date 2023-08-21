@@ -35,7 +35,6 @@ class Transfers extends MY_Controller {
     }
 
     function index(){
-        $this->validate_user_sub_module_permission("module_lds");
         $this->template->rander("transfers/index");
     }
 
@@ -107,7 +106,7 @@ class Transfers extends MY_Controller {
 
         if(!$id){
             $transfer_data["reference_number"] = $this->input->post('reference_number');
-            $transfer_data["created_on"] = date('Y-m-d H:i:s');
+            $transfer_data["created_on"] = get_current_utc_time();
             $transfer_data["created_by"] = $this->login_user->id;
         }
 
@@ -181,7 +180,7 @@ class Transfers extends MY_Controller {
         $view_data['warehouse_item_select2'] = $model_info->transferee ? $this->get_inventory_items_select2_data($model_info->transferee) : array('id' => '', 'text' => '');
         $view_data["status_dropdown"] = $this->_get_statuses();
 
-        $this->load->view('lds/transfers/products/modal_form', $view_data);
+        $this->load->view('transfers/products/modal_form', $view_data);
     }
 
     function delete() {

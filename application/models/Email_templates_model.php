@@ -42,4 +42,16 @@ class Email_templates_model extends Crud_model {
         return $info;
     }
 
+    function new_template($name, $subject, $content) {
+        $data = array(
+            'template_name' => $name,
+            'email_subject' => $subject,
+            'default_message' => $content
+        );
+
+        $save_id = $this->save($data);
+
+        return $save_id;
+    }
+
 }

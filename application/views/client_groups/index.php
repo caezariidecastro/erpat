@@ -12,7 +12,7 @@
                 <div class="page-title clearfix">
                     <h4> <?php echo lang('client_groups'); ?></h4>
                     <div class="title-button-group">
-                        <?php echo modal_anchor(get_uri("client_groups/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_client_group'), array("class" => "btn btn-default", "title" => lang('add_client_group'))); ?>
+                        <?php echo modal_anchor(get_uri("sales/Client_groups/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_client_group'), array("class" => "btn btn-default", "title" => lang('add_client_group'))); ?>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -27,7 +27,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#client-groups-table").appTable({
-            source: '<?php echo_uri("client_groups/list_data") ?>',
+            source: '<?php echo_uri("sales/Client_groups/list_data") ?>',
             columns: [
                 {title: '<?php echo lang("title") ?>'},
                 {title: '<i class="fa fa-bars"></i>', "class": "text-center option w100"}

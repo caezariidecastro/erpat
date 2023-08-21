@@ -93,7 +93,7 @@
                 appLoader.show();
 
                 $.ajax({
-                    url: "<?php echo get_uri("mes/units/base_unit/") . $model_info->id ."/". $model_info->base_unit; ?>",
+                    url: "<?php echo get_uri("units/base_unit/") . $model_info->id ."/". $model_info->base_unit; ?>",
                     success: function (result) {
                         $('#base_unit_wrapper').html(result);
                         $("#base_unit_wrapper").removeClass("hide");

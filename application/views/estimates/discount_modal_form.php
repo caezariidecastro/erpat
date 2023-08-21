@@ -1,4 +1,4 @@
-<?php echo form_open(get_uri("estimates/save_discount"), array("id" => "discount-form", "class" => "general-form", "role" => "form")); ?>
+<?php echo form_open(get_uri("sales/Estimates/save_discount"), array("id" => "discount-form", "class" => "general-form", "role" => "form")); ?>
 <div class="modal-body clearfix">
     <input type="hidden" name="estimate_id" value="<?php echo $model_info->id; ?>" />
     <div class="form-group">

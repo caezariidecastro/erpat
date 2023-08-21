@@ -12,7 +12,7 @@
         $client_lang = "";
 
         if($invoice_info->client_id){
-            $client = anchor(get_uri("pms/clients/view/" . $invoice_info->client_id), $invoice_info->company_name);
+            $client = anchor(get_uri("sales/Clients/view/" . $invoice_info->client_id), $invoice_info->company_name);
             $client_lang = lang("client");
         }
 
@@ -37,7 +37,7 @@
         <span class="ml15">
             <?php
             echo lang("created_from") . ": ";
-            echo anchor(get_uri("sms/invoices/view/" . $invoice_info->recurring_invoice_id), get_invoice_id($invoice_info->recurring_invoice_id));
+            echo anchor(get_uri("sales/Invoices/view/" . $invoice_info->recurring_invoice_id), get_invoice_id($invoice_info->recurring_invoice_id));
             ?>
         </span>
     <?php } ?>

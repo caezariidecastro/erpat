@@ -43,7 +43,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#estimate-form-table").appTable({
-            source: '<?php echo_uri("estimate_requests/estimate_form_filed_list_data/" . $model_info->id) ?>',
+            source: '<?php echo_uri("sales/Estimate_requests/estimate_form_filed_list_data/" . $model_info->id) ?>',
             order: [[1, "asc"]],
             hideTools: true,
             displayLength: 100,
@@ -60,8 +60,8 @@
         var isPreview = "<?php echo $is_preview; ?>";
 
         if (enable_attachment === "1" && isPreview === "0") {
-            var uploadUrl = "<?php echo get_uri("estimate_requests/upload_file"); ?>";
-            var validationUrl = "<?php echo get_uri("estimate_requests/validate_file"); ?>";
+            var uploadUrl = "<?php echo get_uri("sales/Estimate_requests/upload_file"); ?>";
+            var validationUrl = "<?php echo get_uri("sales/Estimate_requests/validate_file"); ?>";
             var dropzone = attachDropzoneWithForm("#estimate-form-preview", uploadUrl, validationUrl);
         }
 

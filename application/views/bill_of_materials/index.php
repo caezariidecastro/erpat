@@ -3,7 +3,7 @@
         <div class="page-title clearfix">
             <h1> <?php echo lang('bill_of_materials'); ?></h1>
             <div class="title-button-group">
-                <?php echo modal_anchor(get_uri("mes/BillOfMaterials/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_bill_of_material'), array("class" => "btn btn-default", "title" => lang('add_bill_of_material'))); ?>
+                <?php echo modal_anchor(get_uri("production/BillOfMaterials/modal_form"), "<i class='fa fa-plus-circle'></i> " . lang('add_bill_of_material'), array("class" => "btn btn-default", "title" => lang('add_bill_of_material'))); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -16,7 +16,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#bill-of-materials-table").appTable({
-            source: '<?php echo_uri("mes/BillOfMaterials/list_data") ?>',
+            source: '<?php echo_uri("production/BillOfMaterials/list_data") ?>',
             order: [[0, 'desc']],
             columns: [
                 {title: "<?php echo lang('title') ?> ", "class": "w20p"},
