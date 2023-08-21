@@ -1515,10 +1515,10 @@ class Team_members extends MY_Controller {
         $role = $this->input->post('role');
         $role_id = $role;
 
-        if ($role === "admin") {
+        if ($role == "admin") {
             $account_data["is_admin"] = 1;
             $account_data["role_id"] = 0;
-        } else {
+        } else if( is_numeric($role) ) {
             $account_data["is_admin"] = 0;
             $account_data["role_id"] = $role_id;
         }
