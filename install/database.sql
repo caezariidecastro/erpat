@@ -3,13 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 19, 2023 at 05:06 PM
+-- Generation Time: Aug 21, 2023 at 12:12 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 7.4.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+00:00";
+SET time_zone = "+08:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -89,6 +89,15 @@ CREATE TABLE `accounts` (
   `deleted` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `accounts`
+--
+
+INSERT INTO `accounts` (`id`, `name`, `number`, `initial_balance`, `remarks`, `created_on`, `created_by`, `deleted`) VALUES
+(1, 'Payroll Account', '01234567890', '0.00', '', '2022-07-12 15:48:06', 1, 0),
+(2, 'Purchasing Account\\', '01234567890', '0.00', '', '2022-12-07 06:00:16', 1, 0),
+(3, 'Billing Account', '01234567890', '0.00', '', '2023-03-20 12:16:30', 1, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -162,6 +171,7 @@ CREATE TABLE `announcements` (
   `created_at` datetime NOT NULL,
   `files` text COLLATE utf8_unicode_ci NOT NULL,
   `read_by` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `deleted` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -262,11 +272,29 @@ CREATE TABLE `asset_vendors` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `attachments`
+--
+
+CREATE TABLE `attachments` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `file_name` varchar(180) NOT NULL,
+  `file_type` varchar(50) NOT NULL,
+  `file_size` int(11) NOT NULL,
+  `description` text NOT NULL,
+  `uploaded_by` int(11) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `attendance`
 --
 
 CREATE TABLE `attendance` (
   `id` int(11) NOT NULL,
+  `log_type` enum('schedule','overtime') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'schedule',
   `status` enum('incomplete','pending','approved','rejected','clockout') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'incomplete',
   `user_id` int(11) NOT NULL,
   `sched_id` int(11) DEFAULT 0,
@@ -363,6 +391,17 @@ CREATE TABLE `ci_sessions` (
   `data` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `ci_sessions`
+--
+
+INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
+('6iudim9v83hus0mgd04vvj75opdl1bpo', '::1', 1692611668, 0x5f5f63695f6c6173745f726567656e65726174657c693a313639323631313636383b757365725f69647c733a313a2231223b),
+('g110io3knjf398o7h2erme35slkd43re', '::1', 1692611978, 0x5f5f63695f6c6173745f726567656e65726174657c693a313639323631313937383b757365725f69647c733a313a2231223b),
+('c4rbs8hrmvc1odjcn3ruv66rdrfge39r', '::1', 1692612337, 0x5f5f63695f6c6173745f726567656e65726174657c693a313639323631323333373b757365725f69647c733a313a2231223b),
+('bq86kvei7gb1mmnn6l54kgov1099itgp', '::1', 1692612640, 0x5f5f63695f6c6173745f726567656e65726174657c693a313639323631323634303b757365725f69647c733a313a2231223b),
+('ah4vv0thak11mup5jlov5i7q790kdjh1', '::1', 1692612688, 0x5f5f63695f6c6173745f726567656e65726174657c693a313639323631323634303b757365725f69647c733a313a2231223b);
+
 -- --------------------------------------------------------
 
 --
@@ -408,6 +447,49 @@ CREATE TABLE `client_groups` (
   `deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `consumers`
+--
+
+CREATE TABLE `consumers` (
+  `id` int(11) NOT NULL,
+  `first_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `last_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `contact` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `street` text COLLATE utf8_unicode_ci NOT NULL,
+  `city` text COLLATE utf8_unicode_ci NOT NULL,
+  `state` text COLLATE utf8_unicode_ci NOT NULL,
+  `zip` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `country` text COLLATE utf8_unicode_ci NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customers`
+--
+
+CREATE TABLE `customers` (
+  `id` bigint(10) NOT NULL,
+  `first_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `last_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `contact` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `street` text COLLATE utf8_unicode_ci NOT NULL,
+  `city` text COLLATE utf8_unicode_ci NOT NULL,
+  `state` text COLLATE utf8_unicode_ci NOT NULL,
+  `zip` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `country` text COLLATE utf8_unicode_ci NOT NULL,
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -567,7 +649,7 @@ INSERT INTO `email_templates` (`id`, `template_name`, `email_subject`, `default_
 (2, 'reset_password', 'Reset password', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"><div style=\"max-width:640px; margin:0 auto; \"><div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Reset Password</h1>\n </div>\n <div style=\"padding: 20px; background-color: rgb(255, 255, 255); color:#555;\">                    <p style=\"font-size: 14px;\"> Hello {ACCOUNT_HOLDER_NAME},<br><br>A password reset request has been created for your account.&nbsp;</p>\n                    <p style=\"font-size: 14px;\"> To initiate the password reset process, please click on the following link:</p>\n                    <p style=\"font-size: 14px;\"><a href=\"{RESET_PASSWORD_URL}\" target=\"_blank\">Reset Password</a></p>\n                    <p style=\"font-size: 14px;\"></p>\n                    <p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\"><br></span></p>\n<p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\">If you\'ve received this mail in error, it\'s likely that another user entered your email address by mistake while trying to reset a password.</span><br></p>\n<p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\">If you didn\'t initiate the request, you don\'t need to take any further action and can safely disregard this email.</span><br></p>\n<p style=\"font-size: 14px;\"><br></p>\n<p style=\"font-size: 14px;\">{SIGNATURE}</p>\n                </div>\n            </div>\n        </div>', '', 0),
 (3, 'team_member_invitation', 'You are invited', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"><div style=\"max-width:640px; margin:0 auto; \"> <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Account Invitation</h1>   </div>  <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello,</span><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\"><br></span></span></p>            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\">{INVITATION_SENT_BY}</span> has sent you an invitation to join with a team.</span></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><br></span></p>            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a style=\"background-color: #00b393; padding: 10px 15px; color: #ffffff;\" href=\"{INVITATION_URL}\" target=\"_blank\">Accept this Invitation</a></span></p>            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><br></span></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">If you don\'t want to accept this invitation, simply ignore this email.</span><br><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', '', 0),
 (4, 'send_invoice', 'New invoice', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"> <div style=\"max-width:640px; margin:0 auto; \"> <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>INVOICE #{INVOICE_ID}</h1></div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">  <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello {CONTACT_FIRST_NAME},</span><br></p><p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\">Thank you for your business cooperation.</span><br></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Your invoice for the project {PROJECT_TITLE} has been generated and is attached here.</span></p><p style=\"\"><br></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a style=\"background-color: #00b393; padding: 10px 15px; color: #ffffff;\" href=\"{INVOICE_URL}\" target=\"_blank\">Show Invoice</a></span></p><p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\"><br></span></p><p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\">Invoice balance due is {BALANCE_DUE}</span><br></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Please pay this invoice within {DUE_DATE}.&nbsp;</span></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><br></span></p><p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>  </div> </div></div>', '', 0),
-(5, 'signature', 'Signature', 'Powered By: <a href=\"https://bytescrafter.net/\" target=\"_blank\">BytesCrafter</a>', '<p style=\"text-align: center;\"><b>Pinakamakinang © 2023. All rights reserved. </b><br><span _ngcontent-serverapp-c117=\"\">Made possible by <a _ngcontent-serverapp-c117=\"\" href=\"http://bytescrafter.net\" style=\"\"><font color=\"#003163\" style=\"\"><b>BytesCrafter</b></font></a></span></p>', 0),
+(5, 'signature', 'Signature', '<p><b>ERPat </b>- Enterprise Resource Planning Automated System<br>Made Possible by : <a href=\"http://bytescrafter.net/\" target=\"_blank\" style=\"background-color: rgb(255, 255, 255);\"><b>BytesCrafter</b></a></p>', '<p><div style=\"text-align: center;\"><b>ERPat </b>- Enterprise Resource Planning Automated System</div><div style=\"text-align: center;\">Made Possible by : <a href=\"http://bytescrafter.net/\" target=\"_blank\" style=\"background-color: rgb(255, 255, 255);\"><b>BytesCrafter</b></a></div></p>', 0),
 (6, 'client_contact_invitation', 'You are invited', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Account Invitation</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello,</span><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\"><br></span></span></p>            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\">{INVITATION_SENT_BY}</span> has sent you an invitation to a client portal.</span></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><br></span></p>            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a style=\"background-color: #00b393; padding: 10px 15px; color: #ffffff;\" href=\"{INVITATION_URL}\" target=\"_blank\">Accept this Invitation</a></span></p>            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><br></span></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">If you don\'t want to accept this invitation, simply ignore this email.</span><br><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', '', 0),
 (7, 'ticket_created', 'Ticket  #{TICKET_ID} - {TICKET_TITLE}', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"> <div style=\"max-width:640px; margin:0 auto; \"> <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Ticket #{TICKET_ID} Opened</h1></div><div style=\"padding: 20px; background-color: rgb(255, 255, 255);\"><p style=\"\"><span style=\"line-height: 18.5714px; font-weight: bold;\">Title: {TICKET_TITLE}</span><span style=\"line-height: 18.5714px;\"><br></span></p><p style=\"\"><span style=\"line-height: 18.5714px;\">{TICKET_CONTENT}</span><br></p> <p style=\"\"><br></p> <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a style=\"background-color: #00b393; padding: 10px 15px; color: #ffffff;\" href=\"{TICKET_URL}\" target=\"_blank\">Show Ticket</a></span></p> <p style=\"\"><br></p><p style=\"\">Regards,</p><p style=\"\"><span style=\"line-height: 18.5714px;\">{USER_NAME}</span><br></p>   </div>  </div> </div>', '', 0),
 (8, 'ticket_commented', 'Ticket  #{TICKET_ID} - {TICKET_TITLE}', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"> <div style=\"max-width:640px; margin:0 auto; \"> <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Ticket #{TICKET_ID} Replies</h1></div><div style=\"padding: 20px; background-color: rgb(255, 255, 255);\"><p style=\"\"><span style=\"line-height: 18.5714px; font-weight: bold;\">Title: {TICKET_TITLE}</span><span style=\"line-height: 18.5714px;\"><br></span></p><p style=\"\"><span style=\"line-height: 18.5714px;\">{TICKET_CONTENT}</span></p><p style=\"\"><span style=\"line-height: 18.5714px;\"><br></span></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a style=\"background-color: #00b393; padding: 10px 15px; color: #ffffff;\" href=\"{TICKET_URL}\" target=\"_blank\">Show Ticket</a></span></p></div></div></div>', '', 0),
@@ -588,8 +670,12 @@ INSERT INTO `email_templates` (`id`, `template_name`, `email_subject`, `default_
 (22, 'new_client_greetings', 'Welcome!', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Welcome to {COMPANY_NAME}</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello {CONTACT_FIRST_NAME},</span></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Thank you for creating your account. </span></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">We are happy to see you here.<br></span></p><hr><p style=\"color: rgb(85, 85, 85); font-size: 14px;\">Dashboard URL:&nbsp;<a href=\"{DASHBOARD_URL}\" target=\"_blank\">{DASHBOARD_URL}</a></p><p style=\"color: rgb(85, 85, 85); font-size: 14px;\"></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Email: {CONTACT_LOGIN_EMAIL}</span><br></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Password:&nbsp;{CONTACT_LOGIN_PASSWORD}</span></p><p style=\"color: rgb(85, 85, 85);\"><br></p><p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', '', 0),
 (23, 'verify_email', 'Verify your email', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"><div style=\"max-width:640px; margin:0 auto; \"><div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Account verification</h1></div><div style=\"padding: 20px; background-color: rgb(255, 255, 255); color:#555;\"><p style=\"font-size: 14px;\">To initiate the signup process, please click on the following link:<br></p><p style=\"font-size: 14px;\"><br></p>', '', 0),
 (24, 'send_purchase_request', 'New purchase request', '<div style=\"background-color: #eeeeef; padding: 50px 0; \"> <div style=\"max-width:640px; margin:0 auto; \"> <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>PURCHASE #{P_ID}</h1></div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\"> <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello {CONTACT_FIRST_NAME},</span><br></p><p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\">Thank you for your business cooperation.</span><br></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Our purchase request for materials has been generated and is attached here.</span></p><p style=\"\"><br></p><p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a style=\"background-color: #00b393; padding: 10px 15px; color: #ffffff;\" href=\"{PURCHASE_URL}\" target=\"_blank\">Show Purchase Request</a></span></p><p style=\"\"><br></p><p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p> </div> </div></div>', '', 0),
-(25, 'event_pass', 'e-Pass Verification', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Ticket Confirmation</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello Brilliant,</span><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\"><br></span></span></p>            <p style=\"\"><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We are happy to inform you that your booking for Brilliant Skin Essentials Inc. -#PINAKAMAKINANG “The Brilliant Concert 2023 is now under processing! Get ready to witness the BRIGHTEST event of the year.</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br>Title:&nbsp;</span></font><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">#PINAKAMAKINANG “The Brilliant Concert 2023</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Date: 07 February 2023</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Time: 4:00 PM</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">\n        </span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Participant`s details:</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Reference ID: {REFERENCE_ID}</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Group : {GROUP_NAME}<br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Name: {FIRST_NAME} {LAST_NAME}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Phone: {PHONE_NUMBER}</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Number of Seats: {TOTAL_SEATS}</span><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Remarks: {REMARKS}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Event location:</span></font></p><p><font color=\"#555555\"><b style=\"font-size: 14px;\">Smart Araneta Coliseum</b><br><span style=\"font-size: 14px;\">General Roxas Ave, Araneta City, QC, 1109 Metro Manila</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a href=\"https://goo.gl/maps/P7gXh8FEMLjPSxUH6\" target=\"_blank\" style=\"background-color: rgb(0, 179, 147); color: rgb(255, 255, 255); padding: 10px 15px;\">Open on Google Map</a></span></p><div><br></div><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We can’t wait to see you!</span></font></p><p style=\"\"><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Ticket Reservation</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello Brilliant,</span><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\"><br></span></span></p>            <p style=\"\"><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We are happy to inform you that your booking for </span><b style=\"font-size: 14px;\">Brilliant Skin Essentials Inc. -#PINAKAMAKINANG “The Brilliant Concert 2023\"</b><span style=\"font-size: 14px;\">&nbsp;is now being processed! We will send your seat number and QR ticket one (1) week before the event.<br></span></font></p><p><span style=\"font-size: 14px; color: rgb(85, 85, 85);\">Get ready to witness the BRIGHTEST event of the year!</span><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">See you, Brilliant!</span></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\"><br></span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Title:&nbsp;</span></font><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">#PINAKAMAKINANG “The Brilliant Concert 2023</span><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">“</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Date: 07 February 2023</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Time: 4:00 PM</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Reservation details:</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Reference ID: {REFERENCE_ID}</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Group : {GROUP_NAME}<br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Name: {FIRST_NAME} {LAST_NAME}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Phone: {PHONE_NUMBER}</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Number of Seats: {TOTAL_SEATS}</span><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Remarks: {REMARKS}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Event location:</span></font></p><p><font color=\"#555555\"><b style=\"font-size: 14px;\">Smart Araneta Coliseum</b><br><span style=\"font-size: 14px;\">General Roxas Ave, Araneta City, QC, 1109 Metro Manila</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a href=\"https://goo.gl/maps/P7gXh8FEMLjPSxUH6\" target=\"_blank\" style=\"background-color: rgb(0, 179, 147); color: rgb(255, 255, 255); padding: 10px 15px;\">Open on Google Map</a></span></p><div><br></div><p><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', 0),
-(26, 'epass_confirm', 'e-Pass Confirmation - New!', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Ticket Confirmation</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello Brilliant,</span><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\"><br></span></span></p>            <p style=\"\"><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We are happy to inform you that your booking for Brilliant Skin Essentials Inc. -#PINAKAMAKINANG “The Brilliant Concert 2023 is now <b>approved </b>and <b>reserved</b>! Get ready to witness the BRIGHTEST event of the year.</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br>Title:&nbsp;</span></font><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">#PINAKAMAKINANG “The Brilliant Concert 2023</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Date: 07 February 2023</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Time: 4:00 PM</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">\n        </span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Participant`s details:</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Reference ID: {REFERENCE_ID}</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Group : {GROUP_NAME}<br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Name: {FIRST_NAME} {LAST_NAME}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Phone: {PHONE_NUMBER}</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Number of Seats: {TOTAL_SEATS}</span><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Remarks: {REMARKS}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Event location:</span></font></p><p><font color=\"#555555\"><b style=\"font-size: 14px;\">Smart Araneta Coliseum</b><br><span style=\"font-size: 14px;\">General Roxas Ave, Araneta City, QC, 1109 Metro Manila</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a href=\"https://goo.gl/maps/P7gXh8FEMLjPSxUH6\" target=\"_blank\" style=\"background-color: rgb(0, 179, 147); color: rgb(255, 255, 255); padding: 10px 15px;\">Open on Google Map</a></span></p><div><br></div><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We can’t wait to see you!</span></font></p><p style=\"\"><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>e-Pass Confirmation</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello Brilliant,</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We are happy to inform you that your booking for Brilliant Skin Essentials Inc. -#PINAKAMAKINANG “The Brilliant Concert 2023 is now <b>approved </b>and <b>reserved</b>! Get ready to witness the BRIGHTEST event of the year.</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br><b>Title:&nbsp;</b></span></font><span style=\"color: rgb(85, 85, 85); font-size: 14px;\"><b>#PINAKAMAKINANG “The Brilliant Concert 2023</b></span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><b>Date: 07 February 2023</b></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><b>Time: 4:00 PM</b></span></font></p><p><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><b>Companion`s details</b>:</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Reference ID: {REFERENCE_ID}</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Group : {GROUP_NAME}<br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Name: {FIRST_NAME} {LAST_NAME}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Phone: {PHONE_NUMBER}</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Number of Seats: {TOTAL_SEATS}</span></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Remarks: {REMARKS}</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">REMINDERS: Do not post your QR code on any social media platforms to prevent an unauthorized person from using it.</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><b>Event location:</b></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Smart Araneta Coliseum</span><br><span style=\"font-size: 14px;\"><i>General Roxas Ave, Araneta City, QC, 1109 Metro Manila</i></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a href=\"https://goo.gl/maps/P7gXh8FEMLjPSxUH6\" target=\"_blank\" style=\"background-color: rgb(0, 179, 147); color: rgb(255, 255, 255); padding: 10px 15px;\">Open on Google Map</a></span></p><div><br></div><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We can’t wait to see you!</span></font></p><p style=\"\"><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', 0);
+(25, 'event_pass', 'e-Pass Verification', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Ticket Confirmation</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello Brilliant,</span><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\"><br></span></span></p>            <p style=\"\"><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We are happy to inform you that your booking for Brilliant Skin Essentials Inc. -#PINAKAMAKINANG “The Brilliant Concert 2023 is now under processing! Get ready to witness the BRIGHTEST event of the year.</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br>Title:&nbsp;</span></font><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">#PINAKAMAKINANG “The Brilliant Concert 2023</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Date: 07 February 2023</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Time: 4:00 PM</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">\n        </span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Participant`s details:</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Reference ID: {REFERENCE_ID}</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Group : {GROUP_NAME}<br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Name: {FIRST_NAME} {LAST_NAME}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Phone: {PHONE_NUMBER}</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Number of Seats: {TOTAL_SEATS}</span><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Remarks: {REMARKS}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Event location:</span></font></p><p><font color=\"#555555\"><b style=\"font-size: 14px;\">Smart Araneta Coliseum</b><br><span style=\"font-size: 14px;\">General Roxas Ave, Araneta City, QC, 1109 Metro Manila</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a href=\"https://goo.gl/maps/P7gXh8FEMLjPSxUH6\" target=\"_blank\" style=\"background-color: rgb(0, 179, 147); color: rgb(255, 255, 255); padding: 10px 15px;\">Open on Google Map</a></span></p><div><br></div><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We can’t wait to see you!</span></font></p><p style=\"\"><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', NULL, 0),
+(26, 'epass_confirm', 'e-Pass Confirmation', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Ticket Confirmation</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello Brilliant,</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We are happy to inform you that your booking for Brilliant Skin Essentials Inc. -#PINAKAMAKINANG “The Brilliant Concert 2023 is now <b>approved </b>and <b>reserved</b>! Get ready to witness the BRIGHTEST event of the year.</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br><b>Title:&nbsp;</b></span></font><span style=\"color: rgb(85, 85, 85); font-size: 14px;\"><b>#PINAKAMAKINANG “The Brilliant Concert 2023</b></span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><b>Date: 07 February 2023</b></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><b>Time: 4:00 PM</b></span></font></p><p><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><b>Guest`s details</b>:</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Reference ID: {REFERENCE_ID}</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Group : {GROUP_NAME}<br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Name: {FIRST_NAME} {LAST_NAME}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Phone: {PHONE_NUMBER}</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Number of Seats: {TOTAL_SEATS}</span></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Companion`s Link: {COMPANION_LINK}</span><span style=\"color: rgb(85, 85, 85); font-size: 14px;\"><br></span></p><p><span style=\"font-size: 14px; color: rgb(85, 85, 85);\">Remarks: {REMARKS}</span><span style=\"color: rgb(85, 85, 85); font-size: 14px;\"><br></span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><b>Event location:</b></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Smart Araneta Coliseum</span><br><span style=\"font-size: 14px;\"><i>General Roxas Ave, Araneta City, QC, 1109 Metro Manila</i></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><a href=\"https://goo.gl/maps/P7gXh8FEMLjPSxUH6\" target=\"_blank\" style=\"background-color: rgb(0, 179, 147); color: rgb(255, 255, 255); padding: 10px 15px;\">Open on Google Map</a></span></p><div><br></div><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We can’t wait to see you!</span></font></p><p style=\"\"><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', NULL, 0),
+(27, 'raffle_entry', 'Raffle Entry', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Raffle Entry</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello Brilliant,</span><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\"><br></span></span></p>            <p style=\"\"><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We are absolutely thrilled to welcome you to our BSEI raffle community!&nbsp;Now that you are officially a participant, get ready for an incredible experience filled with surprises, excitement, and the chance to win amazing prizes. Our raffle system is designed to provide a thrilling and enjoyable atmosphere for everyone involved, and we are confident that you will have a fantastic time.</span></font><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br>Title:&nbsp;</span></font><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">{RAFFLE_TITLE}</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">ID: {RAFFLE_ID}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Participant`s details:</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Reference ID: {REFERENCE_ID}</span></p><p><span style=\"font-size: 14px; color: rgb(85, 85, 85);\">Name: {FIRST_NAME} {LAST_NAME}</span><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Phone: {PHONE_NUMBER}</span></font></p><p><span style=\"font-size: 14px; color: rgb(85, 85, 85);\">Remarks: {REMARKS}</span><br></p><p><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Once again, welcome! May luck be on your side, and may this experience bring you joy and fulfillment.</span></font><br></p><p style=\"\"><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', NULL, 0),
+(28, 'raffle_subscription', 'Raffle Subscription', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Subscription</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello Brilliant,</span><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\"><br></span></span></p>            <p style=\"\"><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We are absolutely thrilled to welcome you to our BSEI raffle community!&nbsp;Now that you are officially a participant, get ready for an incredible experience filled with surprises, excitement, and the chance to win amazing prizes. Our raffle system is designed to provide a thrilling and enjoyable atmosphere for everyone involved, and we are confident that you will have a fantastic time.</span></font><br></p><p><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Participant`s details:</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Reference ID: {REFERENCE_ID}</span></p><p><span style=\"font-size: 14px; color: rgb(85, 85, 85);\">Name: {FIRST_NAME} {LAST_NAME}</span><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Phone: {PHONE_NUMBER}</span></font></p><p><span style=\"font-size: 14px; color: rgb(85, 85, 85);\">Remarks: {REMARKS}</span><br></p><p><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Once again, welcome! May luck be on your side, and may this experience bring you joy and fulfillment.</span></font><br></p><p style=\"\"><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', NULL, 0),
+(29, 'raffle_join', 'Join Raffle', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>Join Raffle</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\">Hello Brilliant,</span><span style=\"color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;\"><span style=\"font-weight: bold;\"><br></span></span></p>            <p style=\"\"><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">We are absolutely thrilled to welcome you to our BSEI raffle community!&nbsp;Now that you are officially a participant, get ready for an incredible experience filled with surprises, excitement, and the chance to win amazing prizes. Our raffle system is designed to provide a thrilling and enjoyable atmosphere for everyone involved, and we are confident that you will have a fantastic time.</span></font><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br>Title:&nbsp;</span></font><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">{RAFFLE_TITLE}</span></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">ID: {RAFFLE_ID}</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Participant`s details:</span></font></p><p><span style=\"color: rgb(85, 85, 85); font-size: 14px;\">Reference ID: {REFERENCE_ID}</span></p><p><span style=\"font-size: 14px; color: rgb(85, 85, 85);\">Name: {FIRST_NAME} {LAST_NAME}</span><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Phone: {PHONE_NUMBER}</span></font></p><p><span style=\"font-size: 14px; color: rgb(85, 85, 85);\">Remarks: {REMARKS}</span><br></p><p><br></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">Once again, welcome! May luck be on your side, and may this experience bring you joy and fulfillment.</span></font><br></p><p style=\"\"><br></p>            <p style=\"color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', NULL, 0),
+(30, 'payslips', 'ERPat - Generated Payslip', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>SYSTEM GENERATED</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\"><br></span></p><p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\">Hello {FIRST_NAME} {LAST_NAME},</span></p><p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\"><br></span></p><p style=\"text-align: justify; \"><font face=\"Arial\">&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"font-size: 14px;\">We hope this email finds you well. As part of our commitment to transparency and efficiency, we are pleased to provide you with your payslip for</span><span style=\"font-size: 14px;\">&nbsp;{PAY_PERIOD}.&nbsp;</span></font><span style=\"font-family: Arial; font-size: 14px;\">You will find a detailed breakdown of your earnings and deductions for the specified period to the PDF attached in this email.&nbsp;</span><span style=\"font-family: Arial; font-size: 14px;\">Hope you find everything in order.</span></p><p style=\"text-align: justify; \"><font face=\"Arial\">&nbsp;&nbsp;&nbsp;Thank you for your dedication and hard work. We value your contribution to the company and look forward to your continued success.</font></p><p style=\"text-align: justify; \"><font face=\"Arial\">&nbsp;&nbsp;&nbsp;&nbsp;{REMARKS}</font></p><p style=\"text-align: justify;\"><br></p><p><font color=\"#555555\" face=\"Arial, Helvetica, sans-serif\"><span style=\"font-size: 14px;\">Regards,</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">HR / Accounting</span><br><span style=\"font-size: 14px;\">ABC Company Inc.<br></span></font><a href=\"https://abc.company\" target=\"_blank\">https://abc.company</a><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><br></p>            <p style=\"text-align: center; color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', '<div style=\"background-color: #eeeeef; padding: 50px 0; \">    <div style=\"max-width:640px; margin:0 auto; \">  <div style=\"color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;\"><h1>SYSTEM GENERATED</h1> </div> <div style=\"padding: 20px; background-color: rgb(255, 255, 255);\">            <p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\"><br></span></p><p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\">Hello {FIRST_NAME} {LAST_NAME},</span></p><p style=\"\"><span style=\"font-size: 14px; line-height: 20px;\"><br></span></p><p style=\"text-align: justify; \"><font face=\"Arial\">&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"font-size: 14px;\">We hope this email finds you well. As part of our commitment to transparency and efficiency, we are pleased to provide you with your payslip for</span><span style=\"font-size: 14px;\">&nbsp;{PAY_PERIOD}.&nbsp;</span></font><span style=\"font-family: Arial; font-size: 14px;\">You will find a detailed breakdown of your earnings and deductions for the specified period to the PDF attached in this email.&nbsp;</span><span style=\"font-family: Arial; font-size: 14px;\">Hope you find everything in order.</span></p><p style=\"text-align: justify; \"><font face=\"Arial\">&nbsp;&nbsp;&nbsp;Thank you for your dedication and hard work. We value your contribution to the company and look forward to your continued success.</font></p><p style=\"text-align: justify; \"><font face=\"Arial\">&nbsp;&nbsp;&nbsp;&nbsp;{REMARKS}</font></p><p style=\"text-align: justify;\"><br></p><p><font color=\"#555555\" face=\"Arial, Helvetica, sans-serif\"><span style=\"font-size: 14px;\">Regards,</span></font></p><p><font color=\"#555555\"><span style=\"font-size: 14px;\">HR / Accounting</span><br><span style=\"font-size: 14px;\">AHM Outsourcing Inc.<br></span></font><a href=\"https://ahmoutsourcing.com\" target=\"_blank\">https://ahmoutsourcing.com</a><font color=\"#555555\"><span style=\"font-size: 14px;\"><br></span></font></p><p><br></p>            <p style=\"text-align: center; color: rgb(85, 85, 85); font-size: 14px;\">{SIGNATURE}</p>        </div>    </div></div>', 0);
 
 -- --------------------------------------------------------
 
@@ -771,7 +857,7 @@ CREATE TABLE `event_pass` (
   `vcode` text DEFAULT NULL,
   `remarks` text DEFAULT NULL,
   `status` enum('draft','approved','cancelled','sent') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'draft',
-  `override` tinyint(1) NOT NULL DEFAULT 0,
+  `override` tinyint(1) DEFAULT 0,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `timestamp` timestamp NULL DEFAULT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT 0
@@ -790,6 +876,8 @@ CREATE TABLE `event_raffle` (
   `title` varchar(200) NOT NULL,
   `description` text DEFAULT NULL,
   `winners` int(7) NOT NULL,
+  `total_participants` int(7) DEFAULT NULL,
+  `draw_preview` enum('event_draw','instant_show','via_email') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'event_draw',
   `raffle_type` enum('countdown','spinner','wheel','mosaic') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'countdown',
   `crowd_type` varchar(180) DEFAULT NULL,
   `labels` varchar(1) NOT NULL,
@@ -814,7 +902,25 @@ CREATE TABLE `event_raffle_participants` (
   `uuid` varchar(36) DEFAULT NULL,
   `raffle_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `labels` varchar(1) DEFAULT NULL,
+  `labels` varchar(1) NOT NULL,
+  `remarks` text DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `event_raffle_prizes`
+--
+
+CREATE TABLE `event_raffle_prizes` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `uuid` varchar(36) DEFAULT NULL,
+  `raffle_id` int(11) NOT NULL,
+  `winner_id` int(11) NOT NULL,
+  `sort` int(11) NOT NULL,
+  `image_url` varchar(180) NOT NULL,
   `remarks` text DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `deleted` tinyint(1) NOT NULL DEFAULT 0
@@ -830,6 +936,7 @@ CREATE TABLE `event_raffle_winners` (
   `id` int(11) UNSIGNED NOT NULL,
   `uuid` varchar(36) DEFAULT NULL,
   `raffle_id` int(11) NOT NULL,
+  `participant_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `labels` varchar(1) NOT NULL,
   `remarks` text DEFAULT NULL,
@@ -847,11 +954,11 @@ CREATE TABLE `expenses` (
   `id` int(11) NOT NULL,
   `account_id` int(11) NOT NULL DEFAULT 0,
   `expense_date` date NOT NULL,
+  `due_date` date NOT NULL,
   `category_id` int(11) NOT NULL,
   `description` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
   `amount` decimal(10,2) NOT NULL,
   `files` mediumtext COLLATE utf8_unicode_ci NOT NULL,
-  `due_date` date DEFAULT NULL,
   `status` enum('draft','not_paid','cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'draft',
   `title` text COLLATE utf8_unicode_ci NOT NULL,
   `project_id` int(11) NOT NULL DEFAULT 0,
@@ -907,11 +1014,13 @@ CREATE TABLE `expense_categories` (
 --
 
 INSERT INTO `expense_categories` (`id`, `title`, `is_editable`, `deleted`) VALUES
-(1, 'Payroll', 0, 0),
-(2, 'Contribution', 0, 0),
-(3, 'Incentive', 0, 0),
-(4, 'Purchase', 1, 0),
-(5, 'Miscellaneous', 1, 0);
+(1, 'Miscellaneous', 0, 0),
+(2, 'Equipments', 0, 0),
+(3, 'Foods / Snacks', 0, 0),
+(4, 'Salary', 1, 1),
+(5, 'Payroll', 0, 0),
+(6, 'Contribution', 0, 0),
+(7, 'Incentive', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -986,6 +1095,31 @@ CREATE TABLE `holidays` (
   `deleted` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `holidays`
+--
+
+INSERT INTO `holidays` (`id`, `title`, `description`, `date_from`, `date_to`, `type`, `created_on`, `created_by`, `deleted`) VALUES
+(1, 'New Year\'s Day', '', '2024-01-01', '2024-01-01', 'regular', '2023-08-01 15:10:43', 1, 0),
+(2, 'Lunar New Year\'s Day', '', '2024-02-10', '2024-02-10', 'special', '2023-08-01 15:11:57', 1, 0),
+(3, 'People Power Anniversary', '', '2024-02-25', '2024-02-25', 'special', '2023-08-01 15:13:14', 1, 0),
+(4, 'Maundy Thursday', '', '2024-03-28', '2024-03-28', 'regular', '2023-08-01 15:16:10', 1, 0),
+(5, 'Good Friday', '', '2024-03-29', '2024-03-29', 'regular', '2023-08-01 15:21:12', 1, 0),
+(6, 'Black Saturday', '', '2024-03-30', '2024-03-30', 'special', '2023-08-01 15:22:39', 1, 0),
+(7, 'The Day of Valor', '', '2024-04-09', '2024-04-09', 'regular', '2023-08-01 15:23:25', 1, 0),
+(8, 'Eidul-Fitar', '', '2024-04-10', '2024-04-10', 'regular', '2023-08-01 15:24:19', 1, 0),
+(9, 'Labor Day', '', '2024-05-01', '2024-05-01', 'regular', '2023-08-01 15:24:41', 1, 0),
+(10, 'Independence Day', '', '2024-06-12', '2024-06-12', 'regular', '2023-08-01 15:25:52', 1, 0),
+(11, 'Eid al-Adha (Feast of the Sacrifice)', '', '2024-06-17', '2024-06-17', 'regular', '2023-08-01 15:26:16', 1, 0),
+(12, 'Eid al-Adha Day 2', '', '2024-06-18', '2024-06-18', 'regular', '2023-08-01 15:33:13', 1, 0),
+(13, 'Ninoy Aquino Day', '', '2024-08-21', '2024-08-21', 'special', '2023-08-01 15:49:17', 1, 0),
+(14, 'National Heroes Day', '', '2024-08-24', '2024-08-24', 'regular', '2023-08-01 15:49:39', 1, 0),
+(15, 'All Saints\' Day', '', '2024-11-01', '2024-11-01', 'special', '2023-08-01 15:53:23', 1, 0),
+(16, 'Bonifacio Day', '', '2024-11-30', '2024-11-30', 'regular', '2023-08-01 15:53:49', 1, 0),
+(17, 'Feast of the Immaculate Conception', '', '2024-12-08', '2024-12-08', 'special', '2023-08-01 15:54:16', 1, 0),
+(18, 'Christmas Day', '', '2024-12-25', '2024-12-25', 'regular', '2023-08-01 15:55:13', 1, 0),
+(19, 'Rizal Day', '', '2024-12-30', '2024-12-30', 'regular', '2023-08-01 15:55:36', 1, 0),
+(20, 'New Year\'s Eve', '', '2024-12-31', '2024-12-31', 'special', '2023-08-01 15:55:59', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1005,6 +1139,7 @@ CREATE TABLE `inventory` (
   `cost_price` decimal(10,2) NOT NULL,
   `selling_price` decimal(10,2) NOT NULL,
   `vendor` bigint(10) NOT NULL,
+  `kind` enum('finished_goods','raw_materials','work_in_process') COLLATE utf8_unicode_ci NOT NULL,
   `created_on` datetime NOT NULL,
   `created_by` bigint(10) NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT 0
@@ -1029,7 +1164,7 @@ CREATE TABLE `inventory_items` (
   `selling_price` decimal(10,2) NOT NULL,
   `vendor` bigint(10) NOT NULL,
   `created_on` datetime NOT NULL,
-  `created_by` int(11) NOT NULL,
+  `created_by` bigint(10) NOT NULL,
   `deleted` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1136,7 +1271,6 @@ CREATE TABLE `invoices` (
   `files` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `enable_terms` int(11) DEFAULT 0,
   `enable_warranty` int(11) DEFAULT 0,
-  `type` text COLLATE utf8_unicode_ci NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1152,6 +1286,7 @@ CREATE TABLE `invoice_items` (
   `inventory_id` int(11) NOT NULL DEFAULT 0,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `delivery_reference_no` text COLLATE utf8_unicode_ci NOT NULL,
   `quantity` double NOT NULL,
   `unit_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `rate` double NOT NULL,
@@ -1240,7 +1375,10 @@ INSERT INTO `lead_source` (`id`, `title`, `sort`, `deleted`) VALUES
 (2, 'Facebook', 2, 0),
 (3, 'Twitter', 3, 0),
 (4, 'Youtube', 4, 0),
-(5, 'Elsewhere', 5, 0);
+(5, 'Elsewhere', 5, 0),
+(6, 'Email Marketing', 6, 0),
+(7, 'Website SEO', 7, 0),
+(8, 'Google Adwords', 8, 0);
 
 -- --------------------------------------------------------
 
@@ -1301,6 +1439,7 @@ CREATE TABLE `leave_credits` (
   `id` bigint(10) NOT NULL,
   `user_id` bigint(10) NOT NULL DEFAULT 0,
   `leave_id` bigint(10) NOT NULL DEFAULT 0,
+  `leave_type_id` int(11) DEFAULT NULL,
   `action` enum('debit','credit') COLLATE utf8_unicode_ci DEFAULT NULL,
   `counts` decimal(10,2) DEFAULT NULL,
   `remarks` text COLLATE utf8_unicode_ci NOT NULL,
@@ -1318,6 +1457,8 @@ CREATE TABLE `leave_credits` (
 CREATE TABLE `leave_types` (
   `id` int(11) NOT NULL,
   `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `required_credits` tinyint(1) DEFAULT 0,
+  `paid` tinyint(1) DEFAULT 0,
   `status` enum('active','inactive') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active',
   `color` varchar(7) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1328,8 +1469,10 @@ CREATE TABLE `leave_types` (
 -- Dumping data for table `leave_types`
 --
 
-INSERT INTO `leave_types` (`id`, `title`, `status`, `color`, `description`, `deleted`) VALUES
-(1, 'Casual Leave', 'active', '#83c340', '', 0);
+INSERT INTO `leave_types` (`id`, `title`, `required_credits`, `paid`, `status`, `color`, `description`, `deleted`) VALUES
+(1, 'Regular Leave', 1, 1, 'active', '#83c340', '<p>SL / VL / BL / PL<br></p>', 0),
+(2, 'Bereavement Leave', 1, 1, 'active', '#83c340', '<p><span style=\"color: rgb(78, 94, 106);\">SL / VL / BL / PL</span><br></p>', 0),
+(3, 'Leave w/o Pay', 0, 0, 'active', '#83c340', '<p>SL / VL / BL / PL<br></p>', 0);
 
 -- --------------------------------------------------------
 
@@ -1369,109 +1512,101 @@ CREATE TABLE `likes` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `materials`
+-- Table structure for table `loans`
 --
 
-CREATE TABLE `materials` (
-  `id` bigint(10) NOT NULL,
-  `name` text COLLATE utf8_unicode_ci NOT NULL,
-  `sku` text COLLATE utf8_unicode_ci NOT NULL,
-  `unit` bigint(10) NOT NULL,
-  `category` bigint(10) NOT NULL,
-  `cost_price` decimal(10,2) NOT NULL,
-  `vendor` bigint(10) NOT NULL,
-  `created_on` datetime NOT NULL,
-  `created_by` bigint(10) NOT NULL,
-  `deleted` int(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `material_categories`
---
-
-CREATE TABLE `material_categories` (
-  `id` bigint(10) NOT NULL,
-  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `created_on` datetime NOT NULL,
+CREATE TABLE `loans` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `category_id` int(11) DEFAULT NULL,
+  `borrower_id` int(11) NOT NULL,
+  `cosigner_id` int(11) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `principal_amount` decimal(10,2) NOT NULL,
+  `interest_rate` decimal(10,2) NOT NULL,
+  `min_payment` decimal(10,2) NOT NULL,
+  `months_topay` int(11) NOT NULL,
+  `days_before_due` int(11) NOT NULL DEFAULT 7,
+  `penalty_rate` decimal(10,2) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `deleted` int(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `payroll_binding` enum('none','daily','weekly','biweekly','monthly') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'none',
+  `start_payment` datetime DEFAULT NULL,
+  `date_applied` datetime NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `material_inventory`
+-- Table structure for table `loan_categories`
 --
 
-CREATE TABLE `material_inventory` (
-  `id` bigint(10) NOT NULL,
-  `warehouse` bigint(10) NOT NULL,
-  `stock` float NOT NULL,
-  `material_id` bigint(10) NOT NULL,
-  `name` text COLLATE utf8_unicode_ci NOT NULL,
-  `sku` text COLLATE utf8_unicode_ci NOT NULL,
-  `unit` bigint(10) NOT NULL,
-  `category` bigint(10) NOT NULL,
-  `cost_price` decimal(10,2) NOT NULL,
-  `vendor` bigint(10) NOT NULL,
-  `created_on` datetime NOT NULL,
-  `created_by` bigint(10) NOT NULL,
-  `deleted` int(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `loan_categories` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `parent_id` varchar(36) DEFAULT '',
+  `name` varchar(150) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+  `created_by` int(11) DEFAULT NULL,
+  `timestamp` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `material_inventory_stock_override`
+-- Table structure for table `loan_fees`
 --
 
-CREATE TABLE `material_inventory_stock_override` (
-  `id` bigint(10) NOT NULL,
-  `warehouse` bigint(10) NOT NULL,
-  `material_inventory_id` bigint(10) NOT NULL,
-  `stock` float NOT NULL,
-  `created_on` datetime NOT NULL,
-  `created_by` bigint(10) NOT NULL,
-  `deleted` int(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `loan_fees` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `loan_id` int(11) NOT NULL,
+  `title` text DEFAULT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `remarks` text DEFAULT NULL,
+  `created_by` int(11) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `material_inventory_transfers`
+-- Table structure for table `loan_payments`
 --
 
-CREATE TABLE `material_inventory_transfers` (
-  `id` bigint(10) NOT NULL,
-  `reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `transferee` bigint(10) NOT NULL,
-  `receiver` bigint(10) NOT NULL,
-  `dispatcher` bigint(10) NOT NULL,
-  `driver` bigint(10) NOT NULL,
-  `vehicle_id` bigint(10) NOT NULL,
-  `remarks` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `status` enum('draft','ongoing','completed','cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'draft',
-  `created_on` datetime NOT NULL,
-  `created_by` bigint(10) NOT NULL,
-  `deleted` tinyint(4) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `loan_payments` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `loan_id` int(11) NOT NULL,
+  `preferred_date` datetime NOT NULL,
+  `date_paid` datetime NOT NULL,
+  `late_interest` decimal(10,2) NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `serial_data` text DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `created_by` int(11) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `material_inventory_transfer_items`
+-- Table structure for table `loan_stages`
 --
 
-CREATE TABLE `material_inventory_transfer_items` (
-  `id` bigint(10) NOT NULL,
-  `material_inventory_id` bigint(10) NOT NULL,
-  `reference_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `quantity` float NOT NULL,
-  `deleted` tinyint(4) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `loan_stages` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `loan_id` int(11) NOT NULL,
+  `stage_name` varchar(180) NOT NULL,
+  `serial_data` text DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `executed_by` int(11) NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1502,6 +1637,25 @@ CREATE TABLE `messages` (
 CREATE TABLE `migrations` (
   `version` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `migrations`
+--
+
+INSERT INTO `migrations` (`version`) VALUES
+(20230801080700);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `migrations_backup`
+--
+
+CREATE TABLE `migrations_backup` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1596,87 +1750,6 @@ CREATE TABLE `notification_settings` (
   `deleted` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `notification_settings`
---
-
-INSERT INTO `notification_settings` (`id`, `event`, `category`, `enable_email`, `enable_web`, `enable_slack`, `notify_to_team`, `notify_to_team_members`, `notify_to_terms`, `sort`, `deleted`) VALUES
-(1, 'project_created', 'project', 0, 0, 0, '', '', '', 1, 0),
-(2, 'project_deleted', 'project', 0, 0, 0, '', '', '', 2, 0),
-(3, 'project_task_created', 'project', 0, 1, 0, '', '', 'project_members,task_assignee', 3, 0),
-(4, 'project_task_updated', 'project', 0, 1, 0, '', '', 'task_assignee', 4, 0),
-(5, 'project_task_assigned', 'project', 0, 1, 0, '', '', 'task_assignee', 5, 0),
-(7, 'project_task_started', 'project', 0, 0, 0, '', '', '', 7, 0),
-(8, 'project_task_finished', 'project', 0, 0, 0, '', '', '', 8, 0),
-(9, 'project_task_reopened', 'project', 0, 0, 0, '', '', '', 9, 0),
-(10, 'project_task_deleted', 'project', 0, 1, 0, '', '', 'task_assignee', 10, 0),
-(11, 'project_task_commented', 'project', 0, 1, 0, '', '', 'task_assignee', 11, 0),
-(12, 'project_member_added', 'project', 0, 1, 0, '', '', 'project_members', 12, 0),
-(13, 'project_member_deleted', 'project', 0, 1, 0, '', '', 'project_members', 13, 0),
-(14, 'project_file_added', 'project', 0, 1, 0, '', '', 'project_members', 14, 0),
-(15, 'project_file_deleted', 'project', 0, 1, 0, '', '', 'project_members', 15, 0),
-(16, 'project_file_commented', 'project', 0, 1, 0, '', '', 'project_members', 16, 0),
-(17, 'project_comment_added', 'project', 0, 1, 0, '', '', 'project_members', 17, 0),
-(18, 'project_comment_replied', 'project', 0, 1, 0, '', '', 'project_members,comment_creator', 18, 0),
-(19, 'project_customer_feedback_added', 'project', 0, 1, 0, '', '', 'project_members', 19, 0),
-(20, 'project_customer_feedback_replied', 'project', 0, 1, 0, '', '', 'project_members,comment_creator', 20, 0),
-(21, 'client_signup', 'client', 0, 0, 0, '', '', '', 21, 0),
-(22, 'invoice_online_payment_received', 'invoice', 0, 0, 0, '', '', '', 22, 0),
-(23, 'leave_application_submitted', 'leave', 0, 0, 0, '', '', '', 23, 0),
-(24, 'leave_approved', 'leave', 0, 1, 0, '', '', 'leave_applicant', 24, 0),
-(25, 'leave_assigned', 'leave', 0, 1, 0, '', '', 'leave_applicant', 25, 0),
-(26, 'leave_rejected', 'leave', 0, 1, 0, '', '', 'leave_applicant', 26, 0),
-(27, 'leave_canceled', 'leave', 0, 0, 0, '', '', '', 27, 0),
-(28, 'ticket_created', 'ticket', 0, 0, 0, '', '', '', 28, 0),
-(29, 'ticket_commented', 'ticket', 0, 1, 0, '', '', 'client_primary_contact,ticket_creator', 29, 0),
-(30, 'ticket_closed', 'ticket', 0, 1, 0, '', '', 'client_primary_contact,ticket_creator', 30, 0),
-(31, 'ticket_reopened', 'ticket', 0, 1, 0, '', '', 'client_primary_contact,ticket_creator', 31, 0),
-(32, 'estimate_request_received', 'estimate', 0, 0, 0, '', '', '', 32, 0),
-(34, 'estimate_accepted', 'estimate', 0, 0, 0, '', '', '', 34, 0),
-(35, 'estimate_rejected', 'estimate', 0, 0, 0, '', '', '', 35, 0),
-(36, 'new_message_sent', 'message', 0, 0, 0, '', '', '', 36, 0),
-(37, 'message_reply_sent', 'message', 0, 0, 0, '', '', '', 37, 0),
-(38, 'invoice_payment_confirmation', 'invoice', 0, 0, 0, '', '', '', 22, 0),
-(39, 'new_event_added_in_calendar', 'event', 0, 0, 0, '', '', '', 39, 0),
-(40, 'recurring_invoice_created_vai_cron_job', 'invoice', 0, 0, 0, '', '', '', 22, 0),
-(41, 'new_announcement_created', 'announcement', 0, 0, 0, '', '', 'recipient', 41, 0),
-(42, 'invoice_due_reminder_before_due_date', 'invoice', 0, 0, 0, '', '', '', 22, 0),
-(43, 'invoice_overdue_reminder', 'invoice', 0, 0, 0, '', '', '', 22, 0),
-(44, 'recurring_invoice_creation_reminder', 'invoice', 0, 0, 0, '', '', '', 22, 0),
-(45, 'project_completed', 'project', 0, 0, 0, '', '', '', 2, 0),
-(46, 'lead_created', 'lead', 0, 0, 0, '', '', '', 21, 0),
-(47, 'client_created_from_lead', 'lead', 0, 0, 0, '', '', '', 21, 0),
-(48, 'project_task_deadline_pre_reminder', 'project', 0, 1, 0, '', '', 'task_assignee', 20, 0),
-(49, 'project_task_reminder_on_the_day_of_deadline', 'project', 0, 1, 0, '', '', 'task_assignee', 20, 0),
-(50, 'project_task_deadline_overdue_reminder', 'project', 0, 1, 0, '', '', 'task_assignee', 20, 0),
-(51, 'recurring_task_created_via_cron_job', 'project', 0, 1, 0, '', '', 'project_members,task_assignee', 20, 0),
-(52, 'calendar_event_modified', 'event', 0, 0, 0, '', '', '', 39, 0),
-(53, 'client_contact_requested_account_removal', 'client', 0, 0, 0, '', '', '', 21, 0),
-(54, 'bitbucket_push_received', 'project', 0, 1, 0, '', '', '', 45, 0),
-(55, 'github_push_received', 'project', 0, 1, 0, '', '', '', 45, 0),
-(56, 'invited_client_contact_signed_up', 'client', 0, 0, 0, '', '', '', 21, 0),
-(57, 'created_a_new_post', 'timeline', 0, 0, 0, '', '', '', 52, 0),
-(58, 'timeline_post_commented', 'timeline', 0, 0, 0, '', '', '', 52, 0),
-(59, 'ticket_assigned', 'ticket', 0, 0, 0, '', '', 'ticket_assignee', 31, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `overtime`
---
-
-CREATE TABLE `overtime` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `user_id` varchar(255) DEFAULT '',
-  `start_time` datetime DEFAULT NULL,
-  `end_time` datetime DEFAULT NULL,
-  `notes` text DEFAULT NULL,
-  `approved_by` int(11) DEFAULT NULL,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `date_created` datetime DEFAULT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- --------------------------------------------------------
 
 --
@@ -1720,6 +1793,62 @@ CREATE TABLE `pallets` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `payhp_migrations`
+--
+
+CREATE TABLE `payhp_migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payhp_payslips`
+--
+
+CREATE TABLE `payhp_payslips` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `uuid` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `group_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fullname` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `department` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `directorate` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bankname` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `banknum` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payriod` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `paydate` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `monthly` double(8,2) NOT NULL DEFAULT 0.00,
+  `allowance` double(8,2) NOT NULL DEFAULT 0.00,
+  `deduction` double(8,2) NOT NULL DEFAULT 0.00,
+  `incentive` double(8,2) NOT NULL DEFAULT 0.00,
+  `nightdiff` double(8,2) NOT NULL DEFAULT 0.00,
+  `reghdpay` double(8,2) NOT NULL DEFAULT 0.00,
+  `spchdpay` double(8,2) NOT NULL DEFAULT 0.00,
+  `regot` double(8,2) NOT NULL DEFAULT 0.00,
+  `rstot` double(8,2) NOT NULL DEFAULT 0.00,
+  `reghdot` double(8,2) NOT NULL DEFAULT 0.00,
+  `spchdot` double(8,2) NOT NULL DEFAULT 0.00,
+  `tax` double(8,2) NOT NULL DEFAULT 0.00,
+  `sss` double(8,2) NOT NULL DEFAULT 0.00,
+  `phealth` double(8,2) NOT NULL DEFAULT 0.00,
+  `pagibig` double(8,2) NOT NULL DEFAULT 0.00,
+  `hmo` double(8,2) NOT NULL DEFAULT 0.00,
+  `other` double(8,2) NOT NULL DEFAULT 0.00,
+  `generated_by` bigint(20) DEFAULT NULL,
+  `emailed_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `payment_methods`
 --
 
@@ -1732,7 +1861,7 @@ CREATE TABLE `payment_methods` (
   `available_on_invoice` tinyint(1) NOT NULL DEFAULT 0,
   `minimum_payment_amount` double NOT NULL DEFAULT 0,
   `available_on_payroll` tinyint(1) NOT NULL DEFAULT 0,
-  `created_on` datetime NOT NULL,
+  `created_on` timestamp NOT NULL DEFAULT current_timestamp(),
   `created_by` int(11) NOT NULL DEFAULT 0,
   `settings` longtext COLLATE utf8_unicode_ci NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT 0
@@ -1743,11 +1872,10 @@ CREATE TABLE `payment_methods` (
 --
 
 INSERT INTO `payment_methods` (`id`, `title`, `type`, `description`, `online_payable`, `available_on_invoice`, `minimum_payment_amount`, `available_on_payroll`, `created_on`, `created_by`, `settings`, `deleted`) VALUES
-(1, 'Cash', 'custom', 'Cash payments', 0, 1, 0, 1, '0000-00-00 00:00:00', 0, '', 0),
-(2, 'Stripe', 'stripe', 'Stripe online payments', 1, 0, 0, 0, '0000-00-00 00:00:00', 0, 'a:3:{s:15:\"pay_button_text\";s:6:\"Stripe\";s:10:\"secret_key\";s:6:\"\";s:15:\"publishable_key\";s:6:\"\";}', 0),
-(3, 'PayPal Payments Standard', 'paypal_payments_standard', 'PayPal Payments Standard Online Payments', 1, 0, 0, 0, '0000-00-00 00:00:00', 0, 'a:4:{s:15:\"pay_button_text\";s:6:\"PayPal\";s:5:\"email\";s:4:\"\";s:11:\"paypal_live\";s:1:\"0\";s:5:\"debug\";s:1:\"0\";}', 0),
-(4, 'Bank Transfer', 'custom', '<p>BDO, BPI, ETC</p>', 0, 0, 0, 0, '0000-00-00 00:00:00', 0, 'a:0:{}', 0),
-(5, 'GCash', 'custom', '', 0, 0, 0, 0, '0000-00-00 00:00:00', 0, 'a:0:{}', 0);
+(1, 'Cash', 'custom', 'Cash payments', 0, 0, 0, 0, '2021-03-07 18:57:10', 0, '', 0),
+(2, 'Stripe', 'stripe', 'Stripe online payments', 1, 0, 0, 0, '2021-03-07 18:57:10', 0, 'a:3:{s:15:\"pay_button_text\";s:6:\"Stripe\";s:10:\"secret_key\";s:6:\"\";s:15:\"publishable_key\";s:6:\"\";}', 0),
+(3, 'PayPal Payments Standard', 'paypal_payments_standard', 'PayPal Payments Standard Online Payments', 1, 0, 0, 0, '2021-03-07 18:57:10', 0, 'a:4:{s:15:\"pay_button_text\";s:6:\"PayPal\";s:5:\"email\";s:4:\"\";s:11:\"paypal_live\";s:1:\"0\";s:5:\"debug\";s:1:\"0\";}', 0),
+(4, 'Check', 'custom', 'Checking Account', 0, 0, 0, 0, '2021-03-07 18:57:10', 0, 'a:0:{}', 0);
 
 -- --------------------------------------------------------
 
@@ -1772,7 +1900,9 @@ CREATE TABLE `paypal_ipn` (
 CREATE TABLE `payrolls` (
   `id` int(11) UNSIGNED NOT NULL,
   `category` int(11) NOT NULL,
-  `department` int(11) NOT NULL,
+  `department` text DEFAULT NULL,
+  `earnings` text DEFAULT NULL,
+  `deductions` text DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `pay_date` date DEFAULT NULL,
@@ -1805,41 +1935,67 @@ CREATE TABLE `payslips` (
   `schedule` decimal(10,2) NOT NULL,
   `worked` decimal(10,2) NOT NULL,
   `absent` decimal(10,2) NOT NULL,
-  `lates` decimal(10,2) NOT NULL,
-  `overbreak` decimal(10,2) NOT NULL,
-  `undertime` decimal(10,2) NOT NULL,
+  `bonus` decimal(10,2) DEFAULT 0.00,
+  `leave_credit` decimal(10,2) DEFAULT 0.00,
+  `special_hd` decimal(10,2) DEFAULT 0.00,
+  `legal_hd` decimal(10,2) DEFAULT 0.00,
   `reg_nd` decimal(10,2) NOT NULL,
-  `rest_nd` decimal(10,2) NOT NULL,
-  `legal_nd` decimal(10,2) NOT NULL,
-  `spcl_nd` decimal(10,2) NOT NULL,
   `reg_ot` decimal(10,2) NOT NULL,
   `rest_ot` decimal(10,2) NOT NULL,
-  `legal_ot` decimal(10,2) NOT NULL,
-  `spcl_ot` decimal(10,2) NOT NULL,
-  `reg_ot_nd` decimal(10,2) NOT NULL,
-  `rest_ot_nd` decimal(10,2) NOT NULL,
-  `legal_ot_nd` decimal(10,2) NOT NULL,
-  `spcl_ot_nd` decimal(10,2) NOT NULL,
-  `sss` decimal(10,2) NOT NULL,
-  `pagibig` decimal(10,2) NOT NULL,
-  `phealth` decimal(10,2) NOT NULL,
-  `hmo` decimal(10,2) NOT NULL,
-  `com_loan` decimal(10,2) NOT NULL,
-  `sss_loan` decimal(10,2) NOT NULL,
-  `hdmf_loan` decimal(10,2) NOT NULL,
-  `deduct_adjust` decimal(10,2) NOT NULL,
-  `deduct_other` decimal(10,2) NOT NULL,
-  `allowance` decimal(10,2) NOT NULL,
-  `incentive` decimal(10,2) NOT NULL,
-  `bonus_month` decimal(10,2) NOT NULL,
-  `month13th` decimal(10,2) NOT NULL,
   `pto` decimal(10,2) NOT NULL,
-  `add_adjust` decimal(10,2) NOT NULL,
-  `add_other` decimal(10,3) NOT NULL,
   `signed_by` int(11) DEFAULT NULL,
   `signed_at` timestamp NULL DEFAULT NULL,
-  `cancelled_by` int(11) DEFAULT NULL,
-  `cancelled_at` timestamp NULL DEFAULT NULL,
+  `status` enum('draft','approved','rejected') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'draft',
+  `remarks` text NOT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payslips_deductions`
+--
+
+CREATE TABLE `payslips_deductions` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `payslip_id` int(11) DEFAULT NULL,
+  `item_key` varchar(180) NOT NULL,
+  `title` varchar(150) NOT NULL DEFAULT '',
+  `amount` decimal(10,2) DEFAULT 0.00,
+  `remarks` text NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payslips_earnings`
+--
+
+CREATE TABLE `payslips_earnings` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `payslip_id` int(11) DEFAULT NULL,
+  `item_key` varchar(180) NOT NULL,
+  `title` varchar(150) NOT NULL DEFAULT '',
+  `amount` decimal(10,2) DEFAULT 0.00,
+  `remarks` text NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payslips_sents`
+--
+
+CREATE TABLE `payslips_sents` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `payslip_id` int(11) DEFAULT NULL,
+  `serialized` text NOT NULL,
   `remarks` text NOT NULL,
   `created_by` int(11) DEFAULT NULL,
   `timestamp` timestamp NULL DEFAULT NULL,
@@ -1986,22 +2142,6 @@ CREATE TABLE `project_files` (
   `deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Dumping data for table `project_files`
---
-
-INSERT INTO `project_files` (`id`, `file_name`, `file_id`, `service_type`, `description`, `file_size`, `created_at`, `project_id`, `uploaded_by`, `deleted`) VALUES
-(1, '_file62bd74b480dd9-283978476_814497406604075_5609871194260571618_n.png', '', '', 'Payslip template from BSEI', 10996, '2022-06-30 10:02:28', 1, 1, 0),
-(2, '_file62c4005c899fa-SOP-Arrival-from-Delivery.docx', '', '', 'from sir Aleck', 214146, '2022-07-05 09:11:56', 1, 1, 1),
-(3, '_file62c40062b5571-SOP-Scheduling-of-Release.docx', '', '', 'from sir Aleck', 210565, '2022-07-05 09:12:02', 1, 1, 1),
-(4, '_file62c400816d2b1-SOP-Arrival-from-Delivery.docx', '', '', 'STANDARD PROCEDURE OF WAREHOUSE', 214146, '2022-07-05 09:12:33', 1, 1, 0),
-(5, '_file62c4008711c91-SOP-Scheduling-of-Release.docx', '', '', 'STANDARD PROCEDURE OF WAREHOUSE', 210565, '2022-07-05 09:12:39', 1, 1, 0),
-(6, '_file62c4008c759ef-SOP-Return-Policy.docx', '', '', 'STANDARD PROCEDURE OF WAREHOUSE', 424414, '2022-07-05 09:12:44', 1, 1, 0),
-(7, '_file62c40091a2d58-SOP-Status-of-all-Vehicles-of-BSEI.docx', '', '', 'STANDARD PROCEDURE OF WAREHOUSE', 793891, '2022-07-05 09:12:49', 1, 1, 0),
-(8, '_file62c400980b454-SOP-Preparing-Loading-of-Products.docx', '', '', 'STANDARD PROCEDURE OF WAREHOUSE', 1604837, '2022-07-05 09:12:56', 1, 1, 0),
-(9, '_file62c4009dedda2-SOP-Unloading-of-Products.docx', '', '', 'STANDARD PROCEDURE OF WAREHOUSE', 525250, '2022-07-05 09:13:01', 1, 1, 0),
-(10, '_file62c400c4726ba-PRODUCT-LIST--1-.pdf', '', '', 'SALES WEBSITE LISTS', 32586, '2022-07-05 09:13:40', 1, 1, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -2134,7 +2274,6 @@ CREATE TABLE `purchase_order_return_materials` (
   `purchase_order_material_id` bigint(10) NOT NULL,
   `quantity` double NOT NULL,
   `remarks` text COLLATE utf8_unicode_ci NOT NULL,
-  `total` decimal(10,2) NOT NULL,
   `created_on` datetime NOT NULL,
   `created_by` bigint(10) NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT 0
@@ -2174,6 +2313,20 @@ CREATE TABLE `roles` (
   `deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `roles`
+--
+
+INSERT INTO `roles` (`id`, `title`, `permissions`, `deleted`) VALUES
+(1, 'IT SUPPORT', 'a:233:{s:21:\"disable_event_sharing\";s:0:\"\";s:12:\"announcement\";s:1:\"1\";s:18:\"message_permission\";s:3:\"all\";s:27:\"message_permission_specific\";s:0:\"\";s:11:\"access_logs\";s:1:\"1\";s:5:\"staff\";s:8:\"specific\";s:14:\"staff_specific\";s:218:\"team:3,team:4,team:5,team:8,team:9,team:10,team:11,team:13,team:18,team:19,team:20,team:21,team:23,team:25,team:26,team:27,team:28,team:29,team:30,team:32,team:35,team:41,team:43,team:44,team:45,team:46,team:47,team:48\";s:12:\"staff_invite\";s:1:\"1\";s:13:\"staff_account\";s:1:\"1\";s:21:\"staff_update_schedule\";s:1:\"1\";s:30:\"staff_view_personal_background\";s:1:\"1\";s:26:\"staff_view_job_description\";s:1:\"1\";s:20:\"staff_view_bank_info\";s:1:\"1\";s:31:\"staff_view_contribution_details\";s:1:\"1\";s:34:\"can_view_team_members_contact_info\";s:1:\"1\";s:34:\"can_view_team_members_social_links\";s:1:\"1\";s:10:\"department\";s:3:\"all\";s:19:\"department_specific\";s:0:\"\";s:10:\"attendance\";s:3:\"all\";s:19:\"attendance_specific\";s:0:\"\";s:5:\"leave\";s:3:\"all\";s:14:\"leave_specific\";s:0:\"\";s:7:\"holiday\";s:1:\"1\";s:11:\"deciplinary\";s:1:\"1\";s:17:\"can_use_biometric\";s:0:\"\";s:8:\"schedule\";s:1:\"1\";s:9:\"warehouse\";s:0:\"\";s:9:\"inventory\";s:0:\"\";s:8:\"purchase\";s:0:\"\";s:6:\"return\";s:0:\"\";s:8:\"supplier\";s:0:\"\";s:10:\"production\";s:0:\"\";s:14:\"billofmaterial\";s:0:\"\";s:4:\"unit\";s:0:\"\";s:8:\"delivery\";s:0:\"\";s:13:\"item_transfer\";s:0:\"\";s:7:\"vehicle\";s:0:\"\";s:6:\"driver\";s:0:\"\";s:18:\"accounting_summary\";s:0:\"\";s:13:\"balance_sheet\";s:0:\"\";s:7:\"account\";s:0:\"\";s:8:\"transfer\";s:0:\"\";s:7:\"payment\";s:0:\"\";s:7:\"expense\";s:0:\"\";s:4:\"loan\";s:1:\"1\";s:3:\"tax\";s:0:\"\";s:13:\"can_use_payhp\";s:1:\"1\";s:7:\"payroll\";s:0:\"\";s:25:\"payroll_auto_contribution\";s:1:\"1\";s:22:\"compensation_tax_table\";s:0:\"\";s:13:\"sales_summary\";s:0:\"\";s:7:\"invoice\";s:0:\"\";s:7:\"service\";s:0:\"\";s:7:\"product\";s:0:\"\";s:6:\"client\";s:0:\"\";s:5:\"store\";s:0:\"\";s:4:\"lead\";s:0:\"\";s:8:\"estimate\";s:0:\"\";s:16:\"estimate_request\";s:0:\"\";s:11:\"event_epass\";s:0:\"\";s:11:\"raffle_draw\";s:0:\"\";s:5:\"asset\";s:0:\"\";s:8:\"location\";s:0:\"\";s:6:\"vendor\";s:0:\"\";s:5:\"brand\";s:0:\"\";s:23:\"can_manage_all_projects\";s:0:\"\";s:19:\"can_create_projects\";s:0:\"\";s:17:\"can_edit_projects\";s:0:\"\";s:19:\"can_delete_projects\";s:0:\"\";s:30:\"can_add_remove_project_members\";s:0:\"\";s:16:\"can_create_tasks\";s:1:\"1\";s:14:\"can_edit_tasks\";s:1:\"1\";s:16:\"can_delete_tasks\";s:1:\"1\";s:37:\"can_update_only_assigned_tasks_status\";s:1:\"1\";s:20:\"can_comment_on_tasks\";s:1:\"1\";s:24:\"show_assigned_tasks_only\";s:0:\"\";s:21:\"can_create_milestones\";s:1:\"1\";s:19:\"can_edit_milestones\";s:1:\"1\";s:21:\"can_delete_milestones\";s:1:\"1\";s:27:\"timesheet_manage_permission\";s:3:\"all\";s:36:\"timesheet_manage_permission_specific\";s:0:\"\";s:16:\"can_delete_files\";s:1:\"1\";s:6:\"ticket\";s:8:\"specific\";s:15:\"ticket_specific\";s:5:\"3,4,1\";s:12:\"ticket_staff\";s:3:\"all\";s:21:\"ticket_staff_specific\";s:0:\"\";s:4:\"page\";s:1:\"1\";s:4:\"help\";s:1:\"1\";s:14:\"knowledge_base\";s:1:\"1\";s:19:\"announcement_create\";s:0:\"\";s:19:\"announcement_update\";s:0:\"\";s:19:\"announcement_delete\";s:0:\"\";s:18:\"access_logs_create\";s:0:\"\";s:18:\"access_logs_update\";s:0:\"\";s:18:\"access_logs_delete\";s:0:\"\";s:12:\"staff_create\";s:1:\"1\";s:12:\"staff_update\";s:1:\"1\";s:12:\"staff_delete\";s:1:\"1\";s:17:\"department_create\";s:1:\"1\";s:17:\"department_update\";s:1:\"1\";s:17:\"department_delete\";s:1:\"1\";s:17:\"attendance_create\";s:0:\"\";s:17:\"attendance_update\";s:0:\"\";s:17:\"attendance_delete\";s:0:\"\";s:12:\"leave_create\";s:1:\"1\";s:12:\"leave_update\";s:1:\"1\";s:12:\"leave_delete\";s:0:\"\";s:14:\"holiday_create\";s:1:\"1\";s:14:\"holiday_update\";s:1:\"1\";s:14:\"holiday_delete\";s:1:\"1\";s:18:\"deciplinary_create\";s:1:\"1\";s:18:\"deciplinary_update\";s:1:\"1\";s:18:\"deciplinary_delete\";s:1:\"1\";s:15:\"schedule_create\";s:0:\"\";s:15:\"schedule_update\";s:0:\"\";s:15:\"schedule_delete\";s:0:\"\";s:16:\"warehouse_create\";s:0:\"\";s:16:\"warehouse_update\";s:0:\"\";s:16:\"warehouse_delete\";s:0:\"\";s:16:\"inventory_create\";s:0:\"\";s:16:\"inventory_update\";s:0:\"\";s:16:\"inventory_delete\";s:0:\"\";s:15:\"purchase_create\";s:0:\"\";s:15:\"purchase_update\";s:0:\"\";s:15:\"purchase_delete\";s:0:\"\";s:13:\"return_create\";s:0:\"\";s:13:\"return_update\";s:0:\"\";s:13:\"return_delete\";s:0:\"\";s:15:\"supplier_create\";s:0:\"\";s:15:\"supplier_update\";s:0:\"\";s:15:\"supplier_delete\";s:0:\"\";s:17:\"production_create\";s:0:\"\";s:17:\"production_update\";s:0:\"\";s:17:\"production_delete\";s:0:\"\";s:21:\"billofmaterial_create\";s:0:\"\";s:21:\"billofmaterial_update\";s:0:\"\";s:21:\"billofmaterial_delete\";s:0:\"\";s:11:\"unit_create\";s:0:\"\";s:11:\"unit_update\";s:0:\"\";s:11:\"unit_delete\";s:0:\"\";s:15:\"delivery_create\";s:0:\"\";s:15:\"delivery_update\";s:0:\"\";s:15:\"delivery_delete\";s:0:\"\";s:20:\"item_transfer_create\";s:0:\"\";s:20:\"item_transfer_update\";s:0:\"\";s:20:\"item_transfer_delete\";s:0:\"\";s:14:\"vehicle_create\";s:0:\"\";s:14:\"vehicle_update\";s:0:\"\";s:14:\"vehicle_delete\";s:0:\"\";s:13:\"driver_create\";s:0:\"\";s:13:\"driver_update\";s:0:\"\";s:13:\"driver_delete\";s:0:\"\";s:14:\"account_create\";s:0:\"\";s:14:\"account_update\";s:0:\"\";s:14:\"account_delete\";s:0:\"\";s:15:\"transfer_create\";s:0:\"\";s:15:\"transfer_update\";s:0:\"\";s:15:\"transfer_delete\";s:0:\"\";s:14:\"payment_create\";s:0:\"\";s:14:\"payment_update\";s:0:\"\";s:14:\"payment_delete\";s:0:\"\";s:14:\"expense_create\";s:0:\"\";s:14:\"expense_update\";s:0:\"\";s:14:\"expense_delete\";s:0:\"\";s:11:\"loan_create\";s:1:\"1\";s:11:\"loan_update\";s:1:\"1\";s:11:\"loan_delete\";s:0:\"\";s:10:\"tax_create\";s:0:\"\";s:10:\"tax_update\";s:0:\"\";s:10:\"tax_delete\";s:0:\"\";s:14:\"payroll_create\";s:0:\"\";s:14:\"payroll_update\";s:0:\"\";s:14:\"payroll_delete\";s:0:\"\";s:14:\"invoice_create\";s:0:\"\";s:14:\"invoice_update\";s:0:\"\";s:14:\"invoice_delete\";s:0:\"\";s:14:\"service_create\";s:0:\"\";s:14:\"service_update\";s:0:\"\";s:14:\"service_delete\";s:0:\"\";s:14:\"product_create\";s:0:\"\";s:14:\"product_update\";s:0:\"\";s:14:\"product_delete\";s:0:\"\";s:13:\"client_create\";s:0:\"\";s:13:\"client_update\";s:0:\"\";s:13:\"client_delete\";s:0:\"\";s:12:\"store_create\";s:0:\"\";s:12:\"store_update\";s:0:\"\";s:12:\"store_delete\";s:0:\"\";s:11:\"lead_create\";s:0:\"\";s:11:\"lead_update\";s:0:\"\";s:11:\"lead_delete\";s:0:\"\";s:15:\"estimate_create\";s:0:\"\";s:15:\"estimate_update\";s:0:\"\";s:15:\"estimate_delete\";s:0:\"\";s:23:\"estimate_request_create\";s:0:\"\";s:23:\"estimate_request_update\";s:0:\"\";s:23:\"estimate_request_delete\";s:0:\"\";s:18:\"event_epass_create\";s:0:\"\";s:18:\"event_epass_update\";s:0:\"\";s:18:\"event_epass_delete\";s:0:\"\";s:18:\"raffle_draw_create\";s:0:\"\";s:18:\"raffle_draw_update\";s:0:\"\";s:18:\"raffle_draw_delete\";s:0:\"\";s:12:\"asset_create\";s:0:\"\";s:12:\"asset_update\";s:0:\"\";s:12:\"asset_delete\";s:0:\"\";s:21:\"asset_category_create\";s:0:\"\";s:21:\"asset_category_update\";s:0:\"\";s:21:\"asset_category_delete\";s:0:\"\";s:15:\"location_create\";s:0:\"\";s:15:\"location_update\";s:0:\"\";s:15:\"location_delete\";s:0:\"\";s:13:\"vendor_create\";s:0:\"\";s:13:\"vendor_update\";s:0:\"\";s:13:\"vendor_delete\";s:0:\"\";s:12:\"brand_create\";s:0:\"\";s:12:\"brand_update\";s:0:\"\";s:12:\"brand_delete\";s:0:\"\";s:11:\"page_create\";s:1:\"1\";s:11:\"page_update\";s:1:\"1\";s:11:\"page_delete\";s:1:\"1\";s:11:\"help_create\";s:1:\"1\";s:11:\"help_update\";s:1:\"1\";s:11:\"help_delete\";s:1:\"1\";s:20:\"help_category_create\";s:1:\"1\";s:20:\"help_category_update\";s:1:\"1\";s:20:\"help_category_delete\";s:1:\"1\";s:21:\"knowledge_base_create\";s:1:\"1\";s:21:\"knowledge_base_update\";s:1:\"1\";s:21:\"knowledge_base_delete\";s:1:\"1\";s:30:\"knowledge_base_category_create\";s:1:\"1\";s:30:\"knowledge_base_category_update\";s:1:\"1\";s:30:\"knowledge_base_category_delete\";s:1:\"1\";}', 0),
+(2, 'ACCTG Manager', 'a:230:{s:21:\"disable_event_sharing\";s:0:\"\";s:12:\"announcement\";s:0:\"\";s:18:\"message_permission\";s:8:\"specific\";s:27:\"message_permission_specific\";s:6:\"team:8\";s:11:\"access_logs\";s:0:\"\";s:5:\"staff\";s:8:\"specific\";s:14:\"staff_specific\";s:6:\"team:8\";s:12:\"staff_invite\";s:0:\"\";s:13:\"staff_account\";s:0:\"\";s:21:\"staff_update_schedule\";s:0:\"\";s:30:\"staff_view_personal_background\";s:0:\"\";s:26:\"staff_view_job_description\";s:0:\"\";s:20:\"staff_view_bank_info\";s:0:\"\";s:31:\"staff_view_contribution_details\";s:0:\"\";s:34:\"can_view_team_members_contact_info\";s:0:\"\";s:34:\"can_view_team_members_social_links\";s:0:\"\";s:10:\"department\";s:0:\"\";s:19:\"department_specific\";s:0:\"\";s:10:\"attendance\";s:8:\"specific\";s:19:\"attendance_specific\";s:6:\"team:8\";s:5:\"leave\";s:8:\"specific\";s:14:\"leave_specific\";s:6:\"team:8\";s:7:\"holiday\";s:0:\"\";s:11:\"deciplinary\";s:0:\"\";s:17:\"can_use_biometric\";s:0:\"\";s:8:\"schedule\";s:0:\"\";s:9:\"warehouse\";s:0:\"\";s:9:\"inventory\";s:0:\"\";s:8:\"purchase\";s:0:\"\";s:6:\"return\";s:0:\"\";s:8:\"supplier\";s:0:\"\";s:10:\"production\";s:0:\"\";s:14:\"billofmaterial\";s:0:\"\";s:4:\"unit\";s:0:\"\";s:8:\"delivery\";s:0:\"\";s:13:\"item_transfer\";s:0:\"\";s:7:\"vehicle\";s:0:\"\";s:6:\"driver\";s:0:\"\";s:18:\"accounting_summary\";s:0:\"\";s:13:\"balance_sheet\";s:0:\"\";s:7:\"account\";s:0:\"\";s:8:\"transfer\";s:0:\"\";s:7:\"payment\";s:0:\"\";s:7:\"expense\";s:1:\"1\";s:4:\"loan\";s:0:\"\";s:3:\"tax\";s:0:\"\";s:13:\"can_use_payhp\";s:0:\"\";s:7:\"payroll\";s:1:\"1\";s:25:\"payroll_auto_contribution\";s:0:\"\";s:22:\"compensation_tax_table\";s:0:\"\";s:13:\"sales_summary\";s:0:\"\";s:7:\"invoice\";s:0:\"\";s:7:\"service\";s:0:\"\";s:7:\"product\";s:0:\"\";s:6:\"client\";s:1:\"1\";s:5:\"store\";s:0:\"\";s:4:\"lead\";s:0:\"\";s:8:\"estimate\";s:1:\"1\";s:16:\"estimate_request\";s:0:\"\";s:11:\"event_epass\";s:0:\"\";s:11:\"raffle_draw\";s:0:\"\";s:5:\"asset\";s:0:\"\";s:8:\"location\";s:0:\"\";s:6:\"vendor\";s:0:\"\";s:5:\"brand\";s:0:\"\";s:23:\"can_manage_all_projects\";s:1:\"1\";s:19:\"can_create_projects\";s:1:\"1\";s:17:\"can_edit_projects\";s:1:\"1\";s:19:\"can_delete_projects\";s:1:\"1\";s:30:\"can_add_remove_project_members\";s:1:\"1\";s:16:\"can_create_tasks\";s:1:\"1\";s:14:\"can_edit_tasks\";s:1:\"1\";s:16:\"can_delete_tasks\";s:1:\"1\";s:37:\"can_update_only_assigned_tasks_status\";s:0:\"\";s:20:\"can_comment_on_tasks\";s:1:\"1\";s:24:\"show_assigned_tasks_only\";s:0:\"\";s:21:\"can_create_milestones\";s:1:\"1\";s:19:\"can_edit_milestones\";s:1:\"1\";s:21:\"can_delete_milestones\";s:1:\"1\";s:27:\"timesheet_manage_permission\";s:3:\"all\";s:36:\"timesheet_manage_permission_specific\";s:0:\"\";s:16:\"can_delete_files\";s:1:\"1\";s:6:\"ticket\";s:0:\"\";s:15:\"ticket_specific\";s:0:\"\";s:12:\"ticket_staff\";s:0:\"\";s:21:\"ticket_staff_specific\";s:0:\"\";s:4:\"page\";s:0:\"\";s:4:\"help\";s:0:\"\";s:14:\"knowledge_base\";s:0:\"\";s:18:\"access_logs_create\";s:0:\"\";s:18:\"access_logs_update\";s:0:\"\";s:18:\"access_logs_delete\";s:0:\"\";s:12:\"staff_create\";s:0:\"\";s:12:\"staff_update\";s:0:\"\";s:12:\"staff_delete\";s:0:\"\";s:17:\"department_create\";s:0:\"\";s:17:\"department_update\";s:0:\"\";s:17:\"department_delete\";s:0:\"\";s:17:\"attendance_create\";s:0:\"\";s:17:\"attendance_update\";s:0:\"\";s:17:\"attendance_delete\";s:0:\"\";s:12:\"leave_create\";s:0:\"\";s:12:\"leave_update\";s:0:\"\";s:12:\"leave_delete\";s:0:\"\";s:14:\"holiday_create\";s:0:\"\";s:14:\"holiday_update\";s:0:\"\";s:14:\"holiday_delete\";s:0:\"\";s:18:\"deciplinary_create\";s:0:\"\";s:18:\"deciplinary_update\";s:0:\"\";s:18:\"deciplinary_delete\";s:0:\"\";s:15:\"schedule_create\";s:0:\"\";s:15:\"schedule_update\";s:0:\"\";s:15:\"schedule_delete\";s:0:\"\";s:16:\"warehouse_create\";s:0:\"\";s:16:\"warehouse_update\";s:0:\"\";s:16:\"warehouse_delete\";s:0:\"\";s:16:\"inventory_create\";s:0:\"\";s:16:\"inventory_update\";s:0:\"\";s:16:\"inventory_delete\";s:0:\"\";s:15:\"purchase_create\";s:0:\"\";s:15:\"purchase_update\";s:0:\"\";s:15:\"purchase_delete\";s:0:\"\";s:13:\"return_create\";s:0:\"\";s:13:\"return_update\";s:0:\"\";s:13:\"return_delete\";s:0:\"\";s:15:\"supplier_create\";s:0:\"\";s:15:\"supplier_update\";s:0:\"\";s:15:\"supplier_delete\";s:0:\"\";s:17:\"production_create\";s:0:\"\";s:17:\"production_update\";s:0:\"\";s:17:\"production_delete\";s:0:\"\";s:21:\"billofmaterial_create\";s:0:\"\";s:21:\"billofmaterial_update\";s:0:\"\";s:21:\"billofmaterial_delete\";s:0:\"\";s:11:\"unit_create\";s:0:\"\";s:11:\"unit_update\";s:0:\"\";s:11:\"unit_delete\";s:0:\"\";s:15:\"delivery_create\";s:0:\"\";s:15:\"delivery_update\";s:0:\"\";s:15:\"delivery_delete\";s:0:\"\";s:20:\"item_transfer_create\";s:0:\"\";s:20:\"item_transfer_update\";s:0:\"\";s:20:\"item_transfer_delete\";s:0:\"\";s:14:\"vehicle_create\";s:0:\"\";s:14:\"vehicle_update\";s:0:\"\";s:14:\"vehicle_delete\";s:0:\"\";s:13:\"driver_create\";s:0:\"\";s:13:\"driver_update\";s:0:\"\";s:13:\"driver_delete\";s:0:\"\";s:14:\"account_create\";s:0:\"\";s:14:\"account_update\";s:0:\"\";s:14:\"account_delete\";s:0:\"\";s:15:\"transfer_create\";s:0:\"\";s:15:\"transfer_update\";s:0:\"\";s:15:\"transfer_delete\";s:0:\"\";s:14:\"payment_create\";s:0:\"\";s:14:\"payment_update\";s:0:\"\";s:14:\"payment_delete\";s:0:\"\";s:14:\"expense_create\";s:0:\"\";s:14:\"expense_update\";s:0:\"\";s:14:\"expense_delete\";s:0:\"\";s:11:\"loan_create\";s:0:\"\";s:11:\"loan_update\";s:0:\"\";s:11:\"loan_delete\";s:0:\"\";s:10:\"tax_create\";s:0:\"\";s:10:\"tax_update\";s:0:\"\";s:10:\"tax_delete\";s:0:\"\";s:14:\"payroll_create\";s:0:\"\";s:14:\"payroll_update\";s:0:\"\";s:14:\"payroll_delete\";s:0:\"\";s:14:\"invoice_create\";s:0:\"\";s:14:\"invoice_update\";s:0:\"\";s:14:\"invoice_delete\";s:0:\"\";s:14:\"service_create\";s:0:\"\";s:14:\"service_update\";s:0:\"\";s:14:\"service_delete\";s:0:\"\";s:14:\"product_create\";s:0:\"\";s:14:\"product_update\";s:0:\"\";s:14:\"product_delete\";s:0:\"\";s:13:\"client_create\";s:0:\"\";s:13:\"client_update\";s:0:\"\";s:13:\"client_delete\";s:0:\"\";s:12:\"store_create\";s:0:\"\";s:12:\"store_update\";s:0:\"\";s:12:\"store_delete\";s:0:\"\";s:11:\"lead_create\";s:0:\"\";s:11:\"lead_update\";s:0:\"\";s:11:\"lead_delete\";s:0:\"\";s:15:\"estimate_create\";s:0:\"\";s:15:\"estimate_update\";s:0:\"\";s:15:\"estimate_delete\";s:0:\"\";s:23:\"estimate_request_create\";s:0:\"\";s:23:\"estimate_request_update\";s:0:\"\";s:23:\"estimate_request_delete\";s:0:\"\";s:18:\"event_epass_create\";s:0:\"\";s:18:\"event_epass_update\";s:0:\"\";s:18:\"event_epass_delete\";s:0:\"\";s:18:\"raffle_draw_create\";s:0:\"\";s:18:\"raffle_draw_update\";s:0:\"\";s:18:\"raffle_draw_delete\";s:0:\"\";s:12:\"asset_create\";s:0:\"\";s:12:\"asset_update\";s:0:\"\";s:12:\"asset_delete\";s:0:\"\";s:21:\"asset_category_create\";s:0:\"\";s:21:\"asset_category_update\";s:0:\"\";s:21:\"asset_category_delete\";s:0:\"\";s:15:\"location_create\";s:0:\"\";s:15:\"location_update\";s:0:\"\";s:15:\"location_delete\";s:0:\"\";s:13:\"vendor_create\";s:0:\"\";s:13:\"vendor_update\";s:0:\"\";s:13:\"vendor_delete\";s:0:\"\";s:12:\"brand_create\";s:0:\"\";s:12:\"brand_update\";s:0:\"\";s:12:\"brand_delete\";s:0:\"\";s:11:\"page_create\";s:0:\"\";s:11:\"page_update\";s:0:\"\";s:11:\"page_delete\";s:0:\"\";s:11:\"help_create\";s:0:\"\";s:11:\"help_update\";s:0:\"\";s:11:\"help_delete\";s:0:\"\";s:20:\"help_category_create\";s:0:\"\";s:20:\"help_category_update\";s:0:\"\";s:20:\"help_category_delete\";s:0:\"\";s:21:\"knowledge_base_create\";s:0:\"\";s:21:\"knowledge_base_update\";s:0:\"\";s:21:\"knowledge_base_delete\";s:0:\"\";s:30:\"knowledge_base_category_create\";s:0:\"\";s:30:\"knowledge_base_category_update\";s:0:\"\";s:30:\"knowledge_base_category_delete\";s:0:\"\";}', 0),
+(3, 'HR Manager', 'a:234:{s:21:\"disable_event_sharing\";s:0:\"\";s:12:\"announcement\";s:1:\"1\";s:18:\"message_permission\";s:3:\"all\";s:27:\"message_permission_specific\";s:0:\"\";s:11:\"access_logs\";s:0:\"\";s:5:\"staff\";s:3:\"all\";s:14:\"staff_specific\";s:0:\"\";s:12:\"staff_invite\";s:0:\"\";s:13:\"staff_account\";s:0:\"\";s:21:\"staff_update_schedule\";s:1:\"1\";s:30:\"staff_view_personal_background\";s:0:\"\";s:26:\"staff_view_job_description\";s:0:\"\";s:20:\"staff_view_bank_info\";s:0:\"\";s:31:\"staff_view_contribution_details\";s:0:\"\";s:34:\"can_view_team_members_contact_info\";s:1:\"1\";s:34:\"can_view_team_members_social_links\";s:1:\"1\";s:10:\"department\";s:3:\"all\";s:19:\"department_specific\";s:0:\"\";s:10:\"attendance\";s:3:\"all\";s:19:\"attendance_specific\";s:0:\"\";s:5:\"leave\";s:3:\"all\";s:14:\"leave_specific\";s:0:\"\";s:12:\"leave_manage\";s:0:\"\";s:7:\"holiday\";s:0:\"\";s:11:\"deciplinary\";s:0:\"\";s:17:\"can_use_biometric\";s:0:\"\";s:8:\"schedule\";s:1:\"1\";s:9:\"warehouse\";s:0:\"\";s:9:\"inventory\";s:0:\"\";s:8:\"purchase\";s:0:\"\";s:6:\"return\";s:0:\"\";s:8:\"supplier\";s:0:\"\";s:10:\"production\";s:0:\"\";s:14:\"billofmaterial\";s:0:\"\";s:4:\"unit\";s:0:\"\";s:8:\"delivery\";s:0:\"\";s:13:\"item_transfer\";s:0:\"\";s:7:\"vehicle\";s:0:\"\";s:6:\"driver\";s:0:\"\";s:18:\"accounting_summary\";s:0:\"\";s:13:\"balance_sheet\";s:0:\"\";s:7:\"account\";s:0:\"\";s:8:\"transfer\";s:0:\"\";s:7:\"payment\";s:0:\"\";s:7:\"expense\";s:1:\"1\";s:4:\"loan\";s:0:\"\";s:3:\"tax\";s:0:\"\";s:13:\"can_use_payhp\";s:1:\"1\";s:7:\"payroll\";s:1:\"1\";s:25:\"payroll_auto_contribution\";s:0:\"\";s:22:\"compensation_tax_table\";s:0:\"\";s:13:\"sales_summary\";s:0:\"\";s:7:\"invoice\";s:1:\"1\";s:7:\"service\";s:0:\"\";s:7:\"product\";s:0:\"\";s:6:\"client\";s:1:\"1\";s:5:\"store\";s:0:\"\";s:4:\"lead\";s:1:\"1\";s:8:\"estimate\";s:1:\"1\";s:16:\"estimate_request\";s:0:\"\";s:11:\"event_epass\";s:0:\"\";s:11:\"raffle_draw\";s:0:\"\";s:5:\"asset\";s:0:\"\";s:8:\"location\";s:0:\"\";s:6:\"vendor\";s:0:\"\";s:5:\"brand\";s:0:\"\";s:23:\"can_manage_all_projects\";s:1:\"1\";s:19:\"can_create_projects\";s:1:\"1\";s:17:\"can_edit_projects\";s:1:\"1\";s:19:\"can_delete_projects\";s:1:\"1\";s:30:\"can_add_remove_project_members\";s:1:\"1\";s:16:\"can_create_tasks\";s:1:\"1\";s:14:\"can_edit_tasks\";s:1:\"1\";s:16:\"can_delete_tasks\";s:1:\"1\";s:37:\"can_update_only_assigned_tasks_status\";s:0:\"\";s:20:\"can_comment_on_tasks\";s:1:\"1\";s:24:\"show_assigned_tasks_only\";s:0:\"\";s:21:\"can_create_milestones\";s:1:\"1\";s:19:\"can_edit_milestones\";s:1:\"1\";s:21:\"can_delete_milestones\";s:1:\"1\";s:27:\"timesheet_manage_permission\";s:3:\"all\";s:36:\"timesheet_manage_permission_specific\";s:0:\"\";s:16:\"can_delete_files\";s:1:\"1\";s:6:\"ticket\";s:3:\"all\";s:15:\"ticket_specific\";s:0:\"\";s:12:\"ticket_staff\";s:8:\"specific\";s:21:\"ticket_staff_specific\";s:7:\"team:13\";s:4:\"page\";s:0:\"\";s:4:\"help\";s:0:\"\";s:14:\"knowledge_base\";s:0:\"\";s:19:\"announcement_create\";s:0:\"\";s:19:\"announcement_update\";s:0:\"\";s:19:\"announcement_delete\";s:0:\"\";s:18:\"access_logs_create\";s:0:\"\";s:18:\"access_logs_update\";s:0:\"\";s:18:\"access_logs_delete\";s:0:\"\";s:12:\"staff_create\";s:0:\"\";s:12:\"staff_update\";s:0:\"\";s:12:\"staff_delete\";s:0:\"\";s:17:\"department_create\";s:0:\"\";s:17:\"department_update\";s:0:\"\";s:17:\"department_delete\";s:0:\"\";s:17:\"attendance_create\";s:1:\"1\";s:17:\"attendance_update\";s:1:\"1\";s:17:\"attendance_delete\";s:1:\"1\";s:12:\"leave_create\";s:1:\"1\";s:12:\"leave_update\";s:1:\"1\";s:12:\"leave_delete\";s:0:\"\";s:14:\"holiday_create\";s:0:\"\";s:14:\"holiday_update\";s:0:\"\";s:14:\"holiday_delete\";s:0:\"\";s:18:\"deciplinary_create\";s:0:\"\";s:18:\"deciplinary_update\";s:0:\"\";s:18:\"deciplinary_delete\";s:0:\"\";s:15:\"schedule_create\";s:0:\"\";s:15:\"schedule_update\";s:0:\"\";s:15:\"schedule_delete\";s:0:\"\";s:16:\"warehouse_create\";s:0:\"\";s:16:\"warehouse_update\";s:0:\"\";s:16:\"warehouse_delete\";s:0:\"\";s:16:\"inventory_create\";s:0:\"\";s:16:\"inventory_update\";s:0:\"\";s:16:\"inventory_delete\";s:0:\"\";s:15:\"purchase_create\";s:0:\"\";s:15:\"purchase_update\";s:0:\"\";s:15:\"purchase_delete\";s:0:\"\";s:13:\"return_create\";s:0:\"\";s:13:\"return_update\";s:0:\"\";s:13:\"return_delete\";s:0:\"\";s:15:\"supplier_create\";s:0:\"\";s:15:\"supplier_update\";s:0:\"\";s:15:\"supplier_delete\";s:0:\"\";s:17:\"production_create\";s:0:\"\";s:17:\"production_update\";s:0:\"\";s:17:\"production_delete\";s:0:\"\";s:21:\"billofmaterial_create\";s:0:\"\";s:21:\"billofmaterial_update\";s:0:\"\";s:21:\"billofmaterial_delete\";s:0:\"\";s:11:\"unit_create\";s:0:\"\";s:11:\"unit_update\";s:0:\"\";s:11:\"unit_delete\";s:0:\"\";s:15:\"delivery_create\";s:0:\"\";s:15:\"delivery_update\";s:0:\"\";s:15:\"delivery_delete\";s:0:\"\";s:20:\"item_transfer_create\";s:0:\"\";s:20:\"item_transfer_update\";s:0:\"\";s:20:\"item_transfer_delete\";s:0:\"\";s:14:\"vehicle_create\";s:0:\"\";s:14:\"vehicle_update\";s:0:\"\";s:14:\"vehicle_delete\";s:0:\"\";s:13:\"driver_create\";s:0:\"\";s:13:\"driver_update\";s:0:\"\";s:13:\"driver_delete\";s:0:\"\";s:14:\"account_create\";s:0:\"\";s:14:\"account_update\";s:0:\"\";s:14:\"account_delete\";s:0:\"\";s:15:\"transfer_create\";s:0:\"\";s:15:\"transfer_update\";s:0:\"\";s:15:\"transfer_delete\";s:0:\"\";s:14:\"payment_create\";s:0:\"\";s:14:\"payment_update\";s:0:\"\";s:14:\"payment_delete\";s:0:\"\";s:14:\"expense_create\";s:0:\"\";s:14:\"expense_update\";s:0:\"\";s:14:\"expense_delete\";s:0:\"\";s:11:\"loan_create\";s:0:\"\";s:11:\"loan_update\";s:0:\"\";s:11:\"loan_delete\";s:0:\"\";s:10:\"tax_create\";s:0:\"\";s:10:\"tax_update\";s:0:\"\";s:10:\"tax_delete\";s:0:\"\";s:14:\"payroll_create\";s:0:\"\";s:14:\"payroll_update\";s:0:\"\";s:14:\"payroll_delete\";s:0:\"\";s:14:\"invoice_create\";s:0:\"\";s:14:\"invoice_update\";s:0:\"\";s:14:\"invoice_delete\";s:0:\"\";s:14:\"service_create\";s:0:\"\";s:14:\"service_update\";s:0:\"\";s:14:\"service_delete\";s:0:\"\";s:14:\"product_create\";s:0:\"\";s:14:\"product_update\";s:0:\"\";s:14:\"product_delete\";s:0:\"\";s:13:\"client_create\";s:0:\"\";s:13:\"client_update\";s:0:\"\";s:13:\"client_delete\";s:0:\"\";s:12:\"store_create\";s:0:\"\";s:12:\"store_update\";s:0:\"\";s:12:\"store_delete\";s:0:\"\";s:11:\"lead_create\";s:1:\"1\";s:11:\"lead_update\";s:1:\"1\";s:11:\"lead_delete\";s:1:\"1\";s:15:\"estimate_create\";s:0:\"\";s:15:\"estimate_update\";s:0:\"\";s:15:\"estimate_delete\";s:0:\"\";s:23:\"estimate_request_create\";s:0:\"\";s:23:\"estimate_request_update\";s:0:\"\";s:23:\"estimate_request_delete\";s:0:\"\";s:18:\"event_epass_create\";s:0:\"\";s:18:\"event_epass_update\";s:0:\"\";s:18:\"event_epass_delete\";s:0:\"\";s:18:\"raffle_draw_create\";s:0:\"\";s:18:\"raffle_draw_update\";s:0:\"\";s:18:\"raffle_draw_delete\";s:0:\"\";s:12:\"asset_create\";s:0:\"\";s:12:\"asset_update\";s:0:\"\";s:12:\"asset_delete\";s:0:\"\";s:21:\"asset_category_create\";s:0:\"\";s:21:\"asset_category_update\";s:0:\"\";s:21:\"asset_category_delete\";s:0:\"\";s:15:\"location_create\";s:0:\"\";s:15:\"location_update\";s:0:\"\";s:15:\"location_delete\";s:0:\"\";s:13:\"vendor_create\";s:0:\"\";s:13:\"vendor_update\";s:0:\"\";s:13:\"vendor_delete\";s:0:\"\";s:12:\"brand_create\";s:0:\"\";s:12:\"brand_update\";s:0:\"\";s:12:\"brand_delete\";s:0:\"\";s:11:\"page_create\";s:0:\"\";s:11:\"page_update\";s:0:\"\";s:11:\"page_delete\";s:0:\"\";s:11:\"help_create\";s:0:\"\";s:11:\"help_update\";s:0:\"\";s:11:\"help_delete\";s:0:\"\";s:20:\"help_category_create\";s:0:\"\";s:20:\"help_category_update\";s:0:\"\";s:20:\"help_category_delete\";s:0:\"\";s:21:\"knowledge_base_create\";s:0:\"\";s:21:\"knowledge_base_update\";s:0:\"\";s:21:\"knowledge_base_delete\";s:0:\"\";s:30:\"knowledge_base_category_create\";s:0:\"\";s:30:\"knowledge_base_category_update\";s:0:\"\";s:30:\"knowledge_base_category_delete\";s:0:\"\";}', 0),
+(4, 'HR Staff', 'a:230:{s:21:\"disable_event_sharing\";s:0:\"\";s:12:\"announcement\";s:1:\"1\";s:18:\"message_permission\";s:3:\"all\";s:27:\"message_permission_specific\";s:0:\"\";s:11:\"access_logs\";s:0:\"\";s:5:\"staff\";s:3:\"all\";s:14:\"staff_specific\";s:0:\"\";s:12:\"staff_invite\";s:1:\"1\";s:13:\"staff_account\";s:0:\"\";s:21:\"staff_update_schedule\";s:0:\"\";s:30:\"staff_view_personal_background\";s:1:\"1\";s:26:\"staff_view_job_description\";s:1:\"1\";s:20:\"staff_view_bank_info\";s:1:\"1\";s:31:\"staff_view_contribution_details\";s:1:\"1\";s:34:\"can_view_team_members_contact_info\";s:1:\"1\";s:34:\"can_view_team_members_social_links\";s:0:\"\";s:10:\"department\";s:3:\"all\";s:19:\"department_specific\";s:0:\"\";s:10:\"attendance\";s:3:\"all\";s:19:\"attendance_specific\";s:0:\"\";s:5:\"leave\";s:3:\"all\";s:14:\"leave_specific\";s:0:\"\";s:7:\"holiday\";s:1:\"1\";s:11:\"deciplinary\";s:1:\"1\";s:17:\"can_use_biometric\";s:0:\"\";s:8:\"schedule\";s:0:\"\";s:9:\"warehouse\";s:0:\"\";s:9:\"inventory\";s:0:\"\";s:8:\"purchase\";s:0:\"\";s:6:\"return\";s:0:\"\";s:8:\"supplier\";s:0:\"\";s:10:\"production\";s:0:\"\";s:14:\"billofmaterial\";s:0:\"\";s:4:\"unit\";s:0:\"\";s:8:\"delivery\";s:0:\"\";s:13:\"item_transfer\";s:0:\"\";s:7:\"vehicle\";s:0:\"\";s:6:\"driver\";s:0:\"\";s:18:\"accounting_summary\";s:0:\"\";s:13:\"balance_sheet\";s:0:\"\";s:7:\"account\";s:0:\"\";s:8:\"transfer\";s:0:\"\";s:7:\"payment\";s:0:\"\";s:7:\"expense\";s:1:\"1\";s:4:\"loan\";s:0:\"\";s:3:\"tax\";s:0:\"\";s:13:\"can_use_payhp\";s:1:\"1\";s:7:\"payroll\";s:1:\"1\";s:25:\"payroll_auto_contribution\";s:0:\"\";s:22:\"compensation_tax_table\";s:0:\"\";s:13:\"sales_summary\";s:0:\"\";s:7:\"invoice\";s:0:\"\";s:7:\"service\";s:0:\"\";s:7:\"product\";s:0:\"\";s:6:\"client\";s:1:\"1\";s:5:\"store\";s:0:\"\";s:4:\"lead\";s:1:\"1\";s:8:\"estimate\";s:1:\"1\";s:16:\"estimate_request\";s:0:\"\";s:11:\"event_epass\";s:0:\"\";s:11:\"raffle_draw\";s:0:\"\";s:5:\"asset\";s:0:\"\";s:8:\"location\";s:0:\"\";s:6:\"vendor\";s:0:\"\";s:5:\"brand\";s:0:\"\";s:23:\"can_manage_all_projects\";s:1:\"1\";s:19:\"can_create_projects\";s:1:\"1\";s:17:\"can_edit_projects\";s:1:\"1\";s:19:\"can_delete_projects\";s:1:\"1\";s:30:\"can_add_remove_project_members\";s:1:\"1\";s:16:\"can_create_tasks\";s:1:\"1\";s:14:\"can_edit_tasks\";s:1:\"1\";s:16:\"can_delete_tasks\";s:1:\"1\";s:37:\"can_update_only_assigned_tasks_status\";s:0:\"\";s:20:\"can_comment_on_tasks\";s:1:\"1\";s:24:\"show_assigned_tasks_only\";s:0:\"\";s:21:\"can_create_milestones\";s:1:\"1\";s:19:\"can_edit_milestones\";s:1:\"1\";s:21:\"can_delete_milestones\";s:1:\"1\";s:27:\"timesheet_manage_permission\";s:3:\"all\";s:36:\"timesheet_manage_permission_specific\";s:0:\"\";s:16:\"can_delete_files\";s:1:\"1\";s:6:\"ticket\";s:3:\"all\";s:15:\"ticket_specific\";s:0:\"\";s:12:\"ticket_staff\";s:0:\"\";s:21:\"ticket_staff_specific\";s:0:\"\";s:4:\"page\";s:0:\"\";s:4:\"help\";s:0:\"\";s:14:\"knowledge_base\";s:0:\"\";s:18:\"access_logs_create\";s:0:\"\";s:18:\"access_logs_update\";s:0:\"\";s:18:\"access_logs_delete\";s:0:\"\";s:12:\"staff_create\";s:1:\"1\";s:12:\"staff_update\";s:1:\"1\";s:12:\"staff_delete\";s:1:\"1\";s:17:\"department_create\";s:0:\"\";s:17:\"department_update\";s:1:\"1\";s:17:\"department_delete\";s:0:\"\";s:17:\"attendance_create\";s:0:\"\";s:17:\"attendance_update\";s:0:\"\";s:17:\"attendance_delete\";s:0:\"\";s:12:\"leave_create\";s:1:\"1\";s:12:\"leave_update\";s:0:\"\";s:12:\"leave_delete\";s:0:\"\";s:14:\"holiday_create\";s:1:\"1\";s:14:\"holiday_update\";s:1:\"1\";s:14:\"holiday_delete\";s:1:\"1\";s:18:\"deciplinary_create\";s:1:\"1\";s:18:\"deciplinary_update\";s:1:\"1\";s:18:\"deciplinary_delete\";s:1:\"1\";s:15:\"schedule_create\";s:0:\"\";s:15:\"schedule_update\";s:0:\"\";s:15:\"schedule_delete\";s:0:\"\";s:16:\"warehouse_create\";s:0:\"\";s:16:\"warehouse_update\";s:0:\"\";s:16:\"warehouse_delete\";s:0:\"\";s:16:\"inventory_create\";s:0:\"\";s:16:\"inventory_update\";s:0:\"\";s:16:\"inventory_delete\";s:0:\"\";s:15:\"purchase_create\";s:0:\"\";s:15:\"purchase_update\";s:0:\"\";s:15:\"purchase_delete\";s:0:\"\";s:13:\"return_create\";s:0:\"\";s:13:\"return_update\";s:0:\"\";s:13:\"return_delete\";s:0:\"\";s:15:\"supplier_create\";s:0:\"\";s:15:\"supplier_update\";s:0:\"\";s:15:\"supplier_delete\";s:0:\"\";s:17:\"production_create\";s:0:\"\";s:17:\"production_update\";s:0:\"\";s:17:\"production_delete\";s:0:\"\";s:21:\"billofmaterial_create\";s:0:\"\";s:21:\"billofmaterial_update\";s:0:\"\";s:21:\"billofmaterial_delete\";s:0:\"\";s:11:\"unit_create\";s:0:\"\";s:11:\"unit_update\";s:0:\"\";s:11:\"unit_delete\";s:0:\"\";s:15:\"delivery_create\";s:0:\"\";s:15:\"delivery_update\";s:0:\"\";s:15:\"delivery_delete\";s:0:\"\";s:20:\"item_transfer_create\";s:0:\"\";s:20:\"item_transfer_update\";s:0:\"\";s:20:\"item_transfer_delete\";s:0:\"\";s:14:\"vehicle_create\";s:0:\"\";s:14:\"vehicle_update\";s:0:\"\";s:14:\"vehicle_delete\";s:0:\"\";s:13:\"driver_create\";s:0:\"\";s:13:\"driver_update\";s:0:\"\";s:13:\"driver_delete\";s:0:\"\";s:14:\"account_create\";s:0:\"\";s:14:\"account_update\";s:0:\"\";s:14:\"account_delete\";s:0:\"\";s:15:\"transfer_create\";s:0:\"\";s:15:\"transfer_update\";s:0:\"\";s:15:\"transfer_delete\";s:0:\"\";s:14:\"payment_create\";s:0:\"\";s:14:\"payment_update\";s:0:\"\";s:14:\"payment_delete\";s:0:\"\";s:14:\"expense_create\";s:0:\"\";s:14:\"expense_update\";s:0:\"\";s:14:\"expense_delete\";s:0:\"\";s:11:\"loan_create\";s:0:\"\";s:11:\"loan_update\";s:0:\"\";s:11:\"loan_delete\";s:0:\"\";s:10:\"tax_create\";s:0:\"\";s:10:\"tax_update\";s:0:\"\";s:10:\"tax_delete\";s:0:\"\";s:14:\"payroll_create\";s:1:\"1\";s:14:\"payroll_update\";s:1:\"1\";s:14:\"payroll_delete\";s:0:\"\";s:14:\"invoice_create\";s:0:\"\";s:14:\"invoice_update\";s:0:\"\";s:14:\"invoice_delete\";s:0:\"\";s:14:\"service_create\";s:0:\"\";s:14:\"service_update\";s:0:\"\";s:14:\"service_delete\";s:0:\"\";s:14:\"product_create\";s:0:\"\";s:14:\"product_update\";s:0:\"\";s:14:\"product_delete\";s:0:\"\";s:13:\"client_create\";s:0:\"\";s:13:\"client_update\";s:0:\"\";s:13:\"client_delete\";s:0:\"\";s:12:\"store_create\";s:0:\"\";s:12:\"store_update\";s:0:\"\";s:12:\"store_delete\";s:0:\"\";s:11:\"lead_create\";s:0:\"\";s:11:\"lead_update\";s:0:\"\";s:11:\"lead_delete\";s:0:\"\";s:15:\"estimate_create\";s:0:\"\";s:15:\"estimate_update\";s:0:\"\";s:15:\"estimate_delete\";s:0:\"\";s:23:\"estimate_request_create\";s:0:\"\";s:23:\"estimate_request_update\";s:0:\"\";s:23:\"estimate_request_delete\";s:0:\"\";s:18:\"event_epass_create\";s:0:\"\";s:18:\"event_epass_update\";s:0:\"\";s:18:\"event_epass_delete\";s:0:\"\";s:18:\"raffle_draw_create\";s:0:\"\";s:18:\"raffle_draw_update\";s:0:\"\";s:18:\"raffle_draw_delete\";s:0:\"\";s:12:\"asset_create\";s:0:\"\";s:12:\"asset_update\";s:0:\"\";s:12:\"asset_delete\";s:0:\"\";s:21:\"asset_category_create\";s:0:\"\";s:21:\"asset_category_update\";s:0:\"\";s:21:\"asset_category_delete\";s:0:\"\";s:15:\"location_create\";s:0:\"\";s:15:\"location_update\";s:0:\"\";s:15:\"location_delete\";s:0:\"\";s:13:\"vendor_create\";s:0:\"\";s:13:\"vendor_update\";s:0:\"\";s:13:\"vendor_delete\";s:0:\"\";s:12:\"brand_create\";s:0:\"\";s:12:\"brand_update\";s:0:\"\";s:12:\"brand_delete\";s:0:\"\";s:11:\"page_create\";s:0:\"\";s:11:\"page_update\";s:0:\"\";s:11:\"page_delete\";s:0:\"\";s:11:\"help_create\";s:0:\"\";s:11:\"help_update\";s:0:\"\";s:11:\"help_delete\";s:0:\"\";s:20:\"help_category_create\";s:0:\"\";s:20:\"help_category_update\";s:0:\"\";s:20:\"help_category_delete\";s:0:\"\";s:21:\"knowledge_base_create\";s:0:\"\";s:21:\"knowledge_base_update\";s:0:\"\";s:21:\"knowledge_base_delete\";s:0:\"\";s:30:\"knowledge_base_category_create\";s:0:\"\";s:30:\"knowledge_base_category_update\";s:0:\"\";s:30:\"knowledge_base_category_delete\";s:0:\"\";}', 0),
+(5, 'Regular Employee', 'a:54:{s:5:\"leave\";N;s:14:\"leave_specific\";s:0:\"\";s:10:\"attendance\";N;s:19:\"attendance_specific\";s:0:\"\";s:7:\"invoice\";N;s:8:\"estimate\";N;s:7:\"expense\";N;s:6:\"client\";N;s:4:\"lead\";N;s:6:\"ticket\";N;s:15:\"ticket_specific\";s:0:\"\";s:12:\"announcement\";s:0:\"\";s:23:\"help_and_knowledge_base\";N;s:23:\"can_manage_all_projects\";N;s:19:\"can_create_projects\";N;s:17:\"can_edit_projects\";N;s:19:\"can_delete_projects\";N;s:30:\"can_add_remove_project_members\";N;s:16:\"can_create_tasks\";N;s:14:\"can_edit_tasks\";N;s:16:\"can_delete_tasks\";N;s:20:\"can_comment_on_tasks\";N;s:24:\"show_assigned_tasks_only\";N;s:37:\"can_update_only_assigned_tasks_status\";N;s:21:\"can_create_milestones\";N;s:19:\"can_edit_milestones\";N;s:21:\"can_delete_milestones\";N;s:16:\"can_delete_files\";N;s:17:\"can_use_biometric\";N;s:34:\"can_view_team_members_contact_info\";N;s:34:\"can_view_team_members_social_links\";N;s:29:\"team_member_update_permission\";N;s:38:\"team_member_update_permission_specific\";s:0:\"\";s:27:\"timesheet_manage_permission\";N;s:36:\"timesheet_manage_permission_specific\";s:0:\"\";s:21:\"disable_event_sharing\";s:1:\"1\";s:22:\"hide_team_members_list\";N;s:28:\"can_delete_leave_application\";N;s:18:\"message_permission\";s:0:\"\";s:27:\"message_permission_specific\";s:0:\"\";s:10:\"module_hrs\";N;s:17:\"hrs_employee_view\";N;s:19:\"hrs_employee_invite\";N;s:16:\"hrs_employee_add\";N;s:17:\"hrs_employee_edit\";N;s:19:\"hrs_employee_delete\";N;s:10:\"module_fas\";N;s:10:\"module_mes\";N;s:10:\"module_mcs\";N;s:10:\"module_lds\";N;s:10:\"module_sms\";N;s:10:\"module_ams\";N;s:10:\"module_pms\";N;s:10:\"module_css\";N;}', 0),
+(6, 'ACCTG Staff', 'a:233:{s:21:\"disable_event_sharing\";s:0:\"\";s:12:\"announcement\";s:0:\"\";s:18:\"message_permission\";s:0:\"\";s:27:\"message_permission_specific\";s:0:\"\";s:11:\"access_logs\";s:0:\"\";s:5:\"staff\";s:3:\"all\";s:14:\"staff_specific\";s:0:\"\";s:12:\"staff_invite\";s:0:\"\";s:13:\"staff_account\";s:1:\"1\";s:21:\"staff_update_schedule\";s:1:\"1\";s:30:\"staff_view_personal_background\";s:0:\"\";s:26:\"staff_view_job_description\";s:1:\"1\";s:20:\"staff_view_bank_info\";s:1:\"1\";s:31:\"staff_view_contribution_details\";s:1:\"1\";s:34:\"can_view_team_members_contact_info\";s:1:\"1\";s:34:\"can_view_team_members_social_links\";s:1:\"1\";s:10:\"department\";s:3:\"all\";s:19:\"department_specific\";s:0:\"\";s:10:\"attendance\";s:3:\"all\";s:19:\"attendance_specific\";s:0:\"\";s:5:\"leave\";s:0:\"\";s:14:\"leave_specific\";s:0:\"\";s:7:\"holiday\";s:0:\"\";s:11:\"deciplinary\";s:0:\"\";s:17:\"can_use_biometric\";s:1:\"1\";s:8:\"schedule\";s:0:\"\";s:9:\"warehouse\";s:0:\"\";s:9:\"inventory\";s:0:\"\";s:8:\"purchase\";s:0:\"\";s:6:\"return\";s:0:\"\";s:8:\"supplier\";s:0:\"\";s:10:\"production\";s:0:\"\";s:14:\"billofmaterial\";s:0:\"\";s:4:\"unit\";s:0:\"\";s:8:\"delivery\";s:0:\"\";s:13:\"item_transfer\";s:0:\"\";s:7:\"vehicle\";s:0:\"\";s:6:\"driver\";s:0:\"\";s:18:\"accounting_summary\";s:1:\"1\";s:13:\"balance_sheet\";s:1:\"1\";s:7:\"account\";s:1:\"1\";s:8:\"transfer\";s:1:\"1\";s:7:\"payment\";s:1:\"1\";s:7:\"expense\";s:1:\"1\";s:4:\"loan\";s:1:\"1\";s:3:\"tax\";s:1:\"1\";s:13:\"can_use_payhp\";s:1:\"1\";s:7:\"payroll\";s:1:\"1\";s:25:\"payroll_auto_contribution\";s:1:\"1\";s:22:\"compensation_tax_table\";s:1:\"1\";s:13:\"sales_summary\";s:0:\"\";s:7:\"invoice\";s:0:\"\";s:7:\"service\";s:0:\"\";s:7:\"product\";s:0:\"\";s:6:\"client\";s:0:\"\";s:5:\"store\";s:0:\"\";s:4:\"lead\";s:0:\"\";s:8:\"estimate\";s:0:\"\";s:16:\"estimate_request\";s:0:\"\";s:11:\"event_epass\";s:0:\"\";s:11:\"raffle_draw\";s:0:\"\";s:5:\"asset\";s:0:\"\";s:8:\"location\";s:0:\"\";s:6:\"vendor\";s:0:\"\";s:5:\"brand\";s:0:\"\";s:23:\"can_manage_all_projects\";s:0:\"\";s:19:\"can_create_projects\";s:0:\"\";s:17:\"can_edit_projects\";s:0:\"\";s:19:\"can_delete_projects\";s:0:\"\";s:30:\"can_add_remove_project_members\";s:1:\"1\";s:16:\"can_create_tasks\";s:1:\"1\";s:14:\"can_edit_tasks\";s:1:\"1\";s:16:\"can_delete_tasks\";s:1:\"1\";s:37:\"can_update_only_assigned_tasks_status\";s:0:\"\";s:20:\"can_comment_on_tasks\";s:1:\"1\";s:24:\"show_assigned_tasks_only\";s:0:\"\";s:21:\"can_create_milestones\";s:1:\"1\";s:19:\"can_edit_milestones\";s:1:\"1\";s:21:\"can_delete_milestones\";s:1:\"1\";s:27:\"timesheet_manage_permission\";s:3:\"all\";s:36:\"timesheet_manage_permission_specific\";s:0:\"\";s:16:\"can_delete_files\";s:1:\"1\";s:6:\"ticket\";s:3:\"all\";s:15:\"ticket_specific\";s:0:\"\";s:12:\"ticket_staff\";s:0:\"\";s:21:\"ticket_staff_specific\";s:0:\"\";s:4:\"page\";s:0:\"\";s:4:\"help\";s:0:\"\";s:14:\"knowledge_base\";s:0:\"\";s:19:\"announcement_create\";s:0:\"\";s:19:\"announcement_update\";s:0:\"\";s:19:\"announcement_delete\";s:0:\"\";s:18:\"access_logs_create\";s:0:\"\";s:18:\"access_logs_update\";s:0:\"\";s:18:\"access_logs_delete\";s:0:\"\";s:12:\"staff_create\";s:0:\"\";s:12:\"staff_update\";s:0:\"\";s:12:\"staff_delete\";s:0:\"\";s:17:\"department_create\";s:0:\"\";s:17:\"department_update\";s:0:\"\";s:17:\"department_delete\";s:0:\"\";s:17:\"attendance_create\";s:0:\"\";s:17:\"attendance_update\";s:0:\"\";s:17:\"attendance_delete\";s:0:\"\";s:12:\"leave_create\";s:0:\"\";s:12:\"leave_update\";s:0:\"\";s:12:\"leave_delete\";s:0:\"\";s:14:\"holiday_create\";s:0:\"\";s:14:\"holiday_update\";s:0:\"\";s:14:\"holiday_delete\";s:0:\"\";s:18:\"deciplinary_create\";s:0:\"\";s:18:\"deciplinary_update\";s:0:\"\";s:18:\"deciplinary_delete\";s:0:\"\";s:15:\"schedule_create\";s:0:\"\";s:15:\"schedule_update\";s:0:\"\";s:15:\"schedule_delete\";s:0:\"\";s:16:\"warehouse_create\";s:0:\"\";s:16:\"warehouse_update\";s:0:\"\";s:16:\"warehouse_delete\";s:0:\"\";s:16:\"inventory_create\";s:0:\"\";s:16:\"inventory_update\";s:0:\"\";s:16:\"inventory_delete\";s:0:\"\";s:15:\"purchase_create\";s:0:\"\";s:15:\"purchase_update\";s:0:\"\";s:15:\"purchase_delete\";s:0:\"\";s:13:\"return_create\";s:0:\"\";s:13:\"return_update\";s:0:\"\";s:13:\"return_delete\";s:0:\"\";s:15:\"supplier_create\";s:0:\"\";s:15:\"supplier_update\";s:0:\"\";s:15:\"supplier_delete\";s:0:\"\";s:17:\"production_create\";s:0:\"\";s:17:\"production_update\";s:0:\"\";s:17:\"production_delete\";s:0:\"\";s:21:\"billofmaterial_create\";s:0:\"\";s:21:\"billofmaterial_update\";s:0:\"\";s:21:\"billofmaterial_delete\";s:0:\"\";s:11:\"unit_create\";s:0:\"\";s:11:\"unit_update\";s:0:\"\";s:11:\"unit_delete\";s:0:\"\";s:15:\"delivery_create\";s:0:\"\";s:15:\"delivery_update\";s:0:\"\";s:15:\"delivery_delete\";s:0:\"\";s:20:\"item_transfer_create\";s:0:\"\";s:20:\"item_transfer_update\";s:0:\"\";s:20:\"item_transfer_delete\";s:0:\"\";s:14:\"vehicle_create\";s:0:\"\";s:14:\"vehicle_update\";s:0:\"\";s:14:\"vehicle_delete\";s:0:\"\";s:13:\"driver_create\";s:0:\"\";s:13:\"driver_update\";s:0:\"\";s:13:\"driver_delete\";s:0:\"\";s:14:\"account_create\";s:1:\"1\";s:14:\"account_update\";s:1:\"1\";s:14:\"account_delete\";s:1:\"1\";s:15:\"transfer_create\";s:1:\"1\";s:15:\"transfer_update\";s:1:\"1\";s:15:\"transfer_delete\";s:1:\"1\";s:14:\"payment_create\";s:1:\"1\";s:14:\"payment_update\";s:1:\"1\";s:14:\"payment_delete\";s:1:\"1\";s:14:\"expense_create\";s:1:\"1\";s:14:\"expense_update\";s:1:\"1\";s:14:\"expense_delete\";s:1:\"1\";s:11:\"loan_create\";s:1:\"1\";s:11:\"loan_update\";s:1:\"1\";s:11:\"loan_delete\";s:1:\"1\";s:10:\"tax_create\";s:1:\"1\";s:10:\"tax_update\";s:1:\"1\";s:10:\"tax_delete\";s:1:\"1\";s:14:\"payroll_create\";s:1:\"1\";s:14:\"payroll_update\";s:1:\"1\";s:14:\"payroll_delete\";s:1:\"1\";s:14:\"invoice_create\";s:0:\"\";s:14:\"invoice_update\";s:0:\"\";s:14:\"invoice_delete\";s:0:\"\";s:14:\"service_create\";s:0:\"\";s:14:\"service_update\";s:0:\"\";s:14:\"service_delete\";s:0:\"\";s:14:\"product_create\";s:0:\"\";s:14:\"product_update\";s:0:\"\";s:14:\"product_delete\";s:0:\"\";s:13:\"client_create\";s:0:\"\";s:13:\"client_update\";s:0:\"\";s:13:\"client_delete\";s:0:\"\";s:12:\"store_create\";s:0:\"\";s:12:\"store_update\";s:0:\"\";s:12:\"store_delete\";s:0:\"\";s:11:\"lead_create\";s:0:\"\";s:11:\"lead_update\";s:0:\"\";s:11:\"lead_delete\";s:0:\"\";s:15:\"estimate_create\";s:0:\"\";s:15:\"estimate_update\";s:0:\"\";s:15:\"estimate_delete\";s:0:\"\";s:23:\"estimate_request_create\";s:0:\"\";s:23:\"estimate_request_update\";s:0:\"\";s:23:\"estimate_request_delete\";s:0:\"\";s:18:\"event_epass_create\";s:0:\"\";s:18:\"event_epass_update\";s:0:\"\";s:18:\"event_epass_delete\";s:0:\"\";s:18:\"raffle_draw_create\";s:0:\"\";s:18:\"raffle_draw_update\";s:0:\"\";s:18:\"raffle_draw_delete\";s:0:\"\";s:12:\"asset_create\";s:0:\"\";s:12:\"asset_update\";s:0:\"\";s:12:\"asset_delete\";s:0:\"\";s:21:\"asset_category_create\";s:0:\"\";s:21:\"asset_category_update\";s:0:\"\";s:21:\"asset_category_delete\";s:0:\"\";s:15:\"location_create\";s:0:\"\";s:15:\"location_update\";s:0:\"\";s:15:\"location_delete\";s:0:\"\";s:13:\"vendor_create\";s:0:\"\";s:13:\"vendor_update\";s:0:\"\";s:13:\"vendor_delete\";s:0:\"\";s:12:\"brand_create\";s:0:\"\";s:12:\"brand_update\";s:0:\"\";s:12:\"brand_delete\";s:0:\"\";s:11:\"page_create\";s:0:\"\";s:11:\"page_update\";s:0:\"\";s:11:\"page_delete\";s:0:\"\";s:11:\"help_create\";s:0:\"\";s:11:\"help_update\";s:0:\"\";s:11:\"help_delete\";s:0:\"\";s:20:\"help_category_create\";s:0:\"\";s:20:\"help_category_update\";s:0:\"\";s:20:\"help_category_delete\";s:0:\"\";s:21:\"knowledge_base_create\";s:0:\"\";s:21:\"knowledge_base_update\";s:0:\"\";s:21:\"knowledge_base_delete\";s:0:\"\";s:30:\"knowledge_base_category_create\";s:0:\"\";s:30:\"knowledge_base_category_update\";s:0:\"\";s:30:\"knowledge_base_category_delete\";s:0:\"\";}', 0),
+(7, 'Maintenance', NULL, 0),
+(8, 'Executives', 'a:225:{s:21:\"disable_event_sharing\";s:0:\"\";s:12:\"announcement\";s:1:\"1\";s:18:\"message_permission\";s:3:\"all\";s:27:\"message_permission_specific\";s:0:\"\";s:11:\"access_logs\";s:1:\"1\";s:5:\"staff\";s:3:\"all\";s:14:\"staff_specific\";s:0:\"\";s:12:\"staff_invite\";s:1:\"1\";s:13:\"staff_account\";s:0:\"\";s:30:\"staff_view_personal_background\";s:1:\"1\";s:26:\"staff_view_job_description\";s:1:\"1\";s:20:\"staff_view_bank_info\";s:0:\"\";s:31:\"staff_view_contribution_details\";s:1:\"1\";s:34:\"can_view_team_members_contact_info\";s:1:\"1\";s:34:\"can_view_team_members_social_links\";s:1:\"1\";s:10:\"department\";s:3:\"all\";s:19:\"department_specific\";s:0:\"\";s:10:\"attendance\";s:3:\"all\";s:19:\"attendance_specific\";s:0:\"\";s:5:\"leave\";s:3:\"all\";s:14:\"leave_specific\";s:0:\"\";s:7:\"holiday\";s:0:\"\";s:11:\"deciplinary\";s:0:\"\";s:17:\"can_use_biometric\";s:0:\"\";s:9:\"warehouse\";s:0:\"\";s:9:\"inventory\";s:0:\"\";s:8:\"purchase\";s:1:\"1\";s:6:\"return\";s:1:\"1\";s:8:\"supplier\";s:1:\"1\";s:10:\"production\";s:0:\"\";s:14:\"billofmaterial\";s:0:\"\";s:4:\"unit\";s:0:\"\";s:8:\"delivery\";s:0:\"\";s:13:\"item_transfer\";s:0:\"\";s:7:\"vehicle\";s:0:\"\";s:6:\"driver\";s:0:\"\";s:18:\"accounting_summary\";s:0:\"\";s:13:\"balance_sheet\";s:0:\"\";s:7:\"account\";s:0:\"\";s:8:\"transfer\";s:0:\"\";s:7:\"payment\";s:0:\"\";s:7:\"expense\";s:0:\"\";s:4:\"loan\";s:1:\"1\";s:3:\"tax\";s:1:\"1\";s:13:\"can_use_payhp\";s:1:\"1\";s:7:\"payroll\";s:1:\"1\";s:25:\"payroll_auto_contribution\";s:1:\"1\";s:22:\"compensation_tax_table\";s:1:\"1\";s:13:\"sales_summary\";s:0:\"\";s:7:\"invoice\";s:0:\"\";s:7:\"service\";s:0:\"\";s:7:\"product\";s:0:\"\";s:6:\"client\";s:0:\"\";s:5:\"store\";s:0:\"\";s:4:\"lead\";s:0:\"\";s:8:\"estimate\";s:0:\"\";s:16:\"estimate_request\";s:0:\"\";s:11:\"event_epass\";s:0:\"\";s:11:\"raffle_draw\";s:0:\"\";s:5:\"asset\";s:0:\"\";s:8:\"location\";s:0:\"\";s:6:\"vendor\";s:0:\"\";s:5:\"brand\";s:0:\"\";s:23:\"can_manage_all_projects\";s:1:\"1\";s:19:\"can_create_projects\";s:1:\"1\";s:17:\"can_edit_projects\";s:1:\"1\";s:19:\"can_delete_projects\";s:1:\"1\";s:30:\"can_add_remove_project_members\";s:1:\"1\";s:16:\"can_create_tasks\";s:1:\"1\";s:14:\"can_edit_tasks\";s:1:\"1\";s:16:\"can_delete_tasks\";s:1:\"1\";s:37:\"can_update_only_assigned_tasks_status\";s:0:\"\";s:20:\"can_comment_on_tasks\";s:1:\"1\";s:24:\"show_assigned_tasks_only\";s:0:\"\";s:21:\"can_create_milestones\";s:1:\"1\";s:19:\"can_edit_milestones\";s:1:\"1\";s:21:\"can_delete_milestones\";s:1:\"1\";s:27:\"timesheet_manage_permission\";s:3:\"all\";s:36:\"timesheet_manage_permission_specific\";s:0:\"\";s:16:\"can_delete_files\";s:1:\"1\";s:6:\"ticket\";s:3:\"all\";s:15:\"ticket_specific\";s:0:\"\";s:12:\"ticket_staff\";s:0:\"\";s:21:\"ticket_staff_specific\";s:0:\"\";s:4:\"page\";s:1:\"1\";s:4:\"help\";s:1:\"1\";s:14:\"knowledge_base\";s:1:\"1\";s:18:\"access_logs_create\";s:0:\"\";s:18:\"access_logs_update\";s:0:\"\";s:18:\"access_logs_delete\";s:0:\"\";s:12:\"staff_create\";s:1:\"1\";s:12:\"staff_update\";s:1:\"1\";s:12:\"staff_delete\";s:1:\"1\";s:17:\"department_create\";s:0:\"\";s:17:\"department_update\";s:0:\"\";s:17:\"department_delete\";s:0:\"\";s:17:\"attendance_create\";s:1:\"1\";s:17:\"attendance_update\";s:1:\"1\";s:17:\"attendance_delete\";s:1:\"1\";s:12:\"leave_create\";s:0:\"\";s:12:\"leave_update\";s:0:\"\";s:12:\"leave_delete\";s:0:\"\";s:14:\"holiday_create\";s:0:\"\";s:14:\"holiday_update\";s:0:\"\";s:14:\"holiday_delete\";s:0:\"\";s:18:\"deciplinary_create\";s:0:\"\";s:18:\"deciplinary_update\";s:0:\"\";s:18:\"deciplinary_delete\";s:0:\"\";s:16:\"warehouse_create\";s:0:\"\";s:16:\"warehouse_update\";s:0:\"\";s:16:\"warehouse_delete\";s:0:\"\";s:16:\"inventory_create\";s:0:\"\";s:16:\"inventory_update\";s:0:\"\";s:16:\"inventory_delete\";s:0:\"\";s:15:\"purchase_create\";s:0:\"\";s:15:\"purchase_update\";s:0:\"\";s:15:\"purchase_delete\";s:0:\"\";s:13:\"return_create\";s:0:\"\";s:13:\"return_update\";s:0:\"\";s:13:\"return_delete\";s:0:\"\";s:15:\"supplier_create\";s:0:\"\";s:15:\"supplier_update\";s:0:\"\";s:15:\"supplier_delete\";s:0:\"\";s:17:\"production_create\";s:0:\"\";s:17:\"production_update\";s:0:\"\";s:17:\"production_delete\";s:0:\"\";s:21:\"billofmaterial_create\";s:0:\"\";s:21:\"billofmaterial_update\";s:0:\"\";s:21:\"billofmaterial_delete\";s:0:\"\";s:11:\"unit_create\";s:0:\"\";s:11:\"unit_update\";s:0:\"\";s:11:\"unit_delete\";s:0:\"\";s:15:\"delivery_create\";s:0:\"\";s:15:\"delivery_update\";s:0:\"\";s:15:\"delivery_delete\";s:0:\"\";s:20:\"item_transfer_create\";s:0:\"\";s:20:\"item_transfer_update\";s:0:\"\";s:20:\"item_transfer_delete\";s:0:\"\";s:14:\"vehicle_create\";s:0:\"\";s:14:\"vehicle_update\";s:0:\"\";s:14:\"vehicle_delete\";s:0:\"\";s:13:\"driver_create\";s:0:\"\";s:13:\"driver_update\";s:0:\"\";s:13:\"driver_delete\";s:0:\"\";s:14:\"account_create\";s:0:\"\";s:14:\"account_update\";s:0:\"\";s:14:\"account_delete\";s:0:\"\";s:15:\"transfer_create\";s:0:\"\";s:15:\"transfer_update\";s:0:\"\";s:15:\"transfer_delete\";s:0:\"\";s:14:\"payment_create\";s:0:\"\";s:14:\"payment_update\";s:0:\"\";s:14:\"payment_delete\";s:0:\"\";s:14:\"expense_create\";s:0:\"\";s:14:\"expense_update\";s:0:\"\";s:14:\"expense_delete\";s:0:\"\";s:11:\"loan_create\";s:1:\"1\";s:11:\"loan_update\";s:1:\"1\";s:11:\"loan_delete\";s:1:\"1\";s:10:\"tax_create\";s:1:\"1\";s:10:\"tax_update\";s:1:\"1\";s:10:\"tax_delete\";s:1:\"1\";s:14:\"payroll_create\";s:1:\"1\";s:14:\"payroll_update\";s:1:\"1\";s:14:\"payroll_delete\";s:1:\"1\";s:14:\"invoice_create\";s:0:\"\";s:14:\"invoice_update\";s:0:\"\";s:14:\"invoice_delete\";s:0:\"\";s:14:\"service_create\";s:0:\"\";s:14:\"service_update\";s:0:\"\";s:14:\"service_delete\";s:0:\"\";s:14:\"product_create\";s:0:\"\";s:14:\"product_update\";s:0:\"\";s:14:\"product_delete\";s:0:\"\";s:13:\"client_create\";s:0:\"\";s:13:\"client_update\";s:0:\"\";s:13:\"client_delete\";s:0:\"\";s:12:\"store_create\";s:0:\"\";s:12:\"store_update\";s:0:\"\";s:12:\"store_delete\";s:0:\"\";s:11:\"lead_create\";s:0:\"\";s:11:\"lead_update\";s:0:\"\";s:11:\"lead_delete\";s:0:\"\";s:15:\"estimate_create\";s:0:\"\";s:15:\"estimate_update\";s:0:\"\";s:15:\"estimate_delete\";s:0:\"\";s:23:\"estimate_request_create\";s:0:\"\";s:23:\"estimate_request_update\";s:0:\"\";s:23:\"estimate_request_delete\";s:0:\"\";s:18:\"event_epass_create\";s:0:\"\";s:18:\"event_epass_update\";s:0:\"\";s:18:\"event_epass_delete\";s:0:\"\";s:18:\"raffle_draw_create\";s:0:\"\";s:18:\"raffle_draw_update\";s:0:\"\";s:18:\"raffle_draw_delete\";s:0:\"\";s:12:\"asset_create\";s:0:\"\";s:12:\"asset_update\";s:0:\"\";s:12:\"asset_delete\";s:0:\"\";s:21:\"asset_category_create\";s:0:\"\";s:21:\"asset_category_update\";s:0:\"\";s:21:\"asset_category_delete\";s:0:\"\";s:15:\"location_create\";s:0:\"\";s:15:\"location_update\";s:0:\"\";s:15:\"location_delete\";s:0:\"\";s:13:\"vendor_create\";s:0:\"\";s:13:\"vendor_update\";s:0:\"\";s:13:\"vendor_delete\";s:0:\"\";s:12:\"brand_create\";s:0:\"\";s:12:\"brand_update\";s:0:\"\";s:12:\"brand_delete\";s:0:\"\";s:11:\"page_create\";s:1:\"1\";s:11:\"page_update\";s:1:\"1\";s:11:\"page_delete\";s:1:\"1\";s:11:\"help_create\";s:1:\"1\";s:11:\"help_update\";s:1:\"1\";s:11:\"help_delete\";s:1:\"1\";s:20:\"help_category_create\";s:1:\"1\";s:20:\"help_category_update\";s:1:\"1\";s:20:\"help_category_delete\";s:1:\"1\";s:21:\"knowledge_base_create\";s:1:\"1\";s:21:\"knowledge_base_update\";s:1:\"1\";s:21:\"knowledge_base_delete\";s:1:\"1\";s:30:\"knowledge_base_category_create\";s:1:\"1\";s:30:\"knowledge_base_category_update\";s:1:\"1\";s:30:\"knowledge_base_category_delete\";s:1:\"1\";}', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -2196,6 +2349,36 @@ CREATE TABLE `schedule` (
   `deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `schedule`
+--
+
+INSERT INTO `schedule` (`id`, `title`, `desc`, `mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun`, `created_by`, `date_created`, `deleted`) VALUES
+(170, '5AM - 2PM 60 mins lunch', '<p>60 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"9:00 AM\";s:9:\"out_lunch\";s:8:\"10:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"9:00 AM\";s:9:\"out_lunch\";s:8:\"10:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"9:00 AM\";s:9:\"out_lunch\";s:8:\"10:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"9:00 AM\";s:9:\"out_lunch\";s:8:\"10:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"9:00 AM\";s:9:\"out_lunch\";s:8:\"10:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 17:27:54', 0),
+(173, '7:30 AM - 4:00 PM 30 mins lunch', '<p>30 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:7:\"7:30 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:30 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:30 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:30 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:30 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:30 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:30 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:30 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:30 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:30 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 17:49:58', 0),
+(175, '8PM - 5AM 60 mins lunch', '<p>60 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:7:\"8:00 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 17:55:19', 0),
+(192, '6AM-2:30PM 30 mins lunch', '<p>30 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:7:\"6:00 AM\";s:3:\"out\";s:7:\"2:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"10:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"6:00 AM\";s:3:\"out\";s:7:\"2:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"10:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"6:00 AM\";s:3:\"out\";s:7:\"2:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"10:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"6:00 AM\";s:3:\"out\";s:7:\"2:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"10:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"6:00 AM\";s:3:\"out\";s:7:\"2:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"10:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 18:28:02', 0),
+(193, '9:30PM - 6AM 30 mins lunch', '<p>30 mins lunch</p>', 'a:11:{s:2:\"in\";s:7:\"9:30 PM\";s:3:\"out\";s:7:\"6:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:30 AM\";s:9:\"out_lunch\";s:7:\"2:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"9:30 PM\";s:3:\"out\";s:7:\"6:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:30 AM\";s:9:\"out_lunch\";s:7:\"2:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"9:30 PM\";s:3:\"out\";s:7:\"6:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:30 AM\";s:9:\"out_lunch\";s:7:\"2:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"9:30 PM\";s:3:\"out\";s:7:\"6:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:30 AM\";s:9:\"out_lunch\";s:7:\"2:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"9:30 PM\";s:3:\"out\";s:7:\"6:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:30 AM\";s:9:\"out_lunch\";s:7:\"2:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 18:28:39', 0),
+(194, '9PM - 5:30AM 30 mins lunch', '<p>30m lunch</p>', 'a:11:{s:2:\"in\";s:7:\"9:00 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:00 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"9:00 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:00 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"9:00 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:00 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"9:00 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:00 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"9:00 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"1:00 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 18:29:22', 0),
+(195, '8AM - 5PM 60 mins lunch', '<p>60 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 19:28:06', 0),
+(196, '10:30PM - 7AM 30 mins lunch', '<p>30mins lunch</p>', 'a:11:{s:2:\"in\";s:8:\"10:30 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:30 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:30 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:30 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:30 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:30 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:30 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:30 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:30 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:30 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 19:30:34', 0),
+(197, '10PM - 6:30AM 30 mins lunch', '<p>30 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"6:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"2:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"6:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"2:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"6:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"2:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"6:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"2:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"6:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"2:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 19:31:31', 0),
+(198, '10PM - 7AM 60 mins lunch', '<p>60 mins lunch</p>', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"10:00 PM\";s:3:\"out\";s:7:\"7:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"2:00 AM\";s:9:\"out_lunch\";s:7:\"3:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 19:32:32', 0),
+(199, '11:30PM - 8AM 30 mins lunch', '<p>30 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:8:\"11:30 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:30 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:30 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:30 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:30 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:30 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:30 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:30 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:30 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:30 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 19:34:17', 0),
+(202, '11PM - 8AM 60 mins lunch', '<p>60 mins lunch</p>', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"4:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 19:38:45', 0),
+(204, '4PM - 12:30AM 30 mins lunch', '<p>30m Lunch Break</p>', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:8:\"12:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"8:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:8:\"12:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"8:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:8:\"12:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"8:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:8:\"12:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"8:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:8:\"12:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"8:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 19:41:11', 0),
+(205, '4PM - 1AM 60 mins lunch', '<p>60 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:7:\"1:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"9:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:7:\"1:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"9:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:7:\"1:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"9:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:7:\"1:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"9:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"4:00 PM\";s:3:\"out\";s:7:\"1:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"8:00 PM\";s:9:\"out_lunch\";s:7:\"9:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 19:42:13', 0),
+(207, '8:30PM - 5:30AM 60 mins lunch', '<p>60 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-06-28 19:51:36', 0),
+(211, '7AM - 4PM 60 mins lunch T - S', '<p>60 mins lunch<br></p>', NULL, 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:00 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:00 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:00 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:00 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"11:00 AM\";s:9:\"out_lunch\";s:8:\"12:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, 1, '2023-06-30 20:41:58', 0),
+(216, '11PM - 7:30AM 30 mins lunch', '<p>30 mins lunch</p>', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"7:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"3:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"7:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"3:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"7:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"3:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"7:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"3:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"11:00 PM\";s:3:\"out\";s:7:\"7:30 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"3:00 AM\";s:9:\"out_lunch\";s:7:\"3:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-07-03 19:57:43', 0),
+(218, '12AM - 8AM - 60 mins lunch', '<p>60 mins lunch</p>', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"5:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"5:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"5:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"5:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"5:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', '', NULL, 1, '2023-07-03 20:32:43', 0),
+(220, '12AM - 8AM 30 mins lunch', '<p>30 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"4:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"4:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"4:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"4:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:8:\"12:00 AM\";s:3:\"out\";s:7:\"8:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:7:\"4:00 AM\";s:9:\"out_lunch\";s:7:\"4:30 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', '', NULL, 1, '2023-07-03 21:00:48', 0),
+(225, '8:30PM - 5:00AM 30 mins lunch', '<p>30 mins lunch<br></p>', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:30 PM\";s:3:\"out\";s:7:\"5:00 AM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:30 AM\";s:9:\"out_lunch\";s:7:\"1:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-07-06 15:05:28', 0),
+(228, '5AM - 2PM 60m T - S', '', NULL, 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"11:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"11:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"11:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"11:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"5:00 AM\";s:3:\"out\";s:7:\"2:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"10:00 AM\";s:9:\"out_lunch\";s:8:\"11:00 AM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, 1, '2023-07-08 07:09:23', 0),
+(229, '7AM - 3:30PM 30m lunch', '', 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"3:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:8:\"12:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"3:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:8:\"12:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"3:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:8:\"12:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"3:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:8:\"12:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"3:30 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:8:\"12:30 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, NULL, 1, '2023-07-08 07:09:59', 0),
+(230, '8AM - 5PM 60m T - S', '', NULL, 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, 1, '2023-07-08 07:13:33', 0),
+(231, '7A-4P T 8A-5P WS', '', NULL, 'a:11:{s:2:\"in\";s:7:\"7:00 AM\";s:3:\"out\";s:7:\"4:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', 'a:11:{s:2:\"in\";s:7:\"8:00 AM\";s:3:\"out\";s:7:\"5:00 PM\";s:13:\"enabled_first\";N;s:8:\"in_first\";s:0:\"\";s:9:\"out_first\";s:0:\"\";s:13:\"enabled_lunch\";s:1:\"1\";s:8:\"in_lunch\";s:8:\"12:00 PM\";s:9:\"out_lunch\";s:7:\"1:00 PM\";s:14:\"enabled_second\";N;s:9:\"in_second\";s:0:\"\";s:10:\"out_second\";s:0:\"\";}', NULL, 1, '2023-07-08 07:27:53', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -2203,18 +2386,16 @@ CREATE TABLE `schedule` (
 --
 
 CREATE TABLE `services` (
-  `id` bigint(20) NOT NULL,
-  `uuid` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
-  `category_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `id` int(11) NOT NULL,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `unit_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `rate` decimal(20,2) NOT NULL DEFAULT 0.00,
+  `rate` double NOT NULL,
+  `unofficial` tinyint(1) DEFAULT NULL,
   `labels` text COLLATE utf8_unicode_ci NOT NULL,
-  `created_by` bigint(20) NOT NULL DEFAULT 0,
-  `created_at` datetime NOT NULL,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `active` int(4) NOT NULL DEFAULT 1,
+  `active` tinyint(4) NOT NULL DEFAULT 1,
+  `category` int(11) NOT NULL DEFAULT 0,
+  `created_by` int(11) NOT NULL DEFAULT 0,
   `deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -2226,14 +2407,12 @@ CREATE TABLE `services` (
 
 CREATE TABLE `services_categories` (
   `id` bigint(10) NOT NULL,
-  `uuid` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `category` int(11) NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `created_by` bigint(20) NOT NULL DEFAULT 0,
-  `created_at` datetime NOT NULL,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `active` int(4) NOT NULL DEFAULT 1,
-  `deleted` tinyint(1) NOT NULL DEFAULT 0
+  `created_on` datetime NOT NULL,
+  `created_by` bigint(10) NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -2254,7 +2433,8 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALUES
-('accepted_file_formats', 'txt,jpg,jpeg,png,doc,docx,xls,xlsx,ppt,pptx,pdf', 'display', 0),
+('30min_break_employee', '', 'calendar', 0),
+('accepted_file_formats', 'jpg,jpeg,png,bmp,doc,docx,xls,xlsx,pdf', 'display', 0),
 ('allow_partial_invoice_payment_from_clients', '1', 'app', 0),
 ('allowed_ip_addresses', '', 'app', 0),
 ('apis_galyon_app', '1', 'modules', 0),
@@ -2262,11 +2442,15 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALU
 ('apis_makeid', '1', 'modules', 0),
 ('apis_payhp', '1', 'modules', 0),
 ('apis_syntry', '1', 'modules', 0),
-('app_title', 'Brilliant Skin Essentials Inc.', 'app', 0),
+('app_title', 'ERPat System', 'app', 0),
 ('attendance_calc_mode', 'simple', 'finance', 0),
+('auto_clockin_employee', '', 'calendar', 0),
 ('auto_clockout', '1', 'calendar', 0),
-('biweekly_tax_table', 'a:6:{i:0;a:5:{i:0;i:1;i:1;s:1:\"0\";i:2;s:5:\"10416\";i:3;s:1:\"0\";i:4;s:1:\"0\";}i:1;a:5:{i:0;i:2;i:1;s:5:\"10417\";i:2;s:5:\"16666\";i:3;s:1:\"0\";i:4;s:3:\"0.2\";}i:2;a:5:{i:0;i:3;i:1;s:5:\"16667\";i:2;s:5:\"33332\";i:3;s:4:\"1250\";i:4;s:4:\"0.25\";}i:3;a:5:{i:0;i:4;i:1;s:5:\"33333\";i:2;s:5:\"83332\";i:3;s:7:\"5416.67\";i:4;s:3:\"0.3\";}i:4;a:5:{i:0;i:5;i:1;s:5:\"83333\";i:2;s:6:\"333332\";i:3;s:8:\"20416.67\";i:4;s:4:\"0.32\";}i:5;a:5:{i:0;i:6;i:1;s:6:\"333333\";i:2;s:9:\"999999999\";i:3;s:9:\"100416.67\";i:4;s:4:\"0.35\";}}', 'payroll', 0),
-('breaktime_tracking', '1', 'calendar', 0),
+('auto_close_ticket_after', '15', 'app', 0),
+('autoclockout_trigger_hour', '12.00', 'calendar', 0),
+('basic_pay_calculation', 'scheduled_based', 'finance', 0),
+('bonuspay_trigger', '0.00', 'calendar', 0),
+('breaktime_tracking', '0', 'calendar', 0),
 ('client_can_add_files', '', 'app', 0),
 ('client_can_add_project_files', '', 'app', 0),
 ('client_can_comment_on_files', '', 'app', 0),
@@ -2284,90 +2468,117 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALU
 ('client_can_view_overview', '', 'app', 0),
 ('client_can_view_project_files', '', 'app', 0),
 ('client_can_view_tasks', '', 'app', 0),
-('client_default_dashboard', 'a:5:{i:0;O:8:\"stdClass\":2:{s:7:\"columns\";a:4:{i:0;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:14:\"total_projects\";s:5:\"title\";s:14:\"Total projects\";}}i:1;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:14:\"total_invoices\";s:5:\"title\";s:14:\"Total invoices\";}}i:2;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:14:\"total_payments\";s:5:\"title\";s:14:\"Total payments\";}}i:3;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:9:\"total_due\";s:5:\"title\";s:9:\"Total due\";}}}s:5:\"ratio\";s:7:\"3-3-3-3\";}i:1;O:8:\"stdClass\":2:{s:7:\"columns\";a:4:{i:0;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:12:\"events_today\";s:5:\"title\";s:12:\"Events today\";}}i:1;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:12:\"open_tickets\";s:5:\"title\";s:12:\"Open tickets\";}}i:2;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:11:\"new_tickets\";s:5:\"title\";s:11:\"New Tickets\";}}i:3;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:14:\"closed_tickets\";s:5:\"title\";s:14:\"Closed Tickets\";}}}s:5:\"ratio\";s:7:\"3-3-3-3\";}i:2;O:8:\"stdClass\":2:{s:7:\"columns\";a:2:{i:0;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:18:\"invoice_statistics\";s:5:\"title\";s:18:\"Invoice Statistics\";}}i:1;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:20:\"draft_invoices_value\";s:5:\"title\";s:20:\"Draft invoices value\";}}}s:5:\"ratio\";s:3:\"9-3\";}i:3;O:8:\"stdClass\":2:{s:7:\"columns\";a:2:{i:0;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:9:\"todo_list\";s:5:\"title\";s:9:\"Todo list\";}}i:1;a:2:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:11:\"sticky_note\";s:5:\"title\";s:21:\"Sticky Note (Private)\";}i:1;O:8:\"stdClass\":2:{s:6:\"widget\";s:6:\"events\";s:5:\"title\";s:6:\"Events\";}}}s:5:\"ratio\";s:3:\"6-6\";}i:4;O:8:\"stdClass\":2:{s:7:\"columns\";a:1:{i:0;a:1:{i:0;O:8:\"stdClass\":2:{s:6:\"widget\";s:18:\"open_projects_list\";s:5:\"title\";s:18:\"Open Projects List\";}}}s:5:\"ratio\";s:2:\"12\";}}', 'app', 0),
 ('client_message_own_contacts', '', 'app', 0),
-('client_message_users', '', 'app', 0),
-('company_address', '35 J. Sta. Catalina St., Sitio Caingin, Morong, 1960 Rizal', 'company', 0),
-('company_email', 'contact@brilliantskinessentials.ph', 'company', 0),
-('company_name', 'Brilliant Skin Essentials Inc.', 'company', 0),
-('company_phone', '022136461', 'company', 0),
-('company_vat_number', '', 'company', 0),
-('company_website', 'https://brilliantskinessentials.ph', 'company', 0),
+('company_address', '12flr Bytes Tower, Bry. San Francisco, Biñan, Laguna Philippines 4024', 'company', 0),
+('company_email', 'info@erpat.app', 'company', 0),
+('company_name', 'ABC Company Inc.', 'company', 0),
+('company_phone', '+63 912 345 6789', 'company', 0),
+('company_vat_number', '012 345 678 9000', 'company', 0),
+('company_website', 'https://erpat.app', 'company', 0),
 ('create_new_projects_automatically_when_estimates_gets_accepted', '', 'app', 0),
+('create_tickets_only_by_registered_emails', '1', 'app', 0),
+('cron_attendances', '1', 'crons', 0),
+('cron_calendars', '1', 'crons', 0),
+('cron_expenses', '1', 'crons', 0),
+('cron_imaps', '1', 'crons', 0),
+('cron_invoices', '1', 'crons', 0),
+('cron_notifications', '1', 'crons', 0),
+('cron_tasks', '1', 'crons', 0),
+('cron_tickets', '1', 'crons', 0),
 ('currency_position', 'left', 'finance', 0),
-('currency_symbol', 'P ', 'finance', 0),
+('currency_symbol', 'P', 'finance', 0),
 ('daily_tax_table', 'a:6:{i:0;a:5:{i:0;i:1;i:1;s:1:\"0\";i:2;s:3:\"684\";i:3;s:1:\"0\";i:4;s:1:\"0\";}i:1;a:5:{i:0;i:2;i:1;s:3:\"685\";i:2;s:4:\"1095\";i:3;s:1:\"0\";i:4;s:3:\"0.2\";}i:2;a:5:{i:0;i:3;i:1;s:4:\"1096\";i:2;s:4:\"2191\";i:3;s:5:\"82.19\";i:4;s:4:\"0.25\";}i:3;a:5:{i:0;i:4;i:1;s:4:\"2192\";i:2;s:4:\"5478\";i:3;s:6:\"356.16\";i:4;s:3:\"0.3\";}i:4;a:5:{i:0;i:5;i:1;s:4:\"5479\";i:2;s:5:\"21917\";i:3;s:7:\"1342.47\";i:4;s:4:\"0.32\";}i:5;a:5:{i:0;i:6;i:1;s:5:\"21918\";i:2;s:9:\"999999999\";i:3;s:7:\"6602.74\";i:4;s:4:\"0.35\";}}', 'payroll', 0),
-('date_format', 'd/m/Y', 'calendar', 0),
+('date_format', 'm-d-Y', 'calendar', 0),
+('days_locked_attendance', '5', 'calendar', 0),
+('days_per_year', '261', 'calendar', 0),
 ('decimal_separator', '.', 'finance', 0),
 ('default_currency', 'PHP', 'finance', 0),
 ('default_due_date_after_billing_date', '', 'app', 0),
-('default_left_menu', 'a:81:{i:0;a:1:{s:4:\"name\";s:9:\"dashboard\";}i:1;a:4:{s:4:\"name\";s:4:\"Home\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:4:\"home\";s:15:\"open_in_new_tab\";s:0:\"\";}i:2;a:2:{s:4:\"name\";s:8:\"timeline\";s:11:\"is_sub_menu\";s:1:\"1\";}i:3;a:2:{s:4:\"name\";s:13:\"announcements\";s:11:\"is_sub_menu\";s:1:\"1\";}i:4;a:2:{s:4:\"name\";s:6:\"events\";s:11:\"is_sub_menu\";s:1:\"1\";}i:5;a:2:{s:4:\"name\";s:4:\"todo\";s:11:\"is_sub_menu\";s:1:\"1\";}i:6;a:2:{s:4:\"name\";s:5:\"notes\";s:11:\"is_sub_menu\";s:1:\"1\";}i:7;a:2:{s:4:\"name\";s:8:\"messages\";s:11:\"is_sub_menu\";s:1:\"1\";}i:8;a:4:{s:4:\"name\";s:14:\"Human Resource\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:8:\"suitcase\";s:15:\"open_in_new_tab\";s:0:\"\";}i:9;a:2:{s:4:\"name\";s:8:\"payrolls\";s:11:\"is_sub_menu\";s:1:\"1\";}i:10;a:2:{s:4:\"name\";s:20:\"submenu_hrm_employee\";s:11:\"is_sub_menu\";s:1:\"1\";}i:11;a:2:{s:4:\"name\";s:22:\"submenu_hrm_department\";s:11:\"is_sub_menu\";s:1:\"1\";}i:12;a:2:{s:4:\"name\";s:20:\"submenu_hrm_schedule\";s:11:\"is_sub_menu\";s:1:\"1\";}i:13;a:2:{s:4:\"name\";s:22:\"submenu_hrm_attendance\";s:11:\"is_sub_menu\";s:1:\"1\";}i:14;a:2:{s:4:\"name\";s:20:\"submenu_hrm_overtime\";s:11:\"is_sub_menu\";s:1:\"1\";}i:15;a:2:{s:4:\"name\";s:24:\"submenu_hrm_disciplinary\";s:11:\"is_sub_menu\";s:1:\"1\";}i:16;a:2:{s:4:\"name\";s:18:\"submenu_hrm_leaves\";s:11:\"is_sub_menu\";s:1:\"1\";}i:17;a:2:{s:4:\"name\";s:20:\"submenu_hrm_holidays\";s:11:\"is_sub_menu\";s:1:\"1\";}i:18;a:4:{s:4:\"name\";s:13:\"Manufacturing\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:4:\"fire\";s:15:\"open_in_new_tab\";s:0:\"\";}i:19;a:2:{s:4:\"name\";s:23:\"manufacturing_order\";s:11:\"is_sub_menu\";s:1:\"1\";}i:20;a:2:{s:4:\"name\";s:27:\"bill_of_materials\";s:11:\"is_sub_menu\";s:1:\"1\";}i:21;a:2:{s:4:\"name\";s:21:\"submenu_pid_materials\";s:11:\"is_sub_menu\";s:1:\"1\";}i:22;a:2:{s:4:\"name\";s:19:\"submenu_pid_process\";s:11:\"is_sub_menu\";s:1:\"1\";}i:23;a:2:{s:4:\"name\";s:17:\"submenu_pid_units\";s:11:\"is_sub_menu\";s:1:\"1\";}i:24;a:4:{s:4:\"name\";s:9:\"Warehouse\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:4:\"bank\";s:15:\"open_in_new_tab\";s:0:\"\";}i:25;a:2:{s:4:\"name\";s:21:\"submenu_lms_warehouse\";s:11:\"is_sub_menu\";s:1:\"1\";}i:26;a:2:{s:4:\"name\";s:19:\"submenu_lms_pallets\";s:11:\"is_sub_menu\";s:1:\"1\";}i:27;a:2:{s:4:\"name\";s:17:\"submenu_lms_zones\";s:11:\"is_sub_menu\";s:1:\"1\";}i:28;a:2:{s:4:\"name\";s:17:\"submenu_lms_racks\";s:11:\"is_sub_menu\";s:1:\"1\";}i:29;a:2:{s:4:\"name\";s:16:\"submenu_lms_bays\";s:11:\"is_sub_menu\";s:1:\"1\";}i:30;a:2:{s:4:\"name\";s:18:\"submenu_lms_levels\";s:11:\"is_sub_menu\";s:1:\"1\";}i:31;a:2:{s:4:\"name\";s:21:\"submenu_lms_transfers\";s:11:\"is_sub_menu\";s:1:\"1\";}i:32;a:2:{s:4:\"name\";s:21:\"submenu_pid_purchases\";s:11:\"is_sub_menu\";s:1:\"1\";}i:33;a:2:{s:4:\"name\";s:19:\"submenu_pid_returns\";s:11:\"is_sub_menu\";s:1:\"1\";}i:34;a:2:{s:4:\"name\";s:20:\"submenu_pid_supplier\";s:11:\"is_sub_menu\";s:1:\"1\";}i:35;a:4:{s:4:\"name\";s:10:\"Accounting\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:13:\"cc-mastercard\";s:15:\"open_in_new_tab\";s:0:\"\";}i:36;a:2:{s:4:\"name\";s:19:\"submenu_fas_summary\";s:11:\"is_sub_menu\";s:1:\"1\";}i:37;a:2:{s:4:\"name\";s:22:\"submenu_fas_incentives\";s:11:\"is_sub_menu\";s:1:\"1\";}i:38;a:2:{s:4:\"name\";s:25:\"submenu_fas_contributions\";s:11:\"is_sub_menu\";s:1:\"1\";}i:39;a:2:{s:4:\"name\";s:20:\"submenu_fas_payments\";s:11:\"is_sub_menu\";s:1:\"1\";}i:40;a:2:{s:4:\"name\";s:20:\"submenu_fas_expenses\";s:11:\"is_sub_menu\";s:1:\"1\";}i:41;a:2:{s:4:\"name\";s:5:\"taxes\";s:11:\"is_sub_menu\";s:1:\"1\";}i:42;a:2:{s:4:\"name\";s:21:\"submenu_fas_transfers\";s:11:\"is_sub_menu\";s:1:\"1\";}i:43;a:2:{s:4:\"name\";s:20:\"submenu_fas_accounts\";s:11:\"is_sub_menu\";s:1:\"1\";}i:44;a:4:{s:4:\"name\";s:9:\"Logistics\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:5:\"truck\";s:15:\"open_in_new_tab\";s:0:\"\";}i:45;a:2:{s:4:\"name\";s:20:\"submenu_lms_delivery\";s:11:\"is_sub_menu\";s:1:\"1\";}i:46;a:2:{s:4:\"name\";s:20:\"submenu_lms_vehicles\";s:11:\"is_sub_menu\";s:1:\"1\";}i:47;a:2:{s:4:\"name\";s:19:\"submenu_lms_drivers\";s:11:\"is_sub_menu\";s:1:\"1\";}i:48;a:4:{s:4:\"name\";s:5:\"Sales\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:9:\"cart-plus\";s:15:\"open_in_new_tab\";s:0:\"\";}i:49;a:2:{s:4:\"name\";s:23:\"submenu_sms_salesmatrix\";s:11:\"is_sub_menu\";s:1:\"1\";}i:50;a:2:{s:4:\"name\";s:20:\"submenu_sms_invoices\";s:11:\"is_sub_menu\";s:1:\"1\";}i:51;a:2:{s:4:\"name\";s:21:\"submenu_sms_estimates\";s:11:\"is_sub_menu\";s:1:\"1\";}i:52;a:2:{s:4:\"name\";s:18:\"stores\";s:11:\"is_sub_menu\";s:1:\"1\";}i:53;a:2:{s:4:\"name\";s:20:\"submenu_pid_products\";s:11:\"is_sub_menu\";s:1:\"1\";}i:54;a:2:{s:4:\"name\";s:20:\"submenu_sms_services\";s:11:\"is_sub_menu\";s:1:\"1\";}i:55;a:2:{s:4:\"name\";s:21:\"submenu_lms_consumers\";s:11:\"is_sub_menu\";s:1:\"1\";}i:56;a:2:{s:4:\"name\";s:21:\"submenu_sms_customers\";s:11:\"is_sub_menu\";s:1:\"1\";}i:57;a:2:{s:4:\"name\";s:19:\"clients\";s:11:\"is_sub_menu\";s:1:\"1\";}i:58;a:4:{s:4:\"name\";s:8:\"Safekeep\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:4:\"lock\";s:15:\"open_in_new_tab\";s:0:\"\";}i:59;a:2:{s:4:\"name\";s:18:\"asset_entries\";s:11:\"is_sub_menu\";s:1:\"1\";}i:60;a:2:{s:4:\"name\";s:20:\"asset_categories\";s:11:\"is_sub_menu\";s:1:\"1\";}i:61;a:2:{s:4:\"name\";s:20:\"asset_location\";s:11:\"is_sub_menu\";s:1:\"1\";}i:62;a:2:{s:4:\"name\";s:19:\"asset_vendor\";s:11:\"is_sub_menu\";s:1:\"1\";}i:63;a:2:{s:4:\"name\";s:17:\"asset_brand\";s:11:\"is_sub_menu\";s:1:\"1\";}i:64;a:4:{s:4:\"name\";s:9:\"Marketing\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:10:\"line-chart\";s:15:\"open_in_new_tab\";s:0:\"\";}i:65;a:2:{s:4:\"name\";s:5:\"epass\";s:11:\"is_sub_menu\";s:1:\"1\";}i:66;a:2:{s:4:\"name\";s:11:\"raffle_draw\";s:11:\"is_sub_menu\";s:1:\"1\";}i:67;a:2:{s:4:\"name\";s:17:\"submenu_mcs_leads\";s:11:\"is_sub_menu\";s:1:\"1\";}i:68;a:2:{s:4:\"name\";s:18:\"submenu_mcs_status\";s:11:\"is_sub_menu\";s:1:\"1\";}i:69;a:2:{s:4:\"name\";s:18:\"submenu_mcs_source\";s:11:\"is_sub_menu\";s:1:\"1\";}i:70;a:4:{s:4:\"name\";s:11:\"Help Center\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:9:\"life-ring\";s:15:\"open_in_new_tab\";s:0:\"\";}i:71;a:2:{s:4:\"name\";s:7:\"tickets\";s:11:\"is_sub_menu\";s:1:\"1\";}i:72;a:2:{s:4:\"name\";s:15:\"help_page_title\";s:11:\"is_sub_menu\";s:1:\"1\";}i:73;a:2:{s:4:\"name\";s:14:\"knowledge_base\";s:11:\"is_sub_menu\";s:1:\"1\";}i:74;a:2:{s:4:\"name\";s:5:\"pages\";s:11:\"is_sub_menu\";s:1:\"1\";}i:75;a:4:{s:4:\"name\";s:8:\"Planning\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:11:\"paper-plane\";s:15:\"open_in_new_tab\";s:0:\"\";}i:76;a:2:{s:4:\"name\";s:24:\"submenu_pms_all_projects\";s:11:\"is_sub_menu\";s:1:\"1\";}i:77;a:2:{s:4:\"name\";s:23:\"submenu_pms_view_gantts\";s:11:\"is_sub_menu\";s:1:\"1\";}i:78;a:2:{s:4:\"name\";s:20:\"submenu_pms_my_tasks\";s:11:\"is_sub_menu\";s:1:\"1\";}i:79;a:2:{s:4:\"name\";s:22:\"submenu_pms_timesheets\";s:11:\"is_sub_menu\";s:1:\"1\";}i:80;a:1:{s:4:\"name\";s:8:\"settings\";}}', 'app', 0),
-('default_theme_color', 'DE78B3', 'display', 0),
+('default_left_menu', 'a:75:{i:0;a:1:{s:4:\"name\";s:9:\"dashboard\";}i:1;a:4:{s:4:\"name\";s:4:\"Home\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:4:\"home\";s:15:\"open_in_new_tab\";s:0:\"\";}i:2;a:2:{s:4:\"name\";s:8:\"timeline\";s:11:\"is_sub_menu\";s:1:\"1\";}i:3;a:2:{s:4:\"name\";s:13:\"announcements\";s:11:\"is_sub_menu\";s:1:\"1\";}i:4;a:2:{s:4:\"name\";s:6:\"events\";s:11:\"is_sub_menu\";s:1:\"1\";}i:5;a:2:{s:4:\"name\";s:4:\"todo\";s:11:\"is_sub_menu\";s:1:\"1\";}i:6;a:2:{s:4:\"name\";s:5:\"notes\";s:11:\"is_sub_menu\";s:1:\"1\";}i:7;a:2:{s:4:\"name\";s:8:\"messages\";s:11:\"is_sub_menu\";s:1:\"1\";}i:8;a:4:{s:4:\"name\";s:14:\"Human Resource\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:8:\"suitcase\";s:15:\"open_in_new_tab\";s:0:\"\";}i:9;a:2:{s:4:\"name\";s:8:\"employee\";s:11:\"is_sub_menu\";s:1:\"1\";}i:10;a:2:{s:4:\"name\";s:22:\"submenu_hrm_department\";s:11:\"is_sub_menu\";s:1:\"1\";}i:11;a:2:{s:4:\"name\";s:20:\"submenu_hrm_schedule\";s:11:\"is_sub_menu\";s:1:\"1\";}i:12;a:2:{s:4:\"name\";s:22:\"submenu_hrm_attendance\";s:11:\"is_sub_menu\";s:1:\"1\";}i:13;a:2:{s:4:\"name\";s:24:\"submenu_hrm_disciplinary\";s:11:\"is_sub_menu\";s:1:\"1\";}i:14;a:2:{s:4:\"name\";s:18:\"submenu_hrm_leaves\";s:11:\"is_sub_menu\";s:1:\"1\";}i:15;a:2:{s:4:\"name\";s:20:\"submenu_hrm_holidays\";s:11:\"is_sub_menu\";s:1:\"1\";}i:16;a:4:{s:4:\"name\";s:10:\"Production\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:4:\"fire\";s:15:\"open_in_new_tab\";s:0:\"\";}i:17;a:2:{s:4:\"name\";s:19:\"manufacturing_order\";s:11:\"is_sub_menu\";s:1:\"1\";}i:18;a:2:{s:4:\"name\";s:17:\"bill_of_materials\";s:11:\"is_sub_menu\";s:1:\"1\";}i:19;a:2:{s:4:\"name\";s:17:\"submenu_pid_units\";s:11:\"is_sub_menu\";s:1:\"1\";}i:20;a:4:{s:4:\"name\";s:12:\"Distribution\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:4:\"bank\";s:15:\"open_in_new_tab\";s:0:\"\";}i:21;a:2:{s:4:\"name\";s:10:\"warehouses\";s:11:\"is_sub_menu\";s:1:\"1\";}i:22;a:2:{s:4:\"name\";s:19:\"submenu_lms_pallets\";s:11:\"is_sub_menu\";s:1:\"1\";}i:23;a:4:{s:4:\"name\";s:7:\"Finance\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:13:\"cc-mastercard\";s:15:\"open_in_new_tab\";s:0:\"\";}i:24;a:2:{s:4:\"name\";s:8:\"payrolls\";s:11:\"is_sub_menu\";s:1:\"1\";}i:25;a:2:{s:4:\"name\";s:19:\"submenu_fas_summary\";s:11:\"is_sub_menu\";s:1:\"1\";}i:26;a:2:{s:4:\"name\";s:19:\"submenu_fas_payroll\";s:11:\"is_sub_menu\";s:1:\"1\";}i:27;a:2:{s:4:\"name\";s:20:\"submenu_fas_payments\";s:11:\"is_sub_menu\";s:1:\"1\";}i:28;a:2:{s:4:\"name\";s:20:\"submenu_fas_expenses\";s:11:\"is_sub_menu\";s:1:\"1\";}i:29;a:2:{s:4:\"name\";s:5:\"loans\";s:11:\"is_sub_menu\";s:1:\"1\";}i:30;a:2:{s:4:\"name\";s:5:\"taxes\";s:11:\"is_sub_menu\";s:1:\"1\";}i:31;a:2:{s:4:\"name\";s:20:\"submenu_fas_accounts\";s:11:\"is_sub_menu\";s:1:\"1\";}i:32;a:4:{s:4:\"name\";s:9:\"Logistics\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:5:\"truck\";s:15:\"open_in_new_tab\";s:0:\"\";}i:33;a:2:{s:4:\"name\";s:20:\"submenu_lms_delivery\";s:11:\"is_sub_menu\";s:1:\"1\";}i:34;a:2:{s:4:\"name\";s:21:\"submenu_lms_transfers\";s:11:\"is_sub_menu\";s:1:\"1\";}i:35;a:2:{s:4:\"name\";s:20:\"submenu_lms_vehicles\";s:11:\"is_sub_menu\";s:1:\"1\";}i:36;a:2:{s:4:\"name\";s:19:\"submenu_lms_drivers\";s:11:\"is_sub_menu\";s:1:\"1\";}i:37;a:4:{s:4:\"name\";s:5:\"Sales\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:9:\"cart-plus\";s:15:\"open_in_new_tab\";s:0:\"\";}i:38;a:2:{s:4:\"name\";s:12:\"sales_matrix\";s:11:\"is_sub_menu\";s:1:\"1\";}i:39;a:2:{s:4:\"name\";s:20:\"submenu_sms_invoices\";s:11:\"is_sub_menu\";s:1:\"1\";}i:40;a:2:{s:4:\"name\";s:20:\"submenu_sms_services\";s:11:\"is_sub_menu\";s:1:\"1\";}i:41;a:2:{s:4:\"name\";s:20:\"submenu_pid_products\";s:11:\"is_sub_menu\";s:1:\"1\";}i:42;a:2:{s:4:\"name\";s:7:\"clients\";s:11:\"is_sub_menu\";s:1:\"1\";}i:43;a:2:{s:4:\"name\";s:21:\"submenu_sms_customers\";s:11:\"is_sub_menu\";s:1:\"1\";}i:44;a:2:{s:4:\"name\";s:6:\"stores\";s:11:\"is_sub_menu\";s:1:\"1\";}i:45;a:4:{s:4:\"name\";s:11:\"Procurement\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:3:\"fax\";s:15:\"open_in_new_tab\";s:0:\"\";}i:46;a:2:{s:4:\"name\";s:21:\"submenu_pid_purchases\";s:11:\"is_sub_menu\";s:1:\"1\";}i:47;a:2:{s:4:\"name\";s:19:\"submenu_pid_returns\";s:11:\"is_sub_menu\";s:1:\"1\";}i:48;a:2:{s:4:\"name\";s:20:\"submenu_pid_supplier\";s:11:\"is_sub_menu\";s:1:\"1\";}i:49;a:4:{s:4:\"name\";s:8:\"Safekeep\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:4:\"lock\";s:15:\"open_in_new_tab\";s:0:\"\";}i:50;a:2:{s:4:\"name\";s:13:\"asset_entries\";s:11:\"is_sub_menu\";s:1:\"1\";}i:51;a:2:{s:4:\"name\";s:16:\"asset_categories\";s:11:\"is_sub_menu\";s:1:\"1\";}i:52;a:2:{s:4:\"name\";s:14:\"asset_location\";s:11:\"is_sub_menu\";s:1:\"1\";}i:53;a:2:{s:4:\"name\";s:12:\"asset_vendor\";s:11:\"is_sub_menu\";s:1:\"1\";}i:54;a:2:{s:4:\"name\";s:11:\"asset_brand\";s:11:\"is_sub_menu\";s:1:\"1\";}i:55;a:4:{s:4:\"name\";s:9:\"Marketing\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:10:\"line-chart\";s:15:\"open_in_new_tab\";s:0:\"\";}i:56;a:2:{s:4:\"name\";s:17:\"submenu_mcs_leads\";s:11:\"is_sub_menu\";s:1:\"1\";}i:57;a:2:{s:4:\"name\";s:18:\"submenu_mcs_status\";s:11:\"is_sub_menu\";s:1:\"1\";}i:58;a:2:{s:4:\"name\";s:18:\"submenu_mcs_source\";s:11:\"is_sub_menu\";s:1:\"1\";}i:59;a:2:{s:4:\"name\";s:9:\"estimates\";s:11:\"is_sub_menu\";s:1:\"1\";}i:60;a:2:{s:4:\"name\";s:11:\"raffle_draw\";s:11:\"is_sub_menu\";s:1:\"1\";}i:61;a:2:{s:4:\"name\";s:5:\"epass\";s:11:\"is_sub_menu\";s:1:\"1\";}i:62;a:4:{s:4:\"name\";s:11:\"Help Center\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:9:\"life-ring\";s:15:\"open_in_new_tab\";s:0:\"\";}i:63;a:2:{s:4:\"name\";s:7:\"tickets\";s:11:\"is_sub_menu\";s:1:\"1\";}i:64;a:2:{s:4:\"name\";s:15:\"help_page_title\";s:11:\"is_sub_menu\";s:1:\"1\";}i:65;a:2:{s:4:\"name\";s:14:\"knowledge_base\";s:11:\"is_sub_menu\";s:1:\"1\";}i:66;a:2:{s:4:\"name\";s:5:\"pages\";s:11:\"is_sub_menu\";s:1:\"1\";}i:67;a:4:{s:4:\"name\";s:8:\"Planning\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:11:\"paper-plane\";s:15:\"open_in_new_tab\";s:0:\"\";}i:68;a:2:{s:4:\"name\";s:24:\"submenu_pms_all_projects\";s:11:\"is_sub_menu\";s:1:\"1\";}i:69;a:2:{s:4:\"name\";s:23:\"submenu_pms_view_gantts\";s:11:\"is_sub_menu\";s:1:\"1\";}i:70;a:2:{s:4:\"name\";s:20:\"submenu_pms_my_tasks\";s:11:\"is_sub_menu\";s:1:\"1\";}i:71;a:2:{s:4:\"name\";s:22:\"submenu_pms_timesheets\";s:11:\"is_sub_menu\";s:1:\"1\";}i:72;a:4:{s:4:\"name\";s:8:\"Security\";s:3:\"url\";s:1:\"#\";s:4:\"icon\";s:11:\"user-secret\";s:15:\"open_in_new_tab\";s:0:\"\";}i:73;a:2:{s:4:\"name\";s:11:\"access_logs\";s:11:\"is_sub_menu\";s:1:\"1\";}i:74;a:1:{s:4:\"name\";s:8:\"settings\";}}', 'app', 0),
+('default_theme_color', '1d2632', 'display', 0),
 ('disable_access_favorite_project_option_for_clients', '', 'app', 0),
-('disable_client_login', '', 'app', 0),
+('disable_client_login', '1', 'app', 0),
 ('disable_client_signup', '1', 'app', 0),
 ('disable_dashboard_customization_by_clients', '', 'app', 0),
 ('disable_editing_left_menu_by_clients', '', 'app', 0),
+('disable_hourly_leave', 'disabled', 'calendar', 0),
 ('disable_topbar_menu_customization', '', 'app', 0),
-('disable_user_invitation_option_by_clients', '', 'app', 0),
 ('email_protocol', 'smtp', 'app', 0),
-('email_sent_from_address', 'system@brilliantskinessentialsinc.com', 'app', 0),
-('email_sent_from_name', 'Brilliant Skin Essentials Inc.', 'app', 0),
+('email_sent_from_address', 'noreply@erpat.app', 'app', 0),
+('email_sent_from_name', 'ABC Company Inc.', 'app', 0),
 ('email_smtp_host', 'smtp.mailgun.org', 'app', 0),
-('email_smtp_pass', 'c3b8c2fad78548dd555ae351bcb15a3424092b518ed0f1f7ff163df0ac626b9bf25095bdd2a6c215d95a0e5c301fc3fd461f56474d35aafc0d3b84595529a3621NoJ9chX5I6Z0Mp_bVUSYymYruMCxFUFiNNOlYN2qZv5Tg9Crzech8DqghUuBk7UiliYJfBkiFP205TcIbYq3zTJ_UPRH3QEvj51-MG_WtSRoxy27Z7O8r-PmjZZsKEI', 'app', 0),
+('email_smtp_pass', '', 'app', 0),
 ('email_smtp_port', '587', 'app', 0),
 ('email_smtp_security_type', 'tls', 'app', 0),
-('email_smtp_user', 'system@brilliantskinessentialsinc.com', 'app', 0),
+('email_smtp_user', 'noreply@erpat.app', 'app', 0),
 ('enable_chat_via_pusher', '1', 'app', 0),
-('enable_footer', '', 'app', 0),
+('enable_email_piping', '1', 'app', 0),
 ('enable_google_calendar_api', '1', 'app', 0),
 ('enable_google_drive_api_to_upload_file', '', 'app', 0),
 ('enable_push_notification', '1', 'app', 0),
-('enable_recurring_option_for_tasks', '1', 'app', 0),
 ('enable_rich_text_editor', '1', 'display', 0),
+('enable_training', 'yes', 'general', 0),
 ('estimate_color', '', 'app', 0),
 ('estimate_footer', '<p><br></p>', 'app', 0),
-('estimate_logo', 'a:1:{s:9:\"file_name\";s:36:\"_file63e7eb72e930e-estimate-logo.png\";}', 'app', 0),
-('estimate_prefix', '', 'app', 0),
-('favicon', 'a:1:{s:9:\"file_name\";s:30:\"_file63e7eb55d7f1b-favicon.png\";}', 'general', 0),
+('estimate_prefix', 'PURCHASE ORDER #', 'app', 0),
+('favicon', 'a:1:{s:9:\"file_name\";s:30:\"_file64e3376a0fdc8-favicon.png\";}', 'general', 0),
 ('first_day_of_week', '1', 'calendar', 0),
-('footer_copyright_text', 'Copyright © 2020 - Bytes Crafter', 'app', 0),
-('footer_menus', 'a:1:{i:0;O:8:\"stdClass\":2:{s:9:\"menu_name\";s:5:\"asdas\";s:3:\"url\";s:34:\"https://brilliantskinessentials.ph\";}}', 'app', 0),
-('google_drive_authorized', '1', 'app', 0),
-('google_drive_client_id', '101960398024-b84q52m7mdv3rnli6m7ajt3b85bk1l5r.apps.googleusercontent.com', 'app', 0),
-('google_drive_client_secret', 'RBMS9m-NKv5p9Qr_atjGtf7_', 'app', 0),
-('google_drive_oauth_access_token', '{\"access_token\":\"ya29.a0AfH6SMBcZUrd4b2-uXMK6A0Qi2UFrxkaCJ2rAlvHdHXn5WV1BWPox1vWiL7QymBmuknCw56U5l5jrngMmXq-RjqoHEFOx_X1pOkk8Xg90AhqoIFvYtum1iJJ_FfDgga0zDv2fKuhsOxx99iBOku4NJWmigi6\",\"expires_in\":3599,\"refresh_token\":\"1\\/\\/0g87QeRAKQAtcCgYIARAAGBASNwF-L9IrPZt2KJ3qKCBhSqSkmN6-1mk2cWwZWMIyQQ-sU-zWfIaeuPYuULzbrpkBrmdTDW7tKwU\",\"scope\":\"https:\\/\\/www.googleapis.com\\/auth\\/drive\",\"token_type\":\"Bearer\",\"created\":1617646205}', 'app', 0),
+('google_drive_authorized', '', 'app', 0),
+('google_drive_client_id', '', 'app', 0),
+('google_drive_client_secret', '', 'app', 0),
+('google_drive_folder_ids', '', 'app', 0),
+('google_drive_oauth_access_token', '', 'app', 0),
+('google_drive_parent_folder_id', '', 'app', 0),
+('google_drive_temp_file_ids', '', 'app', 0),
 ('hidden_client_menus', '', 'app', 0),
-('inactive_ticket_closing_date', '2023-02-06', 'app', 0),
-('initial_number_of_the_estimate', '2', 'app', 0),
-('initial_number_of_the_invoice', '4', 'app', 0),
+('imap_authorized', '', 'app', 0),
+('imap_email', 'imap@erpat.app', 'app', 0),
+('imap_host', 'imap.gmail.com', 'app', 0),
+('imap_password', '', 'app', 0),
+('imap_port', '993', 'app', 0),
+('imap_ssl_enabled', '1', 'app', 0),
+('inactive_ticket_closing_date', '2023-08-11', 'app', 0),
+('initial_number_of_the_estimate', '1', 'app', 0),
+('initial_number_of_the_invoice', '1', 'app', 0),
 ('invoice_color', '', 'app', 0),
 ('invoice_footer', '<p><br></p>', 'app', 0),
-('invoice_logo', 'a:1:{s:9:\"file_name\";s:35:\"_file63e7eb7db718c-invoice-logo.png\";}', 'app', 0),
-('invoice_prefix', '', 'app', 0),
+('invoice_logo', 'a:1:{s:9:\"file_name\";s:35:\"_file64e337aa07313-invoice-logo.png\";}', 'app', 0),
+('invoice_prefix', 'BILLING STATEMENT #', 'app', 0),
 ('invoice_style', 'style_1', 'app', 0),
 ('invoice_terms', '', 'app', 0),
 ('invoice_warranty', '', 'app', 0),
 ('language', 'english', 'general', 0),
-('last_check_fix', '2023-01-30 17:16:10', 'app', 0),
-('last_cron_job_time', '1675698602', 'app', 0),
-('last_hourly_job_time', '1675697401', 'app', 0),
-('last_minutely_job_time', '1675698602', 'app', 0),
+('last_check_fix', '2023-08-21 10:09:24', 'app', 0),
+('last_cron_job_time', '1691765521', 'app', 0),
+('last_daily_job_time', '20230811', 'app', 0),
+('last_hourly_job_time', '1691761981', 'app', 0),
+('last_minutely_job_time', '1691765521', 'app', 0),
+('last_monthly_first_day_job_time', '202306', 'app', 0),
+('last_monthly_job_time', '202308', 'app', 0),
+('last_quarterly_job_time', '202306', 'app', 0),
+('last_weekly_job_time', '20230808', 'app', 0),
+('last_yearly_job_time', '2023', 'app', 0),
+('module_access', '1', 'modules', 0),
+('module_account', '1', 'modules', 0),
+('module_accounting_summary', '1', 'modules', 0),
 ('module_accounts', '1', 'modules', 0),
 ('module_allprojects', '1', 'app', 0),
+('module_ams', '1', 'app', 0),
 ('module_ams_category', '1', 'app', 0),
 ('module_ams_location', '1', 'app', 0),
 ('module_announcement', '1', 'app', 0),
 ('module_asset_category', '1', 'modules', 0),
 ('module_assets', '1', 'app', 0),
-('module_ats', '1', 'app', 0),
 ('module_attendance', '1', 'app', 0),
 ('module_balancesheet', '1', 'modules', 0),
 ('module_billofmaterials', '1', 'modules', 0),
 ('module_brands', '1', 'app', 0),
 ('module_chat', '1', 'app', 0),
 ('module_clients', '1', 'app', 0),
-('module_css', '1', 'app', 0),
+('module_consumer', '1', 'modules', 0),
+('module_contributions', '1', 'modules', 0),
+('module_css', '', 'app', 0),
+('module_customers', '1', 'modules', 0),
 ('module_delivery', '1', 'modules', 0),
 ('module_department', '1', 'modules', 0),
 ('module_disciplinary', '1', 'modules', 0),
@@ -2378,9 +2589,11 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALU
 ('module_estimate_request', '1', 'app', 0),
 ('module_event', '1', 'app', 0),
 ('module_expense', '1', 'app', 0),
+('module_fas', '1', 'app', 0),
 ('module_fas_accounts', '1', 'app', 0),
 ('module_fas_balancesheet', '1', 'app', 0),
 ('module_fas_contributions', '1', 'app', 0),
+('module_fas_incentives', '1', 'app', 0),
 ('module_fas_payments', '1', 'app', 0),
 ('module_fas_payroll', '1', 'app', 0),
 ('module_fas_summary', '1', 'app', 0),
@@ -2388,72 +2601,96 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALU
 ('module_gantt', '1', 'app', 0),
 ('module_help', '1', 'modules', 0),
 ('module_holidays', '1', 'modules', 0),
+('module_hrm', '1', 'app', 0),
 ('module_hrm_department', '1', 'app', 0),
 ('module_hrm_disciplinary', '1', 'app', 0),
 ('module_hrm_employee', '1', 'app', 0),
 ('module_hrm_holidays', '1', 'app', 0),
+('module_hrs', '1', 'app', 0),
+('module_hts', '1', 'app', 0),
+('module_incentives', '1', 'modules', 0),
 ('module_inventory', '1', 'modules', 0),
 ('module_invoice', '1', 'app', 0),
 ('module_item_transfer', '1', 'modules', 0),
-('module_knowledge_base', '1', 'app', 0),
+('module_knowledge_base', '1', 'modules', 0),
+('module_lds', '1', 'app', 0),
 ('module_lead', '1', 'app', 0),
 ('module_leave', '1', 'app', 0),
-('module_lms_consumer', '1', 'app', 0),
-('module_lms_delivery', '1', 'app', 0),
-('module_lms_driver', '1', 'app', 0),
-('module_lms_transfer', '1', 'app', 0),
-('module_lms_vehicles', '1', 'app', 0),
-('module_lms_warehouse', '1', 'app', 0),
+('module_lms', '', 'app', 0),
+('module_lms_consumer', '', 'app', 0),
+('module_lms_delivery', '', 'app', 0),
+('module_lms_driver', '', 'app', 0),
+('module_lms_transfer', '', 'app', 0),
+('module_lms_vehicles', '', 'app', 0),
+('module_lms_warehouse', '', 'app', 0),
+('module_loan', '1', 'modules', 0),
 ('module_location', '1', 'modules', 0),
+('module_mcm', '', 'app', 0),
+('module_mcs', '1', 'app', 0),
+('module_mes', '1', 'app', 0),
 ('module_message', '1', 'app', 0),
 ('module_mytask', '1', 'app', 0),
 ('module_note', '1', 'app', 0),
 ('module_overtime', '1', 'app', 0),
 ('module_page', '1', 'modules', 0),
+('module_pages', '1', 'modules', 0),
+('module_payment', '1', 'modules', 0),
 ('module_payments', '1', 'modules', 0),
 ('module_payroll', '1', 'modules', 0),
-('module_pid_billofmaterials', '1', 'app', 0),
-('module_pid_inventory', '1', 'app', 0),
-('module_pid_productions', '1', 'app', 0),
-('module_pid_products', '1', 'app', 0),
+('module_pid', '', 'app', 0),
+('module_pid_billofmaterials', '', 'app', 0),
+('module_pid_inventory', '', 'app', 0),
+('module_pid_productions', '', 'app', 0),
+('module_pid_products', '', 'app', 0),
 ('module_pid_purchases', '1', 'app', 0),
-('module_pid_rawmaterials', '1', 'app', 0),
-('module_pid_returns', '1', 'app', 0),
-('module_pid_supplier', '1', 'app', 0),
+('module_pid_rawmaterials', '', 'app', 0),
+('module_pid_returns', '', 'app', 0),
+('module_pid_supplier', '', 'app', 0),
+('module_pms', '1', 'app', 0),
+('module_product', '1', 'modules', 0),
 ('module_productions', '1', 'modules', 0),
 ('module_products', '1', 'modules', 0),
 ('module_project_timesheet', '1', 'app', 0),
+('module_purchase', '1', 'modules', 0),
 ('module_purchases', '1', 'modules', 0),
 ('module_raffle', '1', 'modules', 0),
 ('module_rawmaterials', '1', 'modules', 0),
+('module_return', '1', 'modules', 0),
 ('module_returns', '1', 'modules', 0),
+('module_sales_matrix', '1', 'modules', 0),
 ('module_sales_summary', '1', 'modules', 0),
 ('module_schedule', '1', 'modules', 0),
+('module_service', '1', 'modules', 0),
 ('module_services', '1', 'app', 0),
+('module_sms', '1', 'app', 0),
 ('module_sms_coupons', '', 'app', 0),
 ('module_sms_customers', '1', 'app', 0),
 ('module_sms_giftcard', '', 'app', 0),
 ('module_sms_pos', '', 'app', 0),
-('module_sms_sales_matrix', '1', 'app', 0),
-('module_accounting_summary', '1', 'modules', 0),
+('module_sms_sales_matrix', '', 'app', 0),
+('module_stores', '1', 'modules', 0),
+('module_summary', '1', 'modules', 0),
 ('module_supplier', '1', 'modules', 0),
-('module_ticket', '1', 'app', 0),
+('module_ticket', '1', 'modules', 0),
 ('module_timeline', '1', 'app', 0),
 ('module_todo', '1', 'app', 0),
 ('module_transfer', '1', 'modules', 0),
+('module_unit', '1', 'modules', 0),
+('module_vehicle', '1', 'modules', 0),
 ('module_vehicles', '1', 'modules', 0),
 ('module_vendors', '1', 'app', 0),
 ('module_warehouse', '1', 'modules', 0),
-('monthly_tax_table', 'a:6:{i:0;a:5:{i:0;i:1;i:1;s:1:\"0\";i:2;s:5:\"20832\";i:3;s:1:\"0\";i:4;s:1:\"0\";}i:1;a:5:{i:0;i:2;i:1;s:5:\"20833\";i:2;s:5:\"33332\";i:3;s:1:\"0\";i:4;s:3:\"0.2\";}i:2;a:5:{i:0;i:3;i:1;s:5:\"33333\";i:2;s:5:\"66666\";i:3;s:4:\"2500\";i:4;s:4:\"0.25\";}i:3;a:5:{i:0;i:4;i:1;s:5:\"66667\";i:2;s:6:\"166666\";i:3;s:8:\"10833.33\";i:4;s:3:\"0.3\";}i:4;a:5:{i:0;i:5;i:1;s:6:\"166667\";i:2;s:6:\"666666\";i:3;s:8:\"40833.33\";i:4;s:4:\"0.32\";}i:5;a:5:{i:0;i:6;i:1;s:6:\"666667\";i:2;s:9:\"999999999\";i:3;s:9:\"200833.33\";i:4;s:4:\"0.35\";}}', 'payroll', 0),
-('name_format', 'lastfirst', 'display', 0),
+('name_format', 'firstlast', 'display', 0),
+('nightpay_end_trigger', '6:00 AM', 'calendar', 0),
+('nightpay_start_trigger', '10:00 PM', 'calendar', 0),
 ('no_of_decimals', '2', 'finance', 0),
-('project_task_deadline_overdue_reminder', '1', 'app', 0),
-('project_task_deadline_pre_reminder', '', 'app', 0),
-('project_task_reminder_on_the_day_of_deadline', '1', 'app', 0),
-('pusher_app_id', '1177201', 'app', 0),
-('pusher_cluster', 'ap1', 'app', 0),
-('pusher_key', 'bc1296ac6df7f2795491', 'app', 0),
-('pusher_secret', '6383618ccc84e6a9bf0c', 'app', 0),
+('overtime_trigger', '0.49', 'calendar', 0),
+('payroll_reply_to', 'payroll@erpat.app', 'finance', 0),
+('project_reference_in_tickets', '1', 'app', 0),
+('pusher_app_id', '', 'app', 0),
+('pusher_cluster', '', 'app', 0),
+('pusher_key', '', 'app', 0),
+('pusher_secret', '', 'app', 0),
 ('re_captcha_secret_key', '', 'app', 0),
 ('re_captcha_site_key', '', 'app', 0),
 ('rows_per_page', '25', 'display', 0),
@@ -2464,420 +2701,27 @@ INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALU
 ('send_invoice_due_after_reminder', '', 'app', 0),
 ('send_invoice_due_pre_reminder', '', 'app', 0),
 ('send_recurring_invoice_reminder_before_creation', '', 'app', 0),
-('show_background_image_in_signin_page', 'no', 'general', 0),
+('show_background_image_in_signin_page', 'yes', 'general', 0),
 ('show_logo_in_signin_page', 'yes', 'general', 0),
+('show_recent_ticket_comments_at_the_top', '1', 'app', 0),
 ('show_theme_color_changer', 'no', 'display', 0),
-('signin_page_background', 'sigin-background-image.jpg', 'app', 0),
-('site_logo', 'a:1:{s:9:\"file_name\";s:32:\"_file63e7eb55d6caf-site-logo.png\";}', 'general', 0),
-('site_title', 'Brilliant Skin Essentials Inc.', 'general', 0),
+('signin_page_background', 'a:4:{s:9:\"file_name\";s:51:\"system_file64e336f935936-sigin-background-image.jpg\";s:9:\"file_size\";s:5:\"32064\";s:7:\"file_id\";N;s:12:\"service_type\";N;}', 'general', 0),
+('since_last_break', '30', 'app', 0),
+('since_last_clock_out', '300', 'app', 0),
+('site_admin_email', 'system@erpat.app', 'general', 0),
+('site_logo', 'a:1:{s:9:\"file_name\";s:32:\"_file64e3376a0e8d2-site-logo.png\";}', 'general', 0),
+('site_title', 'ERPat System', 'general', 0),
+('syntry_site_link', 'https://syntry-demo.erpat.app', 'general', 0),
 ('task_point_range', '5', 'app', 0),
+('ticket_prefix', '', 'app', 0),
 ('time_format', 'capital', 'calendar', 0),
 ('timezone', 'Asia/Manila', 'calendar', 0),
 ('user_1_dashboard', '', 'user', 0),
-('user_1_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_100_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_101_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_102_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_103_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_104_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_105_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_106_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_107_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_108_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_109_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_110_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_111_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_112_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_113_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_114_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_115_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_116_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_117_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"96.5083\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_118_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_119_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_12_dashboard', '', 'user', 0),
-('user_120_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_121_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_122_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_123_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_124_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_125_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_126_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_127_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_128_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_129_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_13_dashboard', '', 'user', 0),
-('user_130_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_131_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_132_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_133_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_134_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_135_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_136_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_137_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_138_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_139_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_14_dashboard', '', 'user', 0),
-('user_140_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_141_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_142_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_143_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_144_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_145_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_146_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_147_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_148_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_149_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_150_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0);
-INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALUES
-('user_151_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_152_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_153_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_154_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_155_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_156_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_157_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_158_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_159_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_160_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_161_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_162_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_163_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_164_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_165_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_166_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_167_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_168_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_169_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_170_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_171_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_172_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"96.1953\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_173_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_174_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_175_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_177_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_178_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_179_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_180_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_181_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_182_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_183_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_184_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_185_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_186_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_187_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_188_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_189_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_190_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_191_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_192_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_193_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_194_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"98.6993\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_196_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_197_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_198_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_199_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_2_dashboard', '', 'user', 0),
-('user_2_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_200_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_201_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_202_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_203_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_204_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"107.4633\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_205_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_206_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_207_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_208_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_209_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_21_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;s:5:\"78.75\";i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;s:1:\"0\";i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_210_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_211_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_212_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_213_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_214_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_215_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_216_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"107.4633\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_217_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_218_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_219_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_220_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"108.5067\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_221_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.3333\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_222_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_223_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_224_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_225_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"107.4633\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_226_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:281.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"311.5393\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_227_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:241.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"213.0904\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_228_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:275.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"245.3920\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_229_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:281.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"250.0035\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_230_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:281.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"260.0404\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_231_dashboard', '', 'user', 0),
-('user_231_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:213.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"191.5143\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_232_dashboard', '', 'user', 0),
-('user_232_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:180;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"155.9783\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_233_dashboard', '', 'user', 0),
-('user_233_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:157.5;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"136.1550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_234_dashboard', '', 'user', 0),
-('user_234_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_235_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:163.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"141.3717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_236_dashboard', '', 'user', 0),
-('user_236_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:157.5;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"136.1550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_237_dashboard', '', 'user', 0),
-('user_237_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:163.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"138.7633\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_238_dashboard', '', 'user', 0),
-('user_238_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:157.5;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"136.1550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_239_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"115.2883\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_240_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:157.5;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"133.5467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_241_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"128.3300\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0);
-INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALUES
-('user_242_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:140.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"117.8967\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_243_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"125.7217\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_244_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_245_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_246_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_247_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_248_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_249_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:140.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"121.2771\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_250_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"127.0154\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_251_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_252_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_253_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:281.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"311.6854\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_254_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:281.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"325.7287\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_255_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:225;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"199.9861\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_256_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:208.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"185.9429\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_257_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:213.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"190.7213\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_258_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:213.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"190.7213\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_259_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:196.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"174.9879\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_26_dashboard', '', 'user', 0),
-('user_260_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:191.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"170.7311\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_261_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:174.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"150.7199\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_262_dashboard', '', 'user', 0),
-('user_262_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:208.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"186.2976\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_263_dashboard', '', 'user', 0),
-('user_263_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:191.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"169.5417\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_264_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"128.3300\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_265_dashboard', '', 'user', 0),
-('user_265_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"128.3300\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_266_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:163.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"138.7633\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_267_dashboard', '', 'user', 0),
-('user_267_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"117.3750\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_268_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_269_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"115.2883\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_27_dashboard', '', 'user', 0),
-('user_270_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"115.2883\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_271_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"115.2883\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_272_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"115.2883\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_273_dashboard', '', 'user', 0),
-('user_273_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_274_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:196.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"175.2800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_275_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"128.3300\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_276_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:140.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"120.5050\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_277_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:140.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"120.5050\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_278_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:281.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"258.3293\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_279_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:140.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"117.8967\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_280_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_281_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"115.2883\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_282_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:230.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"206.3087\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_283_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:281.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"488.0296\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_284_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:219.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"193.0167\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_285_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:157.5;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"136.1550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_286_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"130.9383\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_287_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"130.9383\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_288_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"130.9383\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_289_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:168.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"145.5450\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_290_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:163.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"141.8099\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_291_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:140.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"117.8967\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_292_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:140.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"117.8967\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_293_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:140.625;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"117.8967\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_295_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:196.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"172.6717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_296_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"128.3300\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_297_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_298_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_299_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_3_dashboard', '', 'user', 0),
-('user_300_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_301_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_302_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:258.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"228.3439\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_303_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"117.3750\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_304_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_306_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"128.3300\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_307_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_308_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_309_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"128.3300\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_31_dashboard', '', 'user', 0),
-('user_310_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"125.7217\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_311_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_312_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_313_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"125.7217\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_314_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_315_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_316_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_317_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_318_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_319_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_320_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_322_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_323_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_324_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_325_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_326_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_327_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_329_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_330_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_331_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_333_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_334_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_335_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_338_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:196.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"175.2800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_339_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"130.9383\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_3393_dashboard', '', 'user', 0),
-('user_3394_dashboard', '', 'user', 0),
-('user_34_dashboard', '', 'user', 0);
-INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALUES
-('user_340_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:151.875;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"130.9383\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_3400_dashboard', '', 'user', 0),
-('user_3401_dashboard', '', 'user', 0),
-('user_341_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_342_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_343_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"112.6800\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_344_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"115.2883\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_345_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:135;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"115.2883\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_346_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_347_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_348_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_349_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_350_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_351_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_352_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_353_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_354_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_355_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_356_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_357_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_358_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:174.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"151.8050\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_359_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:174.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"151.8050\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_360_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:174.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"151.8050\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_361_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:174.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"151.8050\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_362_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:180;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"162.2383\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_363_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:180;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"162.2383\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_364_dashboard', '', 'user', 0),
-('user_364_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:146.25;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"123.1133\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_365_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_366_dashboard', '', 'user', 0),
-('user_367_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_368_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_369_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_37_dashboard', '', 'user', 0),
-('user_370_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_371_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_372_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_373_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_374_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_375_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_376_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_377_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_378_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_379_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_381_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_382_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_383_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_384_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_385_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_386_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_387_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_388_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_389_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_390_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_391_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_392_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_393_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_394_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_395_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_396_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_397_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_398_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_399_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_4_dashboard', '', 'user', 0),
-('user_400_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_401_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_402_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_403_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_404_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_405_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_406_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_408_dashboard', '', 'user', 0),
-('user_41_dashboard', '', 'user', 0),
-('user_437_dashboard', '', 'user', 0),
-('user_438_dashboard', '', 'user', 0),
-('user_439_dashboard', '', 'user', 0),
-('user_440_dashboard', '', 'user', 0),
-('user_441_dashboard', '', 'user', 0),
-('user_47_dashboard', '', 'user', 0),
-('user_49_dashboard', '', 'user', 0),
-('user_49_disable_keyboard_shortcuts', '0', 'user', 0),
-('user_49_disable_push_notification', '1', 'user', 0),
-('user_49_hidden_topbar_menus', 'to_do,favorite_projects', 'user', 0),
-('user_49_notification_sound_volume', '0', 'user', 0),
-('user_49_personal_language', 'english', 'user', 0),
-('user_5_dashboard', '', 'user', 0),
-('user_50_dashboard', '', 'user', 0),
-('user_51_dashboard', '', 'user', 0),
-('user_52_dashboard', '', 'user', 0),
-('user_54_dashboard', '', 'user', 0),
-('user_56_dashboard', '', 'user', 0),
-('user_57_dashboard', '', 'user', 0),
-('user_6_dashboard', '', 'user', 0),
-('user_60_dashboard', '', 'user', 0),
-('user_60_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_61_dashboard', '', 'user', 0),
-('user_61_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_61_left_menu', '', 'app', 0),
-('user_62_dashboard', '', 'user', 0),
-('user_62_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_63_dashboard', '', 'user', 0),
-('user_64_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_65_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_66_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_67_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_68_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_69_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_7_dashboard', '', 'user', 0),
-('user_70_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_71_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_72_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.8550\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_73_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_74_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_75_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_76_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_77_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_78_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_79_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_80_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_81_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_82_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:123.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"104.3333\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_83_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:7:\"96.5083\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_84_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0);
-INSERT INTO `settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALUES
-('user_85_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:129.375;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"110.0717\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_86_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:78.75;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:6:\"0.0000\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_87_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_88_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_89_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_9_dashboard', '', 'user', 0),
-('user_90_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_91_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_92_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_93_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_94_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_95_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_96_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_97_dashboard', '', 'user', 0),
-('user_97_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_98_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
-('user_99_deductions', 'a:7:{i:0;a:5:{i:0;s:10:\"sss_contri\";i:1;d:0;i:2;d:118.125;i:3;d:0;i:4;d:0;}i:1;a:5:{i:0;s:14:\"pagibig_contri\";i:1;d:0;i:2;s:5:\"50.00\";i:3;d:0;i:4;d:0;}i:2;a:5:{i:0;s:17:\"philhealth_contri\";i:1;d:0;i:2;s:8:\"102.2467\";i:3;d:0;i:4;d:0;}i:3;a:5:{i:0;s:10:\"hmo_contri\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:4;a:5:{i:0;s:12:\"company_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:5;a:5:{i:0;s:8:\"sss_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}i:6;a:5:{i:0;s:9:\"hdmf_loan\";i:1;d:0;i:2;d:0;i:3;d:0;i:4;d:0;}}', 'user', 0),
 ('verify_email_before_client_signup', '', 'app', 0),
 ('weekends', '6,0', 'calendar', 0),
-('weekly_tax_table', 'a:6:{i:0;a:5:{i:0;i:1;i:1;s:1:\"0\";i:2;s:4:\"4808\";i:3;s:1:\"0\";i:4;s:1:\"0\";}i:1;a:5:{i:0;i:2;i:1;s:4:\"4808\";i:2;s:4:\"7691\";i:3;s:1:\"0\";i:4;s:3:\"0.2\";}i:2;a:5:{i:0;i:3;i:1;s:4:\"7692\";i:2;s:5:\"15384\";i:3;s:6:\"576.92\";i:4;s:4:\"0.25\";}i:3;a:5:{i:0;i:4;i:1;s:5:\"15385\";i:2;s:5:\"38461\";i:3;s:4:\"2500\";i:4;s:3:\"0.3\";}i:4;a:5:{i:0;i:5;i:1;s:5:\"38462\";i:2;s:6:\"153845\";i:3;s:7:\"9423.08\";i:4;s:4:\"0.32\";}i:5;a:5:{i:0;i:6;i:1;s:6:\"153846\";i:2;s:9:\"999999999\";i:3;s:8:\"46346.15\";i:4;s:4:\"0.35\";}}', 'payroll', 0);
+('whitelisted_autoclockout', '', 'app', 0),
+('whitelisted_breaktime_tracking', '', 'app', 0),
+('yearly_paid_time_off', '0', 'calendar', 0);
 
 -- --------------------------------------------------------
 
@@ -3040,8 +2884,7 @@ INSERT INTO `task_status` (`id`, `title`, `key_name`, `color`, `sort`, `deleted`
 (1, 'To Do', 'to_do', '#F9A52D', 0, 0),
 (2, 'In progress', 'in_progress', '#1672B9', 1, 0),
 (3, 'Done', 'done', '#00B393', 3, 0),
-(4, 'Cancelled', '', '#e74c3c', 4, 0),
-(5, 'Planning', '', '#ad159e', 2, 0);
+(4, 'In Review', '', '#e74c3c', 2, 0);
 
 -- --------------------------------------------------------
 
@@ -3061,7 +2904,7 @@ CREATE TABLE `taxes` (
 --
 
 INSERT INTO `taxes` (`id`, `title`, `percentage`, `deleted`) VALUES
-(1, 'Tax (10%)', 10, 0);
+(1, 'Tax (12%)', 10, 0);
 
 -- --------------------------------------------------------
 
@@ -3073,12 +2916,25 @@ CREATE TABLE `team` (
   `id` int(11) NOT NULL,
   `title` text COLLATE utf8_unicode_ci NOT NULL,
   `description` mediumtext COLLATE utf8_unicode_ci NOT NULL,
-  `heads` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `members` mediumtext COLLATE utf8_unicode_ci NOT NULL,
-  `date_created` datetime NOT NULL,
+  `heads` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `date_created` int(11) NOT NULL DEFAULT 0,
   `created_by` int(11) NOT NULL DEFAULT 0,
   `deleted` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `team`
+--
+
+INSERT INTO `team` (`id`, `title`, `description`, `members`, `heads`, `date_created`, `created_by`, `deleted`) VALUES
+(1, 'IT Department', '', '', '', 2023, 1, 0),
+(2, 'HR Department', '', '', '', 2023, 1, 0),
+(3, 'Finance Department', '', '', '', 2023, 1, 0),
+(4, 'Sales Department', '', '', '', 2023, 1, 0),
+(5, 'Production Department', '', '', '', 2023, 1, 0),
+(6, 'Procurement Department', '', '', '', 2023, 1, 0),
+(7, 'Research Department', '', '', '', 2023, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -3094,7 +2950,7 @@ CREATE TABLE `team_member_job_info` (
   `sched_id` int(11) DEFAULT 0,
   `salary` double NOT NULL,
   `salary_term` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `rate_per_hour` double NOT NULL,
+  `rate_per_hour` decimal(10,2) NOT NULL,
   `hours_per_day` float NOT NULL,
   `date_of_hire` date DEFAULT NULL,
   `contact_name` varchar(200) COLLATE utf8_unicode_ci DEFAULT '',
@@ -3110,22 +2966,6 @@ CREATE TABLE `team_member_job_info` (
   `bank_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT '',
   `deleted` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `team_member_job_info`
---
-
-INSERT INTO `team_member_job_info` (`id`, `user_id`, `job_idnum`, `rfid_num`, `sched_id`, `salary`, `salary_term`, `rate_per_hour`, `hours_per_day`, `date_of_hire`, `contact_name`, `contact_address`, `contact_phone`, `signiture_url`, `sss`, `tin`, `pag_ibig`, `phil_health`, `bank_name`, `bank_account`, `bank_number`, `deleted`) VALUES
-(1, 10, '', NULL, 25, 15600, 'Monthly', 0, 8, '2018-09-11', '', '', '', NULL, '34-6106349-2', '414-641-769-000', '1212-0245-1328', '03-250682869-3', '', '', '', 0),
-(2, 3, '', NULL, 25, 0, '', 0, 0, '2018-12-14', '', '', '', NULL, '34-8192321-1', '752-994-685-000', '1212-4368-2323', '03-026391384-8', '', '', '', 0),
-(3, 11, '', NULL, 25, 15600, 'Monthly', 0, 0, '2018-09-11', '', '', '', NULL, '34-6106349-2', '414-641-769-000', '1212-0245-1328', '03-250682869-3', '', '', '', 0),
-(4, 12, '', NULL, 25, 21060, 'Monthly', 0, 0, '2017-11-27', '', '', '', NULL, '34-4375495-0', '335-327-472-000', '1211-2660-5087', '09-025655513-8', '', '', '', 0),
-(5, 13, '', NULL, 25, 15600, 'Monthly', 0, 8, '2020-05-17', '', '', '', NULL, '34-8613527-9', '743-536-341-000', '1212-7290-7028', '03-026490984-4', '', '', '', 0),
-(6, 14, '', NULL, 25, 16510, 'Monthly', 0, 0, '0000-00-00', '', '', '', NULL, '34-8162564-5', '752-042-366-000', '1212-4463-0168', '03-252869103-9', '', '', '', 0),
-(7, 15, '', NULL, 25, 600, 'Daily', 0, 8, '2018-01-09', '', '', '', NULL, '34-8257013-9', '277-030-930-000', '', '03-000240034-7', '', '', '', 0),
-(8, 16, '', NULL, 25, 400, 'Daily', 0, 8, '2020-05-25', '', '', '', NULL, '34-3305905-2', '423-801-654-000', '1210-8078-9395', '2200-0098-3683', '', '', '', 0),
-(9, 17, '', NULL, 25, 470, 'Daily', 0, 8, '2017-02-11', '', '', '', NULL, '34-7100085-6', '728-830-484-000', '1212-3402-9171', '03-051383395-0', '', '', '', 0),
-(10, 6, '', NULL, 25, 0, '', 0, 0, '0000-00-00', '', '', '', NULL, '', '', '', '', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -3198,6 +3038,18 @@ CREATE TABLE `ticket_types` (
   `deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `ticket_types`
+--
+
+INSERT INTO `ticket_types` (`id`, `title`, `deleted`) VALUES
+(1, 'General Support', 0),
+(2, 'Payroll Dispute', 0),
+(3, 'IT Issues', 0),
+(4, 'HR Concern', 0),
+(5, 'Maintainance', 0),
+(6, 'Security Reports', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -3212,6 +3064,7 @@ CREATE TABLE `to_do` (
   `description` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
   `labels` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `status` enum('to_do','done') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'to_do',
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `start_date` date DEFAULT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3226,13 +3079,21 @@ CREATE TABLE `units` (
   `id` bigint(10) NOT NULL,
   `base_unit` int(11) NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `abbreviation` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `operator` char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
   `value` decimal(10,2) NOT NULL,
-  `abbreviation` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `created_on` datetime NOT NULL,
   `created_by` int(11) NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `units`
+--
+
+INSERT INTO `units` (`id`, `base_unit`, `title`, `abbreviation`, `operator`, `value`, `created_on`, `created_by`, `deleted`) VALUES
+(1, 0, 'Piece(s)', 'pcs', NULL, '1.00', '2022-12-07 06:16:35', 1, 0),
+(2, 0, 'Fee', 'fee', NULL, '1.00', '2022-12-09 12:20:55', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -3245,7 +3106,7 @@ CREATE TABLE `users` (
   `uuid` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
   `first_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `last_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `user_type` enum('staff','client','lead','customer','driver','supplier','vendor') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client',
+  `user_type` enum('staff','client','lead','customer','driver','supplier','vendor','system') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'client',
   `is_admin` tinyint(1) NOT NULL DEFAULT 0,
   `role_id` int(11) NOT NULL DEFAULT 0,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -3264,12 +3125,12 @@ CREATE TABLE `users` (
   `access_madage` int(1) DEFAULT 0,
   `access_galyon` int(1) DEFAULT 1,
   `note` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
-  `address` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `street` text COLLATE utf8_unicode_ci NOT NULL,
   `city` text COLLATE utf8_unicode_ci NOT NULL,
   `state` text COLLATE utf8_unicode_ci NOT NULL,
   `zip` text COLLATE utf8_unicode_ci NOT NULL,
   `country` text COLLATE utf8_unicode_ci NOT NULL,
+  `address` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `alternative_address` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `phone` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `alternative_phone` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3282,7 +3143,7 @@ CREATE TABLE `users` (
   `enable_web_notification` tinyint(1) NOT NULL DEFAULT 1,
   `enable_email_notification` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` datetime DEFAULT NULL,
-  `created_by` int(11) NOT NULL DEFAULT 0,
+  `created_by` int(11) DEFAULT 0,
   `last_online` datetime DEFAULT NULL,
   `labels` text COLLATE utf8_unicode_ci NOT NULL,
   `requested_account_removal` tinyint(1) NOT NULL DEFAULT 0,
@@ -3290,7 +3151,6 @@ CREATE TABLE `users` (
   `license_image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `resigned` int(1) DEFAULT 0,
   `terminated` int(1) DEFAULT 0,
-  `company` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `deleted` int(1) NOT NULL DEFAULT 0,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3299,8 +3159,21 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `uuid`, `first_name`, `last_name`, `user_type`, `is_admin`, `role_id`, `email`, `password`, `image`, `status`, `message_checked_at`, `client_id`, `vendor_id`, `notification_checked_at`, `is_primary_contact`, `job_title`, `disable_login`, `access_erpat`, `access_syntry`, `access_madage`, `access_galyon`, `note`, `address`, `street`, `city`, `state`, `zip`, `country`, `alternative_address`, `phone`, `alternative_phone`, `dob`, `ssn`, `gender`, `sticky_note`, `skype`, `asset_vendor_id`, `enable_web_notification`, `enable_email_notification`, `created_at`, `created_by`, `last_online`, `labels`, `requested_account_removal`, `license_number`, `license_image`, `resigned`, `terminated`, `company`, `deleted`, `updated_at`) VALUES
-(1, '1ff765fb-04e0-4ed9-acd9-23f5406908a5', 'System', 'Admin', 'staff', 1, 0, 'admin@bytescrafter.net', '$2y$10$0IZl5/gilURaPwQxSsJU4eiM6tUiGo9IMiQX3euxryswMkA9YxKbS', 'a:1:{s:9:\"file_name\";s:29:\"_file605c17ad6fd52-avatar.png\";}', 'active', '2022-07-20 16:49:39', 0, 0, '2023-02-05 02:29:16', 0, 'Software Engineer', 0, 0, 0, 0, 1, NULL, '', 'B1O L18 Narra St., Silcas Village, San Francisco', 'Binan City', 'Laguna', '4024', 'Philippines', 'B1O L18 Narra St., Silcas Village, San Francisco', '', '', '0000-00-00', '', 'male', NULL, '', 0, 1, 1, '2021-03-24 21:23:38', 0, '2023-02-12 06:36:42', '', 0, '', '', 0, 0, '', 0, '2022-09-17 02:30:46');
+INSERT INTO `users` (`id`, `uuid`, `first_name`, `last_name`, `user_type`, `is_admin`, `role_id`, `email`, `password`, `image`, `status`, `message_checked_at`, `client_id`, `vendor_id`, `notification_checked_at`, `is_primary_contact`, `job_title`, `disable_login`, `access_erpat`, `access_syntry`, `access_madage`, `access_galyon`, `note`, `street`, `city`, `state`, `zip`, `country`, `address`, `alternative_address`, `phone`, `alternative_phone`, `dob`, `ssn`, `gender`, `sticky_note`, `skype`, `asset_vendor_id`, `enable_web_notification`, `enable_email_notification`, `created_at`, `created_by`, `last_online`, `labels`, `requested_account_removal`, `license_number`, `license_image`, `resigned`, `terminated`, `deleted`, `updated_at`) VALUES
+(1, '50773d1b-47cd-40ae-a749-900e6fa450df', 'System', 'Admin', 'staff', 1, 0, 'admin@erpat.app', '$2y$10$Ukzg5GrTJsBDe7SP1cJj9emtwveKdiHkfeoQQMydb6ciVokioMNSm', NULL, 'active', '2023-07-08 07:58:23', 0, 0, '2023-08-10 09:39:46', 0, 'Admin', 0, NULL, NULL, NULL, NULL, NULL, '', '', '', '', '', '', '', '', '', '1991-10-12', '', 'male', NULL, '', 0, 1, 1, '2020-11-01 07:33:41', 0, '2023-08-21 10:10:53', '', 0, '', '', 0, 0, 0, '2022-08-03 09:16:25'),
+(2, '77576be8-e364-4800-8b5d-3fc3b1dcccf6', 'Juan', 'Dela Cruz', 'staff', 0, 39, 'juandelacruz@erpat.app', '$2y$10$sNW8P/KVIDBJxHlH/8t.U.YUwQtU44wPlWkyDrELgAeFpmBq6Dedu', NULL, 'active', NULL, 0, 0, NULL, 0, 'IT Manager', 0, 0, 0, 0, 1, NULL, '', '', '', '', '', NULL, NULL, '', NULL, '0001-01-01', NULL, 'male', NULL, NULL, 0, 1, 1, '2023-08-21 08:55:43', 0, NULL, '', 0, '', '', 0, 0, 0, '2023-08-21 08:55:43');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users_meta`
+--
+
+CREATE TABLE `users_meta` (
+  `user_id` int(11) NOT NULL,
+  `meta_key` varchar(180) NOT NULL,
+  `meta_val` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3310,7 +3183,6 @@ INSERT INTO `users` (`id`, `uuid`, `first_name`, `last_name`, `user_type`, `is_a
 
 CREATE TABLE `vehicles` (
   `id` bigint(10) NOT NULL,
-  `files` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `brand` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `model` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `year` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -3319,6 +3191,7 @@ CREATE TABLE `vehicles` (
   `no_of_wheels` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `plate_number` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `max_cargo_weight` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `image` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_on` datetime NOT NULL,
   `created_by` bigint(10) NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT 0
@@ -3484,6 +3357,12 @@ ALTER TABLE `asset_vendors`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `attachments`
+--
+ALTER TABLE `attachments`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `attendance`
 --
 ALTER TABLE `attendance`
@@ -3534,6 +3413,18 @@ ALTER TABLE `clients`
 -- Indexes for table `client_groups`
 --
 ALTER TABLE `client_groups`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `consumers`
+--
+ALTER TABLE `consumers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `customers`
+--
+ALTER TABLE `customers`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -3588,22 +3479,19 @@ ALTER TABLE `email_templates`
 -- Indexes for table `epass_area`
 --
 ALTER TABLE `epass_area`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `INDEX` (`id`,`event_id`) USING BTREE;
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `epass_block`
 --
 ALTER TABLE `epass_block`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `INDEX` (`id`,`area_id`) USING BTREE;
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `epass_seat`
 --
 ALTER TABLE `epass_seat`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `INDEX` (`id`,`block_id`) USING BTREE;
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `estimates`
@@ -3640,8 +3528,7 @@ ALTER TABLE `events`
 -- Indexes for table `event_pass`
 --
 ALTER TABLE `event_pass`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `INDEX` (`id`,`uuid`,`event_id`,`user_id`,`guest`) USING BTREE;
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `event_raffle`
@@ -3653,6 +3540,12 @@ ALTER TABLE `event_raffle`
 -- Indexes for table `event_raffle_participants`
 --
 ALTER TABLE `event_raffle_participants`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `event_raffle_prizes`
+--
+ALTER TABLE `event_raffle_prizes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -3820,39 +3713,33 @@ ALTER TABLE `likes`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `materials`
+-- Indexes for table `loans`
 --
-ALTER TABLE `materials`
+ALTER TABLE `loans`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `material_categories`
+-- Indexes for table `loan_categories`
 --
-ALTER TABLE `material_categories`
+ALTER TABLE `loan_categories`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `material_inventory`
+-- Indexes for table `loan_fees`
 --
-ALTER TABLE `material_inventory`
+ALTER TABLE `loan_fees`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `material_inventory_stock_override`
+-- Indexes for table `loan_payments`
 --
-ALTER TABLE `material_inventory_stock_override`
+ALTER TABLE `loan_payments`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `material_inventory_transfers`
+-- Indexes for table `loan_stages`
 --
-ALTER TABLE `material_inventory_transfers`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `material_inventory_transfer_items`
---
-ALTER TABLE `material_inventory_transfer_items`
+ALTER TABLE `loan_stages`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -3862,6 +3749,12 @@ ALTER TABLE `messages`
   ADD PRIMARY KEY (`id`),
   ADD KEY `message_from` (`from_user_id`),
   ADD KEY `message_to` (`to_user_id`);
+
+--
+-- Indexes for table `migrations_backup`
+--
+ALTER TABLE `migrations_backup`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `milestones`
@@ -3890,12 +3783,6 @@ ALTER TABLE `notification_settings`
   ADD KEY `event` (`event`);
 
 --
--- Indexes for table `overtime`
---
-ALTER TABLE `overtime`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `pages`
 --
 ALTER TABLE `pages`
@@ -3909,6 +3796,19 @@ ALTER TABLE `pallets`
   ADD KEY `qrcode` (`qrcode`),
   ADD KEY `barcode` (`barcode`),
   ADD KEY `rfid` (`rfid`);
+
+--
+-- Indexes for table `payhp_migrations`
+--
+ALTER TABLE `payhp_migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `payhp_payslips`
+--
+ALTER TABLE `payhp_payslips`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `payhp_payslips_uuid_index` (`uuid`);
 
 --
 -- Indexes for table `payment_methods`
@@ -3932,6 +3832,24 @@ ALTER TABLE `payrolls`
 -- Indexes for table `payslips`
 --
 ALTER TABLE `payslips`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `payslips_deductions`
+--
+ALTER TABLE `payslips_deductions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `payslips_earnings`
+--
+ALTER TABLE `payslips_earnings`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `payslips_sents`
+--
+ALTER TABLE `payslips_sents`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -4052,15 +3970,13 @@ ALTER TABLE `schedule`
 -- Indexes for table `services`
 --
 ALTER TABLE `services`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `uuid` (`uuid`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `services_categories`
 --
 ALTER TABLE `services_categories`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `uuid` (`uuid`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `settings`
@@ -4121,7 +4037,8 @@ ALTER TABLE `team`
 --
 ALTER TABLE `team_member_job_info`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `rfid_num` (`rfid_num`);
+  ADD UNIQUE KEY `rfid_num` (`rfid_num`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `tickets`
@@ -4228,7 +4145,7 @@ ALTER TABLE `access_logs`
 -- AUTO_INCREMENT for table `accounts`
 --
 ALTER TABLE `accounts`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `account_transactions`
@@ -4285,6 +4202,12 @@ ALTER TABLE `asset_vendors`
   MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `attachments`
+--
+ALTER TABLE `attachments`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
@@ -4325,6 +4248,18 @@ ALTER TABLE `clients`
 --
 ALTER TABLE `client_groups`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `consumers`
+--
+ALTER TABLE `consumers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `customers`
+--
+ALTER TABLE `customers`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `custom_fields`
@@ -4372,7 +4307,7 @@ ALTER TABLE `discipline_entries`
 -- AUTO_INCREMENT for table `email_templates`
 --
 ALTER TABLE `email_templates`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `epass_area`
@@ -4441,6 +4376,12 @@ ALTER TABLE `event_raffle_participants`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `event_raffle_prizes`
+--
+ALTER TABLE `event_raffle_prizes`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `event_raffle_winners`
 --
 ALTER TABLE `event_raffle_winners`
@@ -4462,7 +4403,7 @@ ALTER TABLE `expenses_payments`
 -- AUTO_INCREMENT for table `expense_categories`
 --
 ALTER TABLE `expense_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `general_files`
@@ -4486,7 +4427,7 @@ ALTER TABLE `help_categories`
 -- AUTO_INCREMENT for table `holidays`
 --
 ALTER TABLE `holidays`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `inventory`
@@ -4558,7 +4499,7 @@ ALTER TABLE `leads`
 -- AUTO_INCREMENT for table `lead_source`
 --
 ALTER TABLE `lead_source`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `lead_status`
@@ -4582,7 +4523,7 @@ ALTER TABLE `leave_credits`
 -- AUTO_INCREMENT for table `leave_types`
 --
 ALTER TABLE `leave_types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `levels`
@@ -4597,46 +4538,46 @@ ALTER TABLE `likes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `materials`
+-- AUTO_INCREMENT for table `loans`
 --
-ALTER TABLE `materials`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `loans`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `material_categories`
+-- AUTO_INCREMENT for table `loan_categories`
 --
-ALTER TABLE `material_categories`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `loan_categories`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `material_inventory`
+-- AUTO_INCREMENT for table `loan_fees`
 --
-ALTER TABLE `material_inventory`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `loan_fees`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `material_inventory_stock_override`
+-- AUTO_INCREMENT for table `loan_payments`
 --
-ALTER TABLE `material_inventory_stock_override`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `loan_payments`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `material_inventory_transfers`
+-- AUTO_INCREMENT for table `loan_stages`
 --
-ALTER TABLE `material_inventory_transfers`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `material_inventory_transfer_items`
---
-ALTER TABLE `material_inventory_transfer_items`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `loan_stages`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `migrations_backup`
+--
+ALTER TABLE `migrations_backup`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `milestones`
@@ -4660,13 +4601,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `notification_settings`
 --
 ALTER TABLE `notification_settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
-
---
--- AUTO_INCREMENT for table `overtime`
---
-ALTER TABLE `overtime`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pages`
@@ -4681,10 +4616,22 @@ ALTER TABLE `pallets`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `payhp_migrations`
+--
+ALTER TABLE `payhp_migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `payhp_payslips`
+--
+ALTER TABLE `payhp_payslips`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `paypal_ipn`
@@ -4702,6 +4649,24 @@ ALTER TABLE `payrolls`
 -- AUTO_INCREMENT for table `payslips`
 --
 ALTER TABLE `payslips`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `payslips_deductions`
+--
+ALTER TABLE `payslips_deductions`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `payslips_earnings`
+--
+ALTER TABLE `payslips_earnings`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `payslips_sents`
+--
+ALTER TABLE `payslips_sents`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -4744,7 +4709,7 @@ ALTER TABLE `project_comments`
 -- AUTO_INCREMENT for table `project_files`
 --
 ALTER TABLE `project_files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `project_members`
@@ -4798,31 +4763,25 @@ ALTER TABLE `racks`
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=232;
 
 --
 -- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `services_categories`
 --
 ALTER TABLE `services_categories`
   MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `social_links`
---
-ALTER TABLE `social_links`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `stores`
@@ -4852,7 +4811,7 @@ ALTER TABLE `tasks`
 -- AUTO_INCREMENT for table `task_status`
 --
 ALTER TABLE `task_status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `taxes`
@@ -4864,13 +4823,13 @@ ALTER TABLE `taxes`
 -- AUTO_INCREMENT for table `team`
 --
 ALTER TABLE `team`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `team_member_job_info`
 --
 ALTER TABLE `team_member_job_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=414;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tickets`
@@ -4894,7 +4853,7 @@ ALTER TABLE `ticket_templates`
 -- AUTO_INCREMENT for table `ticket_types`
 --
 ALTER TABLE `ticket_types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `to_do`
@@ -4906,13 +4865,13 @@ ALTER TABLE `to_do`
 -- AUTO_INCREMENT for table `units`
 --
 ALTER TABLE `units`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7964;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `vehicles`
