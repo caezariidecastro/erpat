@@ -23,6 +23,8 @@ if (!function_exists('to_currency')) {
             $number = $number * -1;
             $negative_sign = "-";
         }
+        $number = floatval($number);
+
         if (!$currency) {
             $currency = get_setting("currency_symbol");
         }
