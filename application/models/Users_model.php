@@ -135,13 +135,7 @@ class Users_model extends Crud_model {
             $where .= " $users_table.id=$id";
         }
 
-        if ($status === "active") {
-            $where .= empty($where) ? " " : " AND";
-            $where .= " $users_table.status='active'";
-        } else if ($status === "inactive") {
-            $where .= empty($where) ? " " : " AND";
-            $where .= " $users_table.status='inactive' AND $users_table.resigned='0' AND $users_table.terminated='1' ";
-        } else if ($status === "deleted") {
+        if ($status === "deleted") {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.deleted='1'";
         } else if ($status === "resigned") {
@@ -150,9 +144,12 @@ class Users_model extends Crud_model {
         } else if ($status === "terminated") {
             $where .= empty($where) ? " " : " AND";
             $where .= " $users_table.terminated='1'";
-        } else {
+        } else if ($status === "inactive") {
             $where .= empty($where) ? " " : " AND";
-            $where .= " $users_table.deleted='0'";
+            $where .= " $users_table.status='inactive' AND $users_table.resigned='0' AND $users_table.terminated='0' AND $users_table.deleted='0' ";
+        } else { //active
+            $where .= empty($where) ? " " : " AND";
+            $where .= " $users_table.status='active' AND $users_table.resigned='0' AND $users_table.terminated='0' AND $users_table.deleted='0' ";
         }
 
         if ($user_type && $user_type !== "sysadmin") {
