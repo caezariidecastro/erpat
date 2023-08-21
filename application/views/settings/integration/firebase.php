@@ -87,7 +87,7 @@
                 url: '<?php echo_uri("firebase/trigger/cloud-messaging") ?>',
                 type: "POST",
                 data: {
-                    title: 'BusiNext Push Notification',
+                    title: 'ERPat System Push Notification',
                     body: 'This is a test notification!',
                     icon: 'https://businext.dev/files/system/default-stie-logo.png',
                     url: 'https://businext.dev/settings/integration/firebase',

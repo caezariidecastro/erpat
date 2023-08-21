@@ -1,8 +1,8 @@
 <?php 
 
     /** 
-     * Name: BusiNext
-     * Authors : Bytes Crafter
+     * Name: ERPat System
+     * Authors : BytesCrafter
      * Website : https://bytescrafter.net
      * Created : 01-July-2020
     */
